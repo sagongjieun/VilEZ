@@ -6,7 +6,8 @@ import ChatOpenIcon from "./pages/ChatOpenIcon";
 import MainNavBar from "./components/common/MainNavBar";
 import Product from "./pages/Product";
 import Signup from "./pages/Signup";
-
+import ShareComplete from "./components/modal/ShareComplete";
+import Report from "./components/modal/Report";
 function App() {
   return (
     <BrowserRouter>
@@ -19,6 +20,8 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/product/*" element={<Product />} />
         </Routes>
+        <ShareComplete />
+        <Report />
       </div>
     </BrowserRouter>
   );

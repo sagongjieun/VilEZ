@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { BsChatSquare } from "react-icons/bs";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import ChatModal from "./ChatModal";
+import Chat from "../components/modal/Chat";
 function ChatOpenIcon() {
   const [isOpen, setIsOpen] = useState(false);
   const onClickOpenChat = () => {
@@ -13,7 +13,7 @@ function ChatOpenIcon() {
       <div css={IconBox} onClick={onClickOpenChat}>
         <BsChatSquare />
       </div>
-      {isOpen ? <ChatModal /> : null}
+      {isOpen ? <Chat /> : null}
     </div>
   );
 }
