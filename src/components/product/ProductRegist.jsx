@@ -223,7 +223,7 @@ const ProductRegist = () => {
     <div css={wrapper}>
       <div css={registTypeWrapper}>
         <h2>{registType}</h2>
-        <button css={typeButton} onClick={onClickOpenRegistType}>
+        <button css={toggleButton} onClick={onClickOpenRegistType}>
           {openRegistType ? <HiChevronUp size="18" /> : <HiChevronDown size="18" />}
         </button>
         {openRegistType ? (
@@ -252,7 +252,7 @@ const ProductRegist = () => {
         </h3>
         <div css={selectedCategoryWrapper}>
           <span>{category}</span>
-          <button css={typeButton} onClick={onClickOpenCategory}>
+          <button css={toggleButton} onClick={onClickOpenCategory}>
             {openCategory ? <HiChevronLeft size="18" /> : <HiChevronRight size="18" />}
           </button>
           {openCategory ? (
@@ -319,19 +319,8 @@ const ProductRegist = () => {
         <div id="map"></div>
       </div>
 
-      <div
-        css={css`
-          width: 100%;
-          margin-top: 90px;
-          display: flex;
-          justify-content: center;
-        `}
-      >
-        <div
-          css={css`
-            width: 165px;
-          `}
-        >
+      <div css={registButtonWrapper}>
+        <div>
           <MiddleWideButton text="등록하기" onclick={onClickRegistButton} />
         </div>
       </div>
@@ -521,7 +510,7 @@ const imageWrapper = css`
     display: none;
   }
 
-  & > div:nth-child(1) {
+  & > div:nth-of-type(1) {
     width: 165px;
   }
 `;
@@ -600,7 +589,18 @@ const hopeAreaHeaderWrapper = css`
   }
 `;
 
-const typeButton = css`
+const registButtonWrapper = css`
+  width: 100%;
+  margin-top: 90px;
+  display: flex;
+  justify-content: center;
+
+  & > div {
+    width: 165px;
+  }
+`;
+
+const toggleButton = css`
   width: 30px;
   height: 30px;
   border-radius: 100px;

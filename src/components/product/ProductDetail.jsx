@@ -107,13 +107,13 @@ const headerWrapper = css`
 `;
 
 const headerLeftSectionWrapper = css`
-  & > span:nth-child(1) {
+  & > span:nth-of-type(1) {
     font-size: 30px;
     font-weight: bold;
     margin-right: 20px;
   }
 
-  & > span:nth-child(2) {
+  & > span:nth-of-type(2) {
     color: #66dd9c;
     font-weight: bold;
     margin-right: 20px;
@@ -183,7 +183,7 @@ const nickNameWrapper = css`
     margin-right: 20px;
   }
 
-  & > div > span:nth-child(1) {
+  & > div > span:nth-of-type(1) {
     margin-bottom: 10px;
     font-weight: bold;
   }
@@ -246,7 +246,7 @@ const hopeAreaWrapper = css`
   display: flex;
   flex-direction: column;
 
-  & > div:nth-child(1) {
+  & > div:nth-of-type(1) {
     display: flex;
     flex-direction: row;
     align-items: flex-end;
