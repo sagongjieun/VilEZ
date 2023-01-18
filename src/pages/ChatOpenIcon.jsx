@@ -5,12 +5,12 @@ import { css } from "@emotion/react";
 import ChatModal from "./ChatModal";
 function ChatOpenIcon() {
   const [isOpen, setIsOpen] = useState(false);
-  const onclickOpenChat = () => {
+  const onClickOpenChat = () => {
     setIsOpen(!isOpen);
   };
   return (
     <div>
-      <div css={IconBox} onClick={onclickOpenChat}>
+      <div css={IconBox} onClick={onClickOpenChat}>
         <BsChatSquare />
       </div>
       {isOpen ? <ChatModal /> : null}
