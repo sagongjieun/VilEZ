@@ -1,36 +1,23 @@
 import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { HiChevronDown, HiChevronRight, HiChevronUp, HiChevronLeft } from "react-icons/hi2";
+import { HiChevronDown, HiChevronUp } from "react-icons/hi2";
 import { postShareArticle } from "../../api/share";
 import { postAskArticle } from "../../api/ask";
-import { AiOutlineClose } from "react-icons/ai";
 import DivideLine from "../common/DivideLine";
 import InputBox from "../common/InputBox";
 import Calendar from "../common/Calendar";
 import MiddleWideButton from "../button/MiddleWideButton";
+import ProductCategory from "./ProductCategory";
+import ProductImageSelect from "./ProductImageSelect";
 
 const { kakao } = window;
 
 const ProductRegist = () => {
   const [openRegistType, setOpenRegistType] = useState(false);
-  const [openCategory, setOpenCategory] = useState(false);
   const [registType, setRegistType] = useState("선택해주세요.");
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("카테고리");
-  const categoryType = [
-    "화장품/미용",
-    "생활/건강",
-    "식품",
-    "스포츠/레저",
-    "가구/인테리어",
-    "디지털/가전",
-    "출산/육아",
-    "패션잡화",
-    "여가/생활편의",
-    "패션의류",
-    "도서",
-  ];
+  const [category, setCategory] = useState("");
   const [content, setContent] = useState("");
   const [startDay, setStartDay] = useState("");
   const [endDay, setEndDay] = useState("");
@@ -44,14 +31,6 @@ const ProductRegist = () => {
       setOpenRegistType(false);
     } else {
       setOpenRegistType(true);
-    }
-  }
-
-  function onClickOpenCategory() {
-    if (openCategory) {
-      setOpenCategory(false);
-    } else {
-      setOpenCategory(true);
     }
   }
 
@@ -72,35 +51,15 @@ const ProductRegist = () => {
     setTitle(value);
   }
 
-  function onClickCategoryType(type) {
-    setCategory(type);
-    setOpenCategory(false);
+  function receiveCategory(category) {
+    setCategory(category);
   }
 
-  function onClickFileUpload() {
-    const fileInput = document.getElementById("file-input");
-    fileInput.click();
+  function receiveImageList(imageList) {
+    setImageList(imageList);
   }
 
-  function onChangeImage(e) {
-    if (!e.target.files) {
-      e.preventDefault();
-      return;
-    }
-
-    if (imageList.length + e.target.files.length > 8) {
-      alert("사진은 최대 8개 등록 가능합니다.");
-      return;
-    }
-
-    setImageList([...imageList, ...e.target.files]);
-  }
-
-  function onClickDeleteImage(deletedImage) {
-    setImageList(imageList.filter((image) => image !== deletedImage));
-  }
-
-  function sendStartDate(startDate) {
+  function receiveStartDate(startDate) {
     const utcStartDate = new Date(Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()));
     const startDateResult = JSON.stringify(utcStartDate);
 
@@ -108,7 +67,7 @@ const ProductRegist = () => {
     setEndDay(""); // 시작일만 설정했을 경우의 이슈를 막기 위해 시작일이 바뀔 때마다 종료일 리셋
   }
 
-  function sendEndDate(endDate) {
+  function receiveEndDate(endDate) {
     const utcEndDate = new Date(Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()));
     const endDateResult = JSON.stringify(utcEndDate);
 
@@ -223,7 +182,7 @@ const ProductRegist = () => {
     <div css={wrapper}>
       <div css={registTypeWrapper}>
         <h2>{registType}</h2>
-        <button css={toggleButton} onClick={onClickOpenRegistType}>
+        <button onClick={onClickOpenRegistType}>
           {openRegistType ? <HiChevronUp size="18" /> : <HiChevronDown size="18" />}
         </button>
         {openRegistType ? (
@@ -250,23 +209,7 @@ const ProductRegist = () => {
         <h3>
           카테고리 <b>*</b>
         </h3>
-        <div css={selectedCategoryWrapper}>
-          <span>{category}</span>
-          <button css={toggleButton} onClick={onClickOpenCategory}>
-            {openCategory ? <HiChevronLeft size="18" /> : <HiChevronRight size="18" />}
-          </button>
-          {openCategory ? (
-            <div css={categoryTypeWrapper}>
-              {categoryType.map((category, index) => (
-                <span key={index} onClick={() => onClickCategoryType(category)}>
-                  {category}
-                </span>
-              ))}
-            </div>
-          ) : (
-            <></>
-          )}
-        </div>
+        <ProductCategory sendCategory={receiveCategory} />
       </div>
 
       <div css={contentWrapper}>
@@ -287,18 +230,7 @@ const ProductRegist = () => {
           <small>(최대 8개)</small>
         </h3>
         <small>물품에 대한 사진을 보여주면, 찾는 사람이 정확하게 볼 수 있어요.</small>
-        <input type="file" id="file-input" accept=".jpg,.jpeg,.png" onChange={onChangeImage} />
-        <div>
-          <MiddleWideButton text="사진 찾기" onclick={onClickFileUpload} />
-        </div>
-        <div css={imageNameWrapper}>
-          {imageList.map((image, index) => (
-            <small key={index}>
-              {image.name}
-              <AiOutlineClose onClick={() => onClickDeleteImage(image)} />
-            </small>
-          ))}
-        </div>
+        <ProductImageSelect sendImageList={receiveImageList} />
       </div>
 
       <div css={hopeDateWrapper}>
@@ -306,7 +238,7 @@ const ProductRegist = () => {
           희망 공유 기간 <b>*</b>
         </h3>
         <small>희망 공유기간을 적어주세요. 기간은 대화를 통해 수정할 수 있어요.</small>
-        <Calendar sendStartDate={sendStartDate} sendEndDate={sendEndDate} />
+        <Calendar sendStartDate={receiveStartDate} sendEndDate={receiveEndDate} />
       </div>
 
       <div css={hopeAreaWrapper}>
@@ -343,6 +275,19 @@ const registTypeWrapper = css`
 
   & > h2 {
     margin-right: 10px;
+  }
+
+  & > button {
+    width: 30px;
+    height: 30px;
+    border-radius: 100px;
+    background: #ffffff;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   & > div {
@@ -401,66 +346,6 @@ const categoryWrapper = css`
   }
 `;
 
-const selectedCategoryWrapper = css`
-  display: flex;
-  flex-direction: row;
-  border: 1px solid #ededed;
-  border-radius: 5px;
-  width: 200px;
-  height: 55px;
-  align-items: center;
-  justify-content: center;
-  background: #ffffff;
-  position: relative;
-
-  & > span {
-    font-weight: bold;
-    color: #66dd9c;
-    margin-right: 20px;
-  }
-`;
-
-const categoryTypeWrapper = css`
-  position: absolute;
-  width: 158px;
-  height: 300px;
-  left: 210px;
-  top: 0px;
-  background: #ffffff;
-  border: 1px solid #ededed;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 5px;
-  overflow-y: scroll;
-
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    height: 30%;
-    background: #c4c4c4;
-    border-radius: 10px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: none;
-  }
-
-  & > span {
-    display: block;
-    width: 100%;
-    height: 50px;
-    line-height: 50px;
-    cursor: pointer;
-    text-align: center;
-
-    &:hover {
-      color: #66dd9c;
-      font-weight: bold;
-    }
-  }
-`;
-
 const contentWrapper = css`
   display: flex;
   flex-direction: column;
@@ -504,39 +389,6 @@ const imageWrapper = css`
 
   & > small {
     color: #847a7a;
-  }
-
-  & > input {
-    display: none;
-  }
-
-  & > div:nth-of-type(1) {
-    width: 165px;
-  }
-`;
-
-const imageNameWrapper = css`
-  max-width: 100%;
-  height: 55px;
-  background: #ffffff;
-  border: 1px solid #e1e2e3;
-  border-radius: 5px;
-  margin-top: 10px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 0 25px;
-
-  & small {
-    color: #8a8a8a;
-    margin-right: 20px;
-    display: flex;
-    align-items: center;
-
-    & svg {
-      margin-left: 5px;
-      cursor: pointer;
-    }
   }
 `;
 
@@ -598,19 +450,6 @@ const registButtonWrapper = css`
   & > div {
     width: 165px;
   }
-`;
-
-const toggleButton = css`
-  width: 30px;
-  height: 30px;
-  border-radius: 100px;
-  background: #ffffff;
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `;
 
 export default ProductRegist;
