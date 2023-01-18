@@ -1,127 +1,161 @@
-import React from "react";
-import Close from "../assets/images/Close.png";
+import React, { useState } from "react";
+import closebutton from "../assets/images/closebutton.png";
 /** @jsxImportSource @emotion/react */
+
 import { css } from "@emotion/react";
-import Luffy from "../assets/images/Luffy.png";
-import OnePieceThumb from "../assets/images/OnePieceThumb.jfif";
+import luffy from "../assets/images/luffy.png";
+import onpiecethumb from "../assets/images/onpiecethumb.jfif";
+import jjangu from "../assets/images/jjangu.png";
+import sinhyeongman from "../assets/images/sinhyeongman.jfif";
 function ChatModal() {
+  const [isOpen, setIsOpen] = useState(false);
+  const onClickOpenChat = () => {
+    setIsOpen(!isOpen);
+  };
   const Chatts = [
     {
-      profile: Luffy,
+      profile: luffy,
       nickname: "해적왕",
       location: "신세계",
       time: "1시간 전",
       lastChat: "해적왕은 나야",
-      thumbnail: OnePieceThumb,
+      thumbnail: onpiecethumb,
     },
     {
-      profile: Luffy,
+      profile: luffy,
       nickname: "해적왕",
       location: "신세계",
       time: "1시간 전",
       lastChat: "해적왕은 나야",
-      thumbnail: OnePieceThumb,
+      thumbnail: onpiecethumb,
     },
     {
-      profile: Luffy,
+      profile: luffy,
       nickname: "해적왕",
       location: "신세계",
       time: "1시간 전",
       lastChat: "해적왕은 나야",
-      thumbnail: OnePieceThumb,
+      thumbnail: onpiecethumb,
+    },
+    {
+      profile: jjangu,
+      nickname: "액션가면내놔",
+      location: "테이블 속",
+      time: "1시간 전",
+      lastChat: "울랄라울랄라",
+      thumbnail: sinhyeongman,
+    },
+    {
+      profile: jjangu,
+      nickname: "액션가면내놔",
+      location: "테이블 속",
+      time: "1시간 전",
+      lastChat: "울랄라울랄라",
+      thumbnail: sinhyeongman,
     },
   ];
+  if (!isOpen) {
+    return (
+      <div css={chatWrap}>
+        <div css={ChatTitleWrap}>
+          채팅목록
+          <img
+            css={css`
+              cursor: pointer;
+            `}
+            src={closebutton}
+            alt=""
+            onClick={onClickOpenChat}
+          />
+        </div>
 
-  return (
-    <div css={chatWrap}>
-      <h2 css={ChatTitleWrap}>
-        채팅목록
-        <img src={Close} alt="" />
-      </h2>
-
-      {/* 채팅body 시작 */}
-      <div
-        css={css`
-          padding: 15px;
-        `}
-      >
-        {Chatts.length ? (
-          Chatts.map((chat, idx) => (
-            <div key={idx} css={ChatListWrap}>
-              {/* 프로필 사진 */}
-              <div>
-                <img src={chat.profile} alt="" css={chatListProfile} />
-              </div>
-              {/* 닉네임, 거주장소, 최근 채팅시간, 채팅내용 */}
-              <div>
-                <div css={chatListInfoWrap}>
-                  <div
-                    css={css`
-                      padding-top: 10px;
-                    `}
-                  >
-                    <span
-                      css={css`
-                        font-size: 20px;
-                        padding-right: 5px;
-                      `}
-                    >
-                      {chat.nickname}
-                    </span>
-                    <span
-                      css={css`
-                        font-size: 15px;
-                        color: #8a8a8a;
-                        padding-right: 5px;
-                      `}
-                    >
-                      {chat.location}
-                    </span>
-                    <span
-                      css={css`
-                        font-size: 15px;
-                        color: #8a8a8a;
-                      `}
-                    >
-                      {chat.time}
-                    </span>
+        {/* 채팅body 시작 */}
+        <div
+          css={css`
+            padding: 15px;
+          `}
+        >
+          {Chatts.length ? (
+            Chatts.map((chat, idx) => (
+              <div key={idx} css={ChatListWrap}>
+                {/* 프로필 사진 */}
+                <span>
+                  <img src={chat.profile} alt="" css={chatListProfile} />
+                </span>
+                {/* 닉네임, 거주장소, 최근 채팅시간, 채팅내용 */}
+                <div>
+                  <div css={chatListInfoWrap}>
+                    <div>
+                      <span
+                        css={css`
+                          font-size: 14px;
+                          padding-right: 5px;
+                        `}
+                      >
+                        {/* 닉네임 */}
+                        {chat.nickname}
+                      </span>
+                      <span
+                        css={css`
+                          font-size: 12px;
+                          color: #8a8a8a;
+                          padding-right: 5px;
+                        `}
+                      >
+                        {/* 동네 */}
+                        {chat.location}
+                      </span>
+                      <span
+                        css={css`
+                          font-size: 12px;
+                          color: #8a8a8a;
+                        `}
+                      >
+                        {/* 최근 채팅 시간 */}
+                        {chat.time}
+                      </span>
+                    </div>
                   </div>
                   <div
                     css={css`
-                      font-size: 20px;
+                      font-size: 14px;
                       padding-top: 10px;
                     `}
                   >
+                    {/* 마지막 채팅 문장 */}
                     {chat.lastChat}
                   </div>
                 </div>
+                {/* 물품썸네일 */}
+                <span css={ChatListThumb}>{/* <img src={chat.thumbnail} alt="" css={ChatListThumb} /> */}</span>
               </div>
-              {/* 물품썸네일 */}
-              <div>
-                <img src={chat.thumbnail} alt="" css={ChatListThumb} />
-              </div>
+            ))
+          ) : (
+            <div css={NochatWrap}>
+              <div>채팅목록이 없어요</div>
             </div>
-          ))
-        ) : (
-          <div css={NochatWrap}>
-            <div>채팅목록이 없어요</div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return null;
+  }
 }
 const chatWrap = css`
-  width: 655px;
-  height: 200px;
+  width: 400px;
+  height: 500px;
   border: 1px solid gray;
   border-radius: 30px;
-  float: right;
   overflow: auto;
-  position: absolute;
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  background-color: #f5f6f7;
 `;
 
 const ChatTitleWrap = css`
+  font-size: 22px;
   display: flex;
   justify-content: space-between;
   padding: 30px;
@@ -137,27 +171,29 @@ const ChatListWrap = css`
   width: 97%;
   display: flex;
   justify-content: space-between;
-  height: 95px;
+  height: 70px;
   border: 1px solid #e1e2e3;
-  border-radius: 30px;
+  border-radius: 10px;
   margin-bottom: 20px;
+  align-items: center;
+  overflow: hidden;
 `;
 const chatListProfile = css`
-  width: 80px;
-  height: 95px;
+  width: 60px;
+  height: 60px;
   object-fit: cover;
   border-radius: 100%;
 `;
 
 const chatListInfoWrap = css`
-  width: 400px;
-  height: 95px;
+  width: 190px;
+  margin-right: 2px;
 `;
 
 const ChatListThumb = css`
-  width: 120px;
-  height: 95px;
-  object-fit: cover;
-  border-radius: 6%;
+  width: 60px;
+  height: 100%;
+  background-image: url(${sinhyeongman});
+  background-size: cover;
 `;
 export default ChatModal;
