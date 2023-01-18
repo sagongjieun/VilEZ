@@ -22,7 +22,7 @@
     <select id="refreshCheck" parameterType="map" resultMap="user">
         SELECT id, email, nickname
         FROM user
-        WHERE email = #{email} and refresh_token = #{token};
+        WHERE user_id = #{userId} and refresh_token = #{token};
     </select>
 
     <select id="check" parameterType="string" resultMap="user">
@@ -41,13 +41,13 @@
                 password = #{password},
             </if>
         </set>
-        WHERE email = #{email}
+        WHERE user_id = #{userId}
     </update>
 
     <update id="modifyProfile" parameterType="userDto">
         UPDATE user
         SET profile_img = #{profileImg}
-        WHERE email = #{email}
+        WHERE user_id = #{userId}
     </update>
 
     <insert id = "join">
@@ -66,7 +66,7 @@
     <update id="saveToken" parameterType="map">
         UPDATE user
         SET refresh_token = #{token}
-        WHERE email = #{userEmail}
+        WHERE user_id = #{userId}
     </update>
 
 </mapper>
