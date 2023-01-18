@@ -173,7 +173,7 @@ const nickNameWrapper = css`
 
   & img {
     width: 90px;
-    hegith: 90px;
+    height: 90px;
     margin-right: 20px;
   }
 
