@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import closebutton from "../assets/images/closebutton.png";
+
 /** @jsxImportSource @emotion/react */
 
 import { css } from "@emotion/react";
-import luffy from "../assets/images/luffy.png";
-import onpiecethumb from "../assets/images/onpiecethumb.jfif";
-import jjangu from "../assets/images/jjangu.png";
-import sinhyeongman from "../assets/images/sinhyeongman.jfif";
+import closebutton from "../../assets/images/closebutton.png";
+import luffy from "../../assets/images/luffy.png";
+import onpiecethumb from "../../assets/images/onpiecethumb.jfif";
+import jjangu from "../../assets/images/jjangu.png";
+import sinhyeongman from "../../assets/images/sinhyeongman.jfif";
 function ChatModal() {
   const [isOpen, setIsOpen] = useState(false);
   const onClickOpenChat = () => {
