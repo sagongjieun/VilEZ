@@ -6,7 +6,7 @@ const onKeyDown = (event) => {
     event.preventDefault();
   }
 };
-const SignupInputBox = ({ placeholder, name, onChange, onClick, type }) => {
+const SignupInputBox = ({ placeholder, name, onChange, onClick, type, disabled }) => {
   return (
     <input
       css={[signupInputBox, inputPlaceholder]}
@@ -16,6 +16,7 @@ const SignupInputBox = ({ placeholder, name, onChange, onClick, type }) => {
       onClick={onClick}
       type={type}
       onKeyDown={onKeyDown}
+      disabled={disabled}
     />
   );
 };
