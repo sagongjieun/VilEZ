@@ -17,6 +17,13 @@ function useForm({ initialValues, onSubmit, Validation }) {
     setErrors(Validation(values));
   };
 
+  const handleClick = async () => {
+    setIsLoading(true);
+    await new Promise((r) => setTimeout(r, 100));
+    setErrors(Validation(values));
+    console.log("Hi");
+  };
+
   useEffect(() => {
     if (isLoading) {
       if (Object.keys(errors).length === 0) {
@@ -32,6 +39,7 @@ function useForm({ initialValues, onSubmit, Validation }) {
     isLoading,
     handleChange,
     handleSubmit,
+    handleClick,
   };
 }
 

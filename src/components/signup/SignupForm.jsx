@@ -15,9 +15,13 @@ const SignupForm = () => {
   const onEmailCodeSubmit = () => {};
   const onNicknameSubmit = () => {};
   const [visible, setVisible] = useState(false);
+  const [emailCodeVisible, setEmailCodeVisible] = useState(false);
   const onClickVisible = (event) => {
     event.preventDefault();
     setVisible((prev) => !prev);
+  };
+  const onClickEmailCodeVisible = () => {
+    setEmailCodeVisible((prev) => !prev);
   };
   const { errors, handleChange, handleSubmit } = useForm({
     initialValues: {
@@ -25,6 +29,7 @@ const SignupForm = () => {
       password2: "",
       email: "",
       nickname: "",
+      emailCode: "",
     },
     onSubmit: onSubmit,
     Validation,
@@ -32,7 +37,7 @@ const SignupForm = () => {
   let {
     errors: emailError,
     handleChange: emailChange,
-    handleSubmit: emailSubmit,
+    handleClick: emailSubmit,
   } = useForm({
     initialValues: {
       email: "",
@@ -43,7 +48,7 @@ const SignupForm = () => {
   let {
     errors: emailCodeError,
     handleChange: emailCodeChange,
-    handleSubmit: emailCodeSubmit,
+    handleClick: emailCodeSubmit,
   } = useForm({
     initialValues: {
       emailCode: "",
@@ -54,7 +59,7 @@ const SignupForm = () => {
   let {
     errors: nicknameError,
     handleChange: nicknameChange,
-    handleSubmit: nicknameSubmit,
+    handleClick: nicknameSubmit,
   } = useForm({
     initialValues: {
       nickname: "",
@@ -89,6 +94,7 @@ const SignupForm = () => {
                 name="email"
                 type="text"
                 placeholder="vilez@villypeople.com"
+                disabled={emailCodeVisible}
                 onChange={(event) => {
                   handleChange(event);
                   emailChange(event);
@@ -100,7 +106,14 @@ const SignupForm = () => {
                 width: 120px;
               `}
             >
-              <ConfirmButton outline={true} text="이메일 인증" onClick={emailSubmit} />
+              <ConfirmButton
+                outline={true}
+                text="이메일 인증"
+                onClick={(event) => {
+                  emailSubmit(event);
+                  onClickEmailCodeVisible();
+                }}
+              />
             </div>
           </div>
           {emailError.email ? (
@@ -118,10 +131,12 @@ const SignupForm = () => {
             </small>
           ) : null}
         </div>
-
         {/* email 인증 보내기 */}
-
-        <div css={emailCodeWrapper}>
+        <div
+          css={
+            emailCodeVisible && !errors.email && !emailError.email ? [emailCodeWrapper] : [emailCodeWrapper, hideBox]
+          }
+        >
           <div
             css={css`
               display: flex;
@@ -169,17 +184,6 @@ const SignupForm = () => {
           ) : null}
         </div>
         {/* email 인증 확인하기 */}
-
-        <small css={alertWrapper}>
-          <small css={alert}>{errors.email ? <AiOutlineExclamationCircle size="14" /> : null}</small>
-          <small
-            css={css`
-              line-height: 22px;
-            `}
-          >
-            {errors.email ? errors.email : null}
-          </small>
-        </small>
       </div>
       {/* email */}
 
@@ -279,7 +283,7 @@ const SignupForm = () => {
             <ConfirmButton outline={true} text="중복확인" onClick={nicknameSubmit} />
           </div>
         </div>
-        {errors.nickname ? null : (
+        {nicknameError.nickname || errors.nickname ? null : (
           <small
             css={css`
               color: #8a8a8a;
@@ -360,10 +364,20 @@ const alert = css`
   height: 21px;
 `;
 const emailCodeWrapper = css`
+  display: block;
   margin-top: 16px;
   border-radius: 5px;
   background-color: #acf0cb;
   padding: 20px;
+  visibility: visible;
+  opacity: 1;
+  transition: all 0.5s;
+`;
+const hideBox = css`
+  display: none;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.5s;
 `;
 
 export default SignupForm;
