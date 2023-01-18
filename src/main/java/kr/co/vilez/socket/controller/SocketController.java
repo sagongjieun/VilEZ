@@ -52,7 +52,15 @@ public class SocketController {
     @MessageMapping("/map")
     public SocketVO mapHandler(SocketVO socketVO) {
         socketService.dispatchType(socketVO);
-        sendingOperations.convertAndSend("/sendmap/"+socketVO.getRoomId(),socketVO);
+        int type = Integer.parseInt(socketVO.getType());
+        type = (type%2 + 1);
+        sendingOperations.convertAndSend("/sendmap/"+String.valueOf(type),socketVO);
+        return socketVO;
+    }
+
+    @MessageMapping("/marker")
+    public SocketVO marker(SocketVO socketVO) {
+        sendingOperations.convertAndSend("/sendmarker",socketVO);
         return socketVO;
     }
 
