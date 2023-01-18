@@ -2,12 +2,12 @@ import React from "react";
 import { Animated } from "react-animated-css";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import BodyImage1 from "../assets/images/BodyImage1.png";
-import MainArrow from "../assets/images/MainArrow.png";
-import SecondBodyImage from "../assets/images/SecondBodyImage.png";
-import ThirdBodyImage from "../assets/images/ThirdBodyImage.png";
-import MapBodyImg from "../assets/images/MapBodyImg.png";
-import ChatImg from "../assets/images/ChatImg.png";
+import firstbodyimage from "../assets/images/firstbodyimage.png";
+import mainarrow from "../assets/images/mainarrow.png";
+import secondbodyimg from "../assets/images/secondbodyimg.png";
+import thirdbodyimg from "../assets/images/thirdbodyimg.png";
+import mapimg from "../assets/images/mapimg.png";
+import chatimg from "../assets/images/chatimg.png";
 function MainBody() {
   return (
     <div>
@@ -24,7 +24,7 @@ function MainBody() {
         </div>
         {/* 애니메이션 넣어야 함 */}
         <div css={ArrowBox}>
-          <img src={MainArrow} alt="" />
+          <img src={mainarrow} alt="" />
         </div>
       </div>
       <div css={FirstWrap}>
@@ -35,12 +35,12 @@ function MainBody() {
           <div css={ExplainContent}>지역 사람들과 공유해봐요.</div>
         </div>
         <div css={ExplainRight}>
-          <img css={ImgHeight} src={SecondBodyImage} alt="" />
+          <img css={ImgHeight} src={secondbodyimg} alt="" />
         </div>
       </div>
       <div css={ExplainWrap}>
         <div css={[ExplainLeft, ImgHeight]}>
-          <img css={ImgHeight} src={ThirdBodyImage} alt="" />
+          <img css={ImgHeight} src={thirdbodyimg} alt="" />
         </div>
         <div css={[ExplainRight, ExplainRightCenter]}>
           <div css={ExplainTitle}>안전한 공유방식</div>
@@ -56,12 +56,12 @@ function MainBody() {
           <div css={ExplainContent}>선택할 수 있게 빌리지가 도와줄게요.</div>
         </div>
         <div css={ExplainRight}>
-          <img src={MapBodyImg} alt="" />
+          <img src={mapimg} alt="" />
         </div>
       </div>
       <div css={ExplainWrap}>
         <div css={ExplainLeft}>
-          <img css={ImgHeight} src={ChatImg} alt="" />
+          <img css={ImgHeight} src={chatimg} alt="" />
         </div>
         <div css={[ExplainRight, ExplainRightCenter]}>
           <div css={ExplainTitle}>다른 곳 갈 필요 없어요</div>
@@ -85,7 +85,7 @@ const FirstWrap = css`
 const FirstBodyWrap = css`
   width: 100%;
   height: 700px;
-  background-image: url(${BodyImage1});
+  background-image: url(${firstbodyimage});
   background-size: cover;
 `;
 const FirstBody = css`
