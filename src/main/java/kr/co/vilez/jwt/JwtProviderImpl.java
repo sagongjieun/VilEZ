@@ -31,11 +31,11 @@ public class JwtProviderImpl implements JwtProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(String email, String userNickname) {
+    public String createToken(String userId, String userNickname) {
         Date now = new Date();
 
         Claims claims = Jwts.claims();
-        claims.put("email", email);
+        claims.put("userId", userId);
         claims.put("nickname", userNickname);
         claims.put("expire", new Date((now.getTime() + tokenValidTime)));
 
@@ -50,7 +50,7 @@ public class JwtProviderImpl implements JwtProvider {
         Date now = new Date();
 
         Claims claims = Jwts.claims();
-        claims.put("email", userId);
+        claims.put("userId", userId);
         claims.put("nickname", userNickname);
         claims.put("expire", new Date((now.getTime() + refreshTokenValidTime)));
 
@@ -72,12 +72,12 @@ public class JwtProviderImpl implements JwtProvider {
     }
 
 
-    public String getUserEmail(String token) {
+    public String getUserId(String token) {
         return Jwts.parser().
                 setSigningKey(secretKey).
                 parseClaimsJws(token).
                 getBody().
-                get("email").
+                get("userId").
                 toString();
     }
     public String getUserNickname(String token) {
