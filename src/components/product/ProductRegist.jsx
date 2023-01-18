@@ -220,82 +220,45 @@ const ProductRegist = () => {
   }, []);
 
   return (
-    <div css={container}>
-      <div css={typeWrapper}>
-        <h2
-          css={css`
-            margin-right: 10px;
-          `}
-        >
-          {registType}
-        </h2>
+    <div css={wrapper}>
+      <div css={registTypeWrapper}>
+        <h2>{registType}</h2>
         <button css={typeButton} onClick={onClickOpenRegistType}>
           {openRegistType ? <HiChevronUp size="18" /> : <HiChevronDown size="18" />}
         </button>
         {openRegistType ? (
-          <div css={registTypeWrapper}>
-            <span css={registTypeSpan} onClick={() => onClickRegistType(1)}>
-              물품 공유 등록
-            </span>
+          <div>
+            <span onClick={() => onClickRegistType(1)}>물품 공유 등록</span>
             <DivideLine />
-            <span css={registTypeSpan} onClick={() => onClickRegistType(2)}>
-              물품 요청 등록
-            </span>
+            <span onClick={() => onClickRegistType(2)}>물품 요청 등록</span>
           </div>
         ) : (
           <></>
         )}
       </div>
+
       <DivideLine />
-      <div css={subtitleWrapper}>
-        <h3
-          css={css`
-            margin-bottom: 15px;
-          `}
-        >
-          제목{" "}
-          <b
-            css={css`
-              color: red;
-            `}
-          >
-            *
-          </b>
+
+      <div css={titleWrapper}>
+        <h3>
+          제목 <b>*</b>
         </h3>
         <InputBox placeholder="제목을 입력해주세요." onChangeValue={onChangeTitle} />
       </div>
-      <div css={subtitleWrapper}>
-        <h3
-          css={css`
-            margin-bottom: 15px;
-          `}
-        >
-          카테고리{" "}
-          <b
-            css={css`
-              color: red;
-            `}
-          >
-            *
-          </b>
+
+      <div css={categoryWrapper}>
+        <h3>
+          카테고리 <b>*</b>
         </h3>
-        <div css={categoryWrapper}>
-          <span
-            css={css`
-              font-weight: bold;
-              color: #66dd9c;
-              margin-right: 20px;
-            `}
-          >
-            {category}
-          </span>
+        <div css={selectedCategoryWrapper}>
+          <span>{category}</span>
           <button css={typeButton} onClick={onClickOpenCategory}>
             {openCategory ? <HiChevronLeft size="18" /> : <HiChevronRight size="18" />}
           </button>
           {openCategory ? (
             <div css={categoryTypeWrapper}>
               {categoryType.map((category, index) => (
-                <span key={index} css={categoryTypeSpan} onClick={() => onClickCategoryType(category)}>
+                <span key={index} onClick={() => onClickCategoryType(category)}>
                   {category}
                 </span>
               ))}
@@ -305,131 +268,57 @@ const ProductRegist = () => {
           )}
         </div>
       </div>
-      <div css={subtitleWrapper}>
-        <h3
-          css={css`
-            margin-bottom: 15px;
-          `}
-        >
-          설명{" "}
-          <b
-            css={css`
-              color: red;
-            `}
-          >
-            *
-          </b>
+
+      <div css={contentWrapper}>
+        <h3>
+          설명 <b>*</b>
           <small>(최대 300자)</small>
         </h3>
         <textarea
-          css={textarea}
           placeholder="물품에 대한 상세한 설명을 해주면 좋아요."
           onChange={(e) => setContent(e.target.value)}
           id="textarea"
         ></textarea>
       </div>
-      <div css={subtitleWrapper}>
-        <h3
-          css={css`
-            margin-bottom: 15px;
-          `}
-        >
-          물품 사진{" "}
-          <b
-            css={css`
-              color: red;
-            `}
-          >
-            *
-          </b>
+
+      <div css={imageWrapper}>
+        <h3>
+          물품 사진 <b>*</b>
           <small>(최대 8개)</small>
         </h3>
-        <small
-          css={css`
-            color: #847a7a;
-          `}
-        >
-          물품에 대한 사진을 보여주면, 찾는 사람이 정확하게 볼 수 있어요.
-        </small>
-        <input
-          css={css`
-            display: none;
-          `}
-          type="file"
-          id="file-input"
-          accept=".jpg,.jpeg,.png"
-          onChange={onChangeImage}
-        />
-        <div
-          css={css`
-            width: 165px;
-          `}
-        >
+        <small>물품에 대한 사진을 보여주면, 찾는 사람이 정확하게 볼 수 있어요.</small>
+        <input type="file" id="file-input" accept=".jpg,.jpeg,.png" onChange={onChangeImage} />
+        <div>
           <MiddleWideButton text="사진 찾기" onclick={onClickFileUpload} />
         </div>
-        <div css={fileNameWrapper}>
+        <div css={imageNameWrapper}>
           {imageList.map((image, index) => (
-            <small css={fileNameSpan} key={index}>
+            <small key={index}>
               {image.name}
-              <AiOutlineClose css={closeButton} onClick={() => onClickDeleteImage(image)} />
+              <AiOutlineClose onClick={() => onClickDeleteImage(image)} />
             </small>
           ))}
         </div>
       </div>
-      <div css={subtitleWrapper}>
-        <h3
-          css={css`
-            margin-bottom: 15px;
-          `}
-        >
-          희망 공유 기간{" "}
-          <b
-            css={css`
-              color: red;
-            `}
-          >
-            *
-          </b>
+
+      <div css={hopeDateWrapper}>
+        <h3>
+          희망 공유 기간 <b>*</b>
         </h3>
-        <small
-          css={css`
-            color: #847a7a;
-            margin-bottom: 15px;
-          `}
-        >
-          희망 공유기간을 적어주세요. 기간은 대화를 통해 수정할 수 있어요.
-        </small>
+        <small>희망 공유기간을 적어주세요. 기간은 대화를 통해 수정할 수 있어요.</small>
         <Calendar sendStartDate={sendStartDate} sendEndDate={sendEndDate} />
       </div>
-      <div css={subtitleWrapper}>
-        <div css={locationSpan}>
+
+      <div css={hopeAreaWrapper}>
+        <div css={hopeAreaHeaderWrapper}>
           <h3>
-            희망 공유 장소{" "}
-            <b
-              css={css`
-                color: red;
-              `}
-            >
-              *
-            </b>
+            희망 공유 장소 <b>*</b>
           </h3>
-          <span
-            css={css`
-              color: #8a8a8a;
-            `}
-          >
-            {location}
-          </span>
+          <span>{location}</span>
         </div>
-        <div
-          id="map"
-          css={css`
-            width: 100%;
-            height: 479px;
-            border-radius: 5px;
-          `}
-        ></div>
+        <div id="map"></div>
       </div>
+
       <div
         css={css`
           width: 100%;
@@ -450,92 +339,80 @@ const ProductRegist = () => {
   );
 };
 
-const fileNameSpan = css`
-  color: #8a8a8a;
-  margin-right: 20px;
-  display: flex;
-  align-items: center;
-`;
-
-const closeButton = css`
-  margin-left: 5px;
-  cursor: pointer;
-`;
-
-const container = css`
+const wrapper = css`
   padding: 90px 200px;
   display: flex;
   flex-direction: column;
 `;
 
-const typeWrapper = css`
+const registTypeWrapper = css`
   display: flex;
   flex-direction: row;
   align-items: center;
   margin-bottom: 5px;
   position: relative;
-`;
 
-const typeButton = css`
-  width: 30px;
-  height: 30px;
-  border-radius: 100px;
-  background: #ffffff;
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+  & > h2 {
+    margin-right: 10px;
+  }
 
-const registTypeWrapper = css`
-  position: absolute;
-  width: 185px;
-  height: 120px;
-  top: 52px;
-  background: #ffffff;
-  border: 1px solid #ededed;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 5px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
+  & > div {
+    position: absolute;
+    width: 185px;
+    height: 120px;
+    top: 52px;
+    background: #ffffff;
+    border: 1px solid #ededed;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
-const registTypeSpan = css`
-  margin: 14px 0;
-  cursor: pointer;
+    & span {
+      margin: 14px 0;
+      cursor: pointer;
 
-  &:hover {
-    color: #66dd9c;
-    font-weight: bold;
+      &:hover {
+        color: #66dd9c;
+        font-weight: bold;
+      }
+    }
   }
 `;
 
-const categoryTypeSpan = css`
-  display: block;
-  width: 100%;
-  height: 50px;
-  line-height: 50px;
-  cursor: pointer;
-  text-align: center;
-
-  &:hover {
-    color: #66dd9c;
-    font-weight: bold;
-  }
-`;
-
-const subtitleWrapper = css`
+const titleWrapper = css`
   display: flex;
   flex-direction: column;
   width: 100%;
   margin-top: 60px;
+
+  & > h3 {
+    margin-bottom: 15px;
+
+    & b {
+      color: red;
+    }
+  }
 `;
 
 const categoryWrapper = css`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 60px;
+
+  & > h3 {
+    margin-bottom: 15px;
+
+    & b {
+      color: red;
+    }
+  }
+`;
+
+const selectedCategoryWrapper = css`
   display: flex;
   flex-direction: row;
   border: 1px solid #ededed;
@@ -546,6 +423,12 @@ const categoryWrapper = css`
   justify-content: center;
   background: #ffffff;
   position: relative;
+
+  & > span {
+    font-weight: bold;
+    color: #66dd9c;
+    margin-right: 20px;
+  }
 `;
 
 const categoryTypeWrapper = css`
@@ -563,29 +446,87 @@ const categoryTypeWrapper = css`
   &::-webkit-scrollbar {
     width: 8px;
   }
+
   &::-webkit-scrollbar-thumb {
     height: 30%;
     background: #c4c4c4;
     border-radius: 10px;
   }
+
   &::-webkit-scrollbar-track {
     background: none;
   }
+
+  & > span {
+    display: block;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    cursor: pointer;
+    text-align: center;
+
+    &:hover {
+      color: #66dd9c;
+      font-weight: bold;
+    }
+  }
 `;
 
-const textarea = css`
-  max-width: 100%;
-  height: 176px;
-  background: #ffffff;
-  border: 1px solid #e1e2e3;
-  border-radius: 5px;
-  outline: none;
-  resize: none;
-  font-size: 18px;
-  padding: 20px;
+const contentWrapper = css`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 60px;
+
+  & > h3 {
+    margin-bottom: 15px;
+
+    & b {
+      color: red;
+    }
+  }
+
+  & > textarea {
+    max-width: 100%;
+    height: 176px;
+    background: #ffffff;
+    border: 1px solid #e1e2e3;
+    border-radius: 5px;
+    outline: none;
+    resize: none;
+    font-size: 18px;
+    padding: 20px;
+  }
 `;
 
-const fileNameWrapper = css`
+const imageWrapper = css`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 60px;
+
+  & > h3 {
+    margin-bottom: 15px;
+
+    & b {
+      color: red;
+    }
+  }
+
+  & > small {
+    color: #847a7a;
+  }
+
+  & > input {
+    display: none;
+  }
+
+  & > div:nth-child(1) {
+    width: 165px;
+  }
+`;
+
+const imageNameWrapper = css`
   max-width: 100%;
   height: 55px;
   background: #ffffff;
@@ -596,14 +537,80 @@ const fileNameWrapper = css`
   flex-direction: row;
   align-items: center;
   padding: 0 25px;
+
+  & small {
+    color: #8a8a8a;
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+
+    & svg {
+      margin-left: 5px;
+      cursor: pointer;
+    }
+  }
 `;
 
-const locationSpan = css`
+const hopeDateWrapper = css`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 60px;
+
+  & > h3 {
+    margin-bottom: 15px;
+
+    & b {
+      color: red;
+    }
+  }
+
+  & > small {
+    color: #847a7a;
+    margin-bottom: 15px;
+  }
+`;
+
+const hopeAreaWrapper = css`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 60px;
+
+  & #map {
+    width: 100%;
+    height: 479px;
+    border-radius: 5px;
+  }
+`;
+
+const hopeAreaHeaderWrapper = css`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
+
+  & > h3 b {
+    color: red;
+  }
+
+  & > span {
+    color: #8a8a8a;
+  }
+`;
+
+const typeButton = css`
+  width: 30px;
+  height: 30px;
+  border-radius: 100px;
+  background: #ffffff;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export default ProductRegist;
