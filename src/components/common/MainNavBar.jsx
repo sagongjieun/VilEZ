@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 // import { FaSearch } from "react-icons/fa";
 
 function MainNavBar() {
-  const Menus = [
+  const menus = [
     { name: "물품 공유 목록", path: "" },
     { name: "물품 요청 목록", path: "" },
     { name: "글 등록하기", path: "/product/regist" },
@@ -16,13 +16,7 @@ function MainNavBar() {
     // console.log(isMenu);
   };
   return (
-    <nav
-      css={css`
-        position: sticky;
-        top: 0px;
-        z-index: 100;
-      `}
-    >
+    <nav css={navWrap}>
       <div css={navStyle}>
         <Link to={"/"}>
           <p css={navLeft}>VilEZ</p>
@@ -38,7 +32,7 @@ function MainNavBar() {
             </p>
             {isMenu ? (
               <div css={MenuWrap}>
-                {Menus.map((menu, idx) => (
+                {menus.map((menu, idx) => (
                   <Link to={menu.path} key={idx} onClick={onClickShowMenu}>
                     <div css={navMenu}>{menu.name}</div>
                   </Link>
@@ -63,6 +57,12 @@ function MainNavBar() {
     </nav>
   );
 }
+const navWrap = css`
+  position: sticky;
+  top: 0px;
+  z-index: 100;
+`;
+
 const navStyle = css`
   display: flex;
   width: device-width;
