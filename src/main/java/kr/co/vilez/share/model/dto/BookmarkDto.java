@@ -11,5 +11,5 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("bookmark")
 public class BookmarkDto {
     String boardId;
-    String email;
+    String userId;
 }
