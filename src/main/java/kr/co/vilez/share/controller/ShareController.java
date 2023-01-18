@@ -39,13 +39,13 @@ public class ShareController {
         return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
     }
 
-    @GetMapping("/bookmark/{boardId}/{email}")
+    @GetMapping("/bookmark/{boardId}/{userId}")
     public ResponseEntity<?> isBookmark(@PathVariable("boardId") String boardId,
-                                        @PathVariable("email") String email){
+                                        @PathVariable("userId") String userId){
         httpVO = new HttpVO();
 
         try{
-            httpVO = shareService.isBookmark(boardId, email);
+            httpVO = shareService.isBookmark(boardId, userId);
             httpVO.setFlag("success");
         } catch (Exception e){
             e.printStackTrace();

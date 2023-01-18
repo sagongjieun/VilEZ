@@ -42,11 +42,11 @@ public class ShareServiceImpl implements ShareService{
     }
 
     @Override
-    public HttpVO isBookmark(String boardId, String email) throws Exception {
+    public HttpVO isBookmark(String boardId, String userId) throws Exception {
         httpVO = new HttpVO();
         List<Object> data = new ArrayList<>();
 
-        BookmarkDto bookmarkDto = shareDao.selectBookmark(boardId, email);
+        BookmarkDto bookmarkDto = shareDao.selectBookmark(boardId, userId);
         data.add(bookmarkDto);
 
         httpVO.setData(data);
@@ -55,13 +55,13 @@ public class ShareServiceImpl implements ShareService{
     }
 
     @Override
-    public HttpVO bookmark(String boardId, String email, String state) throws Exception {
+    public HttpVO bookmark(String boardId, String userId, String state) throws Exception {
         httpVO = new HttpVO();
 
         if(state.equals("on")){
-            shareDao.deleteBookmark(boardId, email);
+            shareDao.deleteBookmark(boardId, userId);
         } else{
-            shareDao.insertBookmark(boardId, email);
+            shareDao.insertBookmark(boardId, userId);
         }
 
         return httpVO;

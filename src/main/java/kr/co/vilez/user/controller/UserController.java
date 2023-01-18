@@ -22,6 +22,14 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @GetMapping("/a")
+    public String test(@RequestParam String code){
+
+        System.out.println(code);
+
+        return code;
+    }
+
     // access 토큰 갱신
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(@RequestBody String refresh_token){

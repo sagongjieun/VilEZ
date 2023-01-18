@@ -35,9 +35,9 @@ public class ShareDao  {
         mongoTemplate.remove(Query.query(Criteria.where("boardId").is(boardId)), ImgPath.class);
     }
 
-    public BookmarkDto selectBookmark(String boardId, String email){
+    public BookmarkDto selectBookmark(String boardId, String userId){
         BookmarkDto bookmark = mongoTemplate.findOne(Query.query(Criteria.where("boardId").is(boardId)
-                .and("email").is(email)),BookmarkDto.class);
+                .and("userId").is(userId)),BookmarkDto.class);
         return bookmark;
     }
 
@@ -49,14 +49,14 @@ public class ShareDao  {
         return bookmarkDtos;
     }
 
-    public void insertBookmark(String boardId, String email){
-        BookmarkDto bookmarkDto = new BookmarkDto(boardId, email);
+    public void insertBookmark(String boardId, String userId){
+        BookmarkDto bookmarkDto = new BookmarkDto(boardId, userId);
         mongoTemplate.insert(bookmarkDto);
     }
 
-    public void deleteBookmark(String boardId, String email) {
+    public void deleteBookmark(String boardId, String userId) {
         mongoTemplate.remove(Query.query(Criteria.where("boardId").is(boardId)
-                .and("email").is(email)), BookmarkDto.class);
+                .and("userId").is(userId)), BookmarkDto.class);
     }
 
     public ImgPath select(int boardId, String fileName) {
