@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { css } from "@emotion/react";
 /** @jsxImportSource @emotion/react */
 import DivideLine from "../components/common/DivideLine";
@@ -12,6 +13,12 @@ const Signup = () => {
         <DivideLine />
         <div css={signupFormContainer}>
           <SignupForm />
+        </div>
+        <div css={linkWrapper}>
+          이미 계정이 있으신가요?
+          <Link to={"/login"} css={linkTag}>
+            <p>로그인</p>
+          </Link>
         </div>
       </div>
     </div>
@@ -38,5 +45,13 @@ const signupFormContainer = css`
   width: 460px;
   padding: 30px 0 40px;
   margin: 0 auto;
+`;
+const linkWrapper = css`
+  display: flex;
+  justify-content: center;
+`;
+const linkTag = css`
+  width: 80px;
+  text-align: center;
 `;
 export default Signup;
