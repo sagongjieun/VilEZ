@@ -102,18 +102,18 @@ public class UserServiceImpl implements UserService {
         http = new HttpVO();
         List<Object> data = new ArrayList<>();
 
-        String email = jwtProvider.getUserEmail(token);
+        String userId = jwtProvider.getUserId(token);
         String nickname = jwtProvider.getUserNickname(token);
         
         HashMap<String, String> map = new HashMap<>();
-        map.put("email", email);
+        map.put("userId", userId);
         map.put("token", token);
 
         UserDto user = userMapper.refreshCheck(map);
             
         if(user != null){
             http.setFlag("success");
-            user.setAccessToken(jwtProvider.createToken(email, nickname));
+            user.setAccessToken(jwtProvider.createToken(userId, nickname));
             data.add(user);
             http.setData(data);
         }

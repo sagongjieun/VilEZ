@@ -22,14 +22,6 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/a")
-    public String test(@RequestParam String code){
-
-        System.out.println(code);
-
-        return code;
-    }
-
     // access 토큰 갱신
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(@RequestBody String refresh_token){
@@ -72,10 +64,10 @@ public class UserController {
 
     // 회원 정보 변경(Image)
     @PutMapping("/profile")
-    public ResponseEntity<?> modifyImg(@RequestParam String email,
+    public ResponseEntity<?> modifyImg(@RequestParam String userId,
             @RequestParam MultipartFile file) {
         try {
-            http = userService.modifyProfile(email, file);
+            http = userService.modifyProfile(userId, file);
             log.info("회원프로필 수정 성공");
         } catch (Exception e){
             e.printStackTrace();
