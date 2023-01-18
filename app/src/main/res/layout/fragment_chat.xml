@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context=".fragment.ChatFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -10,5 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Chat Fragment" />
+    <FrameLayout
+        android:id="@+id/map_view"
+        android:layout_width="1000px"
+        android:layout_height="1000px" />
+
 
 </FrameLayout>
