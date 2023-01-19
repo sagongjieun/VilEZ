@@ -1,9 +1,10 @@
 package kr.co.vilez.appointment.model.service;
 
 import kr.co.vilez.appointment.model.dao.AppointmentDao;
+import kr.co.vilez.appointment.model.vo.ChatNoReadVO;
+import kr.co.vilez.appointment.model.vo.ChatVO;
 import kr.co.vilez.appointment.model.vo.MapVO;
 import kr.co.vilez.appointment.model.vo.RoomVO;
-import kr.co.vilez.appointment.model.vo.SocketVO;
 import kr.co.vilez.tool.SHA256;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,20 +25,21 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public void saveNoReadMsg(ChatNoReadVO chatNoReadVO) {
+        appointmentDao.saveNoReadMsg(chatNoReadVO);
+    }
+
+    @Override
     public MapVO loadLocationByRoomId(String roomId) {
         return appointmentDao.loadLocationByRoomId(roomId);
     }
 
     @Override
-    public List<SocketVO> loadMsgByRoomId(String roomId) {
-        List<SocketVO> msgs = appointmentDao.loadMsgByRoomId(roomId);
-        return msgs;
-    }
+    public List<ChatVO> loadMsgByRoomId(String roomId) { return appointmentDao.loadMsgByRoomId(roomId); }
 
     @Override
-    public void saveLocation(MapVO mapVO) {
-        appointmentDao.saveLocation(mapVO);
-    }
+    public void saveLocation(MapVO mapVO) { appointmentDao.saveLocation(mapVO); }
+
 
     @Override
     public String createRoom(RoomVO roomVO) {
@@ -59,5 +61,10 @@ public class AppointmentServiceImpl implements AppointmentService {
             e.printStackTrace();
         }
         return "";
+    }
+
+    @Override
+    public void recvHereMsg(ChatVO chatVO) {
+        appointmentDao.recvHereMsg(chatVO);
     }
 }
