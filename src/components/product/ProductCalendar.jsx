@@ -4,7 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-const Calendar = ({ sendStartDate, sendEndDate }) => {
+const ProductCalendar = ({ sendStartDate, sendEndDate }) => {
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
 
@@ -54,4 +54,4 @@ const calendar = css`
   width: 200px;
 `;
 
-export default Calendar;
+export default ProductCalendar;
