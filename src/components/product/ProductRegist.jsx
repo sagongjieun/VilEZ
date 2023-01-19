@@ -171,7 +171,7 @@ const ProductRegist = () => {
           </h3>
           <span>{location}</span>
         </div>
-        <Map sendLocation={receiveLocation} />
+        <Map readOnly={false} sendLocation={receiveLocation} />
       </div>
       <div css={registButtonWrapper}>
         <div>
