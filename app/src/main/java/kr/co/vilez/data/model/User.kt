@@ -2,16 +2,16 @@ package kr.co.vilez.data.model
 
 data class User(
     val accessToken: String,
-    val area: Any,
-    val date: Any,
+    val area: String,
+    val date: String,
     val email: String,
     val id: Int,
     val manner: Int,
     val nickName: String,
-    val oauth: Any,
+    val oauth: String,
     val password: String,
     val point: Int,
-    val profileImg: Any,
+    val profileImg: String,
     val refreshToken: String,
     val state: Int
 ) {

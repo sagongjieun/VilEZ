@@ -7,7 +7,7 @@ import android.view.View
 import androidx.databinding.DataBindingUtil
 import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityIntroBinding
-import kr.co.vilez.ui.user.user.LoginActivity
+import kr.co.vilez.ui.user.LoginActivity
 
 class IntroActivity : AppCompatActivity() {
 

@@ -1,6 +1,5 @@
 package kr.co.vilez.ui.user
 
-import androidx.databinding.Bindable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

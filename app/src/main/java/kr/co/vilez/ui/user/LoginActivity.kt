@@ -1,4 +1,4 @@
-package kr.co.vilez.ui.user.user
+package kr.co.vilez.ui.user
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -13,8 +13,6 @@ import kr.co.vilez.R
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.ActivityLoginBinding
 import kr.co.vilez.ui.MainActivity
-import kr.co.vilez.ui.user.FindPasswordActivity
-import kr.co.vilez.ui.user.RegisterActivity
 import kr.co.vilez.util.ApplicationClass
 import retrofit2.awaitResponse
 
@@ -32,16 +30,19 @@ class LoginActivity : AppCompatActivity() {
     fun login(view:View) {
         Log.d(TAG, "login: ")
         // login
-        var email = binding.inputLoginEmail.editText?.text.toString()
-        var password = binding.inputLoginPassword.editText?.text.toString()
+        val email = binding.inputLoginEmail.editText?.text.toString()
+        val password = binding.inputLoginPassword.editText?.text.toString()
+
+        Log.d(TAG, "login: email : $email, password: $password")
 
         CoroutineScope(Dispatchers.Main).launch {
-            var user = User(email, password)
-            var result = ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
+            val user = User(email, password)
+            val result = ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
             if (result == null) { // 로그인 실패
-                Log.d(TAG, "login: 로그인 실패")
-            } else {  // 로그인 성공
+                Log.d(TAG, "login: 로그인 실패, result:$result")
+            } else if(result.flag == "success") {  // 로그인 성공
                 Log.d(TAG, "로그인 성공, 받아온 user = ${result}")
+
                 startActivity(Intent(this@LoginActivity, MainActivity::class.java))
             }
         }

@@ -10,6 +10,7 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:name=".util.ApplicationClass"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Vilez"
@@ -38,7 +39,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.user.user.LoginActivity"
+            android:name=".ui.user.LoginActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
