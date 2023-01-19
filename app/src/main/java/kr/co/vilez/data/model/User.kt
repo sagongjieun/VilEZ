@@ -4,10 +4,10 @@ data class User(
     val accessToken: String,
     val area: String,
     val date: String,
-    val email: String,
+    var email: String,
     val id: Int,
     val manner: Int,
-    val nickName: String,
+    var nickName: String,
     val oauth: String,
     val password: String,
     val point: Int,
@@ -21,6 +21,8 @@ data class User(
     )
     constructor(email: String, password: String) : this(
         "","","",email,0,0,"","",password,0,"","",0)
+    constructor(email: String, password: String, nickName: String) : this(
+        "","","",email,0,0,nickName,"",password,0,"","",0)
 
     constructor(email: String) : this(
         "","","",email,0,0,"","","",0,"","",0)
