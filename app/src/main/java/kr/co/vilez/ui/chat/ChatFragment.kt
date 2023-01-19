@@ -1,17 +1,27 @@
 package kr.co.vilez.ui.chat
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kr.co.vilez.data.model.KakaoMap
+import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentChatBinding
+import kr.co.vilez.util.ApplicationClass
+import kr.co.vilez.util.ApplicationClass.Companion.retrofitKakaoService
 import kr.co.vilez.util.StompClient
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
 import org.json.JSONObject
+import retrofit2.awaitResponse
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -52,9 +62,33 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
         StompClient.runStomp()
         val mapView = MapView(context)
         binding.mapView.addView(mapView)
+        CoroutineScope(Dispatchers.Main).launch {
+            val result = ApplicationClass.retrofitKakaoService.loadLocationByRoomId("200").awaitResponse().body()
+            if (result?.flag == "success") {
+                println(result.data)
+                var kakao = result.data[0];
+                var pos = MapPoint.mapPointWithGeoCoord(kakao.lat,kakao.lng)
+                mapView.setMapCenterPoint(pos,true)
+                mapView.setZoomLevel(kakao.zoomLevel,true)
+                if(kakao.isMarker){
+                    isMarkerOn = true
+                    marker.itemName = "hope area"
+                    marker.tag = 0
+                    marker.mapPoint = pos;
+                    marker.markerType = MapPOIItem.MarkerType.BluePin // 기본으로 제공하는 BluePin 마커 모양.
+
+                    marker.selectedMarkerType =
+                        MapPOIItem.MarkerType.RedPin // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                    mapView.addPOIItem(marker)
+                    markertouch = true
+
+                }
+                zoom = true
+            }
+        }
+
         StompClient.stompClient.topic("/sendmap/200/2").subscribe { topicMessage ->
             run {
-                println("수신됨")
                 val json = JSONObject(topicMessage.payload)
                 mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(json.getDouble("lat"),json.getDouble("lng")),true);
                 if(mapView.zoomLevel != json.getInt("zoomLevel")) {
