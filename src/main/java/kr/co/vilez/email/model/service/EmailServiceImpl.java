@@ -6,6 +6,7 @@ import javax.mail.Message.RecipientType;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import kr.co.vilez.email.model.mapper.EmailMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,7 +16,15 @@ public class EmailServiceImpl implements EmailService{
     @Autowired
     JavaMailSender emailSender;
 
+    @Autowired
+    EmailMapper emailMapper;
+
     public static final String ePw = createKey();
+
+    @Override
+    public String userEmailCheck(String email) throws Exception {
+        return emailMapper.userEmailCheck(email);
+    }
 
     private MimeMessage createMessage(String to)throws Exception{
         System.out.println("보내는 대상 : "+ to);
