@@ -33,6 +33,7 @@ public class UserController {
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
 
+
     // 닉네임 중복확인
     @GetMapping("/check")
     public ResponseEntity<?> check(@RequestParam String nickname){
