@@ -1,52 +1,26 @@
 package kr.co.vilez.ui
 
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
-import android.os.Bundle
-import android.util.Base64
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityMainBinding
 import kr.co.vilez.ui.chat.ChatFragment
 import kr.co.vilez.ui.share.ShareFragment
 import kr.co.vilez.ui.user.ProfileFragment
-import kr.co.vilez.util.StompClient
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
-
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding:ActivityMainBinding
+    private var waitTime = 0L
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        supportActionBar?.hide() // 액션바 숨김
-        println(getDebugHashKey())
 
-        StompClient.runStomp();
+        supportActionBar?.hide() // 액션바 숨김
         initView()
     }
 
-
-    private fun getDebugHashKey() {
-        var packageInfo: PackageInfo? = null
-        try {
-            packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
-            if (packageInfo == null) Log.e("KeyHash", "KeyHash:null") else {
-                for (signature in packageInfo.signatures) {
-                    val md: MessageDigest = MessageDigest.getInstance("SHA")
-                    md.update(signature.toByteArray())
-                    Log.d("KeyHash", Base64.encodeToString(md.digest(), Base64.DEFAULT))
-                }
-            }
-        } catch (e: NoSuchAlgorithmException) {
-            e.printStackTrace()
-        } catch (e: PackageManager.NameNotFoundException) {
-            e.printStackTrace()
-        }
-    }
     private fun initView() {
         // 가장 첫 화면은 홈 화면의 Fragment로 지정
         supportFragmentManager.beginTransaction()
@@ -111,5 +85,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    override fun onBackPressed() {
+        if(System.currentTimeMillis() - waitTime >=1500 ) {
+            waitTime = System.currentTimeMillis()
+            Toast.makeText(this,"뒤로가기 버튼을 한번 더 누르면 종료됩니다.",Toast.LENGTH_SHORT).show()
+        } else {
+            finish() // 액티비티 종료
+        }
     }
 }
