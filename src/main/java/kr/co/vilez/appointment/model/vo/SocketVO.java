@@ -1,4 +1,4 @@
-package kr.co.vilez.socket.model.vo;
+package kr.co.vilez.appointment.model.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
