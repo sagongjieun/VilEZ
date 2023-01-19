@@ -1,18 +1,18 @@
 package kr.co.vilez.ui.chat
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kr.co.vilez.R
+import androidx.fragment.app.Fragment
 import kr.co.vilez.databinding.FragmentChatBinding
 import kr.co.vilez.util.StompClient
-import net.daum.android.map.MapViewEventListener
+import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
 import org.json.JSONObject
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,7 +29,9 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
     private var param1: String? = null
     private var param2: String? = null
     private var zoom: Boolean? = false
+    private var isMarkerOn: Boolean? = false
     private var zoomLvl: Int? = 0
+    private val marker = MapPOIItem()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -39,6 +41,7 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
 
     }
 
+    @SuppressLint("CheckResult")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -48,19 +51,19 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
 
         val mapView = MapView(context)
         binding.mapView.addView(mapView)
-        StompClient.stompClient.topic("/sendmap/200").subscribe { topicMessage ->
+        StompClient.stompClient.topic("/sendmap/1").subscribe { topicMessage ->
             run {
 
                 val json = JSONObject(topicMessage.payload)
-                if(json.getInt("user") != 1) {
-                    mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(json.getDouble("lat"),json.getDouble("lng")),true);
-                    if(mapView.zoomLevel != json.getInt("level")) {
-                        zoom = true;
-                        mapView.setZoomLevel(json.getInt("level"),true);
-                    }
+                mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(json.getDouble("lat"),json.getDouble("lng")),true);
+                if(mapView.zoomLevel != json.getInt("level")) {
+                    zoom = true;
+                    mapView.setZoomLevel(json.getInt("level"),true);
                 }
+
             }
         }
+
         mapView.setMapViewEventListener(this)
         return binding.root
         // Inflate the layout for this fragment
@@ -106,11 +109,10 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
         if (p0 != null) {
             if(p0.zoomLevel == zoomLvl) return
             data.put("roomId", "200")
-            data.put("type", "2")
-            data.put("user", "1")
+            data.put("type", "1")
             data.put("lat", p0.getMapCenterPoint().mapPointGeoCoord.latitude)
             data.put("lng", p0.getMapCenterPoint().mapPointGeoCoord.longitude)
-            data.put("level", p0.zoomLevel-3)
+            data.put("level", p0.zoomLevel)
             zoomLvl = p0.zoomLevel
             StompClient.stompClient.send("/map", data.toString()).subscribe()
         }
@@ -125,6 +127,32 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
     }
 
     override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
+        if(isMarkerOn == true) {
+            if (p0 != null) {
+                p0.removePOIItem(marker)
+            }
+            isMarkerOn = false
+        }
+        marker.itemName = "hope area"
+        marker.tag = 0
+        marker.mapPoint = p1;
+        marker.markerType = MapPOIItem.MarkerType.BluePin // 기본으로 제공하는 BluePin 마커 모양.
+
+        marker.selectedMarkerType =
+            MapPOIItem.MarkerType.RedPin // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+
+
+        val data = JSONObject()
+        if (p0 != null && p1 != null) {
+            p0.addPOIItem(marker)
+            isMarkerOn = true;
+            data.put("roomId", "200")
+            data.put("type", "1")
+            data.put("lat", p1.mapPointGeoCoord.latitude)
+            data.put("lng", p1.mapPointGeoCoord.longitude)
+            StompClient.stompClient.send("/marker", data.toString()).subscribe()
+        }
+
 
     }
 
@@ -136,12 +164,10 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
         val data = JSONObject()
         if (p0 != null) {
             data.put("roomId", "200")
-            data.put("type", "2")
-            data.put("user","1")
+            data.put("type", "1")
             data.put("lat", p0.getMapCenterPoint().mapPointGeoCoord.latitude)
             data.put("lng", p0.getMapCenterPoint().mapPointGeoCoord.longitude)
             data.put("level", p0.zoomLevel)
-            println("드래그엔드")
         }
 
         StompClient.stompClient.send("/map", data.toString()).subscribe()
