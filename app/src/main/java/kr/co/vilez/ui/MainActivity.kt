@@ -1,8 +1,11 @@
 package kr.co.vilez.ui
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityMainBinding
@@ -10,10 +13,9 @@ import kr.co.vilez.ui.chat.ChatFragment
 import kr.co.vilez.ui.share.ShareFragment
 import kr.co.vilez.ui.user.ProfileFragment
 import kr.co.vilez.util.StompClient
-import org.json.JSONObject
-import ua.naiksoftware.stomp.Stomp
-import ua.naiksoftware.stomp.dto.LifecycleEvent
-import ua.naiksoftware.stomp.dto.StompHeader
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding:ActivityMainBinding
@@ -21,12 +23,30 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         supportActionBar?.hide() // 액션바 숨김
+        println(getDebugHashKey())
+
         StompClient.runStomp();
         initView()
     }
 
 
-
+    private fun getDebugHashKey() {
+        var packageInfo: PackageInfo? = null
+        try {
+            packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
+            if (packageInfo == null) Log.e("KeyHash", "KeyHash:null") else {
+                for (signature in packageInfo.signatures) {
+                    val md: MessageDigest = MessageDigest.getInstance("SHA")
+                    md.update(signature.toByteArray())
+                    Log.d("KeyHash", Base64.encodeToString(md.digest(), Base64.DEFAULT))
+                }
+            }
+        } catch (e: NoSuchAlgorithmException) {
+            e.printStackTrace()
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+    }
     private fun initView() {
         // 가장 첫 화면은 홈 화면의 Fragment로 지정
         supportFragmentManager.beginTransaction()
