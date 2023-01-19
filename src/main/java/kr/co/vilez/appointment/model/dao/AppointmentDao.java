@@ -1,8 +1,9 @@
 package kr.co.vilez.appointment.model.dao;
 
+import kr.co.vilez.appointment.model.vo.ChatNoReadVO;
+import kr.co.vilez.appointment.model.vo.ChatVO;
 import kr.co.vilez.appointment.model.vo.MapVO;
 import kr.co.vilez.appointment.model.vo.RoomVO;
-import kr.co.vilez.appointment.model.vo.SocketVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -34,13 +35,13 @@ public class AppointmentDao {
 
     public void deleteRoom(String roomId) {
         mongoTemplate.remove(Query.query(Criteria.where("roomId").is(roomId)),
-                SocketVO.class);
+                ChatVO.class);
     }
 
-    public List<SocketVO> loadMsgByRoomId(String roomId) {
-        List<SocketVO> msgs = mongoTemplate.find(
+    public List<ChatVO> loadMsgByRoomId(String roomId) {
+        List<ChatVO> msgs = mongoTemplate.find(
                 Query.query(Criteria.where("roomId").is(roomId)),
-                SocketVO.class
+                ChatVO.class
         );
         return msgs;
     }
@@ -57,5 +58,15 @@ public class AppointmentDao {
 
     public void createRoom(RoomVO roomVO) {
         mongoTemplate.insert(roomVO);
+    }
+
+    public void saveNoReadMsg(ChatNoReadVO chatNoReadVO) {
+        mongoTemplate.insert(chatNoReadVO);
+    }
+
+    public void recvHereMsg(ChatVO chatVO) {
+        mongoTemplate.findOne(Query.query(Criteria.where("roomId").is(chatVO.getRoomId())
+                                .and("type").is(chatVO.getType())),ChatNoReadVO.class);
+
     }
 }

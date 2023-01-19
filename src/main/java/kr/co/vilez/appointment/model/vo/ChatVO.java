@@ -5,20 +5,16 @@ import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Document("chat")
+@Document("Chat")
 @AllArgsConstructor
-public class SocketVO {
+public class ChatVO {
 
     private String roomId;
 
-    private String type;
+    private int type;
 
     private String content;
 
-    private String lat;
-
-    private String lng;
-
-    private String level;
+    private String time;
 
 }
