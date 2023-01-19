@@ -28,8 +28,7 @@ public class AppointmentDao {
         if(msgs != null && !mapVO.isMarker)  {
             return;
         }
-        mongoTemplate.remove(Query.query(Criteria.where("roomId").is(mapVO.getRoomId()).
-                and("isMarker").is(false)), MapVO.class);
+        mongoTemplate.remove(Query.query(Criteria.where("roomId").is(mapVO.getRoomId())), MapVO.class);
         mongoTemplate.save(mapVO);
     }
 
