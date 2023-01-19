@@ -1,47 +1,51 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { HiChevronRight, HiChevronLeft } from "react-icons/hi2";
 import firstbodyimage from "../../assets/images/firstbodyimage.png";
+import secondbodyimg from "../../assets/images/secondbodyimg.png";
 
 const ImageSlide = () => {
-  const imageSlideList = [firstbodyimage];
-  const [currentSlide, setCurrentSlide] = useState(1);
+  const imageSlideList = [firstbodyimage, secondbodyimg];
+  const COUNT = imageSlideList.length;
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [moveSlide, setMoveSlide] = useState(0);
 
   function onClickPrevSlide() {
     setCurrentSlide(currentSlide - 1);
+    setMoveSlide(-(currentSlide * 100) / COUNT);
   }
 
   function onClickNextSlide() {
     setCurrentSlide(currentSlide + 1);
+    setMoveSlide((currentSlide * 100) / COUNT);
   }
-
-  function showSlides(currentSlide) {
-    const slides = document.getElementsByClassName("slideWrapper");
-
-    if (currentSlide > slides.length) setCurrentSlide(1);
-    if (currentSlide < 1) setCurrentSlide(slides.length);
-
-    for (let i = 0; i < slides.length; i++) {
-      slides[i].style.display = "none";
-    }
-
-    slides[currentSlide - 1].style.display = "table";
-  }
-
-  useEffect(() => {
-    showSlides(currentSlide);
-  }, []);
 
   return (
     <div css={imageSlideWrapper}>
-      {imageSlideList.map((image, index) => (
-        <div key={index} className="slideWrapper fade">
-          <div>
-            <img src={image} />
-          </div>
-        </div>
-      ))}
+      <div
+        css={css`
+          display: flex;
+          width: calc(100% * ${COUNT});
+          height: 100%;
+          transition: all 0.5s;
+          transform: translateX(-${moveSlide}%);
+          & > div {
+            width: calc(100% / ${COUNT});
+            height: 100%;
+          }
+        `}
+      >
+        {imageSlideList.map((image, index) => (
+          <div
+            key={index}
+            css={css`
+              background-image: url(${image});
+              background-size: cover;
+            `}
+          ></div>
+        ))}
+      </div>
       <button onClick={onClickPrevSlide}>
         <HiChevronLeft size="18" />
       </button>
@@ -57,10 +61,11 @@ const imageSlideWrapper = css`
   height: 450px;
   position: relative;
   margin: auto;
+  overflow: hidden;
   border: 1px solid #e1e2e3;
   border-radius: 15px;
 
-  & > div {
+  /* & > div {
     width: 100%;
     height: 100%;
     text-align: center;
@@ -76,21 +81,7 @@ const imageSlideWrapper = css`
         height: 80%;
       }
     }
-  }
-
-  .fade {
-    animation-name: fade;
-    animation-duration: 1.5s;
-  }
-
-  @keyframes fade {
-    from {
-      opacity: 0.4;
-    }
-    to {
-      opacity: 1;
-    }
-  }
+  } */
 
   & > button:nth-of-type(1) {
     all: unset;
