@@ -1,21 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { HiChevronDown, HiChevronUp } from "react-icons/hi2";
 import { postShareArticle } from "../../api/share";
 import { postAskArticle } from "../../api/ask";
 import DivideLine from "../common/DivideLine";
 import InputBox from "../common/InputBox";
-import Calendar from "../common/Calendar";
+import ProductCalendar from "./ProductCalendar";
 import MiddleWideButton from "../button/MiddleWideButton";
 import ProductCategory from "./ProductCategory";
 import ProductImageSelect from "./ProductImageSelect";
-
-const { kakao } = window;
+import ProductRegistType from "./ProductRegistType";
+import Map from "../common/Map";
 
 const ProductRegist = () => {
-  const [openRegistType, setOpenRegistType] = useState(false);
-  const [registType, setRegistType] = useState("선택해주세요.");
+  const [registType, setRegistType] = useState("");
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [content, setContent] = useState("");
@@ -26,25 +24,8 @@ const ProductRegist = () => {
   const [hopeAreaLng, setHopeAreaLng] = useState("");
   const [imageList, setImageList] = useState([]);
 
-  function onClickOpenRegistType() {
-    if (openRegistType) {
-      setOpenRegistType(false);
-    } else {
-      setOpenRegistType(true);
-    }
-  }
-
-  function onClickRegistType(type) {
-    switch (type) {
-      case 1:
-        setRegistType("물품 공유 등록");
-        break;
-      case 2:
-        setRegistType("물품 요청 등록");
-        break;
-    }
-
-    setOpenRegistType(false);
+  function receiveRegistType(registType) {
+    setRegistType(registType);
   }
 
   function onChangeTitle(value) {
@@ -74,6 +55,12 @@ const ProductRegist = () => {
     setEndDay(endDateResult.substring(1, 11));
   }
 
+  function receiveLocation(location, lat, lng) {
+    setLocation(location);
+    setHopeAreaLat(lat);
+    setHopeAreaLng(lng);
+  }
+
   function onClickRegistButton() {
     // 유효성 검사
     if (registType === "선택해주세요.") {
@@ -91,7 +78,7 @@ const ProductRegist = () => {
       !startDay ||
       !title
     ) {
-      alert("빈 칸을 모두 채워주세요.");
+      alert("필수 항목을 모두 채워주세요.");
       return;
     }
 
@@ -127,6 +114,7 @@ const ProductRegist = () => {
       )
     );
 
+    // API 요청
     if (registType === "물품 공유 등록") {
       postShareArticle(formData);
     } else if (registType === "물품 요청 등록") {
@@ -134,84 +122,22 @@ const ProductRegist = () => {
     }
   }
 
-  useEffect(() => {
-    const container = document.getElementById("map");
-    const options = {
-      center: new kakao.maps.LatLng(33.450701, 126.570667),
-      level: 4,
-    };
-    const map = new kakao.maps.Map(container, options);
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        const lat = position.coords.latitude, // 위도
-          lon = position.coords.longitude; // 경도
-
-        const locPosition = new kakao.maps.LatLng(lat, lon);
-        map.setCenter(locPosition);
-      });
-    } else {
-      const locPosition = new kakao.maps.LatLng(33.450701, 126.570667);
-      map.setCenter(locPosition);
-    }
-
-    const marker = new kakao.maps.Marker();
-    const geocoder = new kakao.maps.services.Geocoder();
-
-    kakao.maps.event.addListener(map, "click", function (mouseEvent) {
-      const latlng = mouseEvent.latLng;
-
-      marker.setPosition(latlng);
-      setHopeAreaLat(latlng.getLat());
-      setHopeAreaLng(latlng.getLng());
-
-      searchDetailAddrFromCoords(mouseEvent.latLng, function (result, status) {
-        if (status === kakao.maps.services.Status.OK) {
-          setLocation(result[0].address.address_name);
-          marker.setMap(map);
-        }
-      });
-    });
-
-    function searchDetailAddrFromCoords(coords, callback) {
-      geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
-    }
-  }, []);
-
   return (
     <div css={wrapper}>
-      <div css={registTypeWrapper}>
-        <h2>{registType}</h2>
-        <button onClick={onClickOpenRegistType}>
-          {openRegistType ? <HiChevronUp size="18" /> : <HiChevronDown size="18" />}
-        </button>
-        {openRegistType ? (
-          <div>
-            <span onClick={() => onClickRegistType(1)}>물품 공유 등록</span>
-            <DivideLine />
-            <span onClick={() => onClickRegistType(2)}>물품 요청 등록</span>
-          </div>
-        ) : (
-          <></>
-        )}
-      </div>
-
+      <ProductRegistType sendRegistType={receiveRegistType} />
       <DivideLine />
-
       <div css={titleWrapper}>
         <h3>
           제목 <b>*</b>
         </h3>
         <InputBox placeholder="제목을 입력해주세요." onChangeValue={onChangeTitle} />
       </div>
-
       <div css={categoryWrapper}>
         <h3>
           카테고리 <b>*</b>
         </h3>
         <ProductCategory sendCategory={receiveCategory} />
       </div>
-
       <div css={contentWrapper}>
         <h3>
           설명 <b>*</b>
@@ -223,7 +149,6 @@ const ProductRegist = () => {
           id="textarea"
         ></textarea>
       </div>
-
       <div css={imageWrapper}>
         <h3>
           물품 사진 <b>*</b>
@@ -232,15 +157,13 @@ const ProductRegist = () => {
         <small>물품에 대한 사진을 보여주면, 찾는 사람이 정확하게 볼 수 있어요.</small>
         <ProductImageSelect sendImageList={receiveImageList} />
       </div>
-
       <div css={hopeDateWrapper}>
         <h3>
           희망 공유 기간 <b>*</b>
         </h3>
         <small>희망 공유기간을 적어주세요. 기간은 대화를 통해 수정할 수 있어요.</small>
-        <Calendar sendStartDate={receiveStartDate} sendEndDate={receiveEndDate} />
+        <ProductCalendar sendStartDate={receiveStartDate} sendEndDate={receiveEndDate} />
       </div>
-
       <div css={hopeAreaWrapper}>
         <div css={hopeAreaHeaderWrapper}>
           <h3>
@@ -248,9 +171,8 @@ const ProductRegist = () => {
           </h3>
           <span>{location}</span>
         </div>
-        <div id="map"></div>
+        <Map sendLocation={receiveLocation} />
       </div>
-
       <div css={registButtonWrapper}>
         <div>
           <MiddleWideButton text="등록하기" onclick={onClickRegistButton} />
@@ -264,56 +186,6 @@ const wrapper = css`
   padding: 90px 200px;
   display: flex;
   flex-direction: column;
-`;
-
-const registTypeWrapper = css`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 5px;
-  position: relative;
-
-  & > h2 {
-    margin-right: 10px;
-  }
-
-  & > button {
-    width: 30px;
-    height: 30px;
-    border-radius: 100px;
-    background: #ffffff;
-    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  & > div {
-    position: absolute;
-    width: 185px;
-    height: 120px;
-    top: 52px;
-    background: #ffffff;
-    border: 1px solid #ededed;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 5px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    & span {
-      margin: 14px 0;
-      cursor: pointer;
-
-      &:hover {
-        color: #66dd9c;
-        font-weight: bold;
-      }
-    }
-  }
 `;
 
 const titleWrapper = css`
@@ -417,12 +289,6 @@ const hopeAreaWrapper = css`
   flex-direction: column;
   width: 100%;
   margin-top: 60px;
-
-  & #map {
-    width: 100%;
-    height: 479px;
-    border-radius: 5px;
-  }
 `;
 
 const hopeAreaHeaderWrapper = css`
