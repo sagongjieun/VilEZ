@@ -3,10 +3,14 @@ import React from "react";
 import { Global, css } from "@emotion/react";
 
 const GlobalStyle = () => {
-  return <Global styles={style} />;
+  return <Global styles={[style, ModalWrap]} />;
 };
 
 const style = css`
+  html {
+    scroll-behavior: smooth;
+  }
+
   * {
     margin: 0;
     padding: 0;
@@ -36,6 +40,23 @@ const style = css`
   small {
     font-size: 14px;
     font-weight: normal;
+  }
+`;
+const ModalWrap = css`
+  font-size: 20px;
+  margin: auto;
+  margin-bottom: 100px;
+  width: 600px;
+  height: 450px;
+  box-shadow: 1px 1px 5px;
+  border-radius: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  > div {
+    padding: 10px;
   }
 `;
 
