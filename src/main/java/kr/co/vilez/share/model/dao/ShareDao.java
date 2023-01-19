@@ -4,7 +4,6 @@ import kr.co.vilez.ask.model.dto.ImgPath2;
 import kr.co.vilez.share.model.dto.BookmarkDto;
 import kr.co.vilez.share.model.dto.ImgPath;
 import kr.co.vilez.share.model.dto.InterestingDto;
-import kr.co.vilez.socket.model.vo.SocketVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
