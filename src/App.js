@@ -6,9 +6,7 @@ import ChatOpenIcon from "./pages/ChatOpenIcon";
 import MainNavBar from "./components/modal/MainNavBar";
 import Product from "./pages/Product";
 import Signup from "./pages/Signup";
-import ReportConfirm from "./components/modal/ReportConfirm";
-import QuitChattingReal from "./components/modal/QuitChattingReal";
-import MeetConfirm from "./components/modal/MeetConfim";
+import EditProfile from "./components/modal/EdifProfile";
 function App() {
   return (
     <BrowserRouter>
@@ -21,9 +19,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/product/*" element={<Product />} />
         </Routes>
-        <ReportConfirm />
-        <QuitChattingReal />
-        <MeetConfirm />
+        <EditProfile />
       </div>
     </BrowserRouter>
   );
