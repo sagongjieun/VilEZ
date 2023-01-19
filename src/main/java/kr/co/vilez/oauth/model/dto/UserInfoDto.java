@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class KaKaoUserInfoDto {
+public class UserInfoDto {
     private String id;
     private String nickName;
     private String kakao_account;
