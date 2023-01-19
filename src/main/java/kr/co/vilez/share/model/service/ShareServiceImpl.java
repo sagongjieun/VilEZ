@@ -194,10 +194,18 @@ public class ShareServiceImpl implements ShareService{
     }
 
     @Override
-    public HttpVO loadShareList() throws Exception {
+    public HttpVO loadShareList(PageNavigator pageNavigator) throws Exception {
         httpVO = new HttpVO();
         List<Object> data = new ArrayList<>();
-        List<ShareListDto> list = shareMapper.loadShareList();
+
+        if(pageNavigator.getWord() != null && pageNavigator.getWord() != ""){
+            pageNavigator.setWord("%"+pageNavigator.getWord()+"%");
+        }
+
+        int tmp = pageNavigator.getHigh();
+        pageNavigator.setHigh(pageNavigator.getHigh() * pageNavigator.getCnt());
+        pageNavigator.setLow(tmp);
+        List<ShareListDto> list = shareMapper.loadShareList(pageNavigator);
 
         for(ShareListDto shareListDto : list){
             TotalListShare totalListShare = new TotalListShare();
