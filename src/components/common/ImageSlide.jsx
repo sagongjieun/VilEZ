@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { HiChevronRight, HiChevronLeft } from "react-icons/hi2";
-import baseProfile from "../../assets/images/baseProfile.png";
+import firstbodyimage from "../../assets/images/firstbodyimage.png";
 
 const ImageSlide = () => {
-  const imageSlideList = [baseProfile];
+  const imageSlideList = [firstbodyimage];
   const [currentSlide, setCurrentSlide] = useState(1);
 
   function onClickPrevSlide() {

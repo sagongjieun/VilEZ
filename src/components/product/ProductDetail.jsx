@@ -3,12 +3,12 @@ import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import DivideLine from "../common/DivideLine";
 import bookmark from "../../assets/images/bookmark.png";
-import { HiChevronRight } from "react-icons/hi2";
 import baseProfile from "../../assets/images/baseProfile.png";
 import MiddleWideButton from "../button/MiddleWideButton";
 import ProductDeatilHeader from "./ProductDeatilHeader";
 import Map from "../common/Map";
 import ImageSlide from "../common/ImageSlide";
+import ProductDetailFooter from "./ProductDetailFooter";
 
 const { kakao } = window;
 
@@ -42,7 +42,9 @@ const ProductDetail = () => {
         time={"1시간"}
         bookmarkCount={"25"}
       />
+
       <DivideLine />
+
       <div css={contentsWrapper}>
         <ImageSlide />
         <div css={nickNameAndChatWrapper}>
@@ -61,9 +63,7 @@ const ProductDetail = () => {
         </div>
         <div css={contentWrapper}>
           <h3>설명</h3>
-          <div>
-            <span>이것은 설명입니다.</span>
-          </div>
+          <textarea readOnly></textarea>
         </div>
         <div css={hopeDateWrapper}>
           <h3>희망 공유 기간</h3>
@@ -86,20 +86,7 @@ const ProductDetail = () => {
 
       <DivideLine />
 
-      <div css={menusWrapper}>
-        <div>
-          <span>이 게시물 신고하기</span>
-          <HiChevronRight size="22" />
-        </div>
-        <div>
-          <span>이 게시물 공유하기</span>
-          <HiChevronRight size="22" />
-        </div>
-        <div>
-          <span>맨 위로 이동하기</span>
-          <HiChevronRight size="22" />
-        </div>
-      </div>
+      <ProductDetailFooter />
     </div>
   );
 };
@@ -176,14 +163,31 @@ const contentWrapper = css`
   display: flex;
   flex-direction: column;
 
-  & div {
+  & textarea {
     margin-top: 20px;
     max-width: 100%;
     height: 246px;
     border: 1px solid #e1e2e3;
     border-radius: 5px;
     padding: 30px;
-    overflow-y: scroll; // CSS 변경 필요
+    font-size: 18px;
+    resize: none;
+    outline: none;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      height: 30%;
+      background: #c4c4c4;
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: none;
+    }
   }
 `;
 
@@ -215,23 +219,6 @@ const hopeAreaWrapper = css`
     & span {
       color: #8a8a8a;
     }
-  }
-`;
-
-/* MenusWrapper */
-
-const menusWrapper = css`
-  display: flex;
-  flex-direction: column;
-
-  & > div {
-    width: 180px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    margin: 20px 0;
   }
 `;
 
