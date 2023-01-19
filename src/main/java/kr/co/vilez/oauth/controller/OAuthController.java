@@ -115,7 +115,7 @@ public class OAuthController {
     @ApiOperation(value = "네이버 OAuth 로그인.",
             notes = "https://nid.naver.com/oauth2.0/authorize?\n" +
                     "response_type=code&\n" +
-                    "client_id=Ax7Y0PrFK_pA_eSxKJfg&\n" +
+                    "client_id=KdnHuDfQRJ8OKSLDdgB6&\n" +
                     "state=randomtext&\n" +
                     "redirect_uri=http://211.216.215.157:8082/vilez/oauth2/code/naver" +
                     "해당 주소로 url 연결 부탁합니다.",
