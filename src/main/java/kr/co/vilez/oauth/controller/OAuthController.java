@@ -2,10 +2,10 @@ package kr.co.vilez.oauth.controller;
 
 import kr.co.vilez.data.HttpVO;
 import kr.co.vilez.jwt.JwtProvider;
-import kr.co.vilez.oauth.model.dto.KaKaoUserInfoDto;
+import kr.co.vilez.oauth.model.dto.UserInfoDto;
 import kr.co.vilez.oauth.model.dto.OAuthUserDto;
-import kr.co.vilez.oauth.model.service.OAuthService;
-import kr.co.vilez.oauth.model.service.OAuthServiceImpl;
+import kr.co.vilez.oauth.model.service.KakaoOAuthService;
+import kr.co.vilez.oauth.model.service.NaverOAuthService;
 import kr.co.vilez.tool.SHA256;
 import kr.co.vilez.user.model.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @RestController
 @RequestMapping("oauth2")
@@ -26,13 +25,16 @@ public class OAuthController {
 
     SHA256 sha256 = new SHA256();
     @Autowired
-    OAuthService oAuthService;
+    KakaoOAuthService oAuthService;
 
     @Autowired
     UserService userService;
 
     @Autowired
     JwtProvider jwtProvider;
+
+    @Autowired
+    NaverOAuthService naverOAuthService;
 
     @GetMapping("/code/kakao")
     public ResponseEntity<?> getCodeKakao(@RequestParam String code){
@@ -48,7 +50,7 @@ public class OAuthController {
             // code를 통해 로그인 사용자 정보 조회 가능한 access_token 발급
             // jwt의 access 토큰이 아님!, 카카오 유저 정보를 받아오기 위한 access_token
 
-            KaKaoUserInfoDto kaKaoUserInfoDto = oAuthService.getKakaoUserInfo(access_token);
+            UserInfoDto kaKaoUserInfoDto = oAuthService.getKakaoUserInfo(access_token);
             System.out.println("kaKaoUserInfoDto = " + kaKaoUserInfoDto);
             // 토큰을 통해 유저 고유값 유저 id 번호와 닉네임 정보 조회
 
@@ -102,4 +104,12 @@ public class OAuthController {
         return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
     }
 
+    @GetMapping("/code/naver")
+    public ResponseEntity<?> getCodeNaver(@RequestParam String code){
+        HttpVO httpVO = new HttpVO();
+
+
+
+        return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
+    }
 }

@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import java.sql.SQLException;
 
 @Mapper
-public interface OAuthMapper {
+public interface KakaoOAuthMapper {
     void update(OAuthUserDto userDto) throws SQLException;
     int joinOAuth(OAuthUserDto userDto) throws SQLException;
     OAuthUserDto getOAuthUser(String email) throws SQLException;
