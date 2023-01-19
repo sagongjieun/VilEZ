@@ -1,4 +1,4 @@
-package kr.co.vilez.socket.model.vo;
+package kr.co.vilez.appointment.model.vo;
 
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -6,8 +6,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("Room")
 @Data
 public class RoomVO {
-    private String boardId;
-    private String User1;
-    private String User2;
+    private int boardId;
+    private int user1;
+    private int user2;
     private String roomId;
 }

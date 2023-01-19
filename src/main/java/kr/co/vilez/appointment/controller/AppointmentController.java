@@ -1,10 +1,12 @@
-package kr.co.vilez.socket.controller;
+package kr.co.vilez.appointment.controller;
 
+import kr.co.vilez.appointment.model.service.AppointmentService;
+import kr.co.vilez.appointment.model.vo.MapVO;
+import kr.co.vilez.appointment.model.vo.RoomVO;
+import kr.co.vilez.appointment.model.vo.SocketVO;
 import kr.co.vilez.data.HttpVO;
-import kr.co.vilez.socket.model.service.SocketService;
-import kr.co.vilez.socket.model.vo.RoomVO;
-import kr.co.vilez.socket.model.vo.SocketVO;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -16,16 +18,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@RequestMapping("/socket")
+@RequestMapping("/appoint")
 @Controller
-public class SocketController {
+@AllArgsConstructor
+@Slf4j
+public class AppointmentController {
 
-    private SocketService socketService;
+    private final AppointmentService socketService;
     private final SimpMessageSendingOperations sendingOperations;
-    public SocketController(@Autowired SocketService socketService, @Autowired SimpMessageSendingOperations sendingOperations) {
-        this.socketService = socketService;
-        this.sendingOperations = sendingOperations;
-    }
+
 
     /*
     *
@@ -34,10 +35,10 @@ public class SocketController {
     *  content => 대화 내용
     *
     * */
-    @MessageMapping("/receive")
-    @SendTo("/send")
+    @MessageMapping("/recvchat")
+    @SendTo("/sendchat")
     public SocketVO SocketHandler(SocketVO socketVO) {
-        socketService.dispatchType(socketVO);
+//        socketService.dispatchType(socketVO);
         return socketVO;
     }
 
@@ -49,19 +50,18 @@ public class SocketController {
      *  lng => 지도 공유 경도
      *  level => 지도 레벨
      * */
-    @MessageMapping("/map")
-    public SocketVO mapHandler(SocketVO socketVO) {
-        socketService.dispatchType(socketVO);
-        int type = Integer.parseInt(socketVO.getType());
-        type = (type%2 + 1);
-        sendingOperations.convertAndSend("/sendmap/"+String.valueOf(type),socketVO);
-        return socketVO;
-    }
-
-    @MessageMapping("/marker")
-    public SocketVO marker(SocketVO socketVO) {
-        sendingOperations.convertAndSend("/sendmarker",socketVO);
-        return socketVO;
+    @MessageMapping("/recvmap")
+    public MapVO mapHandler(MapVO mapVO) {
+        int type = mapVO.getType();
+        if(type == 1) {
+            type = 2;
+        } else {
+            type = 1;
+        }
+        log.info("{}",mapVO);
+        socketService.saveLocation(mapVO);
+        sendingOperations.convertAndSend("/sendmap/"+mapVO.getRoomId()+"/"+type,mapVO);
+        return mapVO;
     }
 
     @ResponseBody()
@@ -78,9 +78,12 @@ public class SocketController {
     @GetMapping("/map")
     public ResponseEntity<?> loadLocationByRoomId(@RequestParam String roomId) {
         HttpVO http = new HttpVO();
-        List<Object> data = new ArrayList<>();
-        SocketVO msg = socketService.loadLocationByRoomId(roomId);
-        data.add(msg);
+        List<MapVO> data = new ArrayList<>();
+        MapVO vo = socketService.loadLocationByRoomId(roomId);
+        if(vo == null) {
+            return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+        }
+        data.add(vo);
         http.setFlag("success");
         http.setData(data);
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
@@ -98,9 +101,7 @@ public class SocketController {
         http.setData(data);
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
-    /*
-    TODO : 만들긴 했는데 비동기때문에 소켓보다 먼저 일어나게 라이프 사이클 조정해야할듯?
-    */
+
     @ResponseBody()
     @PostMapping("/room/enter")
     public ResponseEntity<?> findRoomId(@RequestBody RoomVO roomVO) {
