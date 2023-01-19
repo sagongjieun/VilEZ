@@ -1,7 +1,7 @@
 import React from "react";
 import { Animated } from "react-animated-css";
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, keyframes } from "@emotion/react";
 import firstbodyimage from "../assets/images/firstbodyimage.png";
 import mainarrow from "../assets/images/mainarrow.png";
 import secondbodyimg from "../assets/images/secondbodyimg.png";
@@ -23,10 +23,14 @@ function MainBody() {
           <input type="text" placeholder="공유하고 싶은 물품을 검색해보세요." css={[InputBox]} />
         </div>
         {/* 애니메이션 넣어야 함 */}
+        {/* animate__slideInDown */}
         <div css={ArrowBox}>
-          <img src={mainarrow} alt="" />
+          <a href="#movebottom">
+            <img src={mainarrow} alt="" />
+          </a>
         </div>
       </div>
+      <a id="movebottom"></a>
       <div css={FirstWrap}>
         <div css={ExplainLeft}>
           <div css={ExplainTitle}>따뜻해지는 공유 문화</div>
@@ -115,16 +119,24 @@ const InputBox = css`
   padding-left: 20px;
   font-size: 25px;
 `;
-// const PlaceHolder = css`
-//   ::placeholder {
-//     text-align: left;
-//     text-indent: 20px;
-//     font-size: 25px;
-//   }
-// `;
+const floating = keyframes`
+    0 {
+        transform: translateY(0);    
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+`;
+
 const ArrowBox = css`
   text-align: center;
   margin-top: 100px;
+  cursor: pointer;
+  animation: slideInDown;
+  animation: ${floating} 2s ease infinite;
 `;
 
 // SecondBody
