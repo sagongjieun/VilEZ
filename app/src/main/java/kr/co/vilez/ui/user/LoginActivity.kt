@@ -41,8 +41,8 @@ class LoginActivity : AppCompatActivity() {
             if (result == null) { // 로그인 실패
                 Log.d(TAG, "login: 로그인 실패, result:$result")
             } else if(result.flag == "success") {  // 로그인 성공
-                Log.d(TAG, "로그인 성공, 받아온 user = ${result}")
-
+                val data =result.data[0]
+                Log.d(TAG, "로그인 성공, 받아온 user = ${data}")
                 startActivity(Intent(this@LoginActivity, MainActivity::class.java))
             }
         }
