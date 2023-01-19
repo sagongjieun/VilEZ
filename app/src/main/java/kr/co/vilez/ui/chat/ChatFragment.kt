@@ -30,6 +30,7 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
     private var param2: String? = null
     private var zoom: Boolean? = false
     private var isMarkerOn: Boolean? = false
+    private var markertouch: Boolean? = false
     private var zoomLvl: Int? = 0
     private val marker = MapPOIItem()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,19 +49,33 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
     ): View? {
         val binding = FragmentChatBinding.inflate(inflater, container, false)
         context ?: return binding.root
-
+        StompClient.runStomp()
         val mapView = MapView(context)
         binding.mapView.addView(mapView)
-        StompClient.stompClient.topic("/sendmap/1").subscribe { topicMessage ->
+        StompClient.stompClient.topic("/sendmap/200/2").subscribe { topicMessage ->
             run {
-
+                println("수신됨")
                 val json = JSONObject(topicMessage.payload)
                 mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(json.getDouble("lat"),json.getDouble("lng")),true);
-                if(mapView.zoomLevel != json.getInt("level")) {
+                if(mapView.zoomLevel != json.getInt("zoomLevel")) {
                     zoom = true;
-                    mapView.setZoomLevel(json.getInt("level"),true);
+                    mapView.setZoomLevel(json.getInt("zoomLevel"),true);
                 }
+                if(json.getBoolean("isMarker")) {
+                    if(isMarkerOn == true) {
+                        if (mapView != null) {
+                            mapView.removePOIItem(marker)
+                        }
+                        isMarkerOn = false
+                    }
+                    marker.itemName = "hope area"
+                    marker.tag = 0
+                    marker.mapPoint = mapView.mapCenterPoint;
+                    marker.markerType = MapPOIItem.MarkerType.BluePin // 기본으로 제공하는 BluePin 마커 모양.
 
+                    marker.selectedMarkerType =
+                        MapPOIItem.MarkerType.RedPin // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                }
             }
         }
 
@@ -109,12 +124,13 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
         if (p0 != null) {
             if(p0.zoomLevel == zoomLvl) return
             data.put("roomId", "200")
-            data.put("type", "1")
+            data.put("type", "2")
             data.put("lat", p0.getMapCenterPoint().mapPointGeoCoord.latitude)
             data.put("lng", p0.getMapCenterPoint().mapPointGeoCoord.longitude)
-            data.put("level", p0.zoomLevel)
+            data.put("zoomLevel", p0.zoomLevel)
+            data.put("isMarker",false)
             zoomLvl = p0.zoomLevel
-            StompClient.stompClient.send("/map", data.toString()).subscribe()
+            StompClient.stompClient.send("/recvmap", data.toString()).subscribe()
         }
     }
 
@@ -141,16 +157,18 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
         marker.selectedMarkerType =
             MapPOIItem.MarkerType.RedPin // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
 
-
+        markertouch = true
         val data = JSONObject()
         if (p0 != null && p1 != null) {
             p0.addPOIItem(marker)
             isMarkerOn = true;
             data.put("roomId", "200")
-            data.put("type", "1")
+            data.put("type", "2")
             data.put("lat", p1.mapPointGeoCoord.latitude)
             data.put("lng", p1.mapPointGeoCoord.longitude)
-            StompClient.stompClient.send("/marker", data.toString()).subscribe()
+            data.put("isMarker",true)
+            StompClient.stompClient.send("/recvmap", data.toString()).subscribe()
+            p0.setMapCenterPoint(p1,true)
         }
 
 
@@ -162,15 +180,20 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
 
     override fun onMapViewDragEnded(p0: MapView?, p1: MapPoint?) {
         val data = JSONObject()
+        if(markertouch == true) {
+            markertouch = false
+            return
+        }
         if (p0 != null) {
             data.put("roomId", "200")
-            data.put("type", "1")
+            data.put("type", "2")
             data.put("lat", p0.getMapCenterPoint().mapPointGeoCoord.latitude)
             data.put("lng", p0.getMapCenterPoint().mapPointGeoCoord.longitude)
-            data.put("level", p0.zoomLevel)
+            data.put("zoomLevel", p0.zoomLevel)
+            data.put("isMarker",false)
         }
 
-        StompClient.stompClient.send("/map", data.toString()).subscribe()
+        StompClient.stompClient.send("/recvmap", data.toString()).subscribe()
     }
 
     override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {
