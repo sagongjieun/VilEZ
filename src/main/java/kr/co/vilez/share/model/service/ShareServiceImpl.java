@@ -131,7 +131,7 @@ public class ShareServiceImpl implements ShareService{
                 // user email과 확장자 결합
                 String new_file_name = System.nanoTime() + extension;
                 // 파일을 불러올 때 사용할 파일 경로
-                String savedPath = resource.getURI().getPath() + "/" +
+                String savedPath = resource.getURI().getPath() +
                         "images" + "/" +
                         "share" + "/"
                         + boardId + "/"
@@ -143,6 +143,9 @@ public class ShareServiceImpl implements ShareService{
 //              shareMapper.saveFiles(imgPath);
 
                 shareDao.insert(imgPath);
+
+                System.out.println("insert DAO");
+
                 file.transferTo(new File(savedPath));
                 break;
             }

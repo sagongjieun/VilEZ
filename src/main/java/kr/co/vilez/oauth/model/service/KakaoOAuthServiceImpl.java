@@ -2,9 +2,9 @@ package kr.co.vilez.oauth.model.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.co.vilez.oauth.model.dto.KaKaoUserInfoDto;
+import kr.co.vilez.oauth.model.dto.UserInfoDto;
 import kr.co.vilez.oauth.model.dto.OAuthUserDto;
-import kr.co.vilez.oauth.model.mapper.OAuthMapper;
+import kr.co.vilez.oauth.model.mapper.KakaoOAuthMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -16,12 +16,12 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class OAuthServiceImpl implements OAuthService {
+public class KakaoOAuthServiceImpl implements KakaoOAuthService {
 
     String clientId = "ea2591cb2987ca829df10d3f84562e60";
 
     @Autowired
-    OAuthMapper oAuthMapper;
+    KakaoOAuthMapper oAuthMapper;
 
     @Override
     public void update(OAuthUserDto userDto) throws Exception {
@@ -69,7 +69,7 @@ public class OAuthServiceImpl implements OAuthService {
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         return jsonNode.get("access_token").asText();
     }
-    public KaKaoUserInfoDto getKakaoUserInfo(String accessToken) throws Exception{
+    public UserInfoDto getKakaoUserInfo(String accessToken) throws Exception{
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
@@ -98,7 +98,7 @@ public class OAuthServiceImpl implements OAuthService {
                 .asText();
         String path = jsonNode.get("kakao_account").get("profile").get("profile_image_url").toString();
 
-        return new KaKaoUserInfoDto(id, nickname, kakao_account, path);
+        return new UserInfoDto(id, nickname, kakao_account, path);
     }
 
 }
