@@ -35,11 +35,16 @@ public class EmailController {
         HttpVO httpVO = new HttpVO();
         List<Object> data = new ArrayList<>();
 
-        String confirm = emailService.sendSimpleMessage(map.get("email"));
-        data.add(sha256.encrypt(confirm));
-        httpVO.setData(data);
-        httpVO.setFlag("success");
+        String email = emailService.userEmailCheck(map.get("email"));
 
+        if(email == null) {
+            String confirm = emailService.sendSimpleMessage(map.get("email"));
+            data.add(sha256.encrypt(confirm));
+            httpVO.setData(data);
+            httpVO.setFlag("success");
+        } else{
+            httpVO.setFlag("duplicated");
+        }
         return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
     }
 }
