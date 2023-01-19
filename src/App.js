@@ -3,11 +3,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import ChatOpenIcon from "./pages/ChatOpenIcon";
-import MainNavBar from "./components/common/MainNavBar";
+import MainNavBar from "./components/modal/MainNavBar";
 import Product from "./pages/Product";
 import Signup from "./pages/Signup";
-import ShareComplete from "./components/modal/ShareComplete";
-import Report from "./components/modal/Report";
+import EditProfile from "./components/modal/EdifProfile";
 function App() {
   return (
     <BrowserRouter>
@@ -20,8 +19,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/product/*" element={<Product />} />
         </Routes>
-        <ShareComplete />
-        <Report />
+        <EditProfile />
       </div>
     </BrowserRouter>
   );
