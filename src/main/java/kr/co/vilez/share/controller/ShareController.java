@@ -2,6 +2,7 @@ package kr.co.vilez.share.controller;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import kr.co.vilez.data.HttpVO;
+import kr.co.vilez.share.model.dto.PageNavigator;
 import kr.co.vilez.share.model.dto.ShareDto;
 import kr.co.vilez.share.model.service.ShareService;
 import lombok.Getter;
@@ -141,11 +142,11 @@ public class ShareController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> boardList(){
+    public ResponseEntity<?> boardList(PageNavigator pageNavigator){
         httpVO = new HttpVO();
 
         try {
-            httpVO = shareService.loadShareList();
+            httpVO = shareService.loadShareList(pageNavigator);
             httpVO.setFlag("success");
         } catch (Exception e){
             e.printStackTrace();

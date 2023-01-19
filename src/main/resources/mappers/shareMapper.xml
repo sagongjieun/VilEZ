@@ -36,8 +36,22 @@
         <result column="path" property="path"/>
     </resultMap>
 
-    <select id="loadShareList" resultMap="sharelist">
-        select * from sharing_view;
+    <select id="loadShareList" parameterType="pageNavigator" resultMap="sharelist">
+        SELECT *
+        FROM sharing_view
+        <where>
+            <if test ="word != null and word != ''">
+                OR title like #{word}
+            </if>
+            <if test ="word != null and word != ''">
+                OR content like #{word}
+            </if>
+            <if test="category != null and category != ''">
+                AND category = #{category}
+            </if>
+        </where>
+        LIMIT #{low}
+        OFFSET #{high}
     </select>
 
     <select id="loadMyShareList" parameterType="int" resultMap="sharelist">
