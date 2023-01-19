@@ -8,6 +8,7 @@ import baseProfile from "../../assets/images/baseProfile.png";
 import MiddleWideButton from "../button/MiddleWideButton";
 import ProductDeatilHeader from "./ProductDeatilHeader";
 import Map from "../common/Map";
+import ImageSlide from "../common/ImageSlide";
 
 const { kakao } = window;
 
@@ -43,7 +44,7 @@ const ProductDetail = () => {
       />
       <DivideLine />
       <div css={contentsWrapper}>
-        <div css={imageSlideWrapper}>이미지</div>
+        <ImageSlide />
         <div css={nickNameAndChatWrapper}>
           <div css={nickNameWrapper}>
             <img src={baseProfile} alt="baseProfile" />
@@ -115,14 +116,13 @@ const contentsWrapper = css`
   display: flex;
   flex-direction: column;
   padding: 60px 20px;
-`;
 
-const imageSlideWrapper = css`
-  margin-bottom: 60px;
+  & > div {
+    margin-bottom: 60px;
+  }
 `;
 
 const nickNameAndChatWrapper = css`
-  margin-bottom: 60px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -173,7 +173,6 @@ const chatWrapper = css`
 `;
 
 const contentWrapper = css`
-  margin-bottom: 60px;
   display: flex;
   flex-direction: column;
 
@@ -189,8 +188,6 @@ const contentWrapper = css`
 `;
 
 const hopeDateWrapper = css`
-  margin-bottom: 60px;
-
   & div {
     margin-top: 20px;
     width: 260px;
