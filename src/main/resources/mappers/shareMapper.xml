@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.vilez.share.model.mapper.ShareMapper">
+    <resultMap type="shareDto" id="share">
+        <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="category" property="category"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="date" property="date"/>
+        <result column="hope_area_lat" property="hopeAreaLat"/>
+        <result column="hope_area_lng" property="hopeAreaLng"/>
+        <result column="start_day" property="startDay"/>
+        <result column="end_day" property="endDay"/>
+        <result column="state" property="state"/>
+    </resultMap>
+
+    <resultMap type="shareListDto" id="sharelist">
+        <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="category" property="category"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="date" property="date"/>
+        <result column="hope_area_lat" property="hopeAreaLat"/>
+        <result column="hope_area_lng" property="hopeAreaLng"/>
+        <result column="start_day" property="startDay"/>
+        <result column="end_day" property="endDay"/>
+        <result column="state" property="state"/>
+        <result column="path" property="path"/>
+    </resultMap>
+
+    <resultMap id="path" type="imgPath">
+        <result column="board_id" property="boardId"/>
+        <result column="path" property="path"/>
+    </resultMap>
+
+    <select id="loadShareList" resultMap="sharelist">
+        select * from sharing_view;
+    </select>
+
+    <select id="loadMyShareList" parameterType="int" resultMap="sharelist">
+        select * from sharing_view where user_id = #{userId};
+    </select>
+
+    <select id="detailArticle" parameterType="string" resultMap="share">
+        select * from sharing_view where id = #{boardId};
+    </select>
+
+    <update id="delete" parameterType="int">
+        UPDATE sharing_board SET state = -1 where id = #{boardId};
+    </update>
+
+    <update id="update" parameterType="shareDto">
+        UPDATE sharing_board
+        SET category =#{category} ,title =#{title},content =#{content},
+            hope_area_lat =#{hopeAreaLat},hope_area_lng =#{hopeAreaLng},start_day = #{startDay},end_day=#{endDay}
+        WHERE id = #{id};
+    </update>
+
+    <insert id="saveFiles" parameterType="imgPath">
+        INSERT INTO sharing_board_imgs
+        VALUES (#{boardId}, #{path});
+    </insert>
+
+    <insert id="insert" parameterType="shareDto" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO sharing_board(user_id, category, title,
+                                content, date, hope_area_lat,
+                                  hope_area_lng, start_day, end_day, state)
+        VALUES (#{userId}, #{category}, #{title},
+                #{content}, now(), #{hopeAreaLat}, #{hopeAreaLng}, #{startDay}, #{endDay}, 0);
+    </insert>
+
+<!--    <select id="getList" resultMap="sharelist">-->
+<!--        SELECT s.id, s.title, s.hope_area_lat, s.hope_area_lng, s.start_day, s.end_day, s.date, i.path-->
+<!--        FROM sharing_board as s-->
+<!--                 LEFT JOIN (-->
+<!--            SELECT *-->
+<!--            FROM sharing_board_imgs-->
+<!--                     LIMIT 1-->
+<!--        ) AS i-->
+<!--        ON id = i.board_id;-->
+<!--        WHERE s.state != -1-->
+<!--    </select>-->
+</mapper>
