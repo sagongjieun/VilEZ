@@ -2,14 +2,21 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-function Report() {
+function MeetConfirm() {
+  const user = { nickname: "회먹고싶다요" };
+  const startdate = "2023.01.19";
+  const enddate = "2023.01.23";
   return (
-    <div css={reportWrap}>
-      <div css={reportContentWrap}>
+    <div>
+      <div css={ModalWrap}>
+        <strong>{user.nickname}님과</strong>
         <div>
-          <h2>신고하기</h2>
-          <textarea css={inputBox} placeholder="신고사유를 작성해주세요." />
+          <strong>
+            {startdate} ~ {enddate}
+          </strong>
         </div>
+        <div>기간동안</div>
+        <div>물품을 공유하시겠어요?</div>
         <div css={buttonWrap}>
           <button css={badbutton}>취소</button>
           <button css={goodbutton}>제출하기</button>
@@ -18,24 +25,23 @@ function Report() {
     </div>
   );
 }
-const reportWrap = css`
-  width: 500px;
-  height: 600px;
+const ModalWrap = css`
+  font-size: 20px;
+  margin: auto;
+  margin-bottom: 100px;
+  width: 600px;
+  height: 450px;
   box-shadow: 1px 1px 5px;
   border-radius: 10px;
   text-align: center;
-`;
-const reportContentWrap = css`
   display: flex;
   flex-direction: column;
-  & > div:first-of-type {
-    margin-top: 30px;
-  }
-  & input {
-    margin-top: 70px;
+  justify-content: center;
+  align-items: center;
+  > div {
+    padding: 10px;
   }
 `;
-
 const buttonWrap = css`
   margin-top: 50px;
 `;
@@ -59,17 +65,4 @@ const badbutton = css`
   border-radius: 5px;
   margin-right: 30px;
 `;
-
-const inputBox = css`
-  resize: none;
-  margin-top: 30px;
-  padding-left: 10px;
-  padding-top: 20px;
-  width: 400px;
-  height: 300px;
-  border-radius: 20px;
-  ::placeholder {
-    color: 8A8A8A;
-  }
-`;
-export default Report;
+export default MeetConfirm;
