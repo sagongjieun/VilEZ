@@ -47,4 +47,25 @@ public class EmailController {
         }
         return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
     }
+
+    @ApiOperation(value = "임시비밀번호 EMAIL로 전송한다.",
+            notes = "임시비밀번호를 모달 창에 입력하고 해당 코드가 정확하다면 비밀번호 변경페이지로 이동한다.",
+            response = String.class)
+    @PostMapping("/passowrd")
+    public ResponseEntity<?> modifyPassword(@RequestBody HashMap<String, String> map) throws Exception {
+        HttpVO httpVO = new HttpVO();
+        List<Object> data = new ArrayList<>();
+
+        String email = emailService.userEmailCheck(map.get("email"));
+
+        if(email != null) {
+            String confirm = emailService.sendSimpleMessage(map.get("email"));
+            data.add(sha256.encrypt(confirm));
+            httpVO.setData(data);
+            httpVO.setFlag("success");
+        } else{
+            httpVO.setFlag("Not_Exist");
+        }
+        return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
+    }
 }
