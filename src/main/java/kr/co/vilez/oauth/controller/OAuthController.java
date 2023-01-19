@@ -54,20 +54,19 @@ public class OAuthController {
             System.out.println("kaKaoUserInfoDto = " + kaKaoUserInfoDto);
             // 토큰을 통해 유저 고유값 유저 id 번호와 닉네임 정보 조회
 
-            OAuthUserDto oAuthUser = oAuthService.getOAuthUser(kaKaoUserInfoDto.getKakao_account());
+            OAuthUserDto oAuthUser = oAuthService.getOAuthUser(kaKaoUserInfoDto.getId());
             // 해당 회원정보가 이미 존재하는지 조회
 
             // null 이면 회원가입 가능한 이메일
             if(oAuthUser == null){
-                String email = kaKaoUserInfoDto.getKakao_account();
-                String tempNickName = "#KAKAO"+kaKaoUserInfoDto.getId().hashCode();
+                String tempNickName = "#KAKAO"+kaKaoUserInfoDto.getId();
                 System.out.println("tempNickName = " + tempNickName);
                 oAuthUser = new OAuthUserDto();
                 // 회원가입 진행
                 oAuthUser.setOauth("kakao");
-                oAuthUser.setEmail(email);
+                oAuthUser.setEmail(kaKaoUserInfoDto.getId());
                 oAuthUser.setNickName(tempNickName);
-                oAuthUser.setPassword(Math.random()+sha256.encrypt(kaKaoUserInfoDto.getKakao_account()));
+                oAuthUser.setPassword(Math.random()+sha256.encrypt(kaKaoUserInfoDto.getAccount()));
                 oAuthUser.setProfileImg(kaKaoUserInfoDto.getPath());
 
                 int userId = oAuthService.joinOauth(oAuthUser);
@@ -79,6 +78,7 @@ public class OAuthController {
                 oAuthUser.setRefreshToken(refreshToken);
                 oAuthService.update(oAuthUser);
 
+                oAuthUser.setPassword("");
                 data.add(oAuthUser);
                 httpVO.setFlag("oauth_join_success & login_success");
             } else{
@@ -107,9 +107,62 @@ public class OAuthController {
     @GetMapping("/code/naver")
     public ResponseEntity<?> getCodeNaver(@RequestParam String code){
         HttpVO httpVO = new HttpVO();
+        List<Object> data = new ArrayList<>();
 
+        try {
+            String accessToken = naverOAuthService.getAccessToken(code);
+            System.out.println("accessToken = " + accessToken);
+            UserInfoDto userInfoDto = naverOAuthService.getNaverUserInfo(accessToken);
+            System.out.println("userInfoDto = " + userInfoDto);
 
+            // 기존 회원정보가 존재하는지 확인
+            OAuthUserDto userDto = naverOAuthService.getOAuthUser(userInfoDto.getId());
 
+            // 기존 회원정보가 존재하지않으면 회원가입을 자동으로 진행하고, 그렇지 않으면 로그인을 시도한다.
+            if(userDto == null){
+                String tempNickName = "#NAVER"+userInfoDto.getId();
+                System.out.println("tempNickName = " + tempNickName);
+
+                userDto = new OAuthUserDto();
+                // 회원가입 진행
+                userDto.setOauth("naver");
+                userDto.setEmail(userInfoDto.getId());
+                userDto.setNickName(tempNickName);
+                userDto.setPassword(Math.random()+sha256.encrypt(userInfoDto.getAccount()));
+                userDto.setProfileImg(userInfoDto.getPath());
+
+                int userId = naverOAuthService.joinOauth(userDto);
+                String access_Token = jwtProvider.createToken(Integer.toString(userId), tempNickName);
+                String refresh_Token = jwtProvider.createRefreshToken(Integer.toString(userId), tempNickName);
+
+                userDto.setId(userId);
+                userDto.setAccessToken(access_Token);
+                userDto.setRefreshToken(refresh_Token);
+                oAuthService.update(userDto);
+
+                userDto.setPassword("");
+                data.add(userDto);
+                httpVO.setFlag("oauth_join_success & login_success");
+            } else{
+                // null 이 아니면, 가입이 불가능한 이메일로 어느 OAuth를 통해 가입했는지를 리턴
+                if(userDto.getOauth().equals("naver")) {
+                    String access_Token = jwtProvider.createToken(Integer.toString(userDto.getId()),
+                            userDto.getNickName());
+                    userDto.setAccessToken(accessToken);
+
+                    data.add(userDto);
+                    httpVO.setFlag("login_success");
+                } else{
+                    // 카카오가 아니면 어디에서 가입했는지만 알려준다.
+                    data.add(userDto.getOauth());
+                    httpVO.setFlag("id_exist");
+                }
+            }
+
+            httpVO.setData(data);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
     }
 }
