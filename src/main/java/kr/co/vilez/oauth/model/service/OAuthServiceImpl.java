@@ -96,8 +96,9 @@ public class OAuthServiceImpl implements OAuthService {
         String nickname = jsonNode.get("properties")
                 .get("nickname")
                 .asText();
+        String path = jsonNode.get("kakao_account").get("profile").get("profile_image_url").toString();
 
-        return new KaKaoUserInfoDto(id, nickname, kakao_account);
+        return new KaKaoUserInfoDto(id, nickname, kakao_account, path);
     }
 
 }

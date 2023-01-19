@@ -26,9 +26,9 @@
 
     <insert id="joinOAuth" parameterType="oAuthUserDto" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO user(email, password, nickname,
-                         point, manner, profile_img, date, oauth, refresh_token, state)
+                         point, manner, profile_img, date, oauth, state)
         VALUES( #{email}, #{password}, #{nickName},
-            100, 21, #{profileImg}, now(), #{oauth}, #{refreshToken}, 0);
+            100, 21, #{profileImg}, now(), #{oauth}, 0);
     </insert>
 
     <select id="getOAuthUser" parameterType="string" resultMap="oauth">

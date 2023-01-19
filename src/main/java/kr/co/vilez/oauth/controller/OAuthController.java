@@ -66,6 +66,7 @@ public class OAuthController {
                 oAuthUser.setEmail(email);
                 oAuthUser.setNickName(tempNickName);
                 oAuthUser.setPassword(Math.random()+sha256.encrypt(kaKaoUserInfoDto.getKakao_account()));
+                oAuthUser.setProfileImg(kaKaoUserInfoDto.getPath());
 
                 int userId = oAuthService.joinOauth(oAuthUser);
                 String accessToken = jwtProvider.createToken(Integer.toString(userId), tempNickName);
@@ -76,13 +77,14 @@ public class OAuthController {
                 oAuthUser.setRefreshToken(refreshToken);
                 oAuthService.update(oAuthUser);
 
-                data.add(oAuthService.getOAuthUser(kaKaoUserInfoDto.getKakao_account()));
                 data.add(oAuthUser);
                 httpVO.setFlag("oauth_join_success & login_success");
             } else{
                 // null 이 아니면, 가입이 불가능한 이메일로 어느 OAuth를 통해 가입했는지를 리턴
                 if(oAuthUser.getOauth().equals("kakao")) {
                     String accessToken = jwtProvider.createToken(Integer.toString(oAuthUser.getId()), oAuthUser.getNickName());
+                    oAuthUser.setAccessToken(accessToken);
+
                     data.add(oAuthUser);
                     httpVO.setFlag("login_success");
                 } else{
