@@ -12,4 +12,5 @@ public class KaKaoUserInfoDto {
     private String id;
     private String nickName;
     private String kakao_account;
+    private String path;
 }
