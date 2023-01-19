@@ -1,5 +1,7 @@
 package kr.co.vilez.oauth.controller;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.SwaggerDefinition;
 import kr.co.vilez.data.HttpVO;
 import kr.co.vilez.jwt.JwtProvider;
 import kr.co.vilez.oauth.model.dto.UserInfoDto;
@@ -37,6 +39,13 @@ public class OAuthController {
     NaverOAuthService naverOAuthService;
 
     @GetMapping("/code/kakao")
+    @ApiOperation(value = "카카오 OAuth 로그인.",
+            notes = "https://kauth.kakao.com/oauth/authorize\n" +
+                    "?client_id=ea2591cb2987ca829df10d3f84562e60\n" +
+                    "&redirect_uri=http://211.216.215.157:8082/vilez/oauth2/code/kakao\n" +
+                    "&response_type=code" +
+                    "해당 주소로 url 연결 부탁합니다.",
+            response = String.class)
     public ResponseEntity<?> getCodeKakao(@RequestParam String code){
         HttpVO httpVO = new HttpVO();
         List<Object> data = new ArrayList<>();
@@ -103,7 +112,14 @@ public class OAuthController {
         
         return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
     }
-
+    @ApiOperation(value = "네이버 OAuth 로그인.",
+            notes = "https://nid.naver.com/oauth2.0/authorize?\n" +
+                    "response_type=code&\n" +
+                    "client_id=Ax7Y0PrFK_pA_eSxKJfg&\n" +
+                    "state=randomtext&\n" +
+                    "redirect_uri=http://211.216.215.157:8082/vilez/oauth2/code/naver" +
+                    "해당 주소로 url 연결 부탁합니다.",
+            response = String.class)
     @GetMapping("/code/naver")
     public ResponseEntity<?> getCodeNaver(@RequestParam String code){
         HttpVO httpVO = new HttpVO();
@@ -165,4 +181,6 @@ public class OAuthController {
         }
         return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
     }
+
+
 }

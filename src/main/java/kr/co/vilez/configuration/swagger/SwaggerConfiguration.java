@@ -84,6 +84,21 @@ public class SwaggerConfiguration {
                 .paths(PathSelectors.any()) // controller에서 swagger를 지정할 대상 path 설정
                 .build();  // Docket 객체 생성
     }
+    @Bean
+    public Docket OAuthCommentApi() {
+        final ApiInfo apiInfo = new ApiInfoBuilder().title("OAuth  API")
+                .description("<h3>OAuth API에 대한 문서를 제공한다.</h3>")
+                .version("0.0").build();
+
+        return new Docket(DocumentationType.SWAGGER_2) // Swagger 2.0 기반의 문서 작성
+                .consumes(getConsumeContentTypes())
+                .apiInfo(apiInfo) // 문서에 대한 정보를 설정한다.
+                .groupName("f. OAuth")
+                .select() // ApiSelectorBuilder를 반환하며 상세한 설정 처리
+                .apis(RequestHandlerSelectors.basePackage("kr.co.vilez.oauth"))// 대상으로하는 api 설정
+                .paths(PathSelectors.any()) // controller에서 swagger를 지정할 대상 path 설정
+                .build();  // Docket 객체 생성
+    }
 
     @Bean
     public Docket SocketCommentApi() {
