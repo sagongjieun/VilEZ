@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.SplashActivity">
+    tools:context=".ui.SplashActivity"
+    android:background="@drawable/intro_background">
 
 
     <TextView
@@ -16,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:text="@string/app_title"
         android:fontFamily="@font/inter_extrabold"
-        android:textColor="@color/main_1"
+        android:textColor="@color/text_white"
         android:textSize="36sp"/>
 
 

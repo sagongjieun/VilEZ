@@ -21,4 +21,7 @@ data class User(
     )
     constructor(email: String, password: String) : this(
         "","","",email,0,0,"","",password,0,"","",0)
+
+    constructor(email: String) : this(
+        "","","",email,0,0,"","","",0,"","",0)
 }
