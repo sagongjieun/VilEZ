@@ -51,9 +51,9 @@
     </update>
 
     <insert id = "join">
-        insert into user(email, password, nickname, area, point, manner,
+        insert into user(email, password, nickname, point, manner,
                          date, state)
-        values(#{email}, #{password}, #{nickName}, #{area},
+        values(#{email}, #{password}, #{nickName},
                300, 21, now(), 0);
     </insert>
 

@@ -9,7 +9,7 @@ import java.util.List;
 
 @Mapper
 public interface AppointmentMapper {
-    public List<AppointmentDto> getAppointmentList(AppointmentDto appointmentDto) throws SQLException;
+    public List<AppointmentDto> getAppointmentList(int boardId) throws SQLException;
     public void create(AppointmentDto appointmentDto) throws SQLException;
 
 

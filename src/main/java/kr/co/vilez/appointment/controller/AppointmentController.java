@@ -43,12 +43,12 @@ public class AppointmentController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getAppointmentList(AppointmentDto appointmentDto){
+    public ResponseEntity<?> getAppointmentList(int boardId){
         HttpVO httpVO = new HttpVO();
         List<Object> data = new ArrayList<>();
 
         try {
-            data.add(appointmentService.getAppointmentList(appointmentDto));
+            data.add(appointmentService.getAppointmentList(boardId));
             httpVO.setFlag("success");
             httpVO.setData(data);
         } catch(Exception e){
@@ -58,9 +58,12 @@ public class AppointmentController {
         return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
     }
 
+    @ResponseBody
     @PostMapping()
     public ResponseEntity<?> createAppointment(@RequestBody AppointmentDto appointmentDto){
         HttpVO httpVO = new HttpVO();
+
+        System.out.println("appointmentDto = " + appointmentDto);
 
         try {
             appointmentService.create(appointmentDto);
