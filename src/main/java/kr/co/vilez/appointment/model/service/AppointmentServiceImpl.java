@@ -1,6 +1,8 @@
 package kr.co.vilez.appointment.model.service;
 
 import kr.co.vilez.appointment.model.dao.AppointmentDao;
+import kr.co.vilez.appointment.model.dto.AppointmentDto;
+import kr.co.vilez.appointment.model.mapper.AppointmentMapper;
 import kr.co.vilez.appointment.model.vo.ChatNoReadVO;
 import kr.co.vilez.appointment.model.vo.ChatVO;
 import kr.co.vilez.appointment.model.vo.MapVO;
@@ -16,8 +18,22 @@ import java.util.List;
 public class AppointmentServiceImpl implements AppointmentService {
 
     @Autowired
-    private AppointmentDao appointmentDao;
+    AppointmentMapper appointmentMapper;
 
+    @Override
+    public List<AppointmentDto> getAppointmentList(AppointmentDto appointmentDto) throws Exception {
+        return appointmentMapper.getAppointmentList(appointmentDto);
+    }
+
+    @Override
+    public void create(AppointmentDto appointmentDto) throws Exception {
+        appointmentMapper.create(appointmentDto);
+    }
+
+    ////////////////////////////////////////// chat ///////////////////////////////////////////
+
+    @Autowired
+    private AppointmentDao appointmentDao;
 
     @Override
     public void deleteRoom(String roomId) {
