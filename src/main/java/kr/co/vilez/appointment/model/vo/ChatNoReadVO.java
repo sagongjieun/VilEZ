@@ -11,7 +11,9 @@ public class ChatNoReadVO {
 
     private String roomId;
 
-    private int type;
+    private int type; // 공유자 : 1 피공유자 : 2
+
+    private int userId; // 받을 userId (mongo 검색용)
 
     private String content;
 
