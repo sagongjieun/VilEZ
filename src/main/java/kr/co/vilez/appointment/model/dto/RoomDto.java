@@ -8,6 +8,6 @@ public class RoomDto {
     private int id;
     private int type;
     private int boardId;
-    private int sharedUserId;
-    private int askUserId;
+    private int shareUserId;
+    private int notShareUserId;
 }

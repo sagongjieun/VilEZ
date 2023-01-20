@@ -13,13 +13,13 @@ public interface AppointmentService {
     public List<AppointmentDto> getAppointmentList(AppointmentDto appointmentDto) throws Exception;
     public void create(AppointmentDto appointmentDto) throws Exception;
     public void deleteRoom(String roomId);
-    public void saveNoReadMsg(ChatNoReadVO chatNoReadVO);
+    public void recvMsg(ChatNoReadVO chatNoReadVO);
     public MapVO loadLocationByRoomId(String roomId);
-    public List<ChatVO> loadMsgByRoomId(String roomId);
+    public List<ChatVO> loadMsgByRoomId(int roomId);
     public void saveLocation(MapVO mapVO);
     public RoomDto createRoom(RoomDto roomVO);
-
-    void recvHereMsg(ChatVO chatVO);
+    public List<RoomDto> getRoomListByUserId(int userId);
+    void recvHereMsg(ChatNoReadVO chatNoReadVO);
 
     ChatDatasVO loadMyChatNoReadList(int userId);
 }

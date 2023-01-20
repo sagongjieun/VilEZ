@@ -44,8 +44,15 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void saveNoReadMsg(ChatNoReadVO chatNoReadVO) {
+    public void recvMsg(ChatNoReadVO chatNoReadVO) {
         appointmentDao.saveNoReadMsg(chatNoReadVO);
+        ChatVO chatVO = new ChatVO();
+        chatVO.setRoomId(chatNoReadVO.getRoomId());
+        chatVO.setToUserId(chatNoReadVO.getToUserId());
+        chatVO.setFromUserId(chatNoReadVO.getFromUserId());
+        chatVO.setContent(chatVO.getContent());
+        chatVO.setTime(chatNoReadVO.getTime());
+        appointmentDao.saveMsg(chatVO);
     }
 
     @Override
@@ -54,7 +61,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<ChatVO> loadMsgByRoomId(String roomId) { return appointmentDao.loadMsgByRoomId(roomId); }
+    public List<ChatVO> loadMsgByRoomId(int roomId) { return appointmentDao.loadMsgByRoomId(roomId); }
 
     @Override
     public void saveLocation(MapVO mapVO) { appointmentDao.saveLocation(mapVO); }
@@ -67,13 +74,20 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void recvHereMsg(ChatVO chatVO) {
-        appointmentDao.recvHereMsg(chatVO);
+    public List<RoomDto> getRoomListByUserId(int userId) {
+        return appointmentMapper.getRoomListByUserId(userId);
+    }
+
+
+    @Override
+    public void recvHereMsg(ChatNoReadVO chatNoReadVO) {
+        appointmentDao.recvHereMsg(chatNoReadVO);
     }
 
     @Override
     public ChatDatasVO loadMyChatNoReadList(int userId) {
-       // ChatDatasVO chatNoReadVO = appointmentDao.loadMyChatNoReadList(userId);
-        return null;
+        ChatDatasVO chatNoReadVO = appointmentDao.first(userId);
+        return chatNoReadVO;
     }
+
 }
