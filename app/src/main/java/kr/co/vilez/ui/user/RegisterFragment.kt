@@ -17,6 +17,8 @@ import kr.co.vilez.R
 import kr.co.vilez.data.model.Email
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentRegisterBinding
+import kr.co.vilez.ui.dialog.AlertDialogInterface
+import kr.co.vilez.ui.dialog.AlertDialogWithCallback
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
 import retrofit2.awaitResponse
@@ -146,8 +148,14 @@ class RegisterFragment : Fragment() {
                 if(result != null) {
                     when(result.flag) {
                         "success" -> {
-                            Log.d(TAG, "register: 회원가입 success")
-                            loginActivity.openFragment(1)
+                            val dialog = AlertDialogWithCallback(object :AlertDialogInterface {
+                                override fun onYesButtonClick(id: String) {
+                                    Log.d(TAG, "register: 회원가입 success")
+                                    loginActivity.openFragment(1) // 로그인 화면으로 이동
+                                }
+                            }, "회원가입에 성공했습니다.\n가입한 정보로로그인 해주세요", "")
+                            dialog.isCancelable = false // 알림창이 띄워져있는 동안 배경 클릭 막기
+                            dialog.show(loginActivity.supportFragmentManager, "RegisterSucceeded")
                         }
                         else -> {
                             Log.d(TAG, "register: 회원가입 실패")

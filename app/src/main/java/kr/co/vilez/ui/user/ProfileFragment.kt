@@ -17,6 +17,7 @@ import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentProfileBinding
 import kr.co.vilez.ui.IntroActivity
 import kr.co.vilez.ui.MainActivity
+import kr.co.vilez.ui.dialog.*
 import kr.co.vilez.util.ApplicationClass
 import retrofit2.awaitResponse
 
@@ -47,30 +48,43 @@ class ProfileFragment : Fragment() {
                 Log.d(TAG, "login: 로그인 실패, result:$result")
                 binding.tvProfileUserInfo.text = "로그인 실패"
             } else if(result.flag == "success") {  // 로그인 성공
-                Log.d(TAG, "로그인 성공, 받아온 user = ${result}")
-                binding.tvProfileUserInfo.text = result.data.toString()
+                val dialog = AlertDialogWithCallback(object : AlertDialogInterface {
+                    override fun onYesButtonClick(id: String) {
+                        Log.d(TAG, "로그인 성공, 받아온 user = ${result.data[0]}")
+                        binding.tvProfileUserInfo.text = result.data[0].toString()
+                    }
+                }, "로그인 성공", "")
+                dialog.isCancelable = false // 알림창이 띄워져있는 동안 배경 클릭 막기
+                dialog.show(mainActivity.supportFragmentManager, "RegisterSucceeded")
+
 
             }
         }
     }
 
     fun logout(view: View){ // 로그아웃 preference 지우기
-        Log.d(TAG, "logout: 삭제 전 autoLogin = ${ApplicationClass.sharedPreferences.getBoolean("autoLogin",false)}")
-        ApplicationClass.sharedPreferences.edit {
-            remove("autoLogin")
-            apply()
-        }
+        val dialog = ConfirmDialog(object: ConfirmDialogInterface {
+            override fun onYesButtonClick(id: String) {
+                Log.d(TAG, "logout: 삭제 전 autoLogin = ${ApplicationClass.sharedPreferences.getBoolean("autoLogin",false)}")
+                ApplicationClass.sharedPreferences.edit {
+                    remove("autoLogin")
+                    apply()
+                }
 
-        Log.d(TAG, "logout: 로그아웃 성공")
-        Log.d(TAG, "logout: 삭제 후 autoLogin = ${ApplicationClass.sharedPreferences.getBoolean("autoLogin", false)}")
+                Log.d(TAG, "logout: 로그아웃 성공")
+                Log.d(TAG, "logout: 삭제 후 autoLogin = ${ApplicationClass.sharedPreferences.getBoolean("autoLogin", false)}")
 
-        // 로그아웃 후 로그인 화면이동
-        val intent = Intent(mainActivity, LoginActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                // 로그아웃 후 로그인 화면이동
+                val intent = Intent(mainActivity, LoginActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
-        startActivity(intent)
+                startActivity(intent)
+            }
+        }, "정말로 로그아웃 하시겠습니까?", "")
+
+        dialog.isCancelable = false // 알림창이 띄워져있는 동안 배경 클릭 막기
+        dialog.show(mainActivity.supportFragmentManager, "Logout")
     }
-
 
 }
