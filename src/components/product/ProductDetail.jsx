@@ -9,6 +9,7 @@ import ProductDeatilHeader from "./ProductDeatilHeader";
 import Map from "../common/Map";
 import ImageSlide from "../common/ImageSlide";
 import ProductDetailFooter from "./ProductDetailFooter";
+import baseImageSlide from "../../assets/images/baseImageSlide.PNG";
 
 const { kakao } = window;
 
@@ -17,6 +18,7 @@ const ProductDetail = () => {
   const selectedLat = 37.39495141898642;
   const selectedLng = 127.1112037330217;
   const [location, setLocation] = useState("");
+  const [imageSlideList, setImageSlideList] = useState([baseImageSlide]); // eslint-disable-line no-unused-vars
 
   // 위경도를 통한 주소 얻어오기
   useEffect(() => {
@@ -46,7 +48,7 @@ const ProductDetail = () => {
       <DivideLine />
 
       <div css={contentsWrapper}>
-        <ImageSlide />
+        <ImageSlide imageSlideList={imageSlideList} />
         <div css={nickNameAndChatWrapper}>
           <div css={nickNameWrapper}>
             <img src={baseProfile} alt="baseProfile" />
