@@ -1,11 +1,23 @@
 package kr.co.vilez.util
 
+import androidx.appcompat.app.AppCompatActivity
+import kr.co.vilez.ui.dialog.AlertDialog
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
 class Common {
 
     companion object {
+
+        fun showAlertDialog(context: AppCompatActivity, title:String, tag:String) {
+            val dialog = AlertDialog(context, title)
+            // 알림창이 띄워져있는 동안 배경 클릭 막기
+            dialog.isCancelable = false
+            dialog.show(context.supportFragmentManager, tag)
+        }
+
+
+
         fun verifyPassword(password: String): Boolean {
             val regexPassword = Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$"); // 비밀번호 정규식 : 8~16 (영어+숫자)
             return regexPassword.matches(password)
