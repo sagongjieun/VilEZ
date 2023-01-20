@@ -33,6 +33,7 @@ const IconBox = css`
   cursor: pointer;
   position: fixed;
   box-shadow: 5px 3px 10px rgba(0, 0, 0, 0.35);
+  z-index: 100;
 `;
 
 export default ChatOpenIcon;
