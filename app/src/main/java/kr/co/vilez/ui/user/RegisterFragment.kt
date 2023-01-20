@@ -1,13 +1,12 @@
 package kr.co.vilez.ui.user
 
 import android.annotation.SuppressLint
-import android.app.Dialog
-import android.content.Intent
-import android.content.res.ColorStateList
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -16,17 +15,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.model.Email
-import kr.co.vilez.data.model.RESTResult
 import kr.co.vilez.data.model.User
-import kr.co.vilez.databinding.ActivityRegisterBinding
-import kr.co.vilez.ui.MainActivity
+import kr.co.vilez.databinding.FragmentRegisterBinding
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
 import retrofit2.awaitResponse
 
-private const val TAG = "빌리지_RegisterActivity"
-class RegisterActivity : AppCompatActivity() {
-    private lateinit var binding:ActivityRegisterBinding
+private const val TAG = "빌리지_RegisterFragment"
+class RegisterFragment : Fragment() {
+    private lateinit var binding:FragmentRegisterBinding
+    private lateinit var loginActivity: LoginActivity
 
     private val viewModel:RegisterViewModel by lazy {
         ViewModelProvider(this)[RegisterViewModel::class.java] // 생명주기를 RegisterActivity 와 맞춰줌
@@ -37,35 +35,40 @@ class RegisterActivity : AppCompatActivity() {
     private var isValidPasswordAgain = false
     private var isValidNickname = false
 
-    private var emailSendCheck = false // 이메일 인증 번호 전송
     private var emailAuthCheck = false  // 이메일 인증 확인
     private var nicknameCheck = false // 닉네임 중복 확인
     private var checkedNickname = "" // 제일 최근에 확인된 닉네임
-    var isEmailSent = false
+    private var isEmailSent = false // 이메일 인증 번호 전송
 
-
-    private lateinit var emailAuth:String
-
-
+    private lateinit var emailAuthHashed:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_register)
+        loginActivity = context as LoginActivity
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = DataBindingUtil.inflate(inflater,R.layout.fragment_register, container, false)
+        binding.fragment = this
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         initBinding()
-
-        supportActionBar?.title = "빌리지 주민 신청서"
-
+        loginActivity.supportActionBar?.title = "빌리지 주민 신청서"
         initView()
     }
 
     private fun initBinding() {
-        binding.activity = this
         binding.isEmailSent = isEmailSent
         binding.isValidEmail = isValidEmail
         binding.isValidPassword = isValidPassword
         binding.isValidPasswordAgain = isValidPasswordAgain
-
     }
 
     @SuppressLint("ResourceAsColor")
@@ -97,7 +100,7 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         binding.inputRegisterPasswordCheck.editText?.addTextChangedListener {
-            Log.d(TAG, "initView: 비번 : ${binding.inputRegisterPassword.editText?.text.toString()}, 비번확인:${it.toString()}")
+            //Log.d(TAG, "initView: 비번 : ${binding.inputRegisterPassword.editText?.text.toString()}, 비번확인:${it.toString()}")
             isValidPasswordAgain = binding.inputRegisterPassword.editText?.text.toString() == it.toString()
             if(isValidPasswordAgain) {
                 binding.inputRegisterPasswordCheck.error = null
@@ -130,19 +133,21 @@ class RegisterActivity : AppCompatActivity() {
             Log.d(TAG, "register: 이메일 인증 안됨")
         } else if (!isValidPassword or !isValidPasswordAgain) { // 비밀번호 두개 확인
             Log.d(TAG, "register: 비밀번호 안됨")
-        } else if (!nicknameCheck or (binding.inputRegisterNickname.editText?.text.toString() !== checkedNickname)) { // 닉네임 확인 (가장 최근에 인증 완료된 닉네임 vs 지금 입력된 닉네임)
+        } else if (!nicknameCheck) { // 닉네임 확인 (가장 최근에 인증 완료된 닉네임 vs 지금 입력된 닉네임)
             Log.d(TAG, "register: 닉네임 인증 안됨")
         } else { // 모두 통과
             val email = binding.inputRegisterEmail.editText?.text.toString()
             val password = binding.inputRegisterPassword.editText?.text.toString()
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.Main).launch {
                 val user = User(email=email, password = password, nickName = checkedNickname)
+                Log.d(TAG, "register: 회원가입 할 유저 정보 : $user")
                 val result = ApplicationClass.retrofitUserService.getJoinResult(user).awaitResponse().body()
+                Log.d(TAG, "register: $result")
                 if(result != null) {
                     when(result.flag) {
                         "success" -> {
-                            val data = result.data as ArrayList<*>
-                            Log.d(TAG, "register: 회원가입 완료, data: ${data[0]}")
+                            Log.d(TAG, "register: 회원가입 success")
+                            loginActivity.openFragment(1)
                         }
                         else -> {
                             Log.d(TAG, "register: 회원가입 실패")
@@ -158,13 +163,29 @@ class RegisterActivity : AppCompatActivity() {
 
     @SuppressLint("UseCompatLoadingForColorStateLists", "ResourceAsColor")
     fun checkEmailAuth(view:View) {
-        // TODO : SHA 256 변경 확인
-        if (binding.inputRegisterEmailAuth.editText.toString() == emailAuth) {
+        val data = binding.inputRegisterEmailAuth.editText?.text.toString()
+        Log.d(TAG, "checkEmailAuth: 입력받은 비밀번호 : $data, 해싱 : ${Common.getHash(data)}")
+        if (Common.getHash(data) == emailAuthHashed) { // SHA-256 으로 해싱해서 비교
+
+            binding.apply {
+                inputRegisterEmail.editText?.isEnabled = false // 이메일 수정 불가
+                btnRegisterEmailAuth.isEnabled = false
+                btnRegisterEmailAuth.isClickable = false
+                inputRegisterEmailAuth.editText?.isEnabled = false // 인증번호 수정 불가
+            }
+
+            // 인증 완료 버튼 클릭 불가
             binding.btnRegisterEmailAuthCheck.apply {
                 text = "인증 완료"
-                binding.inputRegisterEmail.editText?.isEnabled = false
+                isEnabled = false
+                isClickable = false
+                backgroundTintList = context.resources.getColorStateList(R.color.main_1)
+                setTextColor(context.resources.getColorStateList(R.color.white))
             }
             emailAuthCheck = true
+            Log.d(TAG, "checkEmailAuth: 이메일 인증번호 맞음")
+        } else {
+            Log.d(TAG, "checkEmailAuth: 이메일 인증번호 틀림")
         }
     }
 
@@ -191,11 +212,18 @@ class RegisterActivity : AppCompatActivity() {
                     "success" -> {
                         val data = result.data as ArrayList<*>
                         Log.d(TAG, "checkEmail: 이메일 전송 완료, data: ${data[0]}")
-                        emailAuth = data[0] as String
+                        emailAuthHashed = data[0] as String
                         isEmailSent = true // 이메일 전송 완료
 
-                        binding.btnRegisterEmailAuthCheck.visibility = View.VISIBLE
-                        binding.inputRegisterEmailAuth.visibility = View.VISIBLE
+                        binding.inputRegisterEmailAuth.apply {
+                            visibility = View.VISIBLE
+                            isEnabled = true
+                        }
+                        binding.btnRegisterEmailAuthCheck.apply {
+                            visibility = View.VISIBLE
+                            isEnabled = true
+                            isClickable = false
+                        }
 
                         binding.btnRegisterEmailAuth.text = "다시전송"
                     }
@@ -233,6 +261,7 @@ class RegisterActivity : AppCompatActivity() {
         if(isValidNickname) {
             CoroutineScope(Dispatchers.Main).launch {
                 val result = ApplicationClass.retrofitUserService.isUsedUserNickName(nickname).awaitResponse().body()
+                Log.d(TAG, "checkNickName: 닉네임 중복 확인, result : $result")
                 if(result != null && result.flag == "success") {
                     nicknameCheck = true
                     checkedNickname = nickname
@@ -240,6 +269,8 @@ class RegisterActivity : AppCompatActivity() {
                     binding.inputRegisterNickname.helperText = "사용가능한 닉네임입니다."
                     binding.inputRegisterNickname.error = null
                     binding.btnRegisterNicknameCheck.apply {
+                        isEnabled = false
+                        isClickable = false
                         text = "확인완료"
                         backgroundTintList = context.resources.getColorStateList(R.color.main_1)
                         setTextColor(context.resources.getColorStateList(R.color.white))
@@ -253,6 +284,9 @@ class RegisterActivity : AppCompatActivity() {
                 }
                 view.isClickable = true // 다시 클릭 가능
             }
+        } else {
+            binding.inputRegisterNickname.error = "사용 불가한 닉네임입니다."
+            view.isClickable = true // 다시 클릭 가능
         }
     }
 
