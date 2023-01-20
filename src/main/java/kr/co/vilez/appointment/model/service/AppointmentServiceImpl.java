@@ -6,19 +6,23 @@ import kr.co.vilez.appointment.model.mapper.AppointmentMapper;
 import kr.co.vilez.appointment.model.vo.ChatNoReadVO;
 import kr.co.vilez.appointment.model.vo.ChatVO;
 import kr.co.vilez.appointment.model.vo.MapVO;
-import kr.co.vilez.appointment.model.vo.RoomVO;
+import kr.co.vilez.appointment.model.dto.RoomDto;
+import kr.co.vilez.appointment.model.vo.*;
 import kr.co.vilez.tool.SHA256;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+@AllArgsConstructor
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
 
-    @Autowired
-    AppointmentMapper appointmentMapper;
+    private final AppointmentDao appointmentDao;
+
+    private final AppointmentMapper appointmentMapper;
 
     @Override
     public List<AppointmentDto> getAppointmentList(AppointmentDto appointmentDto) throws Exception {
@@ -32,8 +36,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     ////////////////////////////////////////// chat ///////////////////////////////////////////
 
-    @Autowired
-    private AppointmentDao appointmentDao;
+
 
     @Override
     public void deleteRoom(String roomId) {
@@ -58,29 +61,19 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 
     @Override
-    public String createRoom(RoomVO roomVO) {
-        appointmentDao.createRoom(roomVO);
-        String encryption = encryptionRoomId(roomVO);
-        return encryption;
-    }
-
-    @Override
-    public String encryptionRoomId(RoomVO roomVO) {
-        SHA256 sha256 = new SHA256();
-        StringBuilder sb = new StringBuilder();
-        sb.append("boardid:").append(roomVO.getBoardId())
-                .append("user:").append(roomVO.getUser1() + roomVO.getUser2());
-
-        try {
-            return sha256.encrypt(sb.toString());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return "";
+    public RoomDto createRoom(RoomDto room) {
+       //return appointmentDao.createRoom(room);
+        return null;
     }
 
     @Override
     public void recvHereMsg(ChatVO chatVO) {
         appointmentDao.recvHereMsg(chatVO);
+    }
+
+    @Override
+    public ChatDatasVO loadMyChatNoReadList(int userId) {
+       // ChatDatasVO chatNoReadVO = appointmentDao.loadMyChatNoReadList(userId);
+        return null;
     }
 }

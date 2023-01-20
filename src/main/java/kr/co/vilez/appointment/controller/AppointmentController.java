@@ -3,11 +3,9 @@ package kr.co.vilez.appointment.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import kr.co.vilez.appointment.model.dto.AppointmentDto;
+import kr.co.vilez.appointment.model.dto.RoomDto;
 import kr.co.vilez.appointment.model.service.AppointmentService;
-import kr.co.vilez.appointment.model.vo.ChatNoReadVO;
-import kr.co.vilez.appointment.model.vo.ChatVO;
-import kr.co.vilez.appointment.model.vo.MapVO;
-import kr.co.vilez.appointment.model.vo.RoomVO;
+import kr.co.vilez.appointment.model.vo.*;
 import kr.co.vilez.data.HttpVO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +26,7 @@ import java.util.List;
 @Slf4j
 @Api("약속 관련 API 목록")
 public class AppointmentController {
+
     private final AppointmentService appointmentService;
 
     @PutMapping
@@ -77,6 +76,7 @@ public class AppointmentController {
 
     private final SimpMessageSendingOperations sendingOperations;
 
+
     /*
     *
     *  roomId =>  boardid:(int)user:(sum)
@@ -97,6 +97,13 @@ public class AppointmentController {
         return chatVO;
     }
 
+    @MessageMapping("/recvlogin")
+    public ChatDatasVO loginMsg(ChatDatasVO chatNoDatasVO) {
+        chatNoDatasVO = appointmentService.loadMyChatNoReadList(chatNoDatasVO.getUserId());
+
+        sendingOperations.convertAndSend("/sendlogin/"+chatNoDatasVO.getUserId(),chatNoDatasVO);
+        return chatNoDatasVO;
+    }
 
     /*
      *
@@ -120,6 +127,11 @@ public class AppointmentController {
         return mapVO;
     }
 
+
+
+
+
+
     @ResponseBody()
     @PostMapping("/chat")
     @ApiOperation(value = "roomId로 채팅기록을 불러온다. (채팅방을 다시 들어갈때) ",
@@ -140,11 +152,11 @@ public class AppointmentController {
             notes = "EMAIL인증 서버를 불러온다. 'success' 또는 'fail' 문자열과 데이터를 반환한다." +
                     "email : 이메일 정보로 데이터를 날리면 해당 이메일로 코드가 날라가고 " +
                     "해쉬된 코드는 프론트에 저장된다.")
-    public ResponseEntity<?> loadNoReadChatByRoomId(@RequestBody RoomVO roomVO) {
+    public ResponseEntity<?> loadNoReadChatByRoomId(@RequestBody RoomDto room) {
         HttpVO http = new HttpVO();
-        List<ChatVO> msg = appointmentService.loadMsgByRoomId(roomVO.getRoomId());
+        //List<ChatVO> msg = appointmentService.loadMsgByRoomId(room.getRoomId());
         http.setFlag("success");
-        http.setData(msg);
+        //http.setData(msg);
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
 
@@ -165,25 +177,11 @@ public class AppointmentController {
 
     @ResponseBody()
     @PostMapping("/room")
-    public ResponseEntity<?> createRoom(@RequestBody RoomVO roomVO) {
+    public ResponseEntity<?> createRoom(@RequestBody RoomDto room) {
         HttpVO http = new HttpVO();
-        List<Object> data = new ArrayList<>();
-        String roomId = appointmentService.createRoom(roomVO);
-        roomVO.setRoomId(roomId);
-        data.add(roomVO);
-        http.setFlag("success");
-        http.setData(data);
-        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
-    }
-
-    @ResponseBody()
-    @PostMapping("/room/enter")
-    public ResponseEntity<?> findRoomId(@RequestBody RoomVO roomVO) {
-        HttpVO http = new HttpVO();
-        List<Object> data = new ArrayList<>();
-        String roomId = appointmentService.encryptionRoomId(roomVO);
-        roomVO.setRoomId(roomId);
-        data.add(roomVO);
+        List<Integer> data = new ArrayList<>();
+        room = appointmentService.createRoom(room);
+        //data.add(room);
         http.setFlag("success");
         http.setData(data);
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);

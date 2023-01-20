@@ -1,9 +1,7 @@
 package kr.co.vilez.appointment.model.dao;
 
-import kr.co.vilez.appointment.model.vo.ChatNoReadVO;
-import kr.co.vilez.appointment.model.vo.ChatVO;
-import kr.co.vilez.appointment.model.vo.MapVO;
-import kr.co.vilez.appointment.model.vo.RoomVO;
+import kr.co.vilez.appointment.model.dto.RoomDto;
+import kr.co.vilez.appointment.model.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -11,6 +9,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
@@ -55,11 +55,6 @@ public class AppointmentDao {
         return msg;
     }
 
-
-    public void createRoom(RoomVO roomVO) {
-        mongoTemplate.insert(roomVO);
-    }
-
     public void saveNoReadMsg(ChatNoReadVO chatNoReadVO) {
         mongoTemplate.insert(chatNoReadVO);
     }
@@ -69,4 +64,23 @@ public class AppointmentDao {
                                 .and("type").is(chatVO.getType())),ChatNoReadVO.class);
 
     }
+
+//    public ChatDatasVO loadMyChatList(int userId) {
+//        ChatDatasVO chatNoDatasVO = new ChatDatasVO();
+//        chatNoDatasVO.setUserId(userId);
+//        List<ChatVO> datas =
+//            mongoTemplate.find(Query.query(Criteria.where("userId").is(userId)),ChatNoReadVO.class);
+//        chatNoDatasVO.setCount(datas.size());
+//        HashMap<String, List<ChatNoReadVO>> chatNoReadByRoomId = new HashMap<>();
+//        for(ChatNoReadVO chat : datas) {
+//            System.out.println(chat);
+//            if(!chatNoReadByRoomId.containsKey(chat.getRoomId())) {
+//                chatNoReadByRoomId.put(chat.getRoomId(),new ArrayList<ChatNoReadVO>());
+//            }
+//            chatNoReadByRoomId.get(chat.getRoomId()).add(chat);
+//        }
+//        chatNoDatasVO.setData(chatNoReadByRoomId);
+//        return chatNoDatasVO;
+//    }
+
 }
