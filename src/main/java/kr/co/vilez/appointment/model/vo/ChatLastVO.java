@@ -5,5 +5,6 @@ import lombok.Data;
 @Data
 public class ChatLastVO {
     int count;
+    int roomId;
     String content;
 }

@@ -10,6 +10,13 @@
         <result column="appointment_start" property="appointmentStart"/>
         <result column="appointment_end" property="appointmentEnd"/>
     </resultMap>
+    <resultMap id="room" type="roomDto">
+        <result column="id" property="id"/>
+        <result column="board_id" property="boardId"/>
+        <result column="type" property="type"/>
+        <result column="share_user_id" property="shareUserId"/>
+        <result column="not_share_user_id" property="notShareUserId"/>
+    </resultMap>
 
 
 
@@ -24,4 +31,11 @@
                                 appointment_start, appointment_end)
         VALUES (#{boardId}, #{shareUserId}, #{notShareUserId}, #{appointmentStart}, #{appointmentEnd});
     </insert>
+
+    <select id="getRoomListByUserId" parameterType="int" resultMap="room">
+        SELECT * FROM room where share_user_id = #{shareUserId} or not_share_user_id = #{notShareUserId};
+    </select>
+
+
+
 </mapper>

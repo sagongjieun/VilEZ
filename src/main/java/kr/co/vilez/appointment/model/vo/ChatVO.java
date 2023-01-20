@@ -6,15 +6,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @Document("Chat")
-@AllArgsConstructor
 public class ChatVO {
 
-    private String roomId;
-
-    private int type;
-
+    private int roomId;
+    private int fromUserId;
+    private int toUserId;
     private String content;
-
     private String time;
 
 }

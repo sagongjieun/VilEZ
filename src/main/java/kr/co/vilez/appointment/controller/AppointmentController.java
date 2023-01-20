@@ -89,15 +89,15 @@ public class AppointmentController {
     * */
     @MessageMapping("/recvchat")
     public ChatNoReadVO socketHandler(ChatNoReadVO chatNoReadVO) {
-        appointmentService.saveNoReadMsg(chatNoReadVO);
-        sendingOperations.convertAndSend("/sendchat/"+chatNoReadVO.getRoomId()+"/"+chatNoReadVO.getType(),chatNoReadVO);
+        appointmentService.recvMsg(chatNoReadVO);
+        //sendingOperations.convertAndSend("/sendchat/"+chatNoReadVO.getRoomId()+"/"+chatNoReadVO.getType(),chatNoReadVO);
         return chatNoReadVO;
     }
 
     @MessageMapping("/recvhere")
-    public ChatVO recvHereMsg(ChatVO chatVO) {
-        appointmentService.recvHereMsg(chatVO);
-        return chatVO;
+    public ChatNoReadVO recvHereMsg(ChatNoReadVO chatNoReadVO) {
+        appointmentService.recvHereMsg(chatNoReadVO);
+        return chatNoReadVO;
     }
 
     @MessageMapping("/recvlogin")
@@ -133,33 +133,14 @@ public class AppointmentController {
 
 
 
-
-
     @ResponseBody()
-    @PostMapping("/chat")
-    @ApiOperation(value = "roomId로 채팅기록을 불러온다. (채팅방을 다시 들어갈때) ",
-            notes = "EMAIL인증 서버를 불러온다. 'success' 또는 'fail' 문자열과 데이터를 반환한다." +
-                    "email : 이메일 정보로 데이터를 날리면 해당 이메일로 코드가 날라가고 " +
-                    "해쉬된 코드는 프론트에 저장된다.")
-    public ResponseEntity<?> loadChatByRoomId(@RequestBody String roomId) {
+    @GetMapping("/room/enter/{roomId}")
+    @ApiOperation(value = "roomId로 채팅기록을 불러온다. (채팅방을 다시 들어갈때) ")
+    public ResponseEntity<?> loadChatByRoomId(@PathVariable int roomId) {
         HttpVO http = new HttpVO();
         List<ChatVO> msg = appointmentService.loadMsgByRoomId(roomId);
         http.setFlag("success");
         http.setData(msg);
-        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
-    }
-
-    @ResponseBody()
-    @PostMapping("/chat/yet")
-    @ApiOperation(value = "roomId로 채팅기록을 불러온다. (채팅방을 다시 들어갈때) ",
-            notes = "EMAIL인증 서버를 불러온다. 'success' 또는 'fail' 문자열과 데이터를 반환한다." +
-                    "email : 이메일 정보로 데이터를 날리면 해당 이메일로 코드가 날라가고 " +
-                    "해쉬된 코드는 프론트에 저장된다.")
-    public ResponseEntity<?> loadNoReadChatByRoomId(@RequestBody RoomDto room) {
-        HttpVO http = new HttpVO();
-        //List<ChatVO> msg = appointmentService.loadMsgByRoomId(room.getRoomId());
-        http.setFlag("success");
-        //http.setData(msg);
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
 
@@ -182,12 +163,22 @@ public class AppointmentController {
     @PostMapping("/room")
     public ResponseEntity<?> createRoom(@RequestBody RoomDto room) {
         HttpVO http = new HttpVO();
-        List<Integer> data = new ArrayList<>();
+        List<RoomDto> data = new ArrayList<>();
         room = appointmentService.createRoom(room);
-        //data.add(room);
+        data.add(room);
         http.setFlag("success");
         http.setData(data);
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
 
+    @ResponseBody
+    @GetMapping("/room/{userId}")
+    public ResponseEntity<?> getRoomListByUserId(@PathVariable int userId) {
+        HttpVO http = new HttpVO();
+        http.setFlag("success");
+        List<Object> list = new ArrayList<>();
+        list.add(appointmentService.loadMyChatNoReadList(userId));
+        http.setData(list);
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
 }
