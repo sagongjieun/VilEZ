@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="dialog"
+            type="kr.co.vilez.ui.dialog.ConfirmDialog" />
+
+        <variable
+            name="message"
+            type="String" />
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/view_round_white"
+        android:gravity="center"
+        android:minWidth="300dp"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/confirm_title_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:minHeight="30dp"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:text="@{message}" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/confirm_no_btn"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="7dp"
+                android:layout_weight="1"
+                android:text="취소"
+                android:textSize="14sp"
+                style="?attr/materialButtonOutlinedStyle"
+                android:onClick="@{dialog.onCancelButtonClick}"/>
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/confirm_yes_btn"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="확인"
+                android:textSize="14sp"
+                android:onClick="@{dialog.onOkButtonClick}"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>
