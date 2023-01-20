@@ -33,9 +33,9 @@ class ApplicationClass: Application() {
     override fun onCreate() {
         super.onCreate()
 
-        /*sharedPreferences = getSharedPreferences("userInfo", MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences("userInfo", MODE_PRIVATE)
         editor = sharedPreferences.edit()
-        editor.commit() // data 저장*/
+        editor.commit() // data 저장
 
         val gson: Gson = GsonBuilder()
             .setLenient()
