@@ -6,7 +6,6 @@ import kr.co.vilez.appointment.model.mapper.AppointmentMapper;
 import kr.co.vilez.appointment.model.vo.ChatNoReadVO;
 import kr.co.vilez.appointment.model.vo.ChatVO;
 import kr.co.vilez.appointment.model.vo.MapVO;
-import kr.co.vilez.appointment.model.vo.RoomVO;
 import kr.co.vilez.appointment.model.dto.RoomDto;
 import kr.co.vilez.appointment.model.vo.*;
 import kr.co.vilez.tool.SHA256;
@@ -23,8 +22,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentDao appointmentDao;
 
-    @Autowired
-    AppointmentMapper appointmentMapper;
+    private final AppointmentMapper appointmentMapper;
 
     @Override
     public List<AppointmentDto> getAppointmentList(AppointmentDto appointmentDto) throws Exception {
@@ -38,8 +36,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     ////////////////////////////////////////// chat ///////////////////////////////////////////
 
-    @Autowired
-    private AppointmentDao appointmentDao;
+
 
     @Override
     public void deleteRoom(String roomId) {

@@ -6,7 +6,6 @@ import kr.co.vilez.appointment.model.dto.AppointmentDto;
 import kr.co.vilez.appointment.model.vo.ChatNoReadVO;
 import kr.co.vilez.appointment.model.vo.ChatVO;
 import kr.co.vilez.appointment.model.vo.MapVO;
-import kr.co.vilez.appointment.model.vo.RoomVO;
 
 import java.util.List;
 
