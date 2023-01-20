@@ -9,7 +9,7 @@ import ProductDeatilHeader from "./ProductDeatilHeader";
 import Map from "../common/Map";
 import ImageSlide from "../common/ImageSlide";
 import ProductDetailFooter from "./ProductDetailFooter";
-import baseImageSlide from "../../assets/images/baseImageSlide.PNG";
+import { getShareArticleByBoardId } from "../../api/share";
 
 const { kakao } = window;
 
@@ -17,8 +17,18 @@ const ProductDetail = () => {
   /* 임시 데이터 */
   const selectedLat = 37.39495141898642;
   const selectedLng = 127.1112037330217;
+
+  const [userId, setUserId] = useState(""); //eslint-disable-line no-unused-vars
+  const [title, setTitle] = useState(""); //eslint-disable-line no-unused-vars
+  const [category, setCategory] = useState(""); //eslint-disable-line no-unused-vars
+  const [content, setContent] = useState(""); //eslint-disable-line no-unused-vars
+  const [imageList, setImageList] = useState([]); //eslint-disable-line no-unused-vars
+  const [date, setDate] = useState(""); //eslint-disable-line no-unused-vars
+  const [startDay, setStartDay] = useState(""); //eslint-disable-line no-unused-vars
+  const [endDay, setEndDay] = useState(""); //eslint-disable-line no-unused-vars
+  const [hopeAreaLat, setHopeAreaLat] = useState(""); //eslint-disable-line no-unused-vars
+  const [hopeAreaLng, setHopeAreaLng] = useState(""); //eslint-disable-line no-unused-vars
   const [location, setLocation] = useState("");
-  const [imageSlideList, setImageSlideList] = useState([baseImageSlide]); // eslint-disable-line no-unused-vars
 
   // 위경도를 통한 주소 얻어오기
   useEffect(() => {
@@ -36,6 +46,12 @@ const ProductDetail = () => {
     }
   }, []);
 
+  useEffect(() => {
+    // const data = getShareArticleByBoardId(51); // boardId 임시데이터
+    getShareArticleByBoardId(51).then((data) => console.log(data));
+    // setTitle(data.title);
+  }, []);
+
   return (
     <div css={wrapper}>
       <ProductDeatilHeader
@@ -48,7 +64,7 @@ const ProductDetail = () => {
       <DivideLine />
 
       <div css={contentsWrapper}>
-        <ImageSlide imageSlideList={imageSlideList} />
+        <ImageSlide imageSlideList={imageList} />
         <div css={nickNameAndChatWrapper}>
           <div css={nickNameWrapper}>
             <img src={baseProfile} alt="baseProfile" />

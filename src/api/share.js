@@ -5,16 +5,28 @@ const formdataAxios = formdataInstance();
 
 // GET
 
+async function getShareArticleByBoardId(boardId) {
+  try {
+    const { data } = await jsonAxios.get(`/shareboard/detail/${boardId}`);
+
+    if (data.flag === "success") return data.data;
+    else console.log("일치하는 게시글이 없습니다.");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // POST
 
 async function postShareArticle(formData) {
   try {
     const { data } = await formdataAxios.post(`/shareboard`, formData);
 
-    data.flag ? alert("등록되었습니다 😀") : alert("등록에 실패하였습니다 😥");
+    if (data.flag === "success") alert("등록되었습니다 😀");
+    else alert("공유 글 등록에 실패하였습니다 😥");
   } catch (error) {
     console.log(error);
   }
 }
 
-export { postShareArticle };
+export { getShareArticleByBoardId, postShareArticle };
