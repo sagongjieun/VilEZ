@@ -11,12 +11,16 @@
         <result column="appointment_end" property="appointmentEnd"/>
     </resultMap>
 
-    <select id="">
 
+
+    <select id="getAppointmentList" parameterType="int" resultMap="appointment">
+        SELECT appointment_id, board_id, share_user_id, not_share_user_id, appointment_start, appointment_end
+        FROM appointment
+        WHERE board_id = #{boardId};
     </select>
 
     <insert id="create" parameterType="appointmentDto">
-        INSERT INTO appointment(board_id, share_user_id, not_share_user_idm
+        INSERT INTO appointment(board_id, share_user_id, not_share_user_id,
                                 appointment_start, appointment_end)
         VALUES (#{boardId}, #{shareUserId}, #{notShareUserId}, #{appointmentStart}, #{appointmentEnd});
     </insert>
