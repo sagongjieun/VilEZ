@@ -17,20 +17,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <meta-data android:name="com.kakao.sdk.AppKey" android:value="66676a678632bb4a0aa95b77fd0235f8" />
-        <activity
-            android:name=".ui.user.RegisterActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".ui.user.FindPasswordActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+
         <activity
             android:name=".ui.IntroActivity"
             android:exported="false">
