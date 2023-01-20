@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.vilez.appointment.model.mapper.AppointmentMapper">
+    <resultMap id="appointment" type="appointmentDto">
+        <result column="appointment_id" property="appointmentId"/>
+        <result column="board_id" property="boardId"/>
+        <result column="share_user_id" property="shareUserId"/>
+        <result column="not_share_user_id" property="notShareUserId"/>
+        <result column="appointment_start" property="appointmentStart"/>
+        <result column="appointment_end" property="appointmentEnd"/>
+    </resultMap>
+
+    <select id="">
+
+    </select>
+
+    <insert id="create" parameterType="appointmentDto">
+        INSERT INTO appointment(board_id, share_user_id, not_share_user_idm
+                                appointment_start, appointment_end)
+        VALUES (#{boardId}, #{shareUserId}, #{notShareUserId}, #{appointmentStart}, #{appointmentEnd});
+    </insert>
+</mapper>
