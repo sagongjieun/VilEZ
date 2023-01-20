@@ -2,6 +2,7 @@ package kr.co.vilez.appointment.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import kr.co.vilez.appointment.model.dto.AppointmentDto;
 import kr.co.vilez.appointment.model.dto.RoomDto;
 import kr.co.vilez.appointment.model.service.AppointmentService;
 import kr.co.vilez.appointment.model.vo.*;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@RequestMapping("/appoint")
+@RequestMapping("/appointments")
 @Controller
 @AllArgsConstructor
 @Slf4j
@@ -27,6 +28,52 @@ import java.util.List;
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
+
+    @PutMapping
+    public ResponseEntity<?> modifyAppointment(AppointmentDto appointmentDto){
+        HttpVO httpVO = new HttpVO();
+
+        try{
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
+    }
+
+    @GetMapping()
+    public ResponseEntity<?> getAppointmentList(AppointmentDto appointmentDto){
+        HttpVO httpVO = new HttpVO();
+        List<Object> data = new ArrayList<>();
+
+        try {
+            data.add(appointmentService.getAppointmentList(appointmentDto));
+            httpVO.setFlag("success");
+            httpVO.setData(data);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
+    }
+
+    @PostMapping()
+    public ResponseEntity<?> createAppointment(@RequestBody AppointmentDto appointmentDto){
+        HttpVO httpVO = new HttpVO();
+
+        try {
+            appointmentService.create(appointmentDto);
+            httpVO.setFlag("success");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
+    }
+
+    //////////////////////////////////////// chat /////////////////////////////////////////
+
     private final SimpMessageSendingOperations sendingOperations;
 
 
@@ -139,6 +186,5 @@ public class AppointmentController {
         http.setData(data);
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
-
 
 }
