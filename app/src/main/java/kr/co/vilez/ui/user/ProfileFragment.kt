@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,8 +23,10 @@ import retrofit2.awaitResponse
 private const val TAG = "빌리지_ProfileFragment"
 class ProfileFragment : Fragment() {
     private lateinit var binding:FragmentProfileBinding
+    private lateinit var mainActivity: MainActivity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mainActivity = context as MainActivity
     }
 
     override fun onCreateView(
@@ -51,8 +54,22 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    fun logout(view:View) {
+    fun logout(view: View){ // 로그아웃 preference 지우기
+        Log.d(TAG, "logout: 삭제 전 autoLogin = ${ApplicationClass.sharedPreferences.getBoolean("autoLogin",false)}")
+        ApplicationClass.sharedPreferences.edit {
+            remove("autoLogin")
+            apply()
+        }
 
+        Log.d(TAG, "logout: 로그아웃 성공")
+        Log.d(TAG, "logout: 삭제 후 autoLogin = ${ApplicationClass.sharedPreferences.getBoolean("autoLogin", false)}")
+
+        // 로그아웃 후 로그인 화면이동
+        val intent = Intent(mainActivity, LoginActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+        startActivity(intent)
     }
 
 
