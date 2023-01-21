@@ -10,19 +10,28 @@ import Map from "../common/Map";
 import ImageSlide from "../common/ImageSlide";
 import ProductDetailFooter from "./ProductDetailFooter";
 import ProductRelated from "./ProductRelated";
+import { getShareArticleByBoardId } from "../../api/share";
+import elapsedTime from "./ProductElapsedTime";
 
 const { kakao } = window;
 
 const ProductDetail = () => {
-  /* 임시 데이터 */
-  const selectedLat = 37.39495141898642;
-  const selectedLng = 127.1112037330217;
+  const [userId, setUserId] = useState(""); //eslint-disable-line no-unused-vars
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [content, setContent] = useState("");
+  const [imageList, setImageList] = useState([]); //eslint-disable-line no-unused-vars
+  const [date, setDate] = useState("");
+  const [startDay, setStartDay] = useState("");
+  const [endDay, setEndDay] = useState("");
+  const [hopeAreaLat, setHopeAreaLat] = useState("");
+  const [hopeAreaLng, setHopeAreaLng] = useState("");
   const [location, setLocation] = useState("");
 
   // 위경도를 통한 주소 얻어오기
   useEffect(() => {
     const geocoder = new kakao.maps.services.Geocoder();
-    const latlng = new kakao.maps.LatLng(selectedLat, selectedLng);
+    const latlng = new kakao.maps.LatLng(hopeAreaLat, hopeAreaLng);
 
     searchDetailAddrFromCoords(latlng, function (result, status) {
       if (status === kakao.maps.services.Status.OK) {
@@ -33,21 +42,34 @@ const ProductDetail = () => {
     function searchDetailAddrFromCoords(coords, callback) {
       geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
     }
+  }, [hopeAreaLat, hopeAreaLng]);
+
+  useEffect(() => {
+    getShareArticleByBoardId(51).then((res) => {
+      const data = res[0];
+
+      /** data.userId로 사용자 정보 얻기 비동기 요청 필요 **/
+      setUserId(data.userId);
+      setTitle(data.title);
+      setCategory(data.category);
+      setDate(elapsedTime(data.date));
+      // setImageList(data.list);
+      setContent(data.content);
+      setStartDay(data.startDay);
+      setEndDay(data.endDay);
+      setHopeAreaLat(data.hopeAreaLat);
+      setHopeAreaLng(data.hopeAreaLng);
+    });
   }, []);
 
   return (
     <div css={wrapper}>
-      <ProductDeatilHeader
-        title={"맥북에어 M1 공유합니다."}
-        category={"전자기기"}
-        time={"1시간"}
-        bookmarkCount={"25"}
-      />
+      <ProductDeatilHeader title={title} category={category} time={date} bookmarkCount={"25"} />
 
       <DivideLine />
 
       <div css={contentsWrapper}>
-        <ImageSlide />
+        <ImageSlide imageSlideList={imageList} />
         <div css={nickNameAndChatWrapper}>
           <div css={nickNameWrapper}>
             <img src={baseProfile} alt="baseProfile" />
@@ -64,12 +86,14 @@ const ProductDetail = () => {
         </div>
         <div css={contentWrapper}>
           <h3>설명</h3>
-          <textarea readOnly></textarea>
+          <textarea readOnly value={content}></textarea>
         </div>
         <div css={hopeDateWrapper}>
           <h3>희망 공유 기간</h3>
           <div>
-            <span>2023.01.11 - 2023.02.20</span>
+            <span>
+              {startDay} - {endDay}
+            </span>
           </div>
         </div>
         <div css={hopeAreaWrapper}>
@@ -77,7 +101,7 @@ const ProductDetail = () => {
             <h3>희망 공유 장소</h3>
             <span>{location}</span>
           </div>
-          <Map readOnly={true} selectedLat={selectedLat} selectedLng={selectedLng} />
+          <Map readOnly={true} selectedLat={hopeAreaLat} selectedLng={hopeAreaLng} />
         </div>
       </div>
 
@@ -107,8 +131,6 @@ const wrapper = css`
   display: flex;
   flex-direction: column;
 `;
-
-/* ContentsWrapper */
 
 const contentsWrapper = css`
   display: flex;
