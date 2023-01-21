@@ -1,6 +1,5 @@
 package kr.co.vilez.ui.dialog
 
-import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -10,7 +9,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import kr.co.vilez.R
-import kr.co.vilez.databinding.DialogAlertBinding
 import kr.co.vilez.databinding.DialogAlertWithCallbackBinding
 
 
