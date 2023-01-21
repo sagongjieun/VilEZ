@@ -51,7 +51,9 @@ class ProfileFragment : Fragment() {
                 val dialog = AlertDialogWithCallback(object : AlertDialogInterface {
                     override fun onYesButtonClick(id: String) {
                         Log.d(TAG, "로그인 성공, 받아온 user = ${result.data[0]}")
-                        binding.tvProfileUserInfo.text = result.data[0].toString()
+
+                        val userInfo:User = result.data[0]
+                        binding.tvProfileUserInfo.text = userInfo.toString()
                     }
                 }, "로그인 성공", "")
                 dialog.isCancelable = false // 알림창이 띄워져있는 동안 배경 클릭 막기
@@ -85,6 +87,10 @@ class ProfileFragment : Fragment() {
 
         dialog.isCancelable = false // 알림창이 띄워져있는 동안 배경 클릭 막기
         dialog.show(mainActivity.supportFragmentManager, "Logout")
+    }
+
+    fun editProfile(view: View) { // 프로필 이미지, 닉네임 변경하는 곳으로 이동
+
     }
 
 }
