@@ -9,6 +9,7 @@ import ProductDeatilHeader from "./ProductDeatilHeader";
 import Map from "../common/Map";
 import ImageSlide from "../common/ImageSlide";
 import ProductDetailFooter from "./ProductDetailFooter";
+import ProductRelated from "./ProductRelated";
 import { getShareArticleByBoardId } from "../../api/share";
 
 const { kakao } = window;
@@ -100,7 +101,17 @@ const ProductDetail = () => {
 
       <DivideLine />
 
-      <div>관련 게시글</div>
+      <div css={relatedProductWrapper}>
+        <div>
+          <h3>관련 게시글</h3>
+          <a>더 보기</a>
+        </div>
+        <div>
+          <ProductRelated />
+          <ProductRelated />
+          <ProductRelated />
+        </div>
+      </div>
 
       <DivideLine />
 
@@ -236,6 +247,28 @@ const hopeAreaWrapper = css`
 
     & span {
       color: #8a8a8a;
+    }
+  }
+`;
+
+const relatedProductWrapper = css`
+  margin: 60px 0;
+  display: flex;
+  flex-direction: column;
+
+  & > div {
+    display: flex;
+    flex-direction: row;
+  }
+
+  & > div:nth-of-type(1) {
+    margin-bottom: 30px;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    & > a {
+      cursor: pointer;
+      font-size: 18px;
     }
   }
 `;
