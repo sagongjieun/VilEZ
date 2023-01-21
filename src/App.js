@@ -6,7 +6,7 @@ import ChatOpenIcon from "./pages/ChatOpenIcon";
 import MainNavBar from "./components/modal/MainNavBar";
 import Product from "./pages/Product";
 import Signup from "./pages/Signup";
-import EditProfile from "./components/modal/EdifProfile";
+import Profile from "./pages/Profile";
 function App() {
   return (
     <BrowserRouter>
@@ -18,8 +18,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/product/*" element={<Product />} />
+          <Route path="/profile/*" element={<Profile />} />
         </Routes>
-        <EditProfile />
       </div>
     </BrowserRouter>
   );
