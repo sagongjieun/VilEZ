@@ -8,12 +8,45 @@
         <variable
             name="fragment"
             type="kr.co.vilez.ui.user.ProfileFragment" />
+
+        <variable
+            name="user"
+            type="kr.co.vilez.data.model.User" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/tv_user_point"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{user.point+`p`}"
+            android:textColor="@color/main_1"
+            app:layout_constraintStart_toEndOf="@+id/iv_user_point"
+            app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+        <ImageView
+            android:id="@+id/iv_user_point"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toStartOf="@id/textView6"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintTop_toBottomOf="@+id/progress_bar_manner"
+            app:layout_constraintStart_toEndOf="@id/textView4"
+            app:srcCompat="@drawable/star" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="나의 포인트"
+            android:layout_marginStart="2dp"
+            app:layout_constraintTop_toTopOf="@+id/iv_user_point"
+            app:layout_constraintStart_toEndOf="@id/iv_user_point"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_profile_logout"
@@ -30,9 +63,9 @@
             android:id="@+id/btn_profile_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:onClick="@{fragment.logout}"
             android:text="로그아웃 rest"
-            android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btn_profile_logout"
             app:layout_constraintTop_toTopOf="parent" />
@@ -45,6 +78,272 @@
             android:text="유저 정보"
             android:textAlignment="center"
             app:layout_constraintTop_toBottomOf="@id/btn_profile_login" />
+
+
+        <ImageView
+            android:id="@+id/iv_profile_img"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="50dp"
+            android:background="@drawable/img_default_profile"
+            android:src="@{user.profileImg}"
+            app:layout_constraintEnd_toStartOf="@+id/tv_profile_nickName"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_profile_user_info" />
+
+        <ImageButton
+            android:id="@+id/iv_edit"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/btn_edit"
+            android:onClick="@{fragment.editProfile}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tv_profile_nickName"
+            app:layout_constraintTop_toBottomOf="@+id/tv_profile_user_info"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <TextView
+            android:id="@+id/tv_profile_nickName"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:text="@{user.nickName}"
+            android:textAlignment="center"
+            android:textColor="@color/text_black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_edit"
+            app:layout_constraintEnd_toStartOf="@+id/iv_edit"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/iv_profile_img" />
+
+
+        <View
+            android:id="@+id/view_manner_helper"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toStartOf="@id/tv_profile_manner_point"
+            app:layout_constraintStart_toEndOf="@id/iv_manner_help"
+            app:layout_constraintTop_toBottomOf="@id/tv_profile_nickName" />
+
+        <TextView
+            android:id="@+id/tv_maner_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="4dp"
+            android:text="매너지수"
+            app:layout_constraintEnd_toStartOf="@+id/tv_manner_level"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_profile_img" />
+
+        <TextView
+            android:id="@+id/tv_manner_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:text="Lv.4"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_maner_title"
+            app:layout_constraintEnd_toStartOf="@+id/tv_manner_emoji"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tv_maner_title"
+            app:layout_constraintTop_toTopOf="@+id/tv_maner_title"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/tv_manner_emoji"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:text="😊"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_manner_level"
+            app:layout_constraintEnd_toStartOf="@+id/iv_manner_help"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tv_manner_level"
+            app:layout_constraintTop_toTopOf="@+id/tv_manner_level"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <ImageView
+            android:id="@+id/iv_manner_help"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_marginStart="2dp"
+            android:background="@drawable/question_mark"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_manner_emoji"
+            app:layout_constraintStart_toEndOf="@+id/tv_manner_emoji"
+            app:layout_constraintTop_toTopOf="@+id/tv_manner_emoji" />
+
+
+        <ProgressBar
+            android:id="@+id/progress_bar_manner"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:max="100"
+            android:progress="80"
+            android:progressTint="@color/main_1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_manner_emoji" />
+
+        <TextView
+            android:id="@+id/tv_profile_manner_point"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:text="@{user.manner+`점`}"
+            android:textColor="@color/main_1"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/view_manner_helper"
+            app:layout_constraintTop_toBottomOf="@id/iv_profile_img" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="나의 동네"
+            android:layout_marginStart="2dp"
+            app:layout_constraintStart_toEndOf="@+id/imageView4"
+            app:layout_constraintTop_toTopOf="@+id/imageView4" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/progress_bar_manner"
+            app:srcCompat="@drawable/location" />
+
+        <TextView
+            android:id="@+id/tv_user_area"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{user.area}"
+            android:textColor="@color/main_1"
+            app:layout_constraintStart_toStartOf="@+id/textView4"
+            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+        <TextView
+            android:id="@+id/tv_recently_shared_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="전동드릴 빌려드릴게요"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.492"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_recently_shared_product" />
+
+        <TextView
+            android:id="@+id/tv_recently_shared_product_dday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3일 남았어요"
+            android:textColor="@color/main_1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_recently_shared_product" />
+
+        <ImageView
+            android:id="@+id/iv_recently_shared_product"
+            android:layout_width="250dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_user_point"
+            android:background="@color/bg_sub_2"/>
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
+            android:text="나의 공유"
+            android:textColor="@color/text_black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_recently_shared_product_dday" />
+
+        <ListView
+            android:id="@+id/lv_menu_share"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView9"
+            tools:listitem=""/>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/dv_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lv_menu_share"/>
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="설정"
+            android:textColor="@color/text_black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dv_settings" />
+
+        <ListView
+            android:id="@+id/lv_menu_settings"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView10" />
+
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/dv_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lv_menu_settings"/>
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="계정"
+            android:textColor="@color/text_black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dv_account"
+            />
+
+        <ListView
+            android:id="@+id/lv_menu_account"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView11"
+            tools:listitem=""/>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
