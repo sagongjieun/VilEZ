@@ -11,6 +11,7 @@ import ImageSlide from "../common/ImageSlide";
 import ProductDetailFooter from "./ProductDetailFooter";
 import ProductRelated from "./ProductRelated";
 import { getShareArticleByBoardId } from "../../api/share";
+import elapsedTime from "./ProductElapsedTime";
 
 const { kakao } = window;
 
@@ -51,7 +52,7 @@ const ProductDetail = () => {
       setUserId(data.userId);
       setTitle(data.title);
       setCategory(data.category);
-      setDate(data.date);
+      setDate(elapsedTime(data.date));
       // setImageList(data.list);
       setContent(data.content);
       setStartDay(data.startDay);
