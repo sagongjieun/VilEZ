@@ -5,10 +5,12 @@ import ProductDetail from "../components/product/ProductDetail";
 
 const Product = () => {
   return (
-    <Routes>
-      <Route path="/regist" element={<ProductRegist />} />
-      <Route path="/detail" element={<ProductDetail />} />
-    </Routes>
+    <div>
+      <Routes>
+        <Route path="/regist" element={<ProductRegist />} />
+        <Route path="/detail" element={<ProductDetail />} />
+      </Routes>
+    </div>
   );
 };
 
