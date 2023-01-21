@@ -107,7 +107,7 @@ const ProductRegist = () => {
             hopeAreaLng: hopeAreaLng,
             startDay: startDay,
             title: title,
-            userId: 1, // 임시 데이터
+            userId: 28, // 임시 데이터
           }),
         ],
         { type: "application/json" }
