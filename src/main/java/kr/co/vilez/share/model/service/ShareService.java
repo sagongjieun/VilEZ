@@ -13,11 +13,15 @@ public interface ShareService {
     HttpVO loadShareList(PageNavigator pageNavigator) throws Exception;
     HttpVO delete(int boardId) throws Exception;
     HttpVO update(ShareDto shareDto, List<MultipartFile> files) throws Exception;
-    HttpVO bookmarkList(String boardId) throws Exception;
-    HttpVO isBookmark(String boardId, String userId) throws Exception;
-    HttpVO bookmark(String boardId, String userId, String state) throws Exception;
-    HttpVO detail(String boardId) throws Exception;
+    HttpVO bookmarkList(int boardId) throws Exception;
+    HttpVO isBookmark(int boardId, int userId) throws Exception;
+    HttpVO bookmark(int boardId, int userId, String state) throws Exception;
+    HttpVO detail(int boardId) throws Exception;
     HttpVO insert(ShareDto shareDto, List<MultipartFile> files) throws Exception;
+
+    HttpVO addBookmark(int boardId, int userId);
+
+    HttpVO deleteBookmark(int boardId, int userId);
 
 //    HttpVO boardList() throws Exception;
 

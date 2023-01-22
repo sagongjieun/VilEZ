@@ -1,11 +1,13 @@
 package kr.co.vilez.share.controller;
 
+import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import kr.co.vilez.data.HttpVO;
 import kr.co.vilez.share.model.dto.PageNavigator;
 import kr.co.vilez.share.model.dto.ShareDto;
 import kr.co.vilez.share.model.service.ShareService;
 import lombok.Getter;
+import lombok.Value;
 import lombok.extern.log4j.Log4j2;
 import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,7 @@ public class ShareController {
     ShareService shareService;
 
     @GetMapping("/bookmark/{boardId}")
-    public ResponseEntity<?> bookmarkList(@PathVariable String boardId){
+    public ResponseEntity<?> bookmarkList(@PathVariable int boardId){
         httpVO = new HttpVO();
 
         try {
@@ -41,8 +43,8 @@ public class ShareController {
     }
 
     @GetMapping("/bookmark/{boardId}/{userId}")
-    public ResponseEntity<?> isBookmark(@PathVariable("boardId") String boardId,
-                                        @PathVariable("userId") String userId){
+    public ResponseEntity<?> isBookmark(@PathVariable("boardId") int boardId,
+                                        @PathVariable("userId") int userId){
         httpVO = new HttpVO();
 
         try{
@@ -55,14 +57,41 @@ public class ShareController {
         return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
     }
     @GetMapping("/bookmark")
-    public ResponseEntity<?> bookmark(@RequestParam String boardId,
-                                      @RequestParam String email,
+    public ResponseEntity<?> bookmark(@RequestParam int boardId,
+                                      @RequestParam int userId,
                                       @RequestParam String state){
+
+        try {
+            httpVO = shareService.bookmark(boardId, userId, state);
+            httpVO.setFlag("success");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
+    }
+    @ApiOperation(value = "bookmark 등록")
+    @PostMapping("/bookmark")
+    public ResponseEntity<?> addBookmark(@RequestParam int boardId,
+                                      @RequestParam int userId){
         httpVO = new HttpVO();
 
         try {
-            httpVO = shareService.bookmark(boardId, email, state);
-            httpVO.setFlag("success");
+            httpVO = shareService.addBookmark(boardId, userId);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
+    }
+    @ApiOperation(value = "bookmark 삭제")
+    @DeleteMapping("/bookmark")
+    public ResponseEntity<?> deleteBookmark(@RequestParam int boardId,
+                                         @RequestParam int userId){
+        httpVO = new HttpVO();
+
+        try {
+            httpVO = shareService.deleteBookmark(boardId, userId);
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -85,7 +114,7 @@ public class ShareController {
     }
 
     @GetMapping("/detail/{boardId}")
-    public ResponseEntity<?> detail(@PathVariable String boardId){
+    public ResponseEntity<?> detail(@PathVariable int boardId){
         httpVO = new HttpVO();
 
         try{
