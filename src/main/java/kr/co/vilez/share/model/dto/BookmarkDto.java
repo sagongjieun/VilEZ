@@ -10,6 +10,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @Document("bookmark")
 public class BookmarkDto {
-    String boardId;
-    String userId;
+    int boardId;
+    int userId;
 }

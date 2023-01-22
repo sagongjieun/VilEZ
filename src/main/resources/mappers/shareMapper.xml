@@ -58,7 +58,7 @@
         select * from sharing_view where user_id = #{userId};
     </select>
 
-    <select id="detailArticle" parameterType="string" resultMap="share">
+    <select id="detailArticle" parameterType="int" resultMap="share">
         select * from sharing_view where id = #{boardId};
     </select>
 

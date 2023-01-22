@@ -30,7 +30,7 @@ public class ShareServiceImpl implements ShareService{
     ShareMapper shareMapper;
 
     @Override
-    public HttpVO bookmarkList(String boardId) throws Exception {
+    public HttpVO bookmarkList(int boardId) throws Exception {
         httpVO = new HttpVO();
         List<Object> data = new ArrayList<>();
 
@@ -42,7 +42,7 @@ public class ShareServiceImpl implements ShareService{
     }
 
     @Override
-    public HttpVO isBookmark(String boardId, String userId) throws Exception {
+    public HttpVO isBookmark(int boardId, int userId) throws Exception {
         httpVO = new HttpVO();
         List<Object> data = new ArrayList<>();
 
@@ -55,7 +55,7 @@ public class ShareServiceImpl implements ShareService{
     }
 
     @Override
-    public HttpVO bookmark(String boardId, String userId, String state) throws Exception {
+    public HttpVO bookmark(int boardId, int userId, String state) throws Exception {
         httpVO = new HttpVO();
 
         if(state.equals("on")){
@@ -84,13 +84,13 @@ public class ShareServiceImpl implements ShareService{
     }
 
     @Override
-    public HttpVO detail(String boardId) throws Exception {
+    public HttpVO detail(int boardId) throws Exception {
         httpVO = new HttpVO();
         List<Object> data = new ArrayList<>();
 
         ShareDto shareDto = shareMapper.detailArticle(boardId);
-        List<ImgPath> imgPaths = shareDao.list(Integer.parseInt(boardId));
-        shareDto.setBookmarkCnt(shareDao.countBookMark(Integer.parseInt(boardId)));
+        List<ImgPath> imgPaths = shareDao.list(boardId);
+        shareDto.setBookmarkCnt(shareDao.countBookMark(boardId));
         shareDto.setList(imgPaths);
         data.add(shareDto);
 
@@ -194,6 +194,22 @@ public class ShareServiceImpl implements ShareService{
     }
 
     @Override
+    public HttpVO addBookmark(int boardId, int userId) {
+        shareDao.insertBookmark(boardId,userId);
+        httpVO = new HttpVO();
+        httpVO.setFlag("success");
+        return httpVO;
+    }
+
+    @Override
+    public HttpVO deleteBookmark(int boardId, int userId) {
+        shareDao.deleteBookmark(boardId,userId);
+        httpVO = new HttpVO();
+        httpVO.setFlag("success");
+        return httpVO;
+    }
+
+    @Override
     public HttpVO loadShareList(PageNavigator pageNavigator) throws Exception {
         httpVO = new HttpVO();
         List<Object> data = new ArrayList<>();
@@ -212,7 +228,7 @@ public class ShareServiceImpl implements ShareService{
 
             List<ImgPath> imgPaths = shareDao.list(shareListDto.getId());
             shareListDto.setList(imgPaths);
-            List<BookmarkDto> bookmarkList = shareDao.selectBookmarkList(Integer.toString(shareListDto.getId()));
+            List<BookmarkDto> bookmarkList = shareDao.selectBookmarkList(shareListDto.getId());
 
             totalListShare.setShareListDto(shareListDto);
             totalListShare.setList(bookmarkList);
