@@ -11,6 +11,7 @@ public interface UserService {
     HttpVO modifyUserInfo(UserDto userDto) throws Exception;
     HttpVO modifyProfile(String email, MultipartFile multipartFile) throws Exception;
     HttpVO login(UserDto userDto) throws Exception;
+    HttpVO nickName(int id) throws Exception;
     HttpVO refreshCheck(String token) throws Exception;
     HttpVO join(UserDto userDto) throws Exception;
 }
