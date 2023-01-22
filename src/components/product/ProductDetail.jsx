@@ -10,13 +10,15 @@ import Map from "../common/Map";
 import ImageSlide from "../common/ImageSlide";
 import ProductDetailFooter from "./ProductDetailFooter";
 import ProductRelated from "./ProductRelated";
-import { getShareArticleByBoardId } from "../../api/share";
+import { getShareArticleByBoardId, getBookmarkStateByUserId } from "../../api/share";
 import elapsedTime from "./ProductElapsedTime";
+import bookmarkCancel from "../../assets/images/bookmarkCancel.png";
 
 const { kakao } = window;
 
 const ProductDetail = () => {
   const [userId, setUserId] = useState(""); //eslint-disable-line no-unused-vars
+  const [boardId, setBoardId] = useState("");
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [content, setContent] = useState("");
@@ -27,6 +29,14 @@ const ProductDetail = () => {
   const [hopeAreaLat, setHopeAreaLat] = useState("");
   const [hopeAreaLng, setHopeAreaLng] = useState("");
   const [location, setLocation] = useState("");
+
+  const [isBookmarked, setIsBookmarked] = useState(false);
+
+  function onClickBookmark() {
+    /** 북마크 등록, 취소에 대한 API 필요 */
+    if (isBookmarked) setIsBookmarked(false);
+    else setIsBookmarked(true);
+  }
 
   // 위경도를 통한 주소 얻어오기
   useEffect(() => {
@@ -49,8 +59,9 @@ const ProductDetail = () => {
     getShareArticleByBoardId(52).then((res) => {
       const data = res[0];
 
-      /** data.userId로 사용자 정보 얻기 비동기 요청 필요 **/
+      /** data.userId로 공유자 정보 얻기 비동기 요청 필요 */
       setUserId(data.userId);
+      setBoardId(data.id);
       setTitle(data.title);
       setCategory(data.category);
       setDate(elapsedTime(data.date));
@@ -60,6 +71,17 @@ const ProductDetail = () => {
       setEndDay(data.endDay);
       setHopeAreaLat(data.hopeAreaLat);
       setHopeAreaLng(data.hopeAreaLng);
+
+      /** userId가 아니라 recoil에서 현재 로그인한 유저의 id를 파라미터로 넣어야 함. 테스트를 위해 임시로 userId로 넣음. */
+      // 내(현재 로그인 한 유저)가 이 게시글을 북마크했는지 여부 확인
+      if (boardId && userId) {
+        getBookmarkStateByUserId(boardId, userId).then((res) => {
+          const data = res[0];
+
+          if (!data) setIsBookmarked(false);
+          else setIsBookmarked(true);
+        });
+      }
     });
   }, []);
 
@@ -81,7 +103,11 @@ const ProductDetail = () => {
             <span>😀</span>
           </div>
           <div css={chatWrapper}>
-            <img src={bookmark} alt="bookmark" />
+            {isBookmarked ? (
+              <img src={bookmark} alt="bookmark" onClick={onClickBookmark} />
+            ) : (
+              <img src={bookmarkCancel} alt="bookmarkCancel" onClick={onClickBookmark} />
+            )}
             <MiddleWideButton text="채팅하기" />
           </div>
         </div>
