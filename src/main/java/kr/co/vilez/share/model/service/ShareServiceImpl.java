@@ -90,7 +90,7 @@ public class ShareServiceImpl implements ShareService{
 
         ShareDto shareDto = shareMapper.detailArticle(boardId);
         List<ImgPath> imgPaths = shareDao.list(Integer.parseInt(boardId));
-
+        shareDto.setBookmarkCnt(shareDao.countBookMark(Integer.parseInt(boardId)));
         shareDto.setList(imgPaths);
         data.add(shareDto);
 

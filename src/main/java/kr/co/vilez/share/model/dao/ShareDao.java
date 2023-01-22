@@ -70,4 +70,7 @@ public class ShareDao  {
         return imgs;
     }
 
+    public int countBookMark(int boardId) {
+        return (int) mongoTemplate.count(Query.query(Criteria.where("boardId").is(boardId)), BookmarkDto.class);
+    }
 }
