@@ -69,8 +69,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public RoomDto createRoom(RoomDto room) {
-       //return appointmentDao.createRoom(room);
-        return null;
+        return appointmentMapper.createRoom(room);
     }
 
     @Override

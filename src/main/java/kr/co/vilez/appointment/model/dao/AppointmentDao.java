@@ -93,14 +93,16 @@ public class AppointmentDao {
             chatNoReadByRoomId.put(chatVO.getRoomId(),chatLastVO);
         }
         ArrayList<ChatLastVO> datas = new ArrayList<>();
-        for (int a : chatNoReadByRoomId.keySet()) {
-            datas.add(chatNoReadByRoomId.get(a));
+        for (int roomId : chatNoReadByRoomId.keySet()) {
+            ChatLastVO chatLastVO = chatNoReadByRoomId.get(roomId);
+
+            chatLastVO.setTitle("임시 제목입니다. todo");
+            datas.add(chatLastVO);
         }
         chatDatasVO.setUserId(userId);
         chatDatasVO.setChatData(datas);
         return chatDatasVO;
     }
-
     public void saveMsg(ChatVO chatVO) {
         mongoTemplate.insert(chatVO);
     }
