@@ -31,7 +31,7 @@
         WHERE nickname = #{nickname};
     </select>
 
-    <select id="nickName" parameterType="int" resultMap="string">
+    <select id="nickName" parameterType="int" resultType="string">
         SELECT nickname from user where id = #{id}
     </select>
 
