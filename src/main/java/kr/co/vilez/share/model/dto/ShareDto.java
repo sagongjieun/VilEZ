@@ -25,6 +25,7 @@ public class ShareDto {
     String startDay;
     String endDay;
     List<ImgPath> list;
+    int bookmarkCnt;
     int state;
 
 }
