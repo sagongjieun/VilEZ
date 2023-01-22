@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 
 @Mapper
 public interface UserMapper {
@@ -17,7 +18,9 @@ public interface UserMapper {
     UserDto refreshCheck(HashMap<String, String> map) throws SQLException;
     void saveToken(HashMap<String, String> map) throws SQLException;
 
-    String nickName(int id) throws SQLException;
+    UserDto detail(int id) throws SQLException;
+    //DEBUG
+    List<UserDto> list() throws SQLException;
 
 }
 
