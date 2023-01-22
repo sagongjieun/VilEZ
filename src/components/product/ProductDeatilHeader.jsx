@@ -9,7 +9,7 @@ const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
       <div css={headerLeftSectionWrapper}>
         <span>{title}</span>
         <span>{category}</span>
-        <small>{time} 전</small>
+        <small>{time}</small>
       </div>
       <div css={headerRightSectionWrapper}>
         {/* Link로 변경 */}

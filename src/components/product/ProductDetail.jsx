@@ -20,7 +20,7 @@ const ProductDetail = () => {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [content, setContent] = useState("");
-  const [imageList, setImageList] = useState([]); //eslint-disable-line no-unused-vars
+  const [imageList, setImageList] = useState([]);
   const [date, setDate] = useState("");
   const [startDay, setStartDay] = useState("");
   const [endDay, setEndDay] = useState("");
@@ -45,7 +45,8 @@ const ProductDetail = () => {
   }, [hopeAreaLat, hopeAreaLng]);
 
   useEffect(() => {
-    getShareArticleByBoardId(51).then((res) => {
+    // boardId 임시 데이터
+    getShareArticleByBoardId(52).then((res) => {
       const data = res[0];
 
       /** data.userId로 사용자 정보 얻기 비동기 요청 필요 **/
@@ -53,7 +54,7 @@ const ProductDetail = () => {
       setTitle(data.title);
       setCategory(data.category);
       setDate(elapsedTime(data.date));
-      // setImageList(data.list);
+      setImageList(data.list);
       setContent(data.content);
       setStartDay(data.startDay);
       setEndDay(data.endDay);
