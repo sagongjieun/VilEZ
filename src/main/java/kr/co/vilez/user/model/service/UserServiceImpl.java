@@ -151,14 +151,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public HttpVO nickName(int id) throws Exception {
+    public HttpVO detail(int id) throws Exception {
         http = new HttpVO();
         http.setFlag("success");
         List<HashMap> data = new ArrayList<>();
-        String nickName = userMapper.nickName(id);
-        HashMap<String, String> map = new HashMap<>();
-        map.put("nickName",nickName);
+        UserDto user = userMapper.detail(id);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("nickName",user.getNickName());
+        map.put("area",user.getArea());
+        map.put("manner",user.getManner());
+        map.put("point",user.getPoint());
         data.add(map);
+        http.setData(data);
+        return http;
+    }
+
+    @Override
+    public HttpVO list() throws Exception{
+        http = new HttpVO();
+        http.setFlag("success");
+        List<UserDto> data = userMapper.list();
         http.setData(data);
         return http;
     }
