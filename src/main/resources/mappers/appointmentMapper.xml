@@ -36,6 +36,11 @@
         SELECT * FROM room where share_user_id = #{shareUserId} or not_share_user_id = #{notShareUserId};
     </select>
 
-
-
+    <insert id="creatRoom" parameterType="roomDto">
+        <selectKey resultType="int" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into room (type,board_id,share_user_id,not_share_user_id)
+        values (#{type},#{boardId}, #{shareUserId},#{notShareUserId});
+    </insert>
 </mapper>

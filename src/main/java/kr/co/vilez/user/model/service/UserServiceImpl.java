@@ -149,4 +149,17 @@ public class UserServiceImpl implements UserService {
 
         return http;
     }
+
+    @Override
+    public HttpVO nickName(int id) throws Exception {
+        http = new HttpVO();
+        http.setFlag("success");
+        List<HashMap> data = new ArrayList<>();
+        String nickName = userMapper.nickName(id);
+        HashMap<String, String> map = new HashMap<>();
+        map.put("nickName",nickName);
+        data.add(map);
+        http.setData(data);
+        return http;
+    }
 }

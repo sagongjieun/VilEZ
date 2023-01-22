@@ -17,5 +17,7 @@ public interface UserMapper {
     UserDto refreshCheck(HashMap<String, String> map) throws SQLException;
     void saveToken(HashMap<String, String> map) throws SQLException;
 
+    String nickName(int id) throws SQLException;
+
 }
 

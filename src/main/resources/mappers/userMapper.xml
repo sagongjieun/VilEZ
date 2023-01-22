@@ -31,6 +31,10 @@
         WHERE nickname = #{nickname};
     </select>
 
+    <select id="nickName" parameterType="int" resultMap="string">
+        SELECT nickname from user where id = #{id}
+    </select>
+
     <update id="modifyUserInfo" parameterType="UserDto">
         UPDATE user
         <set>

@@ -105,4 +105,15 @@ public class UserController {
 
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
+
+    @GetMapping("/nickname/{id}")
+    public ResponseEntity<?> nickName(@PathVariable int id){
+        try {
+            http = userService.nickName(id);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
 }
