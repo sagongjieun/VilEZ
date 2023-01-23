@@ -13,6 +13,8 @@ import ProductCardView from "./ProductCardView";
 import { getShareArticleByBoardId, getBookmarkStateByUserId, postBookmark, deleteBookmark } from "../../api/share";
 import elapsedTime from "./ProductElapsedTime";
 import bookmarkCancel from "../../assets/images/bookmarkCancel.png";
+import { getUserDetail } from "../../api/user";
+import MannerPoint from "../common/MannerPoint";
 
 const { kakao } = window;
 
@@ -32,6 +34,10 @@ const ProductDetail = () => {
   const [bookmarkCnt, setBookmarkCnt] = useState(0);
   const [state, setState] = useState(0); //eslint-disable-line no-unused-vars
   // 0 : 일반, 1 : 공유중
+  const [writerProfile, setWriterProfile] = useState(""); //eslint-disable-line no-unused-vars
+  const [writerNickname, setWriterNickname] = useState(""); //eslint-disable-line no-unused-vars
+  const [writerArea, setWriterArea] = useState(""); //eslint-disable-line no-unused-vars
+  const [writerManner, setWriterManner] = useState(""); //eslint-disable-line no-unused-vars
 
   const [isBookmarked, setIsBookmarked] = useState(false);
 
@@ -84,15 +90,33 @@ const ProductDetail = () => {
       /** userId가 아니라 recoil에서 현재 로그인한 유저의 id를 파라미터로 넣어야 함. 테스트를 위해 임시로 userId로 넣음. */
       // 내(현재 로그인 한 유저)가 이 게시글을 북마크했는지 여부 확인
       if (boardId && userId) {
-        getBookmarkStateByUserId(boardId, userId).then((res) => {
-          const data = res[0];
+        getBookmarkStateByUserId(boardId, userId)
+          .then((res) => {
+            const data = res[0];
 
-          if (!data) setIsBookmarked(false);
-          else setIsBookmarked(true);
-        });
+            if (!data) setIsBookmarked(false);
+            else setIsBookmarked(true);
+          })
+          .catch((error) => console.log(error));
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (userId) {
+      getUserDetail(userId)
+        .then((res) => {
+          const data = res[0];
+
+          /** 작성자 프로필이미지 받기 필요 */
+          // setWriterProfile(data.profile);
+          setWriterNickname(data.nickName);
+          setWriterArea(data.area);
+          setWriterManner(MannerPoint(data.manner));
+        })
+        .catch((error) => console.log(error));
+    }
+  }, [userId]);
 
   return (
     <div css={wrapper}>
@@ -106,10 +130,10 @@ const ProductDetail = () => {
           <div css={nickNameWrapper}>
             <img src={baseProfile} alt="baseProfile" />
             <div>
-              <span>닉네임</span>
-              <span>구미시 진평동</span>
+              <span>{writerNickname}</span>
+              <span>{writerArea}</span>
             </div>
-            <span>😀</span>
+            <span>{writerManner}</span>
           </div>
           <div css={chatWrapper}>
             {isBookmarked ? (
