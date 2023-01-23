@@ -10,7 +10,7 @@ import Map from "../common/Map";
 import ImageSlide from "../common/ImageSlide";
 import ProductDetailFooter from "./ProductDetailFooter";
 import ProductRelated from "./ProductRelated";
-import { getShareArticleByBoardId, getBookmarkStateByUserId } from "../../api/share";
+import { getShareArticleByBoardId, getBookmarkStateByUserId, postBookmark, deleteBookmark } from "../../api/share";
 import elapsedTime from "./ProductElapsedTime";
 import bookmarkCancel from "../../assets/images/bookmarkCancel.png";
 
@@ -29,13 +29,20 @@ const ProductDetail = () => {
   const [hopeAreaLat, setHopeAreaLat] = useState("");
   const [hopeAreaLng, setHopeAreaLng] = useState("");
   const [location, setLocation] = useState("");
+  const [bookmarkCnt, setBookmarkCnt] = useState(0);
+  const [state, setState] = useState(0); //eslint-disable-line no-unused-vars
+  // 0 : 일반, 1 : 공유중
 
   const [isBookmarked, setIsBookmarked] = useState(false);
 
   function onClickBookmark() {
-    /** 북마크 등록, 취소에 대한 API 필요 */
-    if (isBookmarked) setIsBookmarked(false);
-    else setIsBookmarked(true);
+    if (isBookmarked) {
+      deleteBookmark(boardId, userId);
+      setIsBookmarked(false);
+    } else {
+      postBookmark(boardId, userId);
+      setIsBookmarked(true);
+    }
   }
 
   // 위경도를 통한 주소 얻어오기
@@ -71,6 +78,8 @@ const ProductDetail = () => {
       setEndDay(data.endDay);
       setHopeAreaLat(data.hopeAreaLat);
       setHopeAreaLng(data.hopeAreaLng);
+      setBookmarkCnt(data.bookmarkCnt);
+      setState(data.state);
 
       /** userId가 아니라 recoil에서 현재 로그인한 유저의 id를 파라미터로 넣어야 함. 테스트를 위해 임시로 userId로 넣음. */
       // 내(현재 로그인 한 유저)가 이 게시글을 북마크했는지 여부 확인
@@ -87,7 +96,7 @@ const ProductDetail = () => {
 
   return (
     <div css={wrapper}>
-      <ProductDeatilHeader title={title} category={category} time={date} bookmarkCount={"25"} />
+      <ProductDeatilHeader title={title} category={category} time={date} bookmarkCount={bookmarkCnt} />
 
       <DivideLine />
 
@@ -108,7 +117,8 @@ const ProductDetail = () => {
             ) : (
               <img src={bookmarkCancel} alt="bookmarkCancel" onClick={onClickBookmark} />
             )}
-            <MiddleWideButton text="채팅하기" />
+            {/* 유저 구분 필요 */}
+            {state === 0 ? <MiddleWideButton text="채팅하기" /> : <MiddleWideButton text="예약하기" />}
           </div>
         </div>
         <div css={contentWrapper}>
