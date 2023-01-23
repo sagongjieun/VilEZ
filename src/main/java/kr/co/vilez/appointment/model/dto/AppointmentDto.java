@@ -14,5 +14,6 @@ public class AppointmentDto {
     private int notShareUserId;
     private String appointmentStart;
     private String appointmentEnd;
+    private int state;
 
 }

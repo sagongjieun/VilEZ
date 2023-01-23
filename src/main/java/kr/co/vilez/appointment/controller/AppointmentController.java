@@ -29,12 +29,17 @@ public class AppointmentController {
 
     private final AppointmentService appointmentService;
 
-    @PutMapping
-    public ResponseEntity<?> modifyAppointment(AppointmentDto appointmentDto){
+    // 내가 공유받은 물품 목록을 볼 수 있다.
+    // 한 게시글에서 여러번 물건을 빌렸으면 가장 최근에 빌린 내역만이 나온다.
+    @GetMapping("/my/{userId}")
+    public ResponseEntity<?> getMyAppointmentShare(@PathVariable int userId){
         HttpVO httpVO = new HttpVO();
+        List<Object> data = new ArrayList<>();
 
-        try{
-
+        try {
+            data.add(appointmentService.getMyAppointmentList(userId));
+            httpVO.setFlag("success");
+            httpVO.setData(data);
         } catch(Exception e){
             e.printStackTrace();
         }

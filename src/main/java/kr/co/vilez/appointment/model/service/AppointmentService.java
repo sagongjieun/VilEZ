@@ -10,6 +10,7 @@ import kr.co.vilez.appointment.model.vo.MapVO;
 import java.util.List;
 
 public interface AppointmentService {
+    public List<TotalListVO> getMyAppointmentList(int userId) throws Exception;
     public List<AppointmentDto> getAppointmentList(int boardId) throws Exception;
     public void create(AppointmentDto appointmentDto) throws Exception;
     public void deleteRoom(String roomId);

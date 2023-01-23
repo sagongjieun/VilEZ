@@ -11,7 +11,31 @@
         <result column="appointment_end" property="appointmentEnd"/>
     </resultMap>
 
+    <resultMap id="mylist" type="MyAppointListDto">
+        <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="title" property="title"/>
+        <result column="hope_area_lat" property="hopeAreaLat"/>
+        <result column="hope_area_lng" property="hopeAreaLng"/>
+        <result column="start_day" property="startDay"/>
+        <result column="end_day" property="endDay"/>
+        <result column="appointment_id" property="appointmentId"/>
+        <result column="share_user_id" property="shareUserId"/>
+        <result column="not_share_user_id" property="notShareUserId"/>
+    </resultMap>
 
+    <select id="getMyAppointmentList" parameterType="int" resultMap="mylist">
+        select id, user_id, title, hope_area_lat, hope_area_lng, start_day, end_day, appointment_id, share_user_id, not_share_user_id
+        from sharing_board as s
+                 right join(
+            select *
+            from appointment
+            where not_share_user_id = #{userId}
+        ) as a
+        on a.board_id = s.id
+        where (s.state >= 0 and a.state >= 0)
+        group by board_id;
+    </select>
 
     <select id="getAppointmentList" parameterType="int" resultMap="appointment">
         SELECT appointment_id, board_id, share_user_id, not_share_user_id, appointment_start, appointment_end
