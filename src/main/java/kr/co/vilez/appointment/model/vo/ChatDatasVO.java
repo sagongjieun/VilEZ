@@ -9,7 +9,8 @@ import java.util.List;
 
 @Data
 public class ChatDatasVO {
-    int userId;
     int noReadCount;
-    ArrayList<ChatLastVO> chatData;
+    String nickName;
+    String area;
+    ChatLastVO chatData;
 }

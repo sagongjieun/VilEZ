@@ -1,11 +1,21 @@
 package kr.co.vilez.appointment.model.vo;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-public class ChatLastVO {
-    int count;
+@AllArgsConstructor
+@Document("ChatLast")
+public class ChatLastVO implements Comparable<ChatLastVO>{
     int roomId;
-    String title;
+    int toUserId;
+    int fromUserId;
     String content;
+    long time;
+
+    @Override
+    public int compareTo(ChatLastVO o) {
+        return -Long.compare(this.time,o.time);
+    }
 }
