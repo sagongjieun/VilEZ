@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RequestMapping("/shareboard")
@@ -70,28 +71,26 @@ public class ShareController {
 
         return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
     }
-    @ApiOperation(value = "bookmark 등록")
+    @ApiOperation(value = "bookmark 등록", notes = "{boardId : Number , userId : Number}")
     @PostMapping("/bookmark")
-    public ResponseEntity<?> addBookmark(@RequestParam int boardId,
-                                      @RequestParam int userId){
+    public ResponseEntity<?> addBookmark(@RequestBody HashMap<String, Integer> map){
         httpVO = new HttpVO();
 
         try {
-            httpVO = shareService.addBookmark(boardId, userId);
+            httpVO = shareService.addBookmark(map.get("boardId"), map.get("userId"));
         } catch (Exception e){
             e.printStackTrace();
         }
 
         return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
     }
-    @ApiOperation(value = "bookmark 삭제")
+    @ApiOperation(value = "bookmark 삭제", notes = "{boardId : Number , userId : Number}")
     @DeleteMapping("/bookmark")
-    public ResponseEntity<?> deleteBookmark(@RequestParam int boardId,
-                                         @RequestParam int userId){
+    public ResponseEntity<?> deleteBookmark(@RequestBody HashMap<String, Integer> map){
         httpVO = new HttpVO();
 
         try {
-            httpVO = shareService.deleteBookmark(boardId, userId);
+            httpVO = shareService.deleteBookmark(map.get("boardId"), map.get("userId"));
         } catch (Exception e){
             e.printStackTrace();
         }
