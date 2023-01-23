@@ -1,7 +1,6 @@
 package kr.co.vilez.share.controller;
 
 import io.swagger.annotations.ApiOperation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import kr.co.vilez.data.HttpVO;
 import kr.co.vilez.share.model.dto.BookmarkDto;
 import kr.co.vilez.share.model.dto.PageNavigator;
