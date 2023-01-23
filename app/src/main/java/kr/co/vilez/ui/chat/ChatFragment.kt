@@ -59,7 +59,7 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
     ): View? {
         val binding = FragmentChatBinding.inflate(inflater, container, false)
         context ?: return binding.root
-        StompClient.runStomp()
+
         val mapView = MapView(context)
         binding.mapView.addView(mapView)
         CoroutineScope(Dispatchers.Main).launch {

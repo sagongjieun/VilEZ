@@ -12,6 +12,7 @@ import androidx.databinding.DataBindingUtil
 import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityMainBinding
 import kr.co.vilez.ui.chat.ChatFragment
+import kr.co.vilez.ui.chat.ChatlistFragment
 import kr.co.vilez.ui.share.ShareFragment
 import kr.co.vilez.ui.user.LoginActivity
 import kr.co.vilez.ui.user.ProfileFragment
@@ -72,7 +73,7 @@ class MainActivity : AppCompatActivity() {
 
                 // Fragment 변경
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.frame_layout_main, ChatFragment())
+                    .replace(R.id.frame_layout_main, ChatlistFragment())
                     .commit()
                 return true
             }
