@@ -87,7 +87,7 @@ const Map = ({ readOnly, sendLocation, selectedLat, selectedLng }) => {
 
 const mapWrapper = css`
   width: 100%;
-  height: 479px;
+  height: 100%;
   border-radius: 5px;
 `;
 
