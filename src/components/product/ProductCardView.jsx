@@ -4,7 +4,7 @@ import { css } from "@emotion/react";
 import { HiLocationMarker, HiCalendar, HiHeart } from "react-icons/hi";
 import image from "../../assets/images/firstbodyimage.png";
 
-const ProductRelated = () => {
+const ProductCardView = () => {
   return (
     <div css={relatedProductWrapper}>
       <div css={thumbnailWrapper}>
@@ -91,4 +91,4 @@ const infoWrapper = css`
   }
 `;
 
-export default ProductRelated;
+export default ProductCardView;

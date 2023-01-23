@@ -9,7 +9,7 @@ import ProductDeatilHeader from "./ProductDeatilHeader";
 import Map from "../common/Map";
 import ImageSlide from "../common/ImageSlide";
 import ProductDetailFooter from "./ProductDetailFooter";
-import ProductRelated from "./ProductRelated";
+import ProductCardView from "./ProductCardView";
 import { getShareArticleByBoardId, getBookmarkStateByUserId, postBookmark, deleteBookmark } from "../../api/share";
 import elapsedTime from "./ProductElapsedTime";
 import bookmarkCancel from "../../assets/images/bookmarkCancel.png";
@@ -17,7 +17,7 @@ import bookmarkCancel from "../../assets/images/bookmarkCancel.png";
 const { kakao } = window;
 
 const ProductDetail = () => {
-  const [userId, setUserId] = useState(""); //eslint-disable-line no-unused-vars
+  const [userId, setUserId] = useState("");
   const [boardId, setBoardId] = useState("");
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
@@ -150,9 +150,9 @@ const ProductDetail = () => {
           <a>더 보기</a>
         </div>
         <div>
-          <ProductRelated />
-          <ProductRelated />
-          <ProductRelated />
+          <ProductCardView />
+          <ProductCardView />
+          <ProductCardView />
         </div>
       </div>
 
@@ -289,6 +289,11 @@ const hopeAreaWrapper = css`
     & span {
       color: #8a8a8a;
     }
+  }
+
+  & > div:nth-of-type(2) {
+    width: 100%;
+    height: 479px;
   }
 `;
 
