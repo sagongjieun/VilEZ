@@ -289,6 +289,11 @@ const hopeAreaWrapper = css`
   flex-direction: column;
   width: 100%;
   margin-top: 60px;
+
+  & > div:nth-of-type(2) {
+    width: 100%;
+    height: 479px;
+  }
 `;
 
 const hopeAreaHeaderWrapper = css`
