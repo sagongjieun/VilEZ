@@ -12,16 +12,16 @@ import java.util.List;
 public interface AppointmentService {
     public List<TotalListVO> getMyAppointmentList(int userId) throws Exception;
     public List<AppointmentDto> getAppointmentList(int boardId) throws Exception;
-    public void create(AppointmentDto appointmentDto) throws Exception;
-    public void deleteRoom(String roomId);
-    public void saveNoReadMsg(ChatNoReadVO chatNoReadVO);
-    public MapVO loadLocationByRoomId(String roomId);
-    public List<ChatVO> loadMsgByRoomId(String roomId);
-    public void saveLocation(MapVO mapVO);
-    public RoomDto createRoom(RoomDto roomVO);
-
-
+    void create(AppointmentDto appointmentDto) throws Exception;
+    void deleteRoom(String roomId);
+    void recvMsg(ChatVO chatVO);
+    MapVO loadLocationByRoomId(String roomId);
+    List<ChatVO> loadMsgByRoomId(int roomId);
+    void saveLocation(MapVO mapVO);
+    RoomDto createRoom(RoomDto roomVO);
+    List<RoomDto> getRoomListByUserId(int userId);
+    void setEnterTimeMsg(int roomId, int userId);
     ChatDatasVO loadMyChatNoReadList(int userId);
-
     List<ChatDatasVO> loadMyChatList(int userId);
+
 }
