@@ -20,7 +20,8 @@ public interface AppointmentService {
     public void saveLocation(MapVO mapVO);
     public RoomDto createRoom(RoomDto roomVO);
 
-    void recvHereMsg(ChatVO chatVO);
 
     ChatDatasVO loadMyChatNoReadList(int userId);
+
+    List<ChatDatasVO> loadMyChatList(int userId);
 }

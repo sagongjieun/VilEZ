@@ -105,4 +105,25 @@ public class UserController {
 
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
+
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<?> detail(@PathVariable int id){
+        try {
+            http = userService.detail(id);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> list() {
+        try {
+            http = userService.list();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
 }

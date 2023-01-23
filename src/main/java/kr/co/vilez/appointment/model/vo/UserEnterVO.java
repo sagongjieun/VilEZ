@@ -5,14 +5,11 @@ import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Document("ChatNoRead")
 @AllArgsConstructor
-public class ChatNoReadVO {
-
-    private int roomId;
-    private int fromUserId;
-    private int toUserId;
-    private String content;
-    private String time;
+@Document("UserEnter")
+public class UserEnterVO {
+    int roomId;
+    int userId;
+    long time;
 
 }

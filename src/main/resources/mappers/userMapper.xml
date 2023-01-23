@@ -18,7 +18,9 @@
         <result column="refresh_token" property="refreshToken"/>
         <result column="state" property="state"/>
     </resultMap>
-
+    <select id="list" resultMap="user">
+        select * from user;
+    </select>
     <select id="refreshCheck" parameterType="map" resultMap="user">
         SELECT id, email, nickname
         FROM user
@@ -29,6 +31,10 @@
         SELECT id, email, password, nickname
         FROM user
         WHERE nickname = #{nickname};
+    </select>
+
+    <select id="detail" parameterType="int" resultMap="user">
+        SELECT nickname,area,point,manner,profile_img from user where id = #{id}
     </select>
 
     <update id="modifyUserInfo" parameterType="UserDto">
