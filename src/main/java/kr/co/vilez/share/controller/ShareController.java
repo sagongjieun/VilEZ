@@ -3,6 +3,7 @@ package kr.co.vilez.share.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import kr.co.vilez.data.HttpVO;
+import kr.co.vilez.share.model.dto.BookmarkDto;
 import kr.co.vilez.share.model.dto.PageNavigator;
 import kr.co.vilez.share.model.dto.ShareDto;
 import kr.co.vilez.share.model.service.ShareService;
@@ -73,11 +74,11 @@ public class ShareController {
     }
     @ApiOperation(value = "bookmark 등록", notes = "{boardId : Number , userId : Number}")
     @PostMapping("/bookmark")
-    public ResponseEntity<?> addBookmark(@RequestBody HashMap<String, Integer> map){
+    public ResponseEntity<?> addBookmark(@RequestBody BookmarkDto bookmarkDto){
         httpVO = new HttpVO();
 
         try {
-            httpVO = shareService.addBookmark(map.get("boardId"), map.get("userId"));
+            httpVO = shareService.addBookmark(bookmarkDto.getBoardId(), bookmarkDto.getUserId());
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -86,11 +87,11 @@ public class ShareController {
     }
     @ApiOperation(value = "bookmark 삭제", notes = "{boardId : Number , userId : Number}")
     @DeleteMapping("/bookmark")
-    public ResponseEntity<?> deleteBookmark(@RequestBody HashMap<String, Integer> map){
+    public ResponseEntity<?> deleteBookmark(@RequestBody BookmarkDto bookmarkDto){
         httpVO = new HttpVO();
 
         try {
-            httpVO = shareService.deleteBookmark(map.get("boardId"), map.get("userId"));
+            httpVO = shareService.deleteBookmark(bookmarkDto.getBoardId(), bookmarkDto.getUserId());
         } catch (Exception e){
             e.printStackTrace();
         }
