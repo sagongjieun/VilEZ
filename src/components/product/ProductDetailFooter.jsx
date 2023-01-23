@@ -2,15 +2,24 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { HiChevronRight } from "react-icons/hi2";
+import { useLocation } from "react-router-dom";
 
 const ProductDetailFooter = () => {
+  const location = useLocation();
+
   function onClickReportArticle() {
     /** 모달 띄우기 */
     alert("정말 신고하시겠습니까?");
   }
-  function onClickShareArticle() {
-    // 클립보드에 url 복사하기
-    alert("공유하시겠습니까?");
+
+  async function onClickShareArticle(url) {
+    try {
+      await navigator.clipboard.writeText(url);
+
+      alert("링크를 클립보드에 복사했습니다.");
+    } catch (error) {
+      console.log("URL 복사 실패 : ", error);
+    }
   }
 
   function onClickMoveToTop() {
@@ -23,7 +32,7 @@ const ProductDetailFooter = () => {
         <span>이 게시물 신고하기</span>
         <HiChevronRight size="22" />
       </div>
-      <div onClick={onClickShareArticle}>
+      <div onClick={() => onClickShareArticle(`http://localhost:3000${location.pathname}`)}>
         <span>이 게시물 공유하기</span>
         <HiChevronRight size="22" />
       </div>
