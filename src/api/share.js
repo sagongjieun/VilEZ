@@ -16,6 +16,17 @@ async function getShareArticleByBoardId(boardId) {
   }
 }
 
+async function getBookmarkStateByUserId(boardId, userId) {
+  try {
+    const { data } = await jsonAxios.get(`/shareboard/bookmark/${boardId}/${userId}`);
+
+    if (data.flag === "success") return data.data;
+    else console.log("일치하는 게시글이나 회원정보가 없습니다.");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // POST
 
 async function postShareArticle(formData) {
@@ -29,4 +40,4 @@ async function postShareArticle(formData) {
   }
 }
 
-export { getShareArticleByBoardId, postShareArticle };
+export { getShareArticleByBoardId, getBookmarkStateByUserId, postShareArticle };
