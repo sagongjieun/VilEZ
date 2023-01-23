@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @RequestMapping("/appointments")
@@ -80,33 +81,32 @@ public class AppointmentController {
     private final SimpMessageSendingOperations sendingOperations;
 
 
-    /*
-    *
-    *  roomId =>  boardid:(int)user:(sum)
-    *  type => 0: 공유자 1: 피공유자
-    *  content => 대화 내용
-    *
-    * */
+
     @MessageMapping("/recvchat")
-    public ChatNoReadVO socketHandler(ChatNoReadVO chatNoReadVO) {
-        appointmentService.recvMsg(chatNoReadVO);
-        //sendingOperations.convertAndSend("/sendchat/"+chatNoReadVO.getRoomId()+"/"+chatNoReadVO.getType(),chatNoReadVO);
-        return chatNoReadVO;
+    public ChatVO socketHandler(ChatVO chatVO) {
+        appointmentService.recvMsg(chatVO);
+        sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+chatVO.getToUserId(),chatVO);
+        return chatVO;
     }
 
-    @MessageMapping("/recvhere")
-    public ChatNoReadVO recvHereMsg(ChatNoReadVO chatNoReadVO) {
-        appointmentService.recvHereMsg(chatNoReadVO);
-        return chatNoReadVO;
+
+    @MessageMapping("/room_enter")
+    public void setEnterTimeMsg(HashMap<String, Integer> payload) {
+        appointmentService.setEnterTimeMsg(payload.get("roomId"), payload.get("userId"));
     }
 
-    @MessageMapping("/recvlogin")
-    public ChatDatasVO loginMsg(ChatDatasVO chatNoDatasVO) {
-        chatNoDatasVO = appointmentService.loadMyChatNoReadList(chatNoDatasVO.getUserId());
-
-        sendingOperations.convertAndSend("/sendlogin/"+chatNoDatasVO.getUserId(),chatNoDatasVO);
-        return chatNoDatasVO;
+    @MessageMapping("/room_list")
+    public void getRoomList(HashMap<String, Integer> payload) {
+        List<?> list = appointmentService.loadMyChatList(payload.get("userId"));
+        sendingOperations.convertAndSend("/send_room_list/"+payload.get("userId"),list);
     }
+//    @MessageMapping("/recvlogin")
+//    public ChatDatasVO loginMsg(ChatDatasVO chatNoDatasVO) {
+//        chatNoDatasVO = appointmentService.loadMyChatNoReadList(chatNoDatasVO.getUserId());
+//
+//        sendingOperations.convertAndSend("/sendlogin/"+chatNoDatasVO.getUserId(),chatNoDatasVO);
+//        return chatNoDatasVO;
+//    }
 
     /*
      *
@@ -165,6 +165,7 @@ public class AppointmentController {
         HttpVO http = new HttpVO();
         List<RoomDto> data = new ArrayList<>();
         room = appointmentService.createRoom(room);
+
         data.add(room);
         http.setFlag("success");
         http.setData(data);
@@ -177,8 +178,19 @@ public class AppointmentController {
         HttpVO http = new HttpVO();
         http.setFlag("success");
         List<Object> list = new ArrayList<>();
-        list.add(appointmentService.loadMyChatNoReadList(userId));
+        list.add(appointmentService.loadMyChatList(userId));
         http.setData(list);
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
+
+    @ResponseBody
+    @PostMapping("/room/text")
+    public ResponseEntity<?> debug(@RequestBody ChatVO chatVO) {
+        HttpVO http = new HttpVO();
+        http.setFlag("success");
+        appointmentService.recvMsg(chatVO);
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
+
+
 }

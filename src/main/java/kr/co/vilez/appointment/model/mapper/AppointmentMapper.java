@@ -18,5 +18,5 @@ public interface AppointmentMapper {
 
     List<RoomDto> getRoomListByUserId(int userId);
 
-    RoomDto createRoom(RoomDto room);
+    void createRoom(RoomDto room);
 }
