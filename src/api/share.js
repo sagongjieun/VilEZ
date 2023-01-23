@@ -40,4 +40,29 @@ async function postShareArticle(formData) {
   }
 }
 
-export { getShareArticleByBoardId, getBookmarkStateByUserId, postShareArticle };
+async function postBookmark(boardId, userId) {
+  try {
+    console.log({ boardId, userId });
+    const { data } = await jsonAxios.post(`/shareboard/bookmark`, { boardId, userId });
+
+    if (data.flag === "success") alert("이 게시글을 북마크로 등록하였습니다. 😀");
+    else alert("북마크 등록에 실패하였습니다 😥");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// DELETE
+
+async function deleteBookmark(boardId, userId) {
+  try {
+    const { data } = await jsonAxios.delete(`/shareboard/bookmark`, { boardId, userId });
+
+    if (data.flag === "success") alert("북마크를 취소하였습니다. 😀");
+    else alert("북마크 취소에 실패하였습니다 😥");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export { getShareArticleByBoardId, getBookmarkStateByUserId, postShareArticle, postBookmark, deleteBookmark };
