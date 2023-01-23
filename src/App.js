@@ -7,20 +7,19 @@ import MainNavBar from "./components/modal/MainNavBar";
 import Product from "./pages/Product";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
+
 function App() {
   return (
     <BrowserRouter>
-      <div>
-        <MainNavBar />
-        <ChatOpenIcon />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/product/*" element={<Product />} />
-          <Route path="/profile/*" element={<Profile />} />
-        </Routes>
-      </div>
+      <MainNavBar />
+      <ChatOpenIcon />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/product/*" element={<Product />} />
+        <Route path="/profile/*" element={<Profile />} />
+      </Routes>
     </BrowserRouter>
   );
 }
