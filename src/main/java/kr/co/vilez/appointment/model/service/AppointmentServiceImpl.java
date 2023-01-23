@@ -2,20 +2,20 @@ package kr.co.vilez.appointment.model.service;
 
 import kr.co.vilez.appointment.model.dao.AppointmentDao;
 import kr.co.vilez.appointment.model.dto.AppointmentDto;
+import kr.co.vilez.appointment.model.dto.MyAppointListDto;
 import kr.co.vilez.appointment.model.mapper.AppointmentMapper;
 import kr.co.vilez.appointment.model.vo.ChatVO;
 import kr.co.vilez.appointment.model.vo.MapVO;
 import kr.co.vilez.appointment.model.dto.RoomDto;
 import kr.co.vilez.appointment.model.vo.*;
-import kr.co.vilez.ask.model.mapper.AskMapper;
-import kr.co.vilez.share.model.mapper.ShareMapper;
-import kr.co.vilez.user.model.dto.UserDto;
-import kr.co.vilez.user.model.mapper.UserMapper;
+import kr.co.vilez.share.model.dao.ShareDao;
+import kr.co.vilez.share.model.dto.BookmarkDto;
+import kr.co.vilez.share.model.dto.ImgPath;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @Service
@@ -25,8 +25,28 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentMapper appointmentMapper;
 
-    private final UserMapper userMapper;
+    private final ShareDao shareDao;
 
+    @Override
+    public List<TotalListVO> getMyAppointmentList(int userId) throws Exception {
+        List<MyAppointListDto> list = appointmentMapper.getMyAppointmentList(userId);
+
+        List<TotalListVO> totalList = new ArrayList<>();
+        for(MyAppointListDto vo : list){
+            TotalListVO totalListVO = new TotalListVO();
+            totalListVO.setMyAppointListVO(vo);
+
+            List<BookmarkDto> bookmarkDtos = shareDao.selectBookmarkList(Integer.toString(vo.getUserId()));
+            totalListVO.setBookmarkCnt(bookmarkDtos.size());
+
+            List<ImgPath> imageList = shareDao.list(vo.getUserId());
+            totalListVO.setImgPathList(imageList);
+            totalList.add(totalListVO);
+        }
+
+        return totalList;
+
+    }
     @Override
     public List<AppointmentDto> getAppointmentList(int boardId) throws Exception {
         return appointmentMapper.getAppointmentList(boardId);
