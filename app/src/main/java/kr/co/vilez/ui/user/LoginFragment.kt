@@ -19,6 +19,7 @@ import kr.co.vilez.databinding.FragmentLoginBinding
 import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.ApplicationClass.Companion.sharedPreferences
+import kr.co.vilez.util.StompClient
 import retrofit2.awaitResponse
 
 private const val TAG = "빌리지_LoginFragment"
@@ -52,12 +53,14 @@ class LoginFragment : Fragment() {
             if (result?.flag == "success") {
                 val data = result.data[0]
                 Log.d(TAG, "로그인 성공, 받아온 user = ${data}")
+                StompClient.runStomp()
 
                 // 자동로그인 : sharedPreference에 autoLogin true로 저장
                 sharedPreferences.edit {
                     putBoolean("autoLogin", true)
                     apply()
                 }
+                Log.d(TAG, "sh) 사용자 autoLogin : ${sharedPreferences.getBoolean("autoLogin", false)}")
                 Log.d(TAG, "sh) 사용자 autoLogin : ${sharedPreferences.getBoolean("autoLogin", false)}")
                 val intent = Intent(loginActivity, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
