@@ -1,126 +1,150 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { HiChevronRight, HiChevronLeft } from "react-icons/hi2";
-import firstbodyimage from "../../assets/images/firstbodyimage.png";
-import secondbodyimg from "../../assets/images/secondbodyimg.png";
 
-const ImageSlide = () => {
-  const imageSlideList = [firstbodyimage, secondbodyimg];
-  const COUNT = imageSlideList.length;
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [moveSlide, setMoveSlide] = useState(0);
+const ImageSlide = ({ imageSlideList }) => {
+  const SIZE = imageSlideList.length;
+
+  let slideIndex = 0;
+  const END_POINT = "http://211.216.215.157:8082/copy1/"; // share의 경우 copy1, ask의 경우 copy
 
   function onClickPrevSlide() {
-    setCurrentSlide(currentSlide - 1);
-    setMoveSlide(-(currentSlide * 100) / COUNT);
+    showSlides((slideIndex -= 1));
   }
 
   function onClickNextSlide() {
-    setCurrentSlide(currentSlide + 1);
-    setMoveSlide((currentSlide * 100) / COUNT);
+    showSlides((slideIndex += 1));
   }
+
+  function showSlides(current) {
+    // 무한 캐러셀을 위해 양 끝 인덱스 처리
+    if (current < 0) slideIndex = SIZE - 1;
+    if (current === SIZE) slideIndex = 0;
+
+    let slides = document.querySelectorAll(".slide");
+
+    if (slides) {
+      for (let i = 0; i < SIZE; i++) {
+        if (i === slideIndex) slides[slideIndex].style.display = "block";
+        else slides[i].style.display = "none";
+      }
+    }
+  }
+
+  useEffect(() => {
+    imageSlideList.map((image) => (image.path = END_POINT + image.path.split("/").slice(-2).join("/")));
+    showSlides(slideIndex);
+  }, [imageSlideList]);
 
   return (
     <div css={imageSlideWrapper}>
-      <div
-        css={css`
-          display: flex;
-          width: calc(100% * ${COUNT});
-          height: 100%;
-          transition: all 0.5s;
-          transform: translateX(-${moveSlide}%);
-          & > div {
-            width: calc(100% / ${COUNT});
-            height: 100%;
-          }
-        `}
-      >
-        {imageSlideList.map((image, index) => (
-          <div
-            key={index}
-            css={css`
-              background-image: url(${image});
-              background-size: cover;
-            `}
-          ></div>
-        ))}
+      {imageSlideList.map((image, index) => (
+        <div key={index} css={imageWrapper} className="slide fade">
+          <div>{`${index + 1} / ${SIZE}`}</div>
+          <div>
+            <img src={image.path} />
+          </div>
+        </div>
+      ))}
+      <div css={buttonsWrapper}>
+        <button onClick={onClickPrevSlide}>
+          <HiChevronLeft size="22" />
+        </button>
+        <button onClick={onClickNextSlide}>
+          <HiChevronRight size="22" />
+        </button>
       </div>
-      <button onClick={onClickPrevSlide}>
-        <HiChevronLeft size="18" />
-      </button>
-      <button onClick={onClickNextSlide}>
-        <HiChevronRight size="18" />
-      </button>
     </div>
   );
 };
 
 const imageSlideWrapper = css`
-  width: 100%;
+  width: 955px;
   height: 450px;
   position: relative;
   margin: auto;
-  overflow: hidden;
   border: 1px solid #e1e2e3;
   border-radius: 15px;
 
-  /* & > div {
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    display: none;
+  & .fade {
+    animation-name: fade;
+    animation-duration: 1s;
+  }
 
-    & > div {
-      display: table-cell;
-      vertical-align: middle;
-
-      & > img {
-        object-fit: contain;
-        width: 80%;
-        height: 80%;
-      }
+  @keyframes fade {
+    from {
+      opacity: 0.3;
     }
-  } */
+    to {
+      opacity: 1;
+    }
+  }
+`;
 
-  & > button:nth-of-type(1) {
-    all: unset;
-    border: 1px solid #66dd9c;
-    padding: 0.5rem 2em;
-    color: #66dd9c;
-    border-radius: 100px;
-    cursor: pointer;
+const imageWrapper = css`
+  width: 100%;
+  height: 100%;
+
+  & > div:nth-of-type(1) {
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
     position: absolute;
-    top: 225px;
+    top: 10px;
     left: 20px;
-    width: 20px;
-    height: 20px;
+  }
+
+  & > div:nth-of-type(2) {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    & > img {
+      width: 900px;
+      height: 400px;
+      object-fit: contain;
+    }
+  }
+`;
+
+const buttonsWrapper = css`
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+
+  & > button {
+    cursor: pointer;
+    width: 45px;
+    height: 45px;
+    color: white;
+    transition: 0.5s ease;
+    user-select: none;
+    border: none;
+    opacity: 0.8;
+    background-color: #e5e5e5;
+    border-radius: 50%;
+    margin-top: -25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     &:hover {
-      transition: all 0.3s ease-in-out;
       background-color: #66dd9c;
-      color: #ffffff;
     }
   }
 
-  & > button:nth-of-type(2) {
-    all: unset;
-    border: 1px solid #66dd9c;
-    padding: 0.5rem 2em;
-    color: #66dd9c;
-    border-radius: 100px;
-    cursor: pointer;
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    top: 225px;
-    right: 20px;
+  & > button:nth-of-type(1) {
+    left: 0;
+    margin-left: 20px;
+  }
 
-    &:hover {
-      transition: all 0.3s ease-in-out;
-      background-color: #66dd9c;
-      color: #ffffff;
-    }
+  & > button:nth-of-type(2) {
+    right: 0;
+    margin-right: 20px;
   }
 `;
 

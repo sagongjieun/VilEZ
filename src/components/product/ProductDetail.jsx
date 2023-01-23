@@ -9,19 +9,39 @@ import ProductDeatilHeader from "./ProductDeatilHeader";
 import Map from "../common/Map";
 import ImageSlide from "../common/ImageSlide";
 import ProductDetailFooter from "./ProductDetailFooter";
+import ProductRelated from "./ProductRelated";
+import { getShareArticleByBoardId, getBookmarkStateByUserId } from "../../api/share";
+import elapsedTime from "./ProductElapsedTime";
+import bookmarkCancel from "../../assets/images/bookmarkCancel.png";
 
 const { kakao } = window;
 
 const ProductDetail = () => {
-  /* 임시 데이터 */
-  const selectedLat = 37.39495141898642;
-  const selectedLng = 127.1112037330217;
+  const [userId, setUserId] = useState(""); //eslint-disable-line no-unused-vars
+  const [boardId, setBoardId] = useState("");
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [content, setContent] = useState("");
+  const [imageList, setImageList] = useState([]);
+  const [date, setDate] = useState("");
+  const [startDay, setStartDay] = useState("");
+  const [endDay, setEndDay] = useState("");
+  const [hopeAreaLat, setHopeAreaLat] = useState("");
+  const [hopeAreaLng, setHopeAreaLng] = useState("");
   const [location, setLocation] = useState("");
+
+  const [isBookmarked, setIsBookmarked] = useState(false);
+
+  function onClickBookmark() {
+    /** 북마크 등록, 취소에 대한 API 필요 */
+    if (isBookmarked) setIsBookmarked(false);
+    else setIsBookmarked(true);
+  }
 
   // 위경도를 통한 주소 얻어오기
   useEffect(() => {
     const geocoder = new kakao.maps.services.Geocoder();
-    const latlng = new kakao.maps.LatLng(selectedLat, selectedLng);
+    const latlng = new kakao.maps.LatLng(hopeAreaLat, hopeAreaLng);
 
     searchDetailAddrFromCoords(latlng, function (result, status) {
       if (status === kakao.maps.services.Status.OK) {
@@ -32,21 +52,47 @@ const ProductDetail = () => {
     function searchDetailAddrFromCoords(coords, callback) {
       geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
     }
+  }, [hopeAreaLat, hopeAreaLng]);
+
+  useEffect(() => {
+    // boardId 임시 데이터
+    getShareArticleByBoardId(52).then((res) => {
+      const data = res[0];
+
+      /** data.userId로 공유자 정보 얻기 비동기 요청 필요 */
+      setUserId(data.userId);
+      setBoardId(data.id);
+      setTitle(data.title);
+      setCategory(data.category);
+      setDate(elapsedTime(data.date));
+      setImageList(data.list);
+      setContent(data.content);
+      setStartDay(data.startDay);
+      setEndDay(data.endDay);
+      setHopeAreaLat(data.hopeAreaLat);
+      setHopeAreaLng(data.hopeAreaLng);
+
+      /** userId가 아니라 recoil에서 현재 로그인한 유저의 id를 파라미터로 넣어야 함. 테스트를 위해 임시로 userId로 넣음. */
+      // 내(현재 로그인 한 유저)가 이 게시글을 북마크했는지 여부 확인
+      if (boardId && userId) {
+        getBookmarkStateByUserId(boardId, userId).then((res) => {
+          const data = res[0];
+
+          if (!data) setIsBookmarked(false);
+          else setIsBookmarked(true);
+        });
+      }
+    });
   }, []);
 
   return (
     <div css={wrapper}>
-      <ProductDeatilHeader
-        title={"맥북에어 M1 공유합니다."}
-        category={"전자기기"}
-        time={"1시간"}
-        bookmarkCount={"25"}
-      />
+      <ProductDeatilHeader title={title} category={category} time={date} bookmarkCount={"25"} />
 
       <DivideLine />
 
       <div css={contentsWrapper}>
-        <ImageSlide />
+        <ImageSlide imageSlideList={imageList} />
         <div css={nickNameAndChatWrapper}>
           <div css={nickNameWrapper}>
             <img src={baseProfile} alt="baseProfile" />
@@ -57,18 +103,24 @@ const ProductDetail = () => {
             <span>😀</span>
           </div>
           <div css={chatWrapper}>
-            <img src={bookmark} alt="bookmark" />
+            {isBookmarked ? (
+              <img src={bookmark} alt="bookmark" onClick={onClickBookmark} />
+            ) : (
+              <img src={bookmarkCancel} alt="bookmarkCancel" onClick={onClickBookmark} />
+            )}
             <MiddleWideButton text="채팅하기" />
           </div>
         </div>
         <div css={contentWrapper}>
           <h3>설명</h3>
-          <textarea readOnly></textarea>
+          <textarea readOnly value={content}></textarea>
         </div>
         <div css={hopeDateWrapper}>
           <h3>희망 공유 기간</h3>
           <div>
-            <span>2023.01.11 - 2023.02.20</span>
+            <span>
+              {startDay} - {endDay}
+            </span>
           </div>
         </div>
         <div css={hopeAreaWrapper}>
@@ -76,13 +128,23 @@ const ProductDetail = () => {
             <h3>희망 공유 장소</h3>
             <span>{location}</span>
           </div>
-          <Map readOnly={true} selectedLat={selectedLat} selectedLng={selectedLng} />
+          <Map readOnly={true} selectedLat={hopeAreaLat} selectedLng={hopeAreaLng} />
         </div>
       </div>
 
       <DivideLine />
 
-      <div>관련 게시글</div>
+      <div css={relatedProductWrapper}>
+        <div>
+          <h3>관련 게시글</h3>
+          <a>더 보기</a>
+        </div>
+        <div>
+          <ProductRelated />
+          <ProductRelated />
+          <ProductRelated />
+        </div>
+      </div>
 
       <DivideLine />
 
@@ -96,8 +158,6 @@ const wrapper = css`
   display: flex;
   flex-direction: column;
 `;
-
-/* ContentsWrapper */
 
 const contentsWrapper = css`
   display: flex;
@@ -218,6 +278,28 @@ const hopeAreaWrapper = css`
 
     & span {
       color: #8a8a8a;
+    }
+  }
+`;
+
+const relatedProductWrapper = css`
+  margin: 60px 0;
+  display: flex;
+  flex-direction: column;
+
+  & > div {
+    display: flex;
+    flex-direction: row;
+  }
+
+  & > div:nth-of-type(1) {
+    margin-bottom: 30px;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    & > a {
+      cursor: pointer;
+      font-size: 18px;
     }
   }
 `;
