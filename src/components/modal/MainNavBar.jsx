@@ -2,7 +2,7 @@ import React, { useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { Link } from "react-router-dom";
-// import { FaSearch } from "react-icons/fa";
+import { FiSearch } from "react-icons/fi";
 
 function MainNavBar() {
   const menus = [
@@ -15,46 +15,121 @@ function MainNavBar() {
     setIsMenu(!isMenu);
     // console.log(isMenu);
   };
+  // recoil통해 상태가 true로 바귀면 다른 nav보여주기
+  const [isLogin, setIsLogin] = useState(false);
+  const onClickLogin = () => {
+    setIsLogin((prev) => !prev);
+  };
   return (
-    <nav css={navWrap}>
-      <div css={navStyle}>
-        <Link to={"/"}>
-          <p css={navLeft}>VilEZ</p>
-        </Link>
-        <div css={MidWrap}>
-          <div
-            css={css`
-              position: relative;
-            `}
-          >
-            <p css={navMid} onClick={onClickShowMenu}>
-              마을 글보기
-            </p>
-            {isMenu ? (
-              <div css={MenuWrap}>
-                {menus.map((menu, idx) => (
-                  <Link to={menu.path} key={idx} onClick={onClickShowMenu}>
-                    <div css={navMenu}>{menu.name}</div>
-                  </Link>
-                ))}
+    <span>
+      {isLogin ? (
+        <nav css={navWrap}>
+          <div css={navStyle}>
+            <Link to={"/"}>
+              <p css={navLeft}>VilEZ</p>
+            </Link>
+            <div css={MidWrap}>
+              <div
+                css={css`
+                  position: relative;
+                `}
+              >
+                <p css={navMid} onClick={onClickShowMenu}>
+                  마을 글보기
+                </p>
+                {isMenu ? (
+                  <div css={MenuWrap}>
+                    {menus.map((menu, idx) => (
+                      <Link to={menu.path} key={idx} onClick={onClickShowMenu}>
+                        <div css={navMenu}>{menu.name}</div>
+                      </Link>
+                    ))}
+                  </div>
+                ) : null}
               </div>
-            ) : null}
+
+              <div
+                css={css`
+                  display: flex;
+                `}
+              >
+                <p
+                  css={css`
+                    margin-right: 10px;
+                    margin-top: 10px;
+                  `}
+                >
+                  공유/예약목록
+                </p>
+                <Link to={"/product"}>
+                  <div>
+                    <FiSearch css={searchWrap} />
+                  </div>
+                </Link>
+              </div>
+            </div>
+            <div css={navRight}>
+              <Link to={"/login"}>
+                <p
+                  css={css`
+                    color: black;
+                  `}
+                  onClick={onClickLogin}
+                >
+                  로그아웃
+                </p>
+              </Link>
+            </div>
           </div>
-          <input type="text" placeholder="물품을 검색해보세요" css={[navInput, navInputPlaceHolder]} />
-        </div>
-        <div css={navRight}>
-          <Link to={"/login"}>
-            <p
-              css={css`
-                color: black;
-              `}
-            >
-              마을 입장
-            </p>
-          </Link>
-        </div>
-      </div>
-    </nav>
+        </nav>
+      ) : (
+        // false(not login 상태)
+        <nav css={navWrap}>
+          <div css={navStyle}>
+            <Link to={"/"}>
+              <p css={navLeft}>VilEZ</p>
+            </Link>
+            <div css={MidWrap}>
+              <div
+                css={css`
+                  position: relative;
+                `}
+              >
+                <p css={navMid} onClick={onClickShowMenu}>
+                  마을 글보기
+                </p>
+                {isMenu ? (
+                  <div css={MenuWrap}>
+                    {menus.map((menu, idx) => (
+                      <Link to={menu.path} key={idx} onClick={onClickShowMenu}>
+                        <div css={navMenu}>{menu.name}</div>
+                      </Link>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+              <div>
+                <Link to={"/product"}>
+                  <FiSearch css={searchWrap} />
+                </Link>
+              </div>
+            </div>
+            <div css={navRight}>
+              <Link to={"/login"}>
+                <p
+                  css={css`
+                    color: black;
+                  `}
+                  onClick={onClickLogin}
+                >
+                  마을 입장
+                </p>
+              </Link>
+            </div>
+          </div>
+        </nav>
+      )}
+    </span>
   );
 }
 const navWrap = css`
@@ -65,10 +140,9 @@ const navWrap = css`
 
 const navStyle = css`
   display: flex;
-  width: device-width;
   height: 70px;
   background-color: white;
-  border: 0.1px solid gray;
+  border: 1px solid #e2e2e2;
 `;
 
 const navLeft = css`
@@ -82,10 +156,8 @@ const navLeft = css`
 
 const navMid = css`
   width: 125px;
-  boxsizing: border-box;
   background-color: #66dd9c;
   color: white;
-  font-color: white;
   border: solid;
   border-radius: 30px;
   height: 35px;
@@ -104,23 +176,30 @@ const MidWrap = css`
   margin-top: 10px;
 `;
 
-const navInput = css`
-  border: 1px solid #e1e2e3;
-  fontsize: 18px;
-  height: 35px;
-  border-radius: 30px;
-  padding: 5px 15px;
-  margin-right: 10px;
-`;
-const navInputPlaceHolder = css`
-  ::-webkit-input-placeholder {
-    background-image: url(https://cdn1.iconfinder.com/data/icons/hawcons/32/698627-icon-111-search-256.png);
-    background-size: contain;
-    background-position: 1px center;
-    background-repeat: no-repeat;
-    text-align: center;
-    text-indent: 0;
-  }
+// const navInput = css`
+//   border: 1px solid #e1e2e3;
+//   font-size: 13px;
+//   height: 35px;
+//   border-radius: 30px;
+//   padding: 5px 15px;
+//   margin-right: 10px;
+// `;
+// const navInputPlaceHolder = css`
+//   ::-webkit-input-placeholder {
+//     background-image: url(https://cdn1.iconfinder.com/data/icons/hawcons/32/698627-icon-111-search-256.png);
+//     background-size: contain;
+//     background-position: 1px center;
+//     background-repeat: no-repeat;
+//     text-align: center;
+//     text-indent: 0;
+//   }
+// `;
+
+const searchWrap = css`
+  font-size: 20px;
+  margin-top: 15px;
+  margin-right: 15px;
+  color: #66dd9c;
 `;
 
 const navRight = css`
@@ -133,10 +212,9 @@ const MenuWrap = css`
 `;
 
 const navMenu = css`
-  boxsizing: border-box;
   background-color: white;
   color: #66dd9c;
-  border: solid;
+  border: 0.1px solid #e2e2e2;
   border-radius: 30px;
   width: 125px;
   height: 35px;
