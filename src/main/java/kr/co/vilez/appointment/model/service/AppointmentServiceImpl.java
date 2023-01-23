@@ -11,10 +11,15 @@ import kr.co.vilez.appointment.model.vo.*;
 import kr.co.vilez.share.model.dao.ShareDao;
 import kr.co.vilez.share.model.dto.BookmarkDto;
 import kr.co.vilez.share.model.dto.ImgPath;
+import kr.co.vilez.user.model.dto.UserDto;
+import kr.co.vilez.user.model.mapper.UserMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 @AllArgsConstructor
@@ -36,7 +41,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             TotalListVO totalListVO = new TotalListVO();
             totalListVO.setMyAppointListVO(vo);
 
-            List<BookmarkDto> bookmarkDtos = shareDao.selectBookmarkList(Integer.toString(vo.getUserId()));
+            List<BookmarkDto> bookmarkDtos = shareDao.selectBookmarkList(vo.getUserId());
             totalListVO.setBookmarkCnt(bookmarkDtos.size());
 
             List<ImgPath> imageList = shareDao.list(vo.getUserId());
@@ -58,8 +63,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     ////////////////////////////////////////// chat ///////////////////////////////////////////
-
-
+    private final UserMapper userMapper;
 
     @Override
     public void deleteRoom(String roomId) {
@@ -72,7 +76,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         chatVO.setTime(now);
         appointmentDao.saveMsg(chatVO);
         ChatLastVO chatLastVO = new ChatLastVO(chatVO.getRoomId(),chatVO.getToUserId(),
-                                    chatVO.getFromUserId(), chatVO.getContent(), now);
+                chatVO.getFromUserId(), chatVO.getContent(), now);
         appointmentDao.saveLastMsg(chatLastVO);
         setEnterTimeMsg(chatVO.getRoomId(),chatVO.getFromUserId());
     }
@@ -161,6 +165,5 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
         return chatDatasVOList;
     }
-
 
 }
