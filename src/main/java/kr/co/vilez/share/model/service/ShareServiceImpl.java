@@ -164,7 +164,6 @@ public class ShareServiceImpl implements ShareService{
     @Override
     public HttpVO update(ShareDto shareDto, List<MultipartFile> files) throws Exception {
         httpVO = new HttpVO();
-        List<Object> data = new ArrayList<>();
 
         shareMapper.update(shareDto);
         shareDao.delete(shareDto.getId());
