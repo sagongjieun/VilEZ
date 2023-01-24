@@ -13,6 +13,10 @@ import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityMainBinding
 import kr.co.vilez.ui.chat.ChatFragment
 import kr.co.vilez.ui.chat.ChatlistFragment
+import kr.co.vilez.ui.profile.CalendarFragment
+import kr.co.vilez.ui.profile.InterestFragment
+import kr.co.vilez.ui.profile.PointFragment
+import kr.co.vilez.ui.profile.SharedListFragment
 import kr.co.vilez.ui.share.ShareFragment
 import kr.co.vilez.ui.user.LoginActivity
 import kr.co.vilez.ui.user.ProfileFragment
@@ -30,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         initView()
     }
 
-    fun changeFragment(item:MenuItem):Boolean {
+    private fun changeFragment(item:MenuItem):Boolean {
         when(item.itemId){
             R.id.page_home -> {
                 // 아이콘 변경
@@ -89,9 +93,11 @@ class MainActivity : AppCompatActivity() {
                 // Fragment 변경
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.frame_layout_main, ProfileFragment())
+                    .addToBackStack(null)
                     .commit()
                 return true
             }
+
             else -> return false
         }
     }
