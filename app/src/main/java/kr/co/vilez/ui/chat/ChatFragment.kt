@@ -15,7 +15,7 @@ import kr.co.vilez.data.model.KakaoMap
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentChatBinding
 import kr.co.vilez.util.ApplicationClass
-import kr.co.vilez.util.ApplicationClass.Companion.retrofitKakaoService
+import kr.co.vilez.util.ApplicationClass.Companion.retrofitChatService
 import kr.co.vilez.util.StompClient
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
@@ -63,7 +63,7 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
         val mapView = MapView(context)
         binding.mapView.addView(mapView)
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.retrofitKakaoService.loadLocationByRoomId("200").awaitResponse().body()
+            val result = ApplicationClass.retrofitChatService.loadLocationByRoomId("200").awaitResponse().body()
             if (result?.flag == "success") {
                 println(result.data)
                 var kakao = result.data[0];
