@@ -48,19 +48,8 @@ function MainNavBar() {
                 ) : null}
               </div>
 
-              <div
-                css={css`
-                  display: flex;
-                `}
-              >
-                <p
-                  css={css`
-                    margin-right: 10px;
-                    margin-top: 10px;
-                  `}
-                >
-                  공유/예약목록
-                </p>
+              <div css={midrightWrap}>
+                <p css={midrightContentWrap}>공유/예약목록</p>
                 <Link to={"/product"}>
                   <div>
                     <FiSearch css={searchWrap} />
@@ -70,14 +59,7 @@ function MainNavBar() {
             </div>
             <div css={navRight}>
               <Link to={"/login"}>
-                <p
-                  css={css`
-                    color: black;
-                  `}
-                  onClick={onClickLogin}
-                >
-                  로그아웃
-                </p>
+                <p onClick={onClickLogin}>로그아웃</p>
               </Link>
             </div>
           </div>
@@ -173,6 +155,14 @@ const MidWrap = css`
   justify-content: space-between;
   text-align: center;
   align-items: center;
+  margin-top: 10px;
+`;
+
+const midrightWrap = css`
+  display: flex;
+`;
+const midrightContentWrap = css`
+  margin-right: 10px;
   margin-top: 10px;
 `;
 
