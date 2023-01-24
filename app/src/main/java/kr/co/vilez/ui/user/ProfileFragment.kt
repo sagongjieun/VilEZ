@@ -1,5 +1,6 @@
 package kr.co.vilez.ui.user
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.SimpleAdapter
+import android.widget.TextView
 import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
 import kotlinx.coroutines.CoroutineScope
@@ -25,6 +27,7 @@ import kr.co.vilez.ui.profile.InterestFragment
 import kr.co.vilez.ui.profile.PointFragment
 import kr.co.vilez.ui.profile.SharedListFragment
 import kr.co.vilez.util.ApplicationClass
+import kr.co.vilez.util.StompClient
 import retrofit2.awaitResponse
 import java.util.Objects
 
@@ -43,16 +46,30 @@ class ProfileFragment : Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
         binding.fragment = this
-        binding.user = ApplicationClass.user
 
-        initMenus()
+        binding.user = ApplicationClass.user
+        getUserDetail(ApplicationClass.user.id) // 현재 로그인한 유저 id로 user detail 가져오기
+
         return binding.root
+    }
+
+    private fun getUserDetail(userId: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val result =
+                ApplicationClass.retrofitUserService.getUserDetail(userId).awaitResponse().body()
+            if (result?.flag == "success") {
+                val data = result.data[0]
+                Log.d(TAG, "user detail 조회 성공, 받아온 user = $data")
+                binding.userDetail = data // user detail data binding
+            } else {
+                Log.d(TAG, "user detail 조회 실패, result:$result")
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
+        initMenus()
     }
 
     fun initMenus() {
@@ -122,7 +139,8 @@ class ProfileFragment : Fragment() {
                 Log.d(TAG, "logout: 삭제 전 autoLogin = ${ApplicationClass.sharedPreferences.getBoolean("autoLogin",false)}")
                 ApplicationClass.sharedPreferences.edit {
                     remove("autoLogin")
-                    apply()
+                    remove("email")
+                    remove("password")
                 }
 
                 Log.d(TAG, "logout: 로그아웃 성공")
@@ -139,6 +157,21 @@ class ProfileFragment : Fragment() {
 
         dialog.isCancelable = false // 알림창이 띄워져있는 동안 배경 클릭 막기
         dialog.show(mainActivity.supportFragmentManager, "Logout")
+    }
+
+
+    fun getMannerLevel(): String {
+        return if(ApplicationClass.user.manner <= 10) {
+            "Lv.1"
+        } else if (ApplicationClass.user.manner <= 20) {
+            "Lv.2"
+        } else if (ApplicationClass.user.manner <= 30) {
+            "Lv.3"
+        } else if (ApplicationClass.user.manner <= 40) {
+            "Lv.4"
+        } else {
+            "Lv.5"
+        }
     }
 
     fun editProfile(view: View) { // 프로필 이미지, 닉네임 변경하는 곳으로 이동
