@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class AskController {
 
     @PostMapping
     public ResponseEntity<?> writeAskBoard(@RequestPart(value = "board",required = false) AskDto askDto,
-                                           @RequestPart(value = "image", required = false) MultipartFile[] files) {
+                                           @RequestPart(value = "image", required = false) MultipartFile[] files) throws IOException {
         HttpVO http = new HttpVO();
         askDto.setId(-1);
         askService.writeAskBoard(askDto, files);
@@ -61,7 +62,7 @@ public class AskController {
 
     @PutMapping
     public ResponseEntity<?> updateAskBoard(@RequestPart(value = "board",required = false) AskDto askDto,
-                                            @RequestPart(value = "image", required = false) MultipartFile[] files){
+                                            @RequestPart(value = "image", required = false) MultipartFile[] files) throws IOException {
         HttpVO http = new HttpVO();
         askService.updateAskBoard(askDto, files);
         //글 작성 성공 : 0 , 실패 : -1
