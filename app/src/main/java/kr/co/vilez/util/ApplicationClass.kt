@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import kr.co.vilez.data.model.User
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Converter
@@ -28,6 +29,7 @@ class ApplicationClass: Application() {
         // 로그인 정보를 담기 위한 sharedPreference
         lateinit var sharedPreferences: SharedPreferences
         lateinit var editor : SharedPreferences.Editor
+        lateinit var user: User
     }
 
     override fun onCreate() {
