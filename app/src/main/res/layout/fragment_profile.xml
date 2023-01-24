@@ -12,6 +12,10 @@
         <variable
             name="user"
             type="kr.co.vilez.data.model.User" />
+
+        <variable
+            name="userDetail"
+            type="kr.co.vilez.data.model.UserDetail" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -28,7 +32,7 @@
             android:id="@+id/tv_user_point"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{user.point+`p`}"
+            android:text="@{userDetail.point+`p`}"
             android:textColor="@color/main_1"
             app:layout_constraintStart_toEndOf="@+id/iv_user_point"
             app:layout_constraintTop_toBottomOf="@+id/textView6" />
@@ -133,7 +137,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
-            android:text="Lv.4"
+            android:text="@{fragment.getMannerLevel}"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/tv_maner_title"
             app:layout_constraintEnd_toStartOf="@+id/tv_manner_emoji"
@@ -175,7 +179,7 @@
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
             android:max="100"
-            android:progress="80"
+            android:progress="@{user.manner%10*10}"
             android:progressTint="@color/main_1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -188,7 +192,7 @@
             android:layout_height="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
-            android:text="@{user.manner+`점`}"
+            android:text="@{userDetail.manner+`점`}"
             android:textColor="@color/main_1"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -217,7 +221,7 @@
             android:id="@+id/tv_user_area"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{user.area}"
+            android:text="@{userDetail.area}"
             android:textColor="@color/main_1"
             app:layout_constraintStart_toStartOf="@+id/textView4"
             app:layout_constraintTop_toBottomOf="@+id/textView4" />
@@ -328,11 +332,12 @@
         <ListView
             android:id="@+id/lv_menu_account"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="100dp"
             android:layout_marginTop="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
         <!--    bottom navigator가 레이아웃을 가려서 height 크기만큼 뷰 생성    -->
 <!--        <View-->
 <!--            android:layout_width="0dp"-->

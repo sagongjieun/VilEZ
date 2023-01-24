@@ -41,6 +41,7 @@ class ApplicationClass: Application() {
 
         val gson: Gson = GsonBuilder()
             .setLenient()
+            .serializeNulls()
             .create()
 
         val okHttpClient: OkHttpClient = OkHttpClient.Builder()

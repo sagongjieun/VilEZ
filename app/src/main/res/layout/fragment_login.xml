@@ -32,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:text="je991025@gmail.com"/>
+                android:text="test@naver.com"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -54,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:text="a1234567"/>
+                android:text="12345"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

@@ -31,8 +31,14 @@ class SplashActivity : AppCompatActivity() {
             if(autoLogin) { // 자동로그인 되어있는 경우 : 바로 메인
                 // 로그인해서 유저 정보 넣기
                 CoroutineScope(Dispatchers.IO).launch {
-                    val user = User("test@naver.com", "12345")
+                    val email = ApplicationClass.sharedPreferences.getString("email", "test@naver.com")
+                    val password = ApplicationClass.sharedPreferences.getString("password", "12345")
+                    val user = User(email?: "test@naver.com", password ?: "12345")
+
+                    val request = ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().raw()
+                    Log.d(TAG, "onCreate: request: $request")
                     val result = ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
+                    
                     if(result?.flag == "success") {  // 로그인 성공
                         Log.d(TAG, "로그인 성공, 받아온 user = ${result.data[0]}")
                         ApplicationClass.user = result.data[0] as User
