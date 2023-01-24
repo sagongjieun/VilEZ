@@ -13,9 +13,7 @@ import android.widget.SimpleAdapter
 import android.widget.TextView
 import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kr.co.vilez.R
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentProfileBinding
@@ -70,6 +68,11 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initMenus()
+
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(100) // 뷰가 다 뜨면 화면에 보여주기
+            binding.clProfile.visibility = View.VISIBLE
+        }
     }
 
     fun initMenus() {
@@ -160,14 +163,14 @@ class ProfileFragment : Fragment() {
     }
 
 
-    fun getMannerLevel(): String {
-        return if(ApplicationClass.user.manner <= 10) {
+    fun getMannerLevel(manner : Int): String {
+        return if(manner <= 10) {
             "Lv.1"
-        } else if (ApplicationClass.user.manner <= 20) {
+        } else if (manner <= 20) {
             "Lv.2"
-        } else if (ApplicationClass.user.manner <= 30) {
+        } else if (manner <= 30) {
             "Lv.3"
-        } else if (ApplicationClass.user.manner <= 40) {
+        } else if (manner <= 40) {
             "Lv.4"
         } else {
             "Lv.5"

@@ -22,11 +22,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:ignore="ScrollViewCount">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_profile"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="invisible">
 
         <TextView
             android:id="@+id/tv_user_point"
@@ -137,7 +140,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
-            android:text="@{fragment.getMannerLevel}"
+            android:text="@{fragment.getMannerLevel(userDetail.manner)}"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/tv_maner_title"
             app:layout_constraintEnd_toStartOf="@+id/tv_manner_emoji"
@@ -179,7 +182,7 @@
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
             android:max="100"
-            android:progress="@{user.manner%10*10}"
+            android:progress="@{userDetail.manner%10*10}"
             android:progressTint="@color/main_1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
