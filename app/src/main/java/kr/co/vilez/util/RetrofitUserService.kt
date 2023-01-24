@@ -17,4 +17,13 @@ interface RetrofitUserService {
 
     @GET("/vilez/users/detail/{id}")
     fun getUserDetail(@Path("id") id:Int) : Call<RESTUserDetailResult>
+
+    // TODO : RequestBody, Return 타입 확인
+    @PUT("/vilez/users/modify")
+    fun modifyUser(@Body user:User) : Call<RESTResult>
+
+    
+    // TODO : 리턴 타입 확인
+    @PUT("/vilez/users/profile")
+    fun modifyProfileImage(@Body file: String)
 }
