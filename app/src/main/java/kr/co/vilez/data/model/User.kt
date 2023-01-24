@@ -4,7 +4,7 @@ data class User(
     val accessToken: String,
     val area: String,
     val date: String,
-    var email: String,
+    val email: String,
     val id: Int,
     var manner: Int,
     var nickName: String,
