@@ -9,7 +9,7 @@
         android:enabled="true"
         android:title="공유 목룍"/>
     <item
-        android:id="@+id/share_love"
+        android:id="@+id/share_interest"
         android:enabled="true"
         android:title="관심 목록"/>
     <item
