@@ -58,9 +58,10 @@ class LoginFragment : Fragment() {
                 // 자동로그인 : sharedPreference에 autoLogin true로 저장
                 sharedPreferences.edit {
                     putBoolean("autoLogin", true)
+                    putString("email", email)
+                    putString("password", password)
                     apply()
                 }
-                Log.d(TAG, "sh) 사용자 autoLogin : ${sharedPreferences.getBoolean("autoLogin", false)}")
                 Log.d(TAG, "sh) 사용자 autoLogin : ${sharedPreferences.getBoolean("autoLogin", false)}")
                 val intent = Intent(loginActivity, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
