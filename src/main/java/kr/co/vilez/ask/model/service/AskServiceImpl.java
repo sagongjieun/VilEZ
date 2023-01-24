@@ -1,9 +1,21 @@
 package kr.co.vilez.ask.model.service;
 
+import com.amazonaws.SdkClientException;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import kr.co.vilez.ask.model.dao.AskDao;
 import kr.co.vilez.ask.model.dto.AskDto;
 import kr.co.vilez.ask.model.dto.ImgPath2;
 import kr.co.vilez.ask.model.mapper.AskMapper;
+import kr.co.vilez.configuration.NaverObjectStorageConfig;
+import kr.co.vilez.tool.OSUpload;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -11,13 +23,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -26,7 +41,9 @@ public class AskServiceImpl implements AskService{
 
     final AskMapper askMapper;
     final AskDao askDao;
-    final ResourceLoader resourceLoader;
+    final OSUpload osUpload;
+
+    final String bucketName = "vilez";
 
     @Override
     public List<AskDto> loadAskList(){
@@ -59,153 +76,67 @@ public class AskServiceImpl implements AskService{
     }
 
     @Override
-    public void writeAskBoard(AskDto askDto, MultipartFile[] multipartFiles) {
+    public void writeAskBoard(AskDto askDto, MultipartFile[] multipartFiles) throws IOException {
         try {
             askMapper.writeAskBoard(askDto);
             askDto.setList(new ArrayList<>());
-            Resource resource = resourceLoader.getResource("classpath:/static/");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
+        // create folder
+        String folderName = "ask/"+askDto.getId()+"/";
         if(multipartFiles.length > 0) {
-            LocalDateTime now = LocalDateTime.now();
-            DateTimeFormatter dateTimeFormatter =
-                    DateTimeFormatter.ofPattern("yyyyMMdd");
-            String current_date = now.format(dateTimeFormatter);
-            System.out.println(current_date);
-            // 프로젝트 디렉터리 내의 저장을 위한 절대 경로 설정
-            // 경로 구분자 File.separator 사용
-            String absolutePath = new File("").getAbsolutePath() + File.separator + File.separator;
-            Resource resource = resourceLoader.getResource("classpath:/static/");
-            // 파일을 저장할 세부 경로 지정
-            String path = "";
-            try {
-                path = resource.getURI().getPath() + "images" + "/" + "ask" + "/" + askDto.getId();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            System.out.println(path);
-            File file = new File(path);
-
-            // 디렉터리가 존재하지 않을 경우
-            if(!file.exists()) {
-                boolean wasSuccessful = file.mkdirs();
-
-                // 디렉터리 생성에 실패했을 경우
-                if(!wasSuccessful)
-                    System.out.println("file: was not successful");
-            }
+            osUpload.mkdir(bucketName,folderName);
             for(MultipartFile multipartFile : multipartFiles) {
-                String originalFileExtension;
-                String contentType = multipartFile.getContentType();
 
-                if(contentType != null){
-                    contentType = contentType.toLowerCase();
-                }
-                // 확장자명이 존재하지 않을 경우 처리 x
-                if(ObjectUtils.isEmpty(contentType)) {
-                    break;
-                } else {  // 확장자가 jpeg, png인 파일들만 받아서 처리
-                    if(contentType.contains("image/jpeg"))
-                        originalFileExtension = ".jpg";
-                    else if(contentType.contains("image/png"))
-                        originalFileExtension = ".png";
-                    else  // 다른 확장자일 경우 처리 x
-                        continue;
-                }
-                String new_file_name = System.nanoTime() + originalFileExtension;
+
+                File uploadFile = osUpload.convert(multipartFile)        // 파일 생성
+                        .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File convert fail"));
+
+                String fileName = folderName + System.nanoTime() + uploadFile.getName();
+
                 ImgPath2 img = new ImgPath2();
                 img.setBoardId(askDto.getId());
-                img.setPath(path + "/" + new_file_name);
+                img.setPath("https://kr.object.ncloudstorage.com/"+bucketName+"/"+fileName);
                 img.setFileName(multipartFile.getOriginalFilename());
-                file = new File(path + "/"+ new_file_name);
-
-                try {
-                    multipartFile.transferTo(file);
-                    askDao.insert(img);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-
-                // 파일 권한 설정(쓰기, 읽기)
-                file.setWritable(true);
-                file.setReadable(true);
+                System.out.println(img);
+                askDao.insert(img);
                 askDto.getList().add(img);
+                osUpload.put(bucketName,fileName,uploadFile);
             }
         }
     }
 
     @Override
-    public void updateAskBoard(AskDto askDto, MultipartFile[] multipartFiles) {
+    public void updateAskBoard(AskDto askDto, MultipartFile[] multipartFiles) throws IOException{
         try {
             askMapper.updateAskBoard(askDto);
             askDto.setList(new ArrayList<>());
             askDao.delete(askDto.getId());
-            Resource resource = resourceLoader.getResource("classpath:/static/");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
+        // create folder
+        String folderName = "ask/"+askDto.getId()+"/";
         if(multipartFiles.length > 0) {
-            LocalDateTime now = LocalDateTime.now();
-
-            // 프로젝트 디렉터리 내의 저장을 위한 절대 경로 설정
-            // 경로 구분자 File.separator 사용
-            Resource resource = resourceLoader.getResource("classpath:/static/");
-            // 파일을 저장할 세부 경로 지정
-            String path = "";
-            try {
-                path = resource.getURI().getPath() + "images" + "/" + "ask" + "/" + askDto.getId();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            System.out.println(path);
-            File file = new File(path);
-
-            // 디렉터리가 존재하지 않을 경우
-            if(!file.exists()) {
-                boolean wasSuccessful = file.mkdirs();
-
-                // 디렉터리 생성에 실패했을 경우
-                if(!wasSuccessful)
-                    System.out.println("file: was not successful");
-            }
+            osUpload.mkdir(bucketName,folderName);
             for(MultipartFile multipartFile : multipartFiles) {
-                String originalFileExtension;
-                String contentType = multipartFile.getContentType();
-                if(contentType != null){
-                    contentType = contentType.toLowerCase();
-                }
-                // 확장자명이 존재하지 않을 경우 처리 x
-                if(ObjectUtils.isEmpty(contentType)) {
-                    break;
-                } else {  // 확장자가 jpeg, png인 파일들만 받아서 처리
-                    if(contentType.contains("image/jpeg"))
-                        originalFileExtension = ".jpg";
-                    else if(contentType.contains("image/png"))
-                        originalFileExtension = ".png";
-                    else  // 다른 확장자일 경우 처리 x
-                        continue;
-                }
-                String new_file_name = System.nanoTime() + originalFileExtension;
+
+                File uploadFile = osUpload.convert(multipartFile)        // 파일 생성
+                        .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File convert fail"));
+
+                String fileName = folderName + System.nanoTime() + uploadFile.getName();
+
+
                 ImgPath2 img = new ImgPath2();
                 img.setBoardId(askDto.getId());
-                img.setPath(path + "/" + new_file_name);
+                img.setPath("https://kr.object.ncloudstorage.com/"+bucketName+"/"+fileName);
                 img.setFileName(multipartFile.getOriginalFilename());
-                file = new File(path + "/"+ new_file_name);
-
-                try {
-                    multipartFile.transferTo(file);
-                    askDao.insert(img);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-
-                // 파일 권한 설정(쓰기, 읽기)
-                file.setWritable(true);
-                file.setReadable(true);
+                System.out.println(img);
+                askDao.insert(img);
                 askDto.getList().add(img);
+                osUpload.put(bucketName,fileName,uploadFile);
             }
         }
     }
@@ -230,4 +161,6 @@ public class AskServiceImpl implements AskService{
         }
         return askDto;
     }
+
+
 }

@@ -1,15 +1,20 @@
 package kr.co.vilez.share.model.service;
 
+import kr.co.vilez.ask.model.dto.ImgPath2;
 import kr.co.vilez.data.HttpVO;
 import kr.co.vilez.share.model.dto.*;
 import kr.co.vilez.share.model.dao.ShareDao;
 import kr.co.vilez.share.model.mapper.ShareMapper;
+import kr.co.vilez.tool.OSUpload;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,16 +24,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ShareServiceImpl implements ShareService{
     HttpVO httpVO = null;
 
-    @Autowired
-    ResourceLoader resourceLoader;
-    @Autowired
-    ShareDao shareDao;
-    @Autowired
-    ShareMapper shareMapper;
+    final ShareDao shareDao;
+    final ShareMapper shareMapper;
 
+    final OSUpload osUpload;
+
+    final String bucketName = "vilez";
     @Override
     public HttpVO bookmarkList(int boardId) throws Exception {
         httpVO = new HttpVO();
@@ -99,57 +104,30 @@ public class ShareServiceImpl implements ShareService{
         return httpVO;
     }
 
-    public void saveFiles(int boardId, MultipartFile file) throws Exception {
-        ImgPath imgPath = new ImgPath();
+    public ShareDto saveFiles(ShareDto shareDto, List<MultipartFile> multipartFiles) throws Exception {
+        String folderName = "share/"+shareDto.getId()+"/";
+        if(multipartFiles.size() > 0) {
 
-        String [] formats = {".jpeg", ".png", ".bmp", ".jpg"};
-        // 원래 파일 이름 추출
-        String origName = file.getOriginalFilename();
+            for(MultipartFile multipartFile : multipartFiles) {
 
-        // 확장자 추출(ex : .png)
-        String extension = origName.substring(origName.lastIndexOf("."));
-        extension = extension.toLowerCase();
-        Resource resource = resourceLoader.getResource("classpath:/static/");
-        // 파일을 저장할 세부 경로 지정
-        String path = resource.getURI().getPath()
-                + "images"+ "/" +
-                "share" + "/" +
-                boardId;
 
-        File file1 = new File(path);
-        // 디렉터리가 존재하지 않을 경우
-        if(!file1.exists()) {
-            boolean wasSuccessful = file1.mkdirs();
+                File uploadFile = osUpload.convert(multipartFile)        // 파일 생성
+                        .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File convert fail"));
 
-            // 디렉터리 생성에 실패했을 경우
-            if(!wasSuccessful)
-                System.out.println("file: was not successful");
-        }
+                String fileName = folderName + System.nanoTime() + uploadFile.getName();
 
-        for(int i = 0; i < formats.length; i++) {
-            if (extension.equals(formats[i])){
-                // user email과 확장자 결합
-                String new_file_name = System.nanoTime() + extension;
-                // 파일을 불러올 때 사용할 파일 경로
-                String savedPath = resource.getURI().getPath() +
-                        "images" + "/" +
-                        "share" + "/"
-                        + boardId + "/"
-                        + new_file_name;
+                osUpload.put(bucketName,fileName,uploadFile);
 
-                imgPath.setBoardId(boardId);
-                imgPath.setPath(savedPath);
-                imgPath.setFileName(origName);
-//              shareMapper.saveFiles(imgPath);
+                ImgPath imgPath = new ImgPath();
+                imgPath.setBoardId(shareDto.getId());
+                imgPath.setPath("https://kr.object.ncloudstorage.com/"+bucketName+"/"+fileName);
+                imgPath.setFileName(multipartFile.getOriginalFilename());
 
                 shareDao.insert(imgPath);
-
-                System.out.println("insert DAO");
-
-                file.transferTo(new File(savedPath));
-                break;
+                shareDto.getList().add(imgPath);
             }
         }
+        return shareDto;
     }
 
     @Override
@@ -162,17 +140,19 @@ public class ShareServiceImpl implements ShareService{
     }
 
     @Override
-    public HttpVO update(ShareDto shareDto, List<MultipartFile> files) throws Exception {
+    public HttpVO update(ShareDto shareDto, List<MultipartFile> multipartFiles) throws Exception {
         httpVO = new HttpVO();
 
         shareMapper.update(shareDto);
         shareDao.delete(shareDto.getId());
 
-        if(!files.get(0).getOriginalFilename().equals("")) {
-            for (MultipartFile file : files) {
-                saveFiles(shareDto.getId(), file);
-            }
+        if(!multipartFiles.get(0).getOriginalFilename().equals("")) {
+            shareDto = saveFiles(shareDto, multipartFiles);
         }
+        httpVO.setFlag("success");
+        List<ShareDto> data = new ArrayList<>();
+        data.add(shareDto);
+        httpVO.setData(data);
         return httpVO;
     }
 
@@ -181,14 +161,15 @@ public class ShareServiceImpl implements ShareService{
         httpVO = new HttpVO();
 
         shareMapper.insert(shareDto);
-        int boardId = shareDto.getId();
 
         if(!files.get(0).getOriginalFilename().equals("")) {
-            for (MultipartFile file : files) {
-                saveFiles(boardId, file);
-            }
+            shareDto = saveFiles(shareDto, files);
         }
         httpVO.setFlag("success");
+        List<ShareDto> data = new ArrayList<>();
+        data.add(shareDto);
+        httpVO.setData(data);
+
         return httpVO;
     }
 
