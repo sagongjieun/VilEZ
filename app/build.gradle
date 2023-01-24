@@ -8,6 +8,10 @@ android {
     namespace 'kr.co.vilez'
     compileSdk 32
 
+    task wrapper(type: Wrapper) {
+        gradleVersion = '7.2'
+    }
+
     defaultConfig {
         applicationId "kr.co.vilez"
         minSdk 26
@@ -81,3 +85,5 @@ dependencies {
     implementation files('libs/libDaumMapAndroid.jar')
 
 }
+
+tasks.register("prepareKotlinBuildScriptModel"){}
