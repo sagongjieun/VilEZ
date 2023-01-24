@@ -28,19 +28,7 @@ function Oath() {
         <div>민사, 형사상의 책임을 질 수 있음을 확인합니다. </div>
       </div>
       <div css={signWrap}>
-        {!isSign && (
-          <div
-            css={css`
-              position: absolute;
-              display: flex;
-              align-items: center;
-              margin-bottom: 80px;
-              font-size: 12px;
-            `}
-          >
-            여기에 서명을 해주세요
-          </div>
-        )}
+        {!isSign && <div css={signContentWrap}>여기에 서명을 해주세요</div>}
         <div>
           <SignatureCanvas
             ref={canvas}
@@ -92,6 +80,14 @@ const signWrap = css`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+`;
+
+const signContentWrap = css`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  margin-bottom: 80px;
+  font-size: 12px;
 `;
 
 const oathButton = css`

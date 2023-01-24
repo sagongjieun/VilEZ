@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-
 /** @jsxImportSource @emotion/react */
-
 import { css } from "@emotion/react";
 import closebutton from "../../assets/images/closebutton.png";
 import luffy from "../../assets/images/luffy.png";
 import onpiecethumb from "../../assets/images/onpiecethumb.jfif";
 import jjangu from "../../assets/images/jjangu.png";
 import sinhyeongman from "../../assets/images/sinhyeongman.jfif";
+
 function ChatModal() {
   const [isOpen, setIsOpen] = useState(false);
   const onClickOpenChat = () => {
@@ -60,22 +59,11 @@ function ChatModal() {
       <div css={chatWrap}>
         <div css={ChatTitleWrap}>
           채팅목록
-          <img
-            css={css`
-              cursor: pointer;
-            `}
-            src={closebutton}
-            alt=""
-            onClick={onClickOpenChat}
-          />
+          <img css={closeWrap} src={closebutton} alt="" onClick={onClickOpenChat} />
         </div>
 
         {/* 채팅body 시작 */}
-        <div
-          css={css`
-            padding: 15px;
-          `}
-        >
+        <div css={chatContentWrap}>
           {Chatts.length ? (
             Chatts.map((chat, idx) => (
               <div key={idx} css={ChatListWrap}>
@@ -87,42 +75,21 @@ function ChatModal() {
                 <div>
                   <div css={chatListInfoWrap}>
                     <div>
-                      <span
-                        css={css`
-                          font-size: 14px;
-                          padding-right: 5px;
-                        `}
-                      >
+                      <span css={nicknameWrap}>
                         {/* 닉네임 */}
                         {chat.nickname}
                       </span>
-                      <span
-                        css={css`
-                          font-size: 12px;
-                          color: #8a8a8a;
-                          padding-right: 5px;
-                        `}
-                      >
+                      <span css={locationWrap}>
                         {/* 동네 */}
                         {chat.location}
                       </span>
-                      <span
-                        css={css`
-                          font-size: 12px;
-                          color: #8a8a8a;
-                        `}
-                      >
+                      <span css={timeWrap}>
                         {/* 최근 채팅 시간 */}
                         {chat.time}
                       </span>
                     </div>
                   </div>
-                  <div
-                    css={css`
-                      font-size: 14px;
-                      padding-top: 10px;
-                    `}
-                  >
+                  <div css={lastChatWrap}>
                     {/* 마지막 채팅 문장 */}
                     {chat.lastChat}
                   </div>
@@ -162,12 +129,20 @@ const ChatTitleWrap = css`
   padding: 30px;
 `;
 
+const closeWrap = css`
+  cursor: pointer;
+`;
+
 const NochatWrap = css`
   font-size: 25px;
   justify-content: center;
   display: flex;
   padding-top: 50%;
 `;
+const chatContentWrap = css`
+  padding: 15px;
+`;
+
 const ChatListWrap = css`
   width: 97%;
   display: flex;
@@ -189,6 +164,26 @@ const chatListProfile = css`
 const chatListInfoWrap = css`
   width: 190px;
   margin-right: 2px;
+`;
+
+const nicknameWrap = css`
+  padding: 15px;
+`;
+
+const locationWrap = css`
+  font-size: 12px;
+  color: #8a8a8a;
+  padding-right: 5px;
+`;
+
+const timeWrap = css`
+  font-size: 12px;
+  color: #8a8a8a;
+`;
+
+const lastChatWrap = css`
+  font-size: 14px;
+  padding-top: 10px;
 `;
 
 const ChatListThumb = css`
