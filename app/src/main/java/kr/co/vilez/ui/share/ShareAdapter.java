@@ -38,8 +38,11 @@ public class ShareAdapter extends RecyclerView.Adapter<ShareAdapter.CustomViewHo
 
     @Override   // ViewHolder안의 내용을 position에 해당되는 데이터로 교체한다.
     public void onBindViewHolder(@NonNull ShareAdapter.CustomViewHolder holder, int position) {
-        holder.iv_profile.setImageResource(shareDatas.get(position).getIv_profile());
-        holder.tv_name.setText(shareDatas.get(position).getTv_name());
+
+        // 바인딩해서 리스트의 데이터를 하나씩 넣어주는 메소드를 ViewHolder 클래스 안에 따로 만듦
+        holder.bindingInfo(shareDatas.get(position));
+        /*holder.iv_profile.setImageResource(shareDatas.get(position).getIv_profile()); // 이건 기존코드
+        holder.tv_name.setText(shareDatas.get(position).getTv_name());*/
 
         holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -57,16 +60,23 @@ public class ShareAdapter extends RecyclerView.Adapter<ShareAdapter.CustomViewHo
         return null != shareDatas ?  shareDatas.size() : 0;
     }
 
+
     public class CustomViewHolder extends RecyclerView.ViewHolder{
 
         protected ImageView iv_profile;
         protected TextView tv_name;
+
 
         public CustomViewHolder(
                 View itemView) {
             super(itemView);
             this.iv_profile = (ImageView) itemView.findViewById(R.id.iv_profile);
             this.tv_name = (TextView) itemView.findViewById(R.id.tv_name);
+        }
+
+        public void bindingInfo(ShareData item) { // 데이터 넣어주기
+            iv_profile.setImageResource(item.getIv_profile());
+            tv_name.setText(item.getTv_name());
         }
     }
 }
