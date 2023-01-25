@@ -2,7 +2,16 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import bazzie from "../../assets/images/bazzie.jfif";
+import { useState } from "react";
 function EditProfile() {
+  const [userId, setUserId] = useState("");
+  const [userPassWord, setUserPassWord] = useState("");
+  const onChangeId = (e) => {
+    setUserId(e.target.value);
+  };
+  const onChangePassWord = (e) => {
+    setUserPassWord(e.target.value);
+  };
   return (
     <div css={EditProfileBox}>
       <h2>프로필 수정</h2>
@@ -14,7 +23,13 @@ function EditProfile() {
         </div>
         <div css={nickNameCondition}>(2자 이상 6자 이하 영소문자와 숫자로만 작성해주세요)</div>
         <div css={doubleCheckBox}>
-          <input type="text" placeholder="닉네임을 입력해주세요." css={editProfileInputBox} />
+          <input
+            type="text"
+            placeholder="닉네임을 입력해주세요."
+            css={editProfileInputBox}
+            onChange={onChangeId}
+            value={userId}
+          />
           <button css={duplicateCheck}>중복확인</button>
         </div>
         <div css={possibleNickWrap}>사용가능한 닉네임입니다.</div>
@@ -27,7 +42,13 @@ function EditProfile() {
         </div>
         <div css={passwordCondition}>8자 이상 16자 이하 영소문자와 숫자로만 작성해주세요</div>
         <div>
-          <input type="text" placeholder="비밀번호를 입력해주세요" css={passwordBox} />
+          <input
+            type="text"
+            placeholder="비밀번호를 입력해주세요"
+            css={passwordBox}
+            onChange={onChangePassWord}
+            value={userPassWord}
+          />
         </div>
         <div>
           <input type="text" placeholder="비밀번호를 재입력해주세요" css={passwordBox} />

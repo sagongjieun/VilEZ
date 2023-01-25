@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Animated } from "react-animated-css";
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
@@ -8,7 +8,22 @@ import secondbodyimg from "../assets/images/secondbodyimg.png";
 import thirdbodyimg from "../assets/images/thirdbodyimg.png";
 import mapimg from "../assets/images/mapimg.png";
 import chatimg from "../assets/images/chatimg.png";
+import { useNavigate } from "react-router-dom";
 function MainBody() {
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
+  const mainToProduct = () => {
+    navigate("/product/");
+  };
+  const onChangeSearch = (e) => {
+    setSearch(e.target.value);
+    // console.log(e.target.value);
+  };
+  const onKeyPresssearch = (e) => {
+    if (e.key === "Enter") {
+      mainToProduct();
+    }
+  };
   return (
     <div>
       <div css={FirstBodyWrap}>
@@ -20,7 +35,14 @@ function MainBody() {
           </div>
         </Animated>
         <div css={InputWrap}>
-          <input type="text" placeholder="공유하고 싶은 물품을 검색해보세요." css={[InputBox]} />
+          <input
+            type="text"
+            placeholder="공유하고 싶은 물품을 검색해보세요."
+            css={InputBox}
+            value={search}
+            onChange={onChangeSearch}
+            onKeyDown={onKeyPresssearch}
+          />
         </div>
         {/* 애니메이션 넣어야 함 */}
         {/* animate__slideInDown */}
