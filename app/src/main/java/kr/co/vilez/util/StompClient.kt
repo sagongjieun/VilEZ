@@ -21,7 +21,7 @@ class StompClient {
                 }
             }
         }
-        val url = "ws://211.216.215.157:8086/chat/websocket" // 소켓에 연결하는 엔드포인트가 /socket일때 다음과 같음
+        val url = "ws://i8d111.p.ssafy.io:8082/vilez/chat/websocket" // 소켓에 연결하는 엔드포인트가 /socket일때 다음과 같음
         val stompClient =  Stomp.over(Stomp.ConnectionProvider.OKHTTP, url)
 
         fun runStomp() {

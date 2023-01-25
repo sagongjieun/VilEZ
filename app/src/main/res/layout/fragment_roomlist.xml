@@ -10,8 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        android:id="@+id/rv_chat"
-        tools:listitem="@layout/chatlist_item"
+        android:id="@+id/rv_room"
+        tools:listitem="@layout/roomlist_item"
         />
 
 </FrameLayout>

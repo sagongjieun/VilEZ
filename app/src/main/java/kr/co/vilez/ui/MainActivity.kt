@@ -136,7 +136,7 @@ class MainActivity : AppCompatActivity() {
 
                 // Fragment 변경
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.frame_layout_main, ChatlistFragment())
+                    .replace(R.id.frame_layout_main, ChatFragment())
                     .commit()
                 return true
             }
