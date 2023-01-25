@@ -29,7 +29,10 @@ public class ShareController {
 
     @GetMapping
     @ApiOperation(value = "전체 글 리스트를 보내준다" ,
-            notes = "List에 dto 담아서 리턴")
+            notes = "List에 dto 담아서 리턴" +
+                    "\n \t 현재 받고자 하는 page number를 넣어 보내줘야한다." +
+                    "\n \t cnt에는 보고싶은 page 번호" +
+                    "\n \t high에는 보고싶은 리스트의 총 갯수")
     public ResponseEntity<?> boardList(PageNavigator pageNavigator){
         httpVO = new HttpVO();
         try {
