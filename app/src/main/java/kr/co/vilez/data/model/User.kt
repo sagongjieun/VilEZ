@@ -11,7 +11,7 @@ data class User(
     val oauth: String,
     val password: String,
     val point: Int,
-    val profileImg: String,
+    var profileImg: String,
     val refreshToken: String,
     val state: Int
 ) {
@@ -21,6 +21,9 @@ data class User(
     )
     constructor(id: Int):this(
         "","","","",id,0,"","","",0,"","",0
+    )
+    constructor(id:Int, password:String, nickName: String):this(
+        "","","","",id,0,nickName,"",password,0,"","",0
     )
     constructor(email: String, password: String) : this(
         "","","",email,0,0,"","",password,0,"","",0)

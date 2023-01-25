@@ -1,13 +1,16 @@
 package kr.co.vilez.ui.profile
 
 import android.content.Intent
+import android.content.Intent.*
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.edit
+import androidx.core.view.ContentInfoCompat.Flags
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import kotlinx.coroutines.CoroutineScope
@@ -70,7 +73,7 @@ class EditProfileFragment : Fragment() {
 
         CoroutineScope(Dispatchers.Main).launch {
             val result =
-                ApplicationClass.retrofitUserService.modifyUser(newUser).awaitResponse().body()
+                ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.user.accessToken, newUser).awaitResponse().body()
             if (result?.flag == "success") {
                 Log.d(TAG, "changeProfileImage: result: $result")
                 // 수정했다고 토스트 띄우고 창 돌아가기 or 수정되었습니다 다이얼로그 띄우고 창 닫기
@@ -83,6 +86,9 @@ class EditProfileFragment : Fragment() {
     }
 
     fun changeNickName(view: View) {
+        view.isClickable = false
+        view.isEnabled = false
+
         val newNickname = binding.inputProfileNickname.editText?.text.toString()
         if(newNickname == ApplicationClass.user.nickName) {
             binding.inputProfileNickname.helperText = null
@@ -92,18 +98,44 @@ class EditProfileFragment : Fragment() {
         CoroutineScope(Dispatchers.Main).launch {
             val result = ApplicationClass.retrofitUserService.isUsedUserNickName(newNickname).awaitResponse().body()
             Log.d(TAG, "checkNickName: 닉네임 중복 확인, result : $result")
-            if(result != null && result.flag == "success") {
+            if(result?.flag == "success") {
                 Log.d(TAG, "checkNickName: 사용가능한 닉네임")
+
                 binding.inputProfileNickname.error = null
+
                 // TODO: 닉네임 수정 in here
-                binding.inputProfileNickname.helperText = "변경가능한 닉네임입니다."
-                // TODO: 수정 완료 후 수정되었습니다. 다이얼로그 띄우고 창 뒤로가기, ApplicationClass.user data도 갱신
+                val newUser = User(id=ApplicationClass.user.id, nickName = newNickname, password = "")
+                val modifyResult = ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.user.accessToken, newUser).awaitResponse().body()
+                /*val modifyRaw = ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.user.accessToken, newUser).awaitResponse().raw()
+                val modifyErrorBody = ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.user.accessToken, newUser).awaitResponse().errorBody()
+                val modifyHeaders = ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.user.accessToken, newUser).awaitResponse().headers()
+                val modifyMessage = ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.user.accessToken, newUser).awaitResponse().message()
+                Log.d(TAG, "changeNickName: <header>:$modifyHeaders\n <raw>: $modifyRaw\n <errorBody>:$modifyErrorBody\n <message>: $modifyMessage")*/
+                Log.d(TAG, "changeNickName: modifyResult: $modifyResult")
+                if(modifyResult?.flag == "success") {
+                    Log.d(TAG, "changeNickName: 닉네임 변경 성공")
+                    binding.inputProfileNickname.helperText = null
+                    binding.inputProfileNickname.error = null
+//                binding.inputProfileNickname.helperText = "변경가능한 닉네임입니다."
+                    // TODO: 수정 완료 후 수정되었습니다. 토스트 띄우고 창 뒤로가기, ApplicationClass.user data도 갱신
+                    Toast.makeText(profileActivity, "닉네임 변경을 성공했습니다.", Toast.LENGTH_SHORT).show()
+                    ApplicationClass.user.nickName = newNickname
+                    val intent = Intent(profileActivity, MainActivity::class.java)
+                    intent.putExtra("target", "나의 빌리지")
+                    intent.addFlags(FLAG_ACTIVITY_CLEAR_TASK)
+                    startActivity(intent)
+                } else {
+                    Log.d(TAG, "changeNickName: 닉네임 변경 실패")
+                }
             } else {
                 binding.inputProfileNickname.helperText = null
                 binding.inputProfileNickname.error = "이미 사용중인 닉네임입니다."
                 Log.d(TAG, "checkNickName: 이미 사용중인 닉네임")
             }
+
         }
+        view.isClickable = true
+        view.isEnabled = true
     }
 
 
@@ -116,7 +148,7 @@ class EditProfileFragment : Fragment() {
             /*CoroutineScope(Dispatchers.Main).launch {
 
             }*/
-            // TODO: 수정 완료 후 수정되었습니다. 다이얼로그 띄우고 창 뒤로가기, ApplicationClass.user data도 갱신
+            // TODO: 수정 완료 후 수정되었습니다. "변경된 비밀번호로 재로그인 해주세요" 다이얼로그 띄우고 로그인 화면으로 넘어가기
         } else {
             Log.d(TAG, "changePassword: 비밀번호 변경 실패")
             // TODO : 실패 다이얼로그 띄우기
@@ -147,7 +179,6 @@ class EditProfileFragment : Fragment() {
     }
 
     private fun initView() {
-        
         // 신규 비밀번호 양식 확인
         binding.inputProfileNewPassword.editText?.addTextChangedListener {
             isValidPassword = Common.verifyPassword(it.toString())

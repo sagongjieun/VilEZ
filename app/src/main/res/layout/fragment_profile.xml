@@ -16,6 +16,10 @@
         <variable
             name="userDetail"
             type="kr.co.vilez.data.model.UserDetail" />
+
+        <variable
+            name="profileImg"
+            type="String" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -65,8 +69,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginStart="20dp"
-            android:background="@drawable/img_default_profile"
-            android:src="@{user.profileImg}"
+            app:imageFromUrl="@{profileImg}"
             app:layout_constraintEnd_toStartOf="@+id/tv_profile_nickName"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -93,7 +96,7 @@
             android:layout_height="40dp"
             android:gravity="center_vertical"
             android:paddingStart="20dp"
-            android:text="@{user.nickName}"
+            android:text="@{userDetail.nickName}"
             android:textColor="@color/text_black"
             android:textSize="18sp"
             android:textStyle="bold"
