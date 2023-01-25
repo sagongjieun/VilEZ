@@ -9,6 +9,8 @@ class Common {
 
     companion object {
 
+        val DEFAULT_PROFILE_IMG = "https://kr.object.ncloudstorage.com/vilez/basicProfile.png"
+
         fun showAlertDialog(context: AppCompatActivity, title:String, tag:String) {
             val dialog = AlertDialog(context, title)
             // 알림창이 띄워져있는 동안 배경 클릭 막기
