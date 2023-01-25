@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public HttpVO modifyUserInfo(UserDto userDto) throws Exception {
+    public HttpVO modifyUserInfo(HashMap<String,?> userDto) throws Exception {
         http = new HttpVO();
         http.setFlag("success");
         userMapper.modifyUserInfo(userDto);

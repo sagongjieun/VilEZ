@@ -37,7 +37,7 @@
         SELECT nickname,area,point,manner,profile_img from user where id = #{id}
     </select>
 
-    <update id="modifyUserInfo" parameterType="UserDto">
+    <update id="modifyUserInfo" parameterType="map">
         UPDATE user
         <set>
             <if test ="nickName != null and nickName != ''">
@@ -47,7 +47,7 @@
                 password = #{password},
             </if>
         </set>
-        WHERE id = #{userId}
+        WHERE id = #{id}
     </update>
 
     <update id="modifyProfile" parameterType="userDto">

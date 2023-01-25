@@ -5,10 +5,12 @@ import kr.co.vilez.user.model.dto.UserDto;
 import org.apache.catalina.User;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
+
 public interface UserService {
 
     HttpVO check(String nickname) throws  Exception;
-    HttpVO modifyUserInfo(UserDto userDto) throws Exception;
+    HttpVO modifyUserInfo(HashMap<String,?> userDto) throws Exception;
     HttpVO modifyProfile(String email, MultipartFile multipartFile) throws Exception;
     HttpVO login(UserDto userDto) throws Exception;
     HttpVO detail(int id) throws Exception;

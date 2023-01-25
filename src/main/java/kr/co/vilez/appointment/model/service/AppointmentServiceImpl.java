@@ -82,7 +82,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public MapVO loadLocationByRoomId(String roomId) {
+    public MapVO loadLocationByRoomId(int roomId) {
         return appointmentDao.loadLocationByRoomId(roomId);
     }
 
