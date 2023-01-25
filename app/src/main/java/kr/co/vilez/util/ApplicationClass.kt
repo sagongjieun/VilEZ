@@ -24,7 +24,7 @@ class ApplicationClass: Application() {
         lateinit var wRetrofit : Retrofit
         lateinit var retrofitUserService: RetrofitUserService
         lateinit var retrofitEmailService: RetrofitEmailService
-        lateinit var retrofitKakaoService: RetrofitKakaoService
+        lateinit var retrofitChatService: RetrofitChatService
 
         // 로그인 정보를 담기 위한 sharedPreference
         lateinit var sharedPreferences: SharedPreferences
@@ -60,7 +60,7 @@ class ApplicationClass: Application() {
 
         retrofitUserService = wRetrofit.create(RetrofitUserService::class.java)
         retrofitEmailService = wRetrofit.create(RetrofitEmailService::class.java)
-        retrofitKakaoService = wRetrofit.create(RetrofitKakaoService::class.java)
+        retrofitChatService = wRetrofit.create(RetrofitChatService::class.java)
         Log.d(TAG, "onCreate: ")
 
         // 네트워크에 연결되어있는지 확인 후 없으면 앱 종료 시키기위해 네트워크 연결상태 감지 콜백 생성시켜두기
