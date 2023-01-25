@@ -12,8 +12,13 @@ function EditProfile() {
   const onChangePassWord = (e) => {
     setUserPassWord(e.target.value);
   };
+  const onClickImageChange = (e) => {
+    e.preventDefault();
+    const imgInput = document.getElementById("imgInput");
+    imgInput.click();
+  };
   return (
-    <div css={EditProfileBox}>
+    <form css={EditProfileBox}>
       <h2>프로필 수정</h2>
 
       {/* 닉네임 파트 */}
@@ -65,7 +70,10 @@ function EditProfile() {
             <img src={bazzie} alt="" css={profileImgWrap} />
           </div>
           <div css={modifyButtonWrap}>
-            <button css={modifyButton}>변경</button>
+            <input type="file" id="imgInput" accept=".jpg,.jpeg,.png" css={inputWrap} />
+            <button css={modifyButton} onClick={onClickImageChange}>
+              변경
+            </button>
             <button css={deleteButton}>삭제</button>
           </div>
         </div>
@@ -76,7 +84,7 @@ function EditProfile() {
         <button css={completeButton}>완료</button>
       </div>
       {/* flex 3개 마지막 div */}
-    </div>
+    </form>
   );
 }
 const EditProfileBox = css`
@@ -202,6 +210,9 @@ const profileImgWrap = css`
   border-radius: 100%;
   width: 65%;
 `;
+const inputWrap = css`
+  display: none;
+`;
 
 const modifyButtonWrap = css`
   display: flex;
@@ -217,6 +228,7 @@ const modifyButton = css`
   border-radius: 5px;
   border: none;
   margin-right: 20px;
+  cursor: pointer;
 `;
 
 const deleteButton = css`
