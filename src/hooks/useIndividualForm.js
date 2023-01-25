@@ -1,43 +1,40 @@
 import { useEffect, useState } from "react";
 
-function useForm({ initialValues, onSubmit, Validation }) {
-  const [values, setValues] = useState(initialValues);
-  const [errors, setErrors] = useState({});
+function useIndividualForm({ initialValue, onSubmit, Validation }) {
+  const [value, setValue] = useState(initialValue);
+  const [error, setError] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setValues({ ...values, [name]: value });
+    setValue({ [name]: value });
   };
 
   const handleSubmit = async (event) => {
     setIsLoading(true);
     event.preventDefault();
     await new Promise((r) => setTimeout(r, 100));
-    setErrors(Validation(values));
+    setError(Validation(value));
   };
 
   const handleClick = async () => {
     setIsLoading(true);
     await new Promise((r) => setTimeout(r, 100));
-    setErrors(Validation(values));
-    console.log("Hi");
+    setError(Validation(value));
   };
 
   useEffect(() => {
     if (isLoading) {
-      console.log("흠");
-      if (Object.keys(errors).length === 0) {
-        onSubmit(values);
-        console.log("흠?");
+      if (Object.keys(error).length === 0) {
+        onSubmit(value);
       }
       setIsLoading(false);
     }
-  }, [errors]);
+  }, [error]);
 
   return {
-    values,
-    errors,
+    value,
+    error,
     isLoading,
     handleChange,
     handleSubmit,
@@ -45,4 +42,4 @@ function useForm({ initialValues, onSubmit, Validation }) {
   };
 }
 
-export default useForm;
+export default useIndividualForm;

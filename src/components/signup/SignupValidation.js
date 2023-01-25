@@ -1,7 +1,7 @@
 // Login 유효성 검사하는 함수
 // input name을 인자로 받아서, 각 input의 유효성 검사 조건과 에러 문구를 설정
 
-const SignupValidation = ({ email, emailCode, password, password2, nickname }) => {
+const SignupValidation = ({ email, emailCode, password, password2, nickName }) => {
   const errors = {};
 
   if (!email) {
@@ -30,10 +30,10 @@ const SignupValidation = ({ email, emailCode, password, password2, nickname }) =
     errors.password2 = "비밀번호가 일치하지 않습니다. 다시 입력해주세요.";
   }
 
-  if (!nickname) {
-    errors.nickname = "닉네임을 입력해주세요.";
-  } else if (nickname.length > 6) {
-    errors.nickname = "최대 6자까지 설정할 수 있어요.";
+  if (!nickName) {
+    errors.nickName = "닉네임을 입력해주세요.";
+  } else if (nickName.length > 6) {
+    errors.nickName = "최대 6자까지 설정할 수 있어요.";
   }
 
   return errors;
