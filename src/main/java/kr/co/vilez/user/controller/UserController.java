@@ -75,8 +75,8 @@ public class UserController {
 
     // 회원 정보 변경(Image)
     @PutMapping("/profile")
-    public ResponseEntity<?> modifyImg(@RequestParam String userId,
-            @RequestParam MultipartFile file) {
+    public ResponseEntity<?> modifyImg(@RequestPart(value = "userId") int userId,
+            @RequestPart(value = "image") MultipartFile file) {
         try {
             http = userService.modifyProfile(userId, file);
             log.info("회원프로필 수정 성공");
