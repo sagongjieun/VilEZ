@@ -198,6 +198,8 @@ public class ShareServiceImpl implements ShareService{
             pageNavigator.setWord("%"+pageNavigator.getWord()+"%");
         }
 
+        System.out.println(pageNavigator);
+
         int tmp = pageNavigator.getHigh();
         pageNavigator.setHigh(pageNavigator.getHigh() * pageNavigator.getCnt());
         pageNavigator.setLow(tmp);
@@ -211,7 +213,7 @@ public class ShareServiceImpl implements ShareService{
             List<BookmarkDto> bookmarkList = shareDao.selectBookmarkList(shareListDto.getId());
 
             totalListShare.setShareListDto(shareListDto);
-            totalListShare.setList(bookmarkList);
+            totalListShare.setListCnt(bookmarkList.size());
             data.add(totalListShare);
         }
 
