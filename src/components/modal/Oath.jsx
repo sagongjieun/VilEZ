@@ -49,6 +49,7 @@ function Oath() {
         <button css={cancelButton}>아니오</button>
         <button css={completeButton}>확정</button>
       </div>
+      <canvas></canvas>
     </div>
   );
 }
