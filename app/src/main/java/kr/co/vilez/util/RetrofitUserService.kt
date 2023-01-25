@@ -24,6 +24,6 @@ interface RetrofitUserService {
 
     // TODO : 리턴 타입 확인
     @PUT("/vilez/users/profile")
-    fun modifyProfileImage(@Body file: String)
+    fun modifyProfileImage(@Header("access_token")token:String?, @Body file: String)
 }
 

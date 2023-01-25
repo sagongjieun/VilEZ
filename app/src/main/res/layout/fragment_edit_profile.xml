@@ -63,8 +63,7 @@
             android:layout_height="60dp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/img_default_profile"
-            android:src="@{user.profileImg}"
+            app:imageFromUrl="@{user.profileImg}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 

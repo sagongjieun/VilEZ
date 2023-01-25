@@ -51,7 +51,7 @@ class ProfileFragment : Fragment() {
 
         binding.user = ApplicationClass.user
         // TODO : 나중엔 저장되어있는 이미지로 변경
-        binding.profileImg = "https://www.example.com/image.jpg"
+        binding.profileImg = "https://kr.object.ncloudstorage.com/vilez/basicProfile.png"
         getUserDetail(ApplicationClass.user.id) // 현재 로그인한 유저 id로 user detail 가져오기
 
         return binding.root
@@ -70,8 +70,6 @@ class ProfileFragment : Fragment() {
             }
         }
     }
-
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

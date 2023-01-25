@@ -93,6 +93,8 @@ class EditProfileFragment : Fragment() {
         if(newNickname == ApplicationClass.user.nickName) {
             binding.inputProfileNickname.helperText = null
             binding.inputProfileNickname.error = "현재 닉네임과 동일합니다."
+            view.isClickable = true
+            view.isEnabled = true
             return
         }
         CoroutineScope(Dispatchers.Main).launch {
@@ -175,7 +177,6 @@ class EditProfileFragment : Fragment() {
             }
         }
         return isCorrectCurrentPassword and isValidPassword and isValidPasswordAgain
-
     }
 
     private fun initView() {
