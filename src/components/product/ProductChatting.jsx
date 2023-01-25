@@ -77,18 +77,20 @@ const articleInfoWrapper = css`
 const mapAndChatWrapper = css`
   display: flex;
   flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
 
   & > div:nth-of-type(2) {
     display: flex;
     flex-direction: column;
+    width: 30%;
   }
 `;
 
 const mapWrapper = css`
   display: flex;
   flex-direction: column;
-  width: 670px;
-  margin-right: 40px;
+  width: 65%;
 
   & > div:nth-of-type(1) {
     display: flex;
@@ -113,26 +115,27 @@ const mapWrapper = css`
 const menusWrapper = css`
   display: flex;
   flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
   margin-bottom: 10px;
 
   & > img {
     cursor: pointer;
     width: 60px;
     height: 60px;
-    margin-right: 20px;
   }
 `;
 
 const chatWrapper = css`
-  width: 330px;
-  height: 520px;
+  max-width: 100%;
+  max-height: 550px;
   border: 1px solid #e1e2e3;
-  border-radius: 15px;
+  border-radius: 10px;
   padding: 20px;
 
   & > div:nth-of-type(1) {
     width: 100%;
-    height: 450px;
+    height: 462px;
     border: 1px solid #e1e2e3;
     border-radius: 5px;
     margin-bottom: 20px;
