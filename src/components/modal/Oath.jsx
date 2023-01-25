@@ -8,14 +8,9 @@ function Oath() {
   const reciever = "피공유자";
   const stuff = "노트북";
   const canvas = useRef(null);
-  // const onClickclear = () => {
-  //   canvas.current.clear();
-  // };
   const [isSign, setIsSign] = useState(false);
-  const setSign = () => {
-    console.log("시작");
-    setIsSign((prev) => !prev);
-  };
+
+  // 확정 버튼 누르면 서버로 전송할 api
   return (
     <div css={oathWrap}>
       <div css={oathTitle}>서약서</div>
@@ -34,7 +29,9 @@ function Oath() {
             ref={canvas}
             backgroundColor="#E8E8E8"
             canvasProps={{ width: 200, height: 100 }}
-            onBegin={setSign}
+            onBegin={() => {
+              setIsSign(true);
+            }}
           />
         </div>
         <button

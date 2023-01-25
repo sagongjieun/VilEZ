@@ -8,7 +8,7 @@ import Product from "./pages/Product";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
 // import Qrcode from "./components/modal/Qrcode";
-import Oath from "./components/modal/Oath";
+// import Oath from "./components/modal/Oath";
 
 function App() {
   return (
@@ -22,7 +22,7 @@ function App() {
         <Route path="/product/*" element={<Product />} />
         <Route path="/profile/*" element={<Profile />} />
       </Routes>
-      <Oath />
+      {/* <Oath /> */}
       {/* <Qrcode /> */}
     </BrowserRouter>
   );
