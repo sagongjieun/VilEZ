@@ -57,7 +57,7 @@ public class AskController {
                     "\n \t title : String," +
                     "\n \t hopeAreaLat : String," +
                     "\n \t hopeAreaLng : String," +
-                    "\n \t startDay : String" +
+                    "\n \t startDay : String," +
                     "\n \t endDay : String" +
                     "\n \t }")
     public ResponseEntity<?> writeAskBoard(@RequestPart(value = "board",required = false) AskDto askDto,
@@ -82,7 +82,7 @@ public class AskController {
                     "\n \t title : String," +
                     "\n \t hopeAreaLat : String," +
                     "\n \t hopeAreaLng : String," +
-                    "\n \t startDay : String" +
+                    "\n \t startDay : String," +
                     "\n \t endDay : String" +
                     "\n \t }")
     public ResponseEntity<?> updateAskBoard(@RequestPart(value = "board",required = false) AskDto askDto,
