@@ -45,7 +45,7 @@ public class AppointmentDao {
     }
 
     //roomId에 저장된 좌표값을 불러온다.
-    public MapVO loadLocationByRoomId(String roomId) {
+    public MapVO loadLocationByRoomId(int roomId) {
         MapVO msg = mongoTemplate.findOne(
                 Query.query(Criteria.where("roomId").is(roomId)),
                 MapVO.class
