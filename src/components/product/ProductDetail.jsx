@@ -69,10 +69,9 @@ const ProductDetail = () => {
 
   useEffect(() => {
     // boardId 임시 데이터
-    getShareArticleByBoardId(52).then((res) => {
+    getShareArticleByBoardId(55).then((res) => {
       const data = res[0];
 
-      /** data.userId로 공유자 정보 얻기 비동기 요청 필요 */
       setUserId(data.userId);
       setBoardId(data.id);
       setTitle(data.title);
@@ -86,19 +85,6 @@ const ProductDetail = () => {
       setHopeAreaLng(data.hopeAreaLng);
       setBookmarkCnt(data.bookmarkCnt);
       setState(data.state);
-
-      /** userId가 아니라 recoil에서 현재 로그인한 유저의 id를 파라미터로 넣어야 함. 테스트를 위해 임시로 userId로 넣음. */
-      // 내(현재 로그인 한 유저)가 이 게시글을 북마크했는지 여부 확인
-      if (boardId && userId) {
-        getBookmarkStateByUserId(boardId, userId)
-          .then((res) => {
-            const data = res[0];
-
-            if (!data) setIsBookmarked(false);
-            else setIsBookmarked(true);
-          })
-          .catch((error) => console.log(error));
-      }
     });
   }, []);
 
@@ -117,6 +103,21 @@ const ProductDetail = () => {
         .catch((error) => console.log(error));
     }
   }, [userId]);
+
+  useEffect(() => {
+    /** userId가 아니라 recoil에서 현재 로그인한 유저의 id를 파라미터로 넣어야 함. 테스트를 위해 임시로 userId로 넣음. */
+    // 내(현재 로그인 한 유저)가 이 게시글을 북마크했는지 여부 확인
+    if (boardId && userId) {
+      getBookmarkStateByUserId(boardId, userId)
+        .then((res) => {
+          const data = res[0];
+
+          if (!data) setIsBookmarked(false);
+          else setIsBookmarked(true);
+        })
+        .catch((error) => console.log(error));
+    }
+  }, [boardId, userId]);
 
   return (
     <div css={wrapper}>
