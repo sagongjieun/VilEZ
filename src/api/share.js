@@ -42,7 +42,6 @@ async function postShareArticle(formData) {
 
 async function postBookmark(boardId, userId) {
   try {
-    console.log({ boardId, userId });
     const { data } = await jsonAxios.post(`/shareboard/bookmark`, { boardId, userId });
 
     if (data.flag === "success") alert("이 게시글을 북마크로 등록하였습니다. 😀");

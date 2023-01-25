@@ -7,7 +7,6 @@ const ImageSlide = ({ imageSlideList }) => {
   const SIZE = imageSlideList.length;
 
   let slideIndex = 0;
-  const END_POINT = "http://211.216.215.157:8082/copy1/"; // share의 경우 copy1, ask의 경우 copy
 
   function onClickPrevSlide() {
     showSlides((slideIndex -= 1));
@@ -33,7 +32,6 @@ const ImageSlide = ({ imageSlideList }) => {
   }
 
   useEffect(() => {
-    imageSlideList.map((image) => (image.path = END_POINT + image.path.split("/").slice(-2).join("/")));
     showSlides(slideIndex);
   }, [imageSlideList]);
 
