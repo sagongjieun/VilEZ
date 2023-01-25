@@ -76,7 +76,7 @@ class ProfileFragment : Fragment() {
         initMenus()
 
         CoroutineScope(Dispatchers.Main).launch {
-            delay(100) // 뷰가 다 뜨면 화면에 보여주기
+            delay(150) // 뷰가 다 뜨면 화면에 보여주기
             binding.clProfile.visibility = View.VISIBLE
         }
     }

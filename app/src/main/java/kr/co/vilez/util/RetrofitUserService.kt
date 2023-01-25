@@ -1,6 +1,7 @@
 package kr.co.vilez.util
 
 import kr.co.vilez.data.model.*
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -23,7 +24,8 @@ interface RetrofitUserService {
     fun modifyUser(@Header("access_token")token:String?, @Body user:User) : Call<RESTResult>
 
     // TODO : 리턴 타입 확인
+    @Multipart
     @PUT("/vilez/users/profile")
-    fun modifyProfileImage(@Header("access_token")token:String?, @Body file: String)
+    fun modifyProfileImage(@Header("access_token")token:String?, @Part body: MultipartBody.Part): Call<RESTResult>
 }
 

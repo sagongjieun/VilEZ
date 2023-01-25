@@ -1,14 +1,23 @@
 package kr.co.vilez.ui.profile
 
+import android.app.Activity
+import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.content.Intent.*
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.AttributeSet
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.view.ContentInfoCompat.Flags
 import androidx.core.widget.addTextChangedListener
@@ -20,22 +29,34 @@ import kr.co.vilez.R
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentEditProfileBinding
 import kr.co.vilez.ui.MainActivity
+import kr.co.vilez.ui.user.BindingAdapter
 import kr.co.vilez.ui.user.ProfileMyShareActivity
 import kr.co.vilez.util.ApplicationClass
+import kr.co.vilez.util.ChangeMultipartUtil
 import kr.co.vilez.util.Common
+import kr.co.vilez.util.Common.Companion.DEFAULT_PROFILE_IMG
 import kr.co.vilez.util.StompClient
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.awaitResponse
+import java.io.File
 
 private const val TAG = "빌리지_EditProfileFragment"
 class EditProfileFragment : Fragment() {
 
     private lateinit var binding:FragmentEditProfileBinding
     private lateinit var profileActivity: ProfileMyShareActivity
+    private lateinit var mContext: Context
 
     private var isCorrectCurrentPassword = false
     private var isValidPassword = false
     private var isValidPasswordAgain = false
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mContext = context
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +91,37 @@ class EditProfileFragment : Fragment() {
         }
     }
 
+    private val REQ_GALLERY = 1
+
+    // 이미지 갤러리에서 선택할 시  콜백
+    private val imageResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+
+        if (result.resultCode == RESULT_OK) {
+            val imageUri = result.data?.data ?: return@registerForActivityResult
+            binding.ivProfileImg.setImageURI(imageUri)
+
+            val file = File(ChangeMultipartUtil().changeAbsolutelyPath(imageUri, mContext))
+            val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), file)
+            val body = MultipartBody.Part.createFormData("profile_img", file.name, requestFile)
+
+            CoroutineScope(Dispatchers.Main).launch {
+                // TODO : 이거 바꿔줘야 함
+                val result = ApplicationClass.retrofitUserService.modifyProfileImage(
+                    ApplicationClass.user.accessToken,
+                    body
+                ).awaitResponse().body()
+                Log.d(TAG, "checkNickName: 닉네임 중복 확인, result : $result")
+                if (result?.flag == "success") {
+                    Log.d(TAG, "프로필이미지변경성공: ")
+                    // TODO : 토스트 띄우고 프로필 메인 다시 띄우기
+                } else {
+                    Log.d(TAG, "프로필이미지변경실패: ")
+                }
+            }
+        }
+    } // End of registerForActivityResult
 
     fun changeProfileImage(view: View) {
         val curUser = ApplicationClass.user
@@ -77,28 +129,60 @@ class EditProfileFragment : Fragment() {
 
         if (view.id == R.id.btn_profile_img_change) {
             // 바뀐 이미지 가져와서 수정
+            val writePermission = ContextCompat.checkSelfPermission(
+                mContext, android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+            val readPermission = ContextCompat.checkSelfPermission(
+                mContext, android.Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+
+            if (writePermission == PackageManager.PERMISSION_DENIED || readPermission == PackageManager.PERMISSION_DENIED) {
+                ActivityCompat.requestPermissions(
+                    mContext as Activity, arrayOf(
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE
+                    ), REQ_GALLERY
+                )
+            } else {
+                val intent = Intent(Intent.ACTION_PICK)
+                intent.setDataAndType(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*"
+                )
+                imageResult.launch(intent)
+            }
         } else {
             // 기본 이미지로 수정
-        }
+            BindingAdapter.bindImageFromUrl(binding.ivProfileImg, DEFAULT_PROFILE_IMG)
 
-        val newUser = User(
-            curUser.accessToken, curUser.area, curUser.date,
-            curUser.email, curUser.id, curUser.manner, curUser.nickName, curUser.oauth,
-            curUser.password, curUser.point, newProfileImage, curUser.refreshToken, curUser.state
-        )
-
-        CoroutineScope(Dispatchers.Main).launch {
-            val result =
-                ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.user.accessToken, newUser).awaitResponse().body()
-            if (result?.flag == "success") {
-                Log.d(TAG, "changeProfileImage: result: $result")
-                // 수정했다고 토스트 띄우고 창 돌아가기 or 수정되었습니다 다이얼로그 띄우고 창 닫기
-                // TODO: 수정 완료 후 수정되었습니다. 다이얼로그 띄우고 창 뒤로가기, ApplicationClass.user data도 갱신
-            } else {
-                Log.d(TAG, "changeProfileImage: 수정 실패: $result")
-                // TODO: 수정 실패 다이얼로그 띄우기
+            // 기본 이미지
+            CoroutineScope(Dispatchers.Main).launch {
+                // TODO : 기본 이미지로 프로필 사진 바꿔줘야 함
+//                val result = ApplicationClass.retrofitUserService.modifyProfileImage(
+//                    ApplicationClass.user.accessToken,
+//                    body
+//                ).awaitResponse().body()
+//                Log.d(TAG, "checkNickName: 닉네임 중복 확인, result : $result")
+//                if (result?.flag == "success") {
+//                    Log.d(TAG, "프로필이미지변경성공: ")
+//                    // TODO : 토스트 띄우고 프로필 메인 다시 띄우기
+//                } else {
+//                    Log.d(TAG, "프로필이미지변경실패: ")
+//                }
             }
         }
+
+//        CoroutineScope(Dispatchers.Main).launch {
+//            val result =
+//                ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.user.accessToken, newUser).awaitResponse().body()
+//            if (result?.flag == "success") {
+//                Log.d(TAG, "changeProfileImage: result: $result")
+//                // 수정했다고 토스트 띄우고 창 돌아가기 or 수정되었습니다 다이얼로그 띄우고 창 닫기
+//                // TODO: 수정 완료 후 수정되었습니다. 다이얼로그 띄우고 창 뒤로가기, ApplicationClass.user data도 갱신
+//            } else {
+//                Log.d(TAG, "changeProfileImage: 수정 실패: $result")
+//                // TODO: 수정 실패 다이얼로그 띄우기
+//            }
+//        }
     }
 
     fun changeNickName(view: View) {
