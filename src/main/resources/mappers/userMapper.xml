@@ -47,7 +47,7 @@
                 password = #{password},
             </if>
         </set>
-        WHERE id = #{userId}
+        WHERE id = #{id}
     </update>
 
     <update id="modifyProfile" parameterType="userDto">
