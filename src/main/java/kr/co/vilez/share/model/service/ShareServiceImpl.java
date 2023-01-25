@@ -142,10 +142,10 @@ public class ShareServiceImpl implements ShareService{
     @Override
     public HttpVO update(ShareDto shareDto, List<MultipartFile> multipartFiles) throws Exception {
         httpVO = new HttpVO();
-
+        shareDto.setList(new ArrayList<>());
         shareMapper.update(shareDto);
         shareDao.delete(shareDto.getId());
-
+        shareDto.setList(new ArrayList<>());
         if(!multipartFiles.get(0).getOriginalFilename().equals("")) {
             shareDto = saveFiles(shareDto, multipartFiles);
         }
@@ -161,7 +161,7 @@ public class ShareServiceImpl implements ShareService{
         httpVO = new HttpVO();
 
         shareMapper.insert(shareDto);
-
+        shareDto.setList(new ArrayList<>());
         if(!files.get(0).getOriginalFilename().equals("")) {
             shareDto = saveFiles(shareDto, files);
         }
