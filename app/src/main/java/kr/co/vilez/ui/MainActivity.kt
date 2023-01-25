@@ -31,7 +31,67 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         supportActionBar?.hide() // 액션바 숨김
+
+        val target = intent.getStringExtra("target")
+        if(target == null) {
+            changeFragment("홈")
+        } else {
+            changeFragment(target)
+        }
         initView()
+    }
+
+    private fun changeFragment(name: String) {
+        when(name) {
+            "홈" -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.frame_layout_main, HomeFragment())
+                    .commit()
+
+                binding.bottomNavigation.menu.apply {
+                    findItem(R.id.page_home).setIcon(R.drawable.home_fill)
+                    findItem(R.id.page_share).setIcon(R.drawable.location_line)
+                    findItem(R.id.page_chat).setIcon(R.drawable.message_line)
+                    findItem(R.id.page_profile).setIcon(R.drawable.user_line)
+                }
+            }
+            "공유" -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.frame_layout_main, ShareFragment())
+                    .commit()
+
+                binding.bottomNavigation.menu.apply {
+                    findItem(R.id.page_home).setIcon(R.drawable.home_line)
+                    findItem(R.id.page_share).setIcon(R.drawable.location_fill)
+                    findItem(R.id.page_chat).setIcon(R.drawable.message_line)
+                    findItem(R.id.page_profile).setIcon(R.drawable.user_line)
+                }
+            }
+            "채팅" -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.frame_layout_main, ChatFragment())
+                    .commit()
+
+                binding.bottomNavigation.menu.apply {
+                    findItem(R.id.page_home).setIcon(R.drawable.home_line)
+                    findItem(R.id.page_share).setIcon(R.drawable.location_line)
+                    findItem(R.id.page_chat).setIcon(R.drawable.message_fill)
+                    findItem(R.id.page_profile).setIcon(R.drawable.user_line)
+                }
+            }
+            "나의 빌리지" -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.frame_layout_main, ProfileFragment())
+                    .commit()
+
+                binding.bottomNavigation.menu.apply {
+                    findItem(R.id.page_home).setIcon(R.drawable.home_line)
+                    findItem(R.id.page_share).setIcon(R.drawable.location_line)
+                    findItem(R.id.page_chat).setIcon(R.drawable.message_line)
+                    findItem(R.id.page_profile).setIcon(R.drawable.user_fill)
+                }
+            }
+        }
     }
 
     private fun changeFragment(item:MenuItem):Boolean {
@@ -44,7 +104,6 @@ class MainActivity : AppCompatActivity() {
                     findItem(R.id.page_chat).setIcon(R.drawable.message_line)
                     findItem(R.id.page_profile).setIcon(R.drawable.user_line)
                 }
-
                 // Fragment 변경
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.frame_layout_main, HomeFragment())
@@ -104,7 +163,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initView() {
         // 가장 첫 화면은 홈 화면의 Fragment로 지정
-        supportFragmentManager.beginTransaction()
+        /*supportFragmentManager.beginTransaction()
             .replace(R.id.frame_layout_main, HomeFragment())
             .commit()
 
@@ -113,7 +172,7 @@ class MainActivity : AppCompatActivity() {
             findItem(R.id.page_share).setIcon(R.drawable.location_line)
             findItem(R.id.page_chat).setIcon(R.drawable.message_line)
             findItem(R.id.page_profile).setIcon(R.drawable.user_line)
-        }
+        }*/
 
         binding.bottomNavigation.apply {
             itemIconTintList = null // 클릭해도 아이콘 테마색으로 변경되는거 막기

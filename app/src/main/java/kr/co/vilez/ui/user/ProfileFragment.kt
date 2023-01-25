@@ -9,10 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ImageView
 import android.widget.SimpleAdapter
 import android.widget.TextView
 import androidx.core.content.edit
+import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import kotlinx.coroutines.*
 import kr.co.vilez.R
 import kr.co.vilez.data.model.User
@@ -46,6 +50,8 @@ class ProfileFragment : Fragment() {
         binding.fragment = this
 
         binding.user = ApplicationClass.user
+        // TODO : 나중엔 저장되어있는 이미지로 변경
+        binding.profileImg = "https://www.example.com/image.jpg"
         getUserDetail(ApplicationClass.user.id) // 현재 로그인한 유저 id로 user detail 가져오기
 
         return binding.root
@@ -64,6 +70,8 @@ class ProfileFragment : Fragment() {
             }
         }
     }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
