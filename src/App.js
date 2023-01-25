@@ -7,6 +7,8 @@ import MainNavBar from "./components/modal/MainNavBar";
 import Product from "./pages/Product";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
+import EditProfile from "./components/modal/EdifProfile";
+
 // import Qrcode from "./components/modal/Qrcode";
 // import Oath from "./components/modal/Oath";
 
@@ -24,6 +26,7 @@ function App() {
       </Routes>
       {/* <Oath /> */}
       {/* <Qrcode /> */}
+      <EditProfile />
     </BrowserRouter>
   );
 }
