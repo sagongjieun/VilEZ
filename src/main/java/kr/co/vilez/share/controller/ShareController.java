@@ -88,7 +88,6 @@ public class ShareController {
     @DeleteMapping("/bookmark")
     public ResponseEntity<?> deleteBookmark(@RequestBody BookmarkDto bookmarkDto){
         httpVO = new HttpVO();
-
         try {
             httpVO = shareService.deleteBookmark(bookmarkDto.getBoardId(), bookmarkDto.getUserId());
         } catch (Exception e){
