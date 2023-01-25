@@ -7,6 +7,7 @@ import Map from "../common/Map";
 import recommendLocationButton from "../../assets/images/recommendLocationButton.png";
 import selectDateButton from "../../assets/images/selectDateButton.png";
 import startWebRTCButton from "../../assets/images/startWebRTCButton.png";
+import Chatting from "../Chatting";
 
 const ProductChatting = () => {
   const [location, setLocation] = useState("");
@@ -41,13 +42,7 @@ const ProductChatting = () => {
             <img src={startWebRTCButton} />
             <img src={recommendLocationButton} />
           </div>
-          <div css={chatWrapper}>
-            <div></div>
-            <div>
-              <input placeholder="메시지를 입력하세요." />
-              <small>전송</small>
-            </div>
-          </div>
+          <Chatting />
         </div>
       </div>
       <div css={buttonWrapper}>
@@ -123,47 +118,6 @@ const menusWrapper = css`
     cursor: pointer;
     width: 60px;
     height: 60px;
-  }
-`;
-
-const chatWrapper = css`
-  max-width: 100%;
-  max-height: 550px;
-  border: 1px solid #e1e2e3;
-  border-radius: 10px;
-  padding: 20px;
-
-  & > div:nth-of-type(1) {
-    width: 100%;
-    height: 462px;
-    border: 1px solid #e1e2e3;
-    border-radius: 5px;
-    margin-bottom: 20px;
-  }
-
-  & > div:nth-of-type(2) {
-    max-width: 100%;
-    height: 40px;
-    padding: 0 20px;
-    background: #ffffff;
-    border: 1px solid #e1e2e3;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 10px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-
-    & > input {
-      outline: none;
-      border: none;
-      width: 85%;
-    }
-
-    & > small {
-      cursor: poitner;
-      color: #66dd9c;
-    }
   }
 `;
 
