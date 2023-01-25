@@ -12,6 +12,10 @@
             name="user"
             type="kr.co.vilez.data.model.User" />
 
+        <variable
+            name="userDetail"
+            type="kr.co.vilez.data.model.UserDetail" />
+
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -63,8 +67,7 @@
             android:layout_height="60dp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/img_default_profile"
-            android:src="@{user.profileImg}"
+            app:imageFromUrl="@{userDetail.profile_img}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 
