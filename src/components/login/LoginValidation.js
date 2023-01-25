@@ -12,8 +12,6 @@ const LoginValidation = ({ email, password }) => {
 
   if (!password) {
     errors.password = "비밀번호를 입력해주세요.";
-  } else if (password.length < 8) {
-    errors.password = "8자 이상의 패스워드를 사용해야 합니다.";
   }
 
   return errors;

@@ -7,70 +7,80 @@ import LargeWideButton from "../../components/button/LargeWideButton";
 import ConfirmButton from "./ConfirmButton";
 import SignupInputBox from "./SignupInputBox";
 import Validation from "./SignupValidation";
+import IndividualValidation from "./IndividualValidation";
 import useForm from "../../hooks/useForm";
+import useIndividualForm from "../../hooks/useIndividualForm";
+import { SHA256 } from "./EmailCodeHashFunction";
+import { confirmEmail } from "../../api/signup";
 
 const SignupForm = () => {
-  const onSubmit = () => {};
-  const onEmailSubmit = () => {};
-  const onEmailCodeSubmit = () => {};
-  const onNicknameSubmit = () => {};
+  const [hashedCode, setHashedCode] = useState("");
   const [visible, setVisible] = useState(false);
   const [emailCodeVisible, setEmailCodeVisible] = useState(false);
+  const onSubmit = () => {};
+  const onEmailSubmit = (value) => {
+    confirmEmail(value).then((response) => {
+      console.log(response);
+    });
+    setEmailCodeVisible(true);
+  };
+  const onEmailCodeSubmit = (value) => {
+    setHashedCode("");
+    console.log(hashedCode, SHA256(value));
+  };
+  const onNickNameSubmit = () => {};
   const onClickVisible = (event) => {
     event.preventDefault();
     setVisible((prev) => !prev);
-  };
-  const onClickEmailCodeVisible = () => {
-    setEmailCodeVisible((prev) => !prev);
   };
   const { errors, handleChange, handleSubmit } = useForm({
     initialValues: {
       password: "",
       password2: "",
       email: "",
-      nickname: "",
+      nickName: "",
       emailCode: "",
     },
     onSubmit: onSubmit,
     Validation,
   });
-  let {
-    errors: emailError,
+  const {
+    error: emailError,
     handleChange: emailChange,
     handleClick: emailSubmit,
-  } = useForm({
-    initialValues: {
+  } = useIndividualForm({
+    initialValue: {
       email: "",
     },
     onSubmit: onEmailSubmit,
-    Validation,
+    Validation: IndividualValidation,
   });
-  let {
-    errors: emailCodeError,
+  const {
+    error: emailCodeError,
     handleChange: emailCodeChange,
     handleClick: emailCodeSubmit,
-  } = useForm({
-    initialValues: {
+  } = useIndividualForm({
+    initialValue: {
       emailCode: "",
     },
     onSubmit: onEmailCodeSubmit,
-    Validation,
+    Validation: IndividualValidation,
   });
-  let {
-    errors: nicknameError,
-    handleChange: nicknameChange,
-    handleClick: nicknameSubmit,
-  } = useForm({
-    initialValues: {
-      nickname: "",
+  const {
+    error: nickNameError,
+    handleChange: nickNameChange,
+    handleClick: nickNameSubmit,
+  } = useIndividualForm({
+    initialValue: {
+      nickName: "",
     },
-    onSubmit: onNicknameSubmit,
-    Validation,
+    onSubmit: onNickNameSubmit,
+    Validation: IndividualValidation,
   });
   const errorsInitialize = () => {
     emailError.email = "";
     emailCodeError.emailCode = "";
-    nicknameError.nickname = "";
+    nickNameError.nickName = "";
   };
   return (
     <form
@@ -111,7 +121,6 @@ const SignupForm = () => {
                 text="이메일 인증"
                 onClick={(event) => {
                   emailSubmit(event);
-                  onClickEmailCodeVisible();
                 }}
               />
             </div>
@@ -132,11 +141,7 @@ const SignupForm = () => {
           ) : null}
         </div>
         {/* email 인증 보내기 */}
-        <div
-          css={
-            emailCodeVisible && !errors.email && !emailError.email ? [emailCodeWrapper] : [emailCodeWrapper, hideBox]
-          }
-        >
+        <div css={emailCodeVisible ? [emailCodeWrapper] : [emailCodeWrapper, hideBox]}>
           <div
             css={css`
               display: flex;
@@ -266,12 +271,12 @@ const SignupForm = () => {
             `}
           >
             <SignupInputBox
-              name="nickname"
+              name="nickName"
               type="text"
               placeholder="닉네임을 입력하세요."
               onChange={(event) => {
                 handleChange(event);
-                nicknameChange(event);
+                nickNameChange(event);
               }}
             />
           </div>
@@ -280,10 +285,10 @@ const SignupForm = () => {
               width: 100px;
             `}
           >
-            <ConfirmButton outline={true} text="중복확인" onClick={nicknameSubmit} />
+            <ConfirmButton outline={true} text="중복확인" onClick={nickNameSubmit} />
           </div>
         </div>
-        {nicknameError.nickname || errors.nickname ? null : (
+        {nickNameError.nickName || errors.nickName ? null : (
           <small
             css={css`
               color: #8a8a8a;
@@ -292,7 +297,7 @@ const SignupForm = () => {
             최대 6자까지 설정할 수 있어요.
           </small>
         )}
-        {errors.nickname ? (
+        {errors.nickName ? (
           <small css={alertWrapper}>
             <small css={alert}>
               <AiOutlineExclamationCircle size="14" />
@@ -302,11 +307,11 @@ const SignupForm = () => {
                 line-height: 22px;
               `}
             >
-              {errors.nickname}
+              {errors.nickName}
             </small>
           </small>
         ) : null}
-        {nicknameError.nickname ? (
+        {nickNameError.nickName ? (
           <small css={alertWrapper}>
             <small css={alert}>
               <AiOutlineExclamationCircle size="14" />
@@ -316,7 +321,7 @@ const SignupForm = () => {
                 line-height: 22px;
               `}
             >
-              {nicknameError.nickname}
+              {nickNameError.nickName}
             </small>
           </small>
         ) : null}
