@@ -16,6 +16,7 @@ const ProfileInformation = () => {
       <div
         css={css`
           width: 44%;
+          padding-left: 20px;
         `}
       >
         <ProfilePoint />
@@ -33,6 +34,9 @@ const profileWrapper = css`
   border: 1px solid #e1e2e3;
   border-radius: 5px;
   padding: 20px 2%;
+  & h4 {
+    font-size: 22px;
+  }
   // 좌우 padding 2%이므로 내부 width 합은 96%
 `;
 

@@ -7,9 +7,12 @@ import LargeWideButton from "../../components/button/LargeWideButton";
 import LoginInputBox from "./LoginInputBox";
 import Validation from "../../components/login/LoginValidation";
 import useForm from "../../hooks/useForm";
+import { requestLogin } from "../../api/login";
 
 const LoginForm = () => {
-  const onSubmit = () => {};
+  const onSubmit = (values) => {
+    requestLogin(values.email, values.password);
+  };
   const [visible, setVisible] = useState(false);
   const onClickVisible = (event) => {
     event.preventDefault();
