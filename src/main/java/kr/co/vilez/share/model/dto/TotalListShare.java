@@ -7,6 +7,5 @@ import java.util.List;
 @Data
 public class TotalListShare {
     ShareListDto shareListDto;
-    List<BookmarkDto> list;
-
+    int listCnt;
 }
