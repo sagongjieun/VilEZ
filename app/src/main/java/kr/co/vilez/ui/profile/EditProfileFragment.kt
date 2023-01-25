@@ -50,10 +50,26 @@ class EditProfileFragment : Fragment() {
         binding.fragment = this
 
         binding.user = ApplicationClass.user
+        getUserDetail(ApplicationClass.user.id)
         initView()
 
         return binding.root
     }
+
+    private fun getUserDetail(userId: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val result =
+                ApplicationClass.retrofitUserService.getUserDetail(userId).awaitResponse().body()
+            if (result?.flag == "success") {
+                val data = result.data[0]
+                Log.d(TAG, "user detail 조회 성공, 받아온 user = $data")
+                binding.userDetail = data // user detail data binding
+            } else {
+                Log.d(TAG, "user detail 조회 실패, result:$result")
+            }
+        }
+    }
+
 
     fun changeProfileImage(view: View) {
         val curUser = ApplicationClass.user
@@ -108,11 +124,6 @@ class EditProfileFragment : Fragment() {
                 // TODO: 닉네임 수정 in here
                 val newUser = User(id=ApplicationClass.user.id, nickName = newNickname, password = "")
                 val modifyResult = ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.user.accessToken, newUser).awaitResponse().body()
-                /*val modifyRaw = ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.user.accessToken, newUser).awaitResponse().raw()
-                val modifyErrorBody = ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.user.accessToken, newUser).awaitResponse().errorBody()
-                val modifyHeaders = ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.user.accessToken, newUser).awaitResponse().headers()
-                val modifyMessage = ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.user.accessToken, newUser).awaitResponse().message()
-                Log.d(TAG, "changeNickName: <header>:$modifyHeaders\n <raw>: $modifyRaw\n <errorBody>:$modifyErrorBody\n <message>: $modifyMessage")*/
                 Log.d(TAG, "changeNickName: modifyResult: $modifyResult")
                 if(modifyResult?.flag == "success") {
                     Log.d(TAG, "changeNickName: 닉네임 변경 성공")

@@ -69,7 +69,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginStart="20dp"
-            app:imageFromUrl="@{user.profileImg}"
+            app:imageFromUrl="@{userDetail.profile_img}"
             app:layout_constraintEnd_toStartOf="@+id/tv_profile_nickName"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
