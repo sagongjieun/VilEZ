@@ -10,13 +10,7 @@ let client;
 const Chatting = () => {
   const [chatRoomId, setChatRoomId] = useState(10); //eslint-disable-line no-unused-vars
   const [chatMessage, setChatMessage] = useState(""); // 사용자가 입력하는 메시지
-  const [sendMessage, setSendMessage] = useState({
-    boardId: 55,
-    type: 2,
-    fromUserId: 28,
-    toUserId: 29,
-    content: "",
-  }); // 임시 데이터
+  const [showingMessage, setShowingMessage] = useState([]); //eslint-disable-line no-unused-vars
 
   function onChangeChatMessage(message) {
     setChatMessage(message);
@@ -29,28 +23,23 @@ const Chatting = () => {
   }
 
   function onClickSendMessage() {
+    console.log(chatMessage);
     if (chatMessage === "") return;
 
-    setSendMessage({ ...sendMessage, content: chatMessage });
+    const sendMessage = {
+      roomId: 10,
+      boardId: 55,
+      type: 2,
+      fromUserId: 28,
+      toUserId: 28,
+      content: chatMessage,
+      time: new Date().getTime(),
+    };
 
-    client.send("/recvchat", JSON.stringify(sendMessage));
+    client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
     setChatMessage("");
   }
-
-  useEffect(() => {
-    /** 방이 계속 만들어지니까 일단 주석처리하고 roomId 10번으로 쓰기 */
-    // 공유자와 피공유자 사이에 연결되는 채팅방 id 받기
-    // body값 임시 데이터
-    // postChatRoom({
-    //   type: 2, // 요청글 1 공유글 2
-    //   boardId: 55,
-    //   shareUserId: 28,
-    //   notShareUserId: 29,
-    // }).then((res) => {
-    //   setChatRoomId(res[0].id);
-    // });
-  }, []);
 
   useEffect(() => {
     const sockJS = new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`);
@@ -63,14 +52,30 @@ const Chatting = () => {
       // url, callback, header(option)
       // 내아이디는 임시 데이터
       client.subscribe(`/sendchat/${chatRoomId}/${28}`, (data) => {
-        console.log("subscribe data : ", data);
+        setShowingMessage((prev) => [...prev, data.body]);
       });
 
       // send
       // url, header(option), body(option)
-      client.send("/recvchat", {}, JSON.stringify(sendMessage));
+      // client.send("/recvchat", {}, JSON.stringify(sendMessage));
+
+      client.activate();
     });
-  }, [chatRoomId]);
+  }, []);
+
+  // useEffect(() => {
+  //   /** 방이 계속 만들어지니까 일단 주석처리하고 roomId 10번으로 쓰기 */
+  //   // 공유자와 피공유자 사이에 연결되는 채팅방 id 받기
+  //   // body값 임시 데이터
+  //   postChatRoom({
+  //     type: 2, // 요청글 1 공유글 2
+  //     boardId: 55,
+  //     shareUserId: 28,
+  //     notShareUserId: 29,
+  //   }).then((res) => {
+  //     setChatRoomId(res[0].id);
+  //   });
+  // }, []);
 
   return (
     <div css={chatWrapper}>
