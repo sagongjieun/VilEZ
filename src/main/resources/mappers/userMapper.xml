@@ -53,7 +53,7 @@
     <update id="modifyProfile" parameterType="userDto">
         UPDATE user
         SET profile_img = #{profileImg}
-        WHERE id = #{userId}
+        WHERE id = #{id}
     </update>
 
     <insert id = "join">
