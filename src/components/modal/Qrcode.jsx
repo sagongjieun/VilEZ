@@ -1,6 +1,7 @@
 import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+// import QRCode from "react-qr-code";
 
 function Qrcode() {
   return (
@@ -8,7 +9,7 @@ function Qrcode() {
       <div>
         <strong>동네 인증</strong>
       </div>
-      <div>Qr코드 들어갈 곳</div>
+      <div>{/* <QRCode value="https://map.kakao.com" /> */}</div>
       <div>
         <div>휴대폰으로 QR코드를 찍어</div>
         <div>동네를 인증을 진행해주세요.</div>
