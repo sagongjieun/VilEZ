@@ -1,6 +1,5 @@
 package kr.co.vilez.ui.chat
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,32 +7,44 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kr.co.vilez.R
 
+class ChatAdapter(val itemList: ArrayList<ChatlistData>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-class ChatAdapter(val itemList: ArrayList<ChatlistData>) : RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        var view = LayoutInflater.from(parent.context).inflate(R.layout.chat_left_item, parent, false)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.chatlist_item, parent, false)
-        return ChatViewHolder(view)
+        if(viewType == 1){
+            return LeftViewHolder(view);
+        }
+        view = LayoutInflater.from(parent.context).inflate(R.layout.chat_right_item, parent, false)
+
+        return RightViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
 
-        holder.nick_name.text = itemList[position].nickName
-        holder.area.text = itemList[position].area
-        holder.content.text = itemList[position].content
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if(holder is LeftViewHolder) {
+            holder.content.text = itemList[position].content
+        } else if(holder is RightViewHolder){
+            holder.content.text = itemList[position].content
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return itemList[position].viewType
     }
 
     override fun getItemCount(): Int {
-        println(itemList.count())
         return itemList.count()
     }
 
 
-    inner class ChatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val nick_name = itemView.findViewById<TextView>(R.id.chat_nick_name)
-        val area = itemView.findViewById<TextView>(R.id.chat_area)
-        val content = itemView.findViewById<TextView>(R.id.chat_content)
-    }
+    inner class LeftViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val content = itemView.findViewById<TextView>(R.id.textv_msg)
 
+    }
+    inner class RightViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val content = itemView.findViewById<TextView>(R.id.textv_msg)
+
+    }
 
 }

@@ -8,9 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kr.co.vilez.R
 import kr.co.vilez.data.model.KakaoMap
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentChatBinding
@@ -43,6 +46,7 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
     private var markertouch: Boolean? = false
     private var zoomLvl: Int? = 0
     private val marker = MapPOIItem()
+    private val itemList = ArrayList<ChatlistData>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -59,61 +63,69 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
     ): View? {
         val binding = FragmentChatBinding.inflate(inflater, container, false)
         context ?: return binding.root
+        val rv_chat = binding.root.findViewById(R.id.rv_chat) as RecyclerView
+        itemList.add(ChatlistData("안녕하세요",1))
+        itemList.add(ChatlistData("그래안녕",2))
+        val roomAdapter = ChatAdapter(itemList)
 
-        val mapView = MapView(context)
-        binding.mapView.addView(mapView)
-        CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.retrofitChatService.loadLocationByRoomId("200").awaitResponse().body()
-            if (result?.flag == "success") {
-                println(result.data)
-                var kakao = result.data[0];
-                var pos = MapPoint.mapPointWithGeoCoord(kakao.lat,kakao.lng)
-                mapView.setMapCenterPoint(pos,true)
-                mapView.setZoomLevel(kakao.zoomLevel,true)
-                if(kakao.isMarker){
-                    isMarkerOn = true
-                    marker.itemName = "hope area"
-                    marker.tag = 0
-                    marker.mapPoint = pos;
-                    marker.markerType = MapPOIItem.MarkerType.BluePin // 기본으로 제공하는 BluePin 마커 모양.
+        roomAdapter.notifyDataSetChanged()
 
-                    marker.selectedMarkerType =
-                        MapPOIItem.MarkerType.RedPin // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
-                    mapView.addPOIItem(marker)
-                    markertouch = true
-
-                }
-                zoom = true
-            }
-        }
-
-        StompClient.stompClient.topic("/sendmap/200/2").subscribe { topicMessage ->
-            run {
-                val json = JSONObject(topicMessage.payload)
-                mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(json.getDouble("lat"),json.getDouble("lng")),true);
-                if(mapView.zoomLevel != json.getInt("zoomLevel")) {
-                    zoom = true;
-                    mapView.setZoomLevel(json.getInt("zoomLevel"),true);
-                }
-                if(json.getBoolean("isMarker")) {
-                    if(isMarkerOn == true) {
-                        if (mapView != null) {
-                            mapView.removePOIItem(marker)
-                        }
-                        isMarkerOn = false
-                    }
-                    marker.itemName = "hope area"
-                    marker.tag = 0
-                    marker.mapPoint = mapView.mapCenterPoint;
-                    marker.markerType = MapPOIItem.MarkerType.BluePin // 기본으로 제공하는 BluePin 마커 모양.
-
-                    marker.selectedMarkerType =
-                        MapPOIItem.MarkerType.RedPin // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
-                }
-            }
-        }
-
-        mapView.setMapViewEventListener(this)
+        rv_chat.adapter = roomAdapter
+        rv_chat.layoutManager = LinearLayoutManager(requireContext())
+        //val mapView = MapView(context)
+//        binding.mapView.addView(mapView)
+//        CoroutineScope(Dispatchers.Main).launch {
+//            val result = ApplicationClass.retrofitChatService.loadLocationByRoomId("200").awaitResponse().body()
+//            if (result?.flag == "success") {
+//                println(result.data)
+//                var kakao = result.data[0];
+//                var pos = MapPoint.mapPointWithGeoCoord(kakao.lat,kakao.lng)
+//                mapView.setMapCenterPoint(pos,true)
+//                mapView.setZoomLevel(kakao.zoomLevel,true)
+//                if(kakao.isMarker){
+//                    isMarkerOn = true
+//                    marker.itemName = "hope area"
+//                    marker.tag = 0
+//                    marker.mapPoint = pos;
+//                    marker.markerType = MapPOIItem.MarkerType.BluePin // 기본으로 제공하는 BluePin 마커 모양.
+//
+//                    marker.selectedMarkerType =
+//                        MapPOIItem.MarkerType.RedPin // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+//                    mapView.addPOIItem(marker)
+//                    markertouch = true
+//
+//                }
+//                zoom = true
+//            }
+//        }
+//
+//        StompClient.stompClient.topic("/sendmap/200/2").subscribe { topicMessage ->
+//            run {
+//                val json = JSONObject(topicMessage.payload)
+//                mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(json.getDouble("lat"),json.getDouble("lng")),true);
+//                if(mapView.zoomLevel != json.getInt("zoomLevel")) {
+//                    zoom = true;
+//                    mapView.setZoomLevel(json.getInt("zoomLevel"),true);
+//                }
+//                if(json.getBoolean("isMarker")) {
+//                    if(isMarkerOn == true) {
+//                        if (mapView != null) {
+//                            mapView.removePOIItem(marker)
+//                        }
+//                        isMarkerOn = false
+//                    }
+//                    marker.itemName = "hope area"
+//                    marker.tag = 0
+//                    marker.mapPoint = mapView.mapCenterPoint;
+//                    marker.markerType = MapPOIItem.MarkerType.BluePin // 기본으로 제공하는 BluePin 마커 모양.
+//
+//                    marker.selectedMarkerType =
+//                        MapPOIItem.MarkerType.RedPin // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+//                }
+//            }
+//        }
+//
+//        mapView.setMapViewEventListener(this)
         return binding.root
         // Inflate the layout for this fragment
 //        return inflater.inflate(R.layout.fragment_chat, container, false)
