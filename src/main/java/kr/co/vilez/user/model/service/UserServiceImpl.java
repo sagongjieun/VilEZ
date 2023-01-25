@@ -2,8 +2,10 @@ package kr.co.vilez.user.model.service;
 
 import kr.co.vilez.data.HttpVO;
 import kr.co.vilez.jwt.JwtProviderImpl;
+import kr.co.vilez.tool.OSUpload;
 import kr.co.vilez.user.model.dto.UserDto;
 import kr.co.vilez.user.model.mapper.UserMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -14,17 +16,14 @@ import java.io.File;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    final UserMapper userMapper;
+    final JwtProviderImpl jwtProvider;
+    final ResourceLoader resourceLoader;
+    final OSUpload osUpload;
 
-    @Autowired
-    UserMapper userMapper;
-
-    @Autowired
-    JwtProviderImpl jwtProvider;
-
-    @Autowired
-    ResourceLoader resourceLoader;
-
+    final String bucketName = "vilez";
     HttpVO http = null;
     List<Object> data = null;
     @Override
@@ -51,35 +50,52 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public HttpVO modifyProfile(String email, MultipartFile multipartFile) throws Exception {
+    public HttpVO modifyProfile(int userId, MultipartFile multipartFile) throws Exception {
         http = new HttpVO();
         List<Object> data = new ArrayList<>();
 
         UserDto userDto = new UserDto();
-        userDto.setEmail(email);
+        userDto.setId(userId);
+
+        if(multipartFile.isEmpty()){
+            String basicPath = "https://kr.object.ncloudstorage.com/vilez/basicProfile.png";
+            userDto.setProfileImg(basicPath);
+            userMapper.modifyProfile(userDto);
+
+            http.setFlag("success");
+            data.add(basicPath);
+            http.setData(data);
+
+            return http;
+        }
+
         String [] formats = {".jpeg", ".png", ".bmp", ".jpg"};
         // 원래 파일 이름 추출
         String origName = multipartFile.getOriginalFilename();
 
         // 확장자 추출(ex : .png)
         String extension = origName.substring(origName.lastIndexOf("."));
-        StringTokenizer st = new StringTokenizer(userDto.getEmail(), "@");
-        String userId = st.nextToken();
 
+        String folderName = "profile";
         for(int i = 0; i < formats.length; i++) {
             if (extension.equals(formats[i])){
                 // user email과 확장자 결합
                 String savedName = userId + extension;
-                // 파일을 불러올 때 사용할 파일 경로
-                Resource resource = resourceLoader.getResource("classpath:/static/");
-                String savedPath = resource.getURI().getPath() + "/images/profiles/"+ userId + "/" +savedName;
 
-                userDto.setProfileImg(savedPath);
+                File uploadFile = osUpload.convert(multipartFile)        // 파일 생성
+                        .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File convert fail"));
+
+//                osUpload.mkdir(bucketName, folderName);
+
+                String fileName = folderName + "/" + System.nanoTime() + extension;
+                osUpload.put(bucketName, fileName, uploadFile);
+
+                String path = "https://kr.object.ncloudstorage.com/"+bucketName+"/"+fileName;
+                userDto.setProfileImg(path);
                 userMapper.modifyProfile(userDto);
 
-                multipartFile.transferTo(new File(savedPath));
                 http.setFlag("success");
-                data.add(savedPath);
+                data.add(path);
                 http.setData(data);
                 break;
             }

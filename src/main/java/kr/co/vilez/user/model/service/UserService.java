@@ -9,7 +9,7 @@ public interface UserService {
 
     HttpVO check(String nickname) throws  Exception;
     HttpVO modifyUserInfo(UserDto userDto) throws Exception;
-    HttpVO modifyProfile(String email, MultipartFile multipartFile) throws Exception;
+    HttpVO modifyProfile(int userId, MultipartFile multipartFile) throws Exception;
     HttpVO login(UserDto userDto) throws Exception;
     HttpVO detail(int id) throws Exception;
     HttpVO refreshCheck(String token) throws Exception;
