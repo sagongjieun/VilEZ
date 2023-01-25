@@ -32,7 +32,10 @@ public class ShareController {
             notes = "List에 dto 담아서 리턴" +
                     "\n \t 현재 받고자 하는 page number를 넣어 보내줘야한다." +
                     "\n \t cnt에는 보고싶은 page 번호" +
-                    "\n \t high에는 보고싶은 리스트의 총 갯수")
+                    "\n \t high에는 보고싶은 리스트의 총 갯수" +
+                    "\n \t 그리고 검색하고자 하는 목록을 word를 통해 보내면 해당 키워드를 통해 검색이 가능하다" +
+                    "\n \t 그리고 검색하고자 하는 카테고리 목록을 category를 통해 보내면 해당 키워드를 통해 검색이 가능하다" +
+                    "\n \t 원하지 않은 검색은 그대로 null로 보내면 된다.")
     public ResponseEntity<?> boardList(PageNavigator pageNavigator){
         httpVO = new HttpVO();
         try {
