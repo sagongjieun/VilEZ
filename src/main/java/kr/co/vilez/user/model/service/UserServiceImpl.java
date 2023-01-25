@@ -156,11 +156,14 @@ public class UserServiceImpl implements UserService {
         http.setFlag("success");
         List<HashMap> data = new ArrayList<>();
         UserDto user = userMapper.detail(id);
+
         HashMap<String, Object> map = new HashMap<>();
         map.put("nickName",user.getNickName());
         map.put("area",user.getArea());
         map.put("manner",user.getManner());
         map.put("point",user.getPoint());
+        map.put("profile_img", user.getProfileImg());
+
         data.add(map);
         http.setData(data);
         return http;
