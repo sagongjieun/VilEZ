@@ -49,7 +49,7 @@ public class ShareController {
                     "\n \t title : String," +
                     "\n \t hopeAreaLat : String," +
                     "\n \t hopeAreaLng : String," +
-                    "\n \t startDay : String" +
+                    "\n \t startDay : String," +
                     "\n \t endDay : String" +
                     "\n \t }")
     public ResponseEntity<?> insert(@RequestPart(value = "board") ShareDto shareDto,
@@ -70,7 +70,7 @@ public class ShareController {
                     "\n \t title : String," +
                     "\n \t hopeAreaLat : String," +
                     "\n \t hopeAreaLng : String," +
-                    "\n \t startDay : String" +
+                    "\n \t startDay : String," +
                     "\n \t endDay : String" +
                     "\n \t }")
     public ResponseEntity<?> update(@RequestPart(value = "board") ShareDto shareDto,

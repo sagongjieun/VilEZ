@@ -56,8 +56,8 @@ public class UserController {
 
     // 회원 정보 변경(Text)
     @PutMapping("/modify")
-    @ApiOperation(value = "유저 정보 수정한다.", notes = "{\n id : Number" +
-            "\n nickName : String" +
+    @ApiOperation(value = "유저 정보 수정한다.", notes = "{\n id : Number," +
+            "\n nickName : String," +
             "\n password : String" +
             "\n }")
     public ResponseEntity<?> modify(@RequestBody HashMap<String,?> user){
@@ -91,8 +91,8 @@ public class UserController {
     // 회원가입
     @PostMapping("/join")
     @ApiOperation(value = "유저 정보 수정한다.", notes = "{" +
-            "\n email : String" +
-            "\n password : String" +
+            "\n email : String," +
+            "\n password : String," +
             "\n nickName : String" +
             "\n}")
     public ResponseEntity<?> join(@RequestBody UserDto user){
@@ -110,7 +110,7 @@ public class UserController {
     // 로그인
     @PostMapping("/login")
     @ApiOperation(value = "로그인", notes = "{" +
-            "\n email : String" +
+            "\n email : String," +
             "\n password : String" +
             "\n }")
     public ResponseEntity<?> login(@RequestBody UserDto user){
