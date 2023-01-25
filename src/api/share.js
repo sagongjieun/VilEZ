@@ -55,7 +55,7 @@ async function postBookmark(boardId, userId) {
 
 async function deleteBookmark(boardId, userId) {
   try {
-    const { data } = await jsonAxios.delete(`/shareboard/bookmark`, { boardId, userId });
+    const { data } = await jsonAxios.delete(`/shareboard/bookmark/${boardId}/${userId}`);
 
     if (data.flag === "success") alert("북마크를 취소하였습니다. 😀");
     else alert("북마크 취소에 실패하였습니다 😥");
