@@ -20,10 +20,10 @@ interface RetrofitUserService {
 
     // TODO : RequestBody, Return 타입 확인
     @PUT("/vilez/users/modify")
-    fun modifyUser(@Body user:User) : Call<RESTResult>
+    fun modifyUser(@Header("access_token")token:String?, @Body user:User) : Call<RESTResult>
 
-    
     // TODO : 리턴 타입 확인
     @PUT("/vilez/users/profile")
     fun modifyProfileImage(@Body file: String)
 }
+
