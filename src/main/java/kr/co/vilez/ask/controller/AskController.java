@@ -1,5 +1,6 @@
 package kr.co.vilez.ask.controller;
 
+import io.swagger.annotations.ApiOperation;
 import kr.co.vilez.ask.model.dto.AskDto;
 import kr.co.vilez.ask.model.service.AskService;
 import kr.co.vilez.data.HttpVO;
@@ -19,10 +20,13 @@ import java.util.List;
 @RequestMapping("/askboard")
 public class AskController {
 
-    @Autowired
-    AskService askService;
+
+    final AskService askService;
+
 
     @GetMapping("/my/{userid}")
+    @ApiOperation(value = "내의 요청글 리스트를 불러온다.", notes = "userId : Number \n" +
+            "List로 AskDto가 출력된다.")
     public ResponseEntity<?> loadMyAskList(@PathVariable("userid") int userId) {
         HttpVO http = new HttpVO();
         List<AskDto> askDtoList = askService.loadMyAskList(userId);
@@ -34,6 +38,8 @@ public class AskController {
     }
 
     @GetMapping
+    @ApiOperation(value = "전체 요청글 리스트를 불러온다." ,
+                 notes = "List로 전체 AskDto가 출력된다.")
     public ResponseEntity<?> loadAskList() {
         HttpVO http = new HttpVO();
         List<AskDto> askDtoList = askService.loadAskList();
@@ -45,6 +51,15 @@ public class AskController {
     }
 
     @PostMapping
+    @ApiOperation(value = "글 작성을 한다. (이미지 필수X)" ,
+            notes = "{\n \t userId : Number," +
+                    "\n \t category : String," +
+                    "\n \t title : String," +
+                    "\n \t hopeAreaLat : String," +
+                    "\n \t hopeAreaLng : String," +
+                    "\n \t startDay : String" +
+                    "\n \t endDay : String" +
+                    "\n \t }")
     public ResponseEntity<?> writeAskBoard(@RequestPart(value = "board",required = false) AskDto askDto,
                                            @RequestPart(value = "image", required = false) MultipartFile[] files) throws IOException {
         HttpVO http = new HttpVO();
@@ -61,6 +76,15 @@ public class AskController {
     }
 
     @PutMapping
+    @ApiOperation(value = "글 수정을 한다. (이미지 필수X)" ,
+            notes = "{\n \t boardId : Number," +
+                    "\n \t category : String," +
+                    "\n \t title : String," +
+                    "\n \t hopeAreaLat : String," +
+                    "\n \t hopeAreaLng : String," +
+                    "\n \t startDay : String" +
+                    "\n \t endDay : String" +
+                    "\n \t }")
     public ResponseEntity<?> updateAskBoard(@RequestPart(value = "board",required = false) AskDto askDto,
                                             @RequestPart(value = "image", required = false) MultipartFile[] files) throws IOException {
         HttpVO http = new HttpVO();
@@ -75,6 +99,8 @@ public class AskController {
     }
 
     @GetMapping("/detail/{boardId}")
+    @ApiOperation(value = "글 상세 정보를 본다" ,
+            notes = "boardId 를 path로 보내준다.")
     public ResponseEntity<?> detailArticle(@PathVariable int boardId) {
         HttpVO http = new HttpVO();
         List<AskDto> data = new ArrayList<>();
@@ -85,11 +111,11 @@ public class AskController {
         return new ResponseEntity<HttpVO>(http,HttpStatus.OK);
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteArticle(@RequestBody AskDto askDto) {
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<?> deleteArticle(@PathVariable int boardId) {
         HttpVO httpVO = new HttpVO();
         httpVO.setFlag("success");
-        askService.deleteArticle(askDto.getId());
+        askService.deleteArticle(boardId);
         return new ResponseEntity<HttpVO>(httpVO,HttpStatus.OK);
     }
 

@@ -11,7 +11,7 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
     UserDto check(String nickname) throws SQLException;
-    void modifyUserInfo(UserDto user) throws SQLException;
+    void modifyUserInfo(HashMap<String,?> user) throws SQLException;
     void modifyProfile(UserDto user) throws SQLException;
     void join(UserDto user) throws SQLException;
     UserDto login(UserDto user) throws SQLException;
