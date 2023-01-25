@@ -4,13 +4,19 @@ import { css } from "@emotion/react";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import { postChatRoom } from "../api/chat"; //eslint-disable-line no-unused-vars
+import baseProfile from "../assets/images/baseProfile.png";
+import { useRef } from "react";
 
 let client;
 
 const Chatting = () => {
+  const autoScrollRef = useRef();
+
   const [chatRoomId, setChatRoomId] = useState(10); //eslint-disable-line no-unused-vars
-  const [chatMessage, setChatMessage] = useState(""); // 사용자가 입력하는 메시지
-  const [showingMessage, setShowingMessage] = useState([]); //eslint-disable-line no-unused-vars
+  const [chatMessage, setChatMessage] = useState(""); // 클라이언트가 입력하는 메시지
+  const [showingMessage, setShowingMessage] = useState([]); // 서버로부터 받는 메시지
+  // 임시 데이터
+  const [myUserId, setMyUserId] = useState(28); //eslint-disable-line no-unused-vars
 
   function onChangeChatMessage(message) {
     setChatMessage(message);
@@ -23,14 +29,13 @@ const Chatting = () => {
   }
 
   function onClickSendMessage() {
-    console.log(chatMessage);
     if (chatMessage === "") return;
 
     const sendMessage = {
-      roomId: 10,
+      roomId: chatRoomId,
       boardId: 55,
       type: 2,
-      fromUserId: 28,
+      fromUserId: 29,
       toUserId: 28,
       content: chatMessage,
       time: new Date().getTime(),
@@ -39,6 +44,13 @@ const Chatting = () => {
     client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
     setChatMessage("");
+    scrollToBottom();
+  }
+
+  function scrollToBottom() {
+    if (autoScrollRef.current) {
+      autoScrollRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }
 
   useEffect(() => {
@@ -50,14 +62,14 @@ const Chatting = () => {
 
       // subscribe
       // url, callback, header(option)
-      // 내아이디는 임시 데이터
+      // 내아이디랑 상대방 아이디는 임시 데이터
       client.subscribe(`/sendchat/${chatRoomId}/${28}`, (data) => {
-        setShowingMessage((prev) => [...prev, data.body]);
+        setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
       });
 
-      // send
-      // url, header(option), body(option)
-      // client.send("/recvchat", {}, JSON.stringify(sendMessage));
+      client.subscribe(`/sendchat/${chatRoomId}/${29}`, (data) => {
+        setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
+      });
 
       client.activate();
     });
@@ -79,7 +91,23 @@ const Chatting = () => {
 
   return (
     <div css={chatWrapper}>
-      <div></div>
+      <div>
+        {showingMessage.map((message, index) => {
+          return message.fromUserId === myUserId ? (
+            <div key={index} css={myMessageWrapper} ref={autoScrollRef}>
+              <span>{message.content}</span>
+            </div>
+          ) : (
+            <div key={index} css={yourMessageWrapper} ref={autoScrollRef}>
+              <img src={baseProfile} />
+              <div>
+                <small>{message.fromUserId}</small>
+                <span>{message.content}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
       <div>
         <input
           placeholder="메시지를 입력하세요."
@@ -103,9 +131,22 @@ const chatWrapper = css`
   & > div:nth-of-type(1) {
     width: 100%;
     height: 462px;
-    border: 1px solid #e1e2e3;
-    border-radius: 5px;
     margin-bottom: 20px;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      height: 30%;
+      background: #c4c4c4;
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: none;
+    }
   }
 
   & > div:nth-of-type(2) {
@@ -128,8 +169,41 @@ const chatWrapper = css`
     }
 
     & > small {
-      cursor: poitner;
       color: #66dd9c;
+      cursor: pointer;
+    }
+  }
+`;
+
+const myMessageWrapper = css`
+  text-align: right;
+  margin-bottom: 10px;
+  margin-right: 10px;
+
+  & > span {
+    font-size: 16px;
+  }
+`;
+
+const yourMessageWrapper = css`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 10px;
+
+  & > img {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+  }
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+
+    & > span {
+      font-size: 16px;
     }
   }
 `;
