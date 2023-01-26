@@ -150,6 +150,7 @@ public class AppointmentController {
     public ChatVO socketHandler(ChatVO chatVO) {
         appointmentService.recvMsg(chatVO);
         System.out.println(chatVO);
+        sendingOperations.convertAndSend("/roomview/"+chatVO.getToUserId(),chatVO);
         sendingOperations.convertAndSend("/sendmy/"+chatVO.getRoomId()+"/"+chatVO.getFromUserId(),chatVO);
         sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+chatVO.getToUserId(),chatVO);
         return chatVO;
