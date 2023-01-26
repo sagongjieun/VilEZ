@@ -5,10 +5,14 @@ import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import { postChatRoom } from "../api/chat"; //eslint-disable-line no-unused-vars
 import baseProfile from "../assets/images/baseProfile.png";
+import Map from "./common/Map";
+import recommendLocationButton from "../assets/images/recommendLocationButton.png";
+import selectDateButton from "../assets/images/selectDateButton.png";
+import startWebRTCButton from "../assets/images/startWebRTCButton.png";
 
 let client;
 
-const Chatting = () => {
+const Chatting = ({ writerNickname }) => {
   const scrollRef = useRef();
 
   const [chatRoomId, setChatRoomId] = useState(10); //eslint-disable-line no-unused-vars
@@ -16,6 +20,37 @@ const Chatting = () => {
   const [showingMessage, setShowingMessage] = useState([]); // 서버로부터 받는 메시지
   // 임시 데이터
   const [myUserId, setMyUserId] = useState(28); //eslint-disable-line no-unused-vars
+  const [location, setLocation] = useState("");
+  const [hopeAreaLat, setHopeAreaLat] = useState("");
+  const [hopeAreaLng, setHopeAreaLng] = useState("");
+  const [mapLevel, setMapLevel] = useState(0);
+  const [movedLat, setMovedLat] = useState("");
+  const [movedLng, setMovedLng] = useState("");
+  const [movedLevel, setMovedLevel] = useState(0);
+
+  function receiveLocation(location, lat, lng, level) {
+    setLocation(location);
+    setHopeAreaLat(lat);
+    setHopeAreaLng(lng);
+    setMapLevel(level);
+
+    if (lat && lng && level) {
+      let isMarker = false;
+
+      if (location.includes("선택")) isMarker = true;
+
+      const sendMap = {
+        roomId: chatRoomId,
+        toUserId: myUserId,
+        lat: hopeAreaLat,
+        lng: hopeAreaLng,
+        zoomLevel: mapLevel,
+        isMarker: isMarker,
+      };
+
+      client.send("/recvmap", {}, JSON.stringify(sendMap));
+    }
+  }
 
   function onChangeChatMessage(message) {
     setChatMessage(message);
@@ -56,17 +91,20 @@ const Chatting = () => {
     client = Stomp.over(sockJS);
 
     client.connect({}, () => {
-      client.debug("connected To Stomp");
-
-      // subscribe
-      // url, callback, header(option)
-      // 내아이디는 임시 데이터
       client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
         setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
       });
 
       client.subscribe(`/sendmy/${chatRoomId}/${myUserId}`, (data) => {
         setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
+      });
+
+      client.subscribe(`/sendmap/${chatRoomId}/${myUserId}`, (data) => {
+        data = JSON.parse(data.body);
+
+        setMovedLat(data.lat);
+        setMovedLng(data.lng);
+        setMovedLevel(data.zoomLevel);
       });
 
       client.activate();
@@ -88,44 +126,95 @@ const Chatting = () => {
   // }, []);
 
   useEffect(() => {
+    /** 소켓에 연결되면 채팅 내역 보여주기 */
+  }, []);
+
+  useEffect(() => {
     scrollToBottom();
   }, [showingMessage]);
 
   return (
-    <div css={chatWrapper}>
-      <div ref={scrollRef}>
-        {showingMessage.map((message, index) => {
-          if (message.fromUserId === myUserId) {
-            return (
-              <div key={index} css={myMessageWrapper}>
-                <span>{message.content}</span>
-              </div>
-            );
-          } else {
-            return (
-              <div key={index} css={yourMessageWrapper}>
-                <img src={baseProfile} />
-                <div>
-                  <small>{message.fromUserId}</small>
-                  <span>{message.content}</span>
-                </div>
-              </div>
-            );
-          }
-        })}
+    <>
+      <div css={mapWrapper}>
+        <span>{location}</span>
+        <div>
+          <Map
+            readOnly={false}
+            sendLocation={receiveLocation}
+            movedLat={movedLat}
+            movedLng={movedLng}
+            movedLevel={movedLevel}
+          />
+        </div>
       </div>
       <div>
-        <input
-          placeholder="메시지를 입력하세요."
-          onChange={(e) => onChangeChatMessage(e.target.value)}
-          onKeyDown={(e) => onKeyDownSendMessage(e)}
-          value={chatMessage}
-        />
-        <small onClick={onClickSendMessage}>전송</small>
+        <div css={menusWrapper}>
+          <img src={selectDateButton} />
+          <img src={startWebRTCButton} />
+          <img src={recommendLocationButton} />
+        </div>
+        <div css={chatWrapper}>
+          <div ref={scrollRef}>
+            {showingMessage.map((message, index) => {
+              if (message.fromUserId === myUserId) {
+                return (
+                  <div key={index} css={myMessageWrapper}>
+                    <span>{message.content}</span>
+                  </div>
+                );
+              } else {
+                return (
+                  <div key={index} css={yourMessageWrapper}>
+                    <img src={baseProfile} />
+                    <div>
+                      <small>{writerNickname}</small>
+                      <span>{message.content}</span>
+                    </div>
+                  </div>
+                );
+              }
+            })}
+          </div>
+          <div>
+            <input
+              placeholder="메시지를 입력하세요."
+              onChange={(e) => onChangeChatMessage(e.target.value)}
+              onKeyDown={(e) => onKeyDownSendMessage(e)}
+              value={chatMessage}
+            />
+            <small onClick={onClickSendMessage}>전송</small>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
+
+const mapWrapper = css`
+  display: flex;
+  flex-direction: column;
+  width: 65%;
+
+  & > div {
+    margin-top: 10px;
+    width: 100%;
+    height: 600px;
+  }
+`;
+
+const menusWrapper = css`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 10px;
+
+  & > img {
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+  }
+`;
 
 const chatWrapper = css`
   max-width: 100%;
