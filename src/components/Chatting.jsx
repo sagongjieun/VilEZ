@@ -41,7 +41,7 @@ const Chatting = ({ writerNickname }) => {
 
       const sendMap = {
         roomId: chatRoomId,
-        toUserId: myUserId,
+        toUserId: 29,
         lat: hopeAreaLat,
         lng: hopeAreaLng,
         zoomLevel: mapLevel,

@@ -7,9 +7,7 @@ import { Link } from "react-router-dom";
 const ProductInfo = ({ infos }) => {
   return (
     <div css={productInfoWrapper}>
-      <div>
-        <img src={infos.thumbnailImage.path} alt="물품 대표사진" />
-      </div>
+      <div>{/* <img src={infos.thumbnailImage.path} alt="물품 대표사진" /> */}</div>
       <div>
         <div>
           <h3>{infos.title}</h3>
