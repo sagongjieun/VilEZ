@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.vilez.appointment.model.mapper.AppointmentMapper">
+    <resultMap id="appointment" type="appointmentDto">
+        <result column="appointment_id" property="appointmentId"/>
+        <result column="board_id" property="boardId"/>
+        <result column="share_user_id" property="shareUserId"/>
+        <result column="not_share_user_id" property="notShareUserId"/>
+        <result column="appointment_start" property="appointmentStart"/>
+        <result column="appointment_end" property="appointmentEnd"/>
+    </resultMap>
+    <resultMap id="room" type="roomDto">
+        <result column="id" property="id"/>
+        <result column="board_id" property="boardId"/>
+        <result column="type" property="type"/>
+        <result column="share_user_id" property="shareUserId"/>
+        <result column="not_share_user_id" property="notShareUserId"/>
+    </resultMap>
+
+    <resultMap id="mylist" type="MyAppointListDto">
+        <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="title" property="title"/>
+        <result column="hope_area_lat" property="hopeAreaLat"/>
+        <result column="hope_area_lng" property="hopeAreaLng"/>
+        <result column="start_day" property="startDay"/>
+        <result column="end_day" property="endDay"/>
+        <result column="appointment_id" property="appointmentId"/>
+        <result column="share_user_id" property="shareUserId"/>
+        <result column="not_share_user_id" property="notShareUserId"/>
+    </resultMap>
+
+    <select id="getMyAppointmentList" parameterType="int" resultMap="mylist">
+        select id, user_id, title, hope_area_lat, hope_area_lng, start_day, end_day, appointment_id, share_user_id, not_share_user_id
+        from sharing_board as s
+                 right join(
+            select *
+            from appointment
+            where not_share_user_id = #{userId}
+        ) as a
+        on a.board_id = s.id
+        where (s.state >= 0 and a.state >= 0)
+        group by board_id;
+    </select>
+
+    <select id="getAppointmentList" parameterType="int" resultMap="appointment">
+        SELECT appointment_id, board_id, share_user_id, not_share_user_id, appointment_start, appointment_end
+        FROM appointment
+        WHERE board_id = #{boardId};
+    </select>
+
+    <insert id="create" parameterType="appointmentDto">
+        INSERT INTO appointment(board_id, share_user_id, not_share_user_id,
+                                appointment_start, appointment_end)
+        VALUES (#{boardId}, #{shareUserId}, #{notShareUserId}, #{appointmentStart}, #{appointmentEnd});
+    </insert>
+
+    <select id="getRoomListByUserId" parameterType="int" resultMap="room">
+        SELECT * FROM room where share_user_id = #{shareUserId} or not_share_user_id = #{notShareUserId};
+    </select>
+
+    <insert id="createRoom" parameterType="roomDto">
+        <selectKey resultType="int" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into room (type,board_id,share_user_id,not_share_user_id)
+        values (#{type},#{boardId}, #{shareUserId},#{notShareUserId});
+    </insert>
+
+
+
+</mapper>

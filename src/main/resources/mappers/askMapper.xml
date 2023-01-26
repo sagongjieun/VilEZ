@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.vilez.ask.model.mapper.AskMapper">
+    <resultMap type="AskDto" id="ask">
+        <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="category" property="category"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="date" property="date"/>
+        <result column="hope_area_lat" property="hopeAreaLat"/>
+        <result column="hope_area_lng" property="hopeAreaLng"/>
+        <result column="start_day" property="startDay"/>
+        <result column="end_day" property="endDay"/>
+        <result column="manner" property="manner"/>
+        <result column="state" property="state"/>
+        <result column="nickname" property="nickName"/>
+        <result column="area" property="area"/>
+    </resultMap>
+
+    <select id="loadAskList" resultMap="ask">
+        select * from ask_view;
+    </select>
+
+    <select id="loadMyAskList" parameterType="int" resultMap="ask">
+        select * from ask_view where user_id = #{userId};
+    </select>
+
+    <select id="detailArticle" parameterType="int" resultMap="ask">
+        select * from ask_view where id = #{boardId};
+    </select>
+
+    <update id="deleteArticle" parameterType="int">
+        UPDATE ask_board SET state = -1 where id = #{boardId};
+    </update>
+
+    <update id="updateAskBoard" parameterType="askDto" >
+        UPDATE ask_board
+        SET category =#{category} ,title =#{title},content =#{content},
+        hope_area_lat =#{hopeAreaLat},hope_area_lng =#{hopeAreaLng},start_day = #{startDay},end_day=#{endDay}
+        WHERE id = #{id};
+    </update>
+
+    <insert id="writeAskBoard" parameterType="askDto">
+        <selectKey resultType="int" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into ask_board (user_id,category,title,content,hope_area_lat,
+                               hope_area_lng,start_day,end_day)
+                                values (#{userId},#{category}, #{title},#{content},#{hopeAreaLat},#{hopeAreaLng}
+                                ,#{startDay},#{endDay});
+
+    </insert>
+
+    <insert id="saveImg" parameterType="ImgPath2">
+        insert into ask_board_imgs (board_id,path) values (#{boardId},#{path});
+    </insert>
+</mapper>
