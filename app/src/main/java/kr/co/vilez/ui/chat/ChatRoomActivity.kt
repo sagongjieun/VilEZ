@@ -1,27 +1,19 @@
 package kr.co.vilez.ui.chat
 
-import android.annotation.SuppressLint
-import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
-import android.view.KeyEvent.KEYCODE_ENTER
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
-import androidx.fragment.app.Fragment
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
-import kr.co.vilez.data.model.KakaoMap
-import kr.co.vilez.data.model.User
-import kr.co.vilez.databinding.FragmentChatBinding
+import kr.co.vilez.databinding.ActivityChatRoomBinding
+import kr.co.vilez.databinding.ActivityMainBinding
 import kr.co.vilez.util.ApplicationClass
-import kr.co.vilez.util.ApplicationClass.Companion.retrofitChatService
 import kr.co.vilez.util.StompClient
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
@@ -29,21 +21,8 @@ import net.daum.mf.map.api.MapView
 import org.json.JSONObject
 import retrofit2.awaitResponse
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ChatFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class ChatFragment : Fragment(), MapView.MapViewEventListener {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class ChatRoomActivity : AppCompatActivity(),MapView.MapViewEventListener {
+    private lateinit var binding: ActivityChatRoomBinding
     private var zoom: Boolean? = false
     private var isMarkerOn: Boolean? = false
     private var markertouch: Boolean? = false
@@ -52,25 +31,18 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
     private val itemList = ArrayList<ChatlistData>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_chat_room)
 
+
+        initView()
     }
 
-    @SuppressLint("CheckResult")
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val binding = FragmentChatBinding.inflate(inflater, container, false)
-        context ?: return binding.root
+    fun initView() {
         val rv_chat = binding.root.findViewById(R.id.rv_chat) as RecyclerView
         val txt_edit = binding.root.findViewById(R.id.editText1) as EditText
         val roomAdapter = ChatAdapter(itemList)
         txt_edit.setOnKeyListener { v, keyCode, event ->
-            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KEYCODE_ENTER) {
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 val data = JSONObject()
                 data.put("roomId",10)
                 data.put("boardId",55)
@@ -79,15 +51,16 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
                 data.put("toUserId",28)
                 data.put("content",txt_edit.text)
                 data.put("time",System.currentTimeMillis())
-
                 StompClient.stompClient.send("/recvchat", data.toString()).subscribe()
+                txt_edit.setText("")
+                true
             }
-            true
+           false
         }
 
         rv_chat.adapter = roomAdapter
-        rv_chat.layoutManager = LinearLayoutManager(requireContext())
-        val mapView = MapView(context)
+        rv_chat.layoutManager = LinearLayoutManager(this)
+        val mapView = MapView(this)
         binding.mapView.addView(mapView)
         CoroutineScope(Dispatchers.Main).launch {
             val result = ApplicationClass.retrofitChatService.loadLocationByRoomId(10).awaitResponse().body()
@@ -113,7 +86,7 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
             }
         }
 //
-        StompClient.stompClient.topic("/sendmap/10/2").subscribe { topicMessage ->
+        StompClient.stompClient.topic("/sendmap/10/29").subscribe { topicMessage ->
             run {
                 val json = JSONObject(topicMessage.payload)
                 mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(json.getDouble("lat"),json.getDouble("lng")),true);
@@ -159,31 +132,6 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
 
 //
         mapView.setMapViewEventListener(this)
-        return binding.root
-        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_chat, container, false)
-    }
-
-
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ChatFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ChatFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 
     override fun onMapViewInitialized(p0: MapView?) {
@@ -279,6 +227,4 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
     override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {
 
     }
-
-
 }

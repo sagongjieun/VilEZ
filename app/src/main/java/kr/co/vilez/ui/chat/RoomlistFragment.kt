@@ -1,5 +1,7 @@
 package kr.co.vilez.ui.chat
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,6 +14,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.util.ApplicationClass
+import kr.co.vilez.util.StompClient
+import org.json.JSONObject
 import retrofit2.awaitResponse
 
 // TODO: Rename parameter arguments, choose names that match
@@ -29,6 +33,12 @@ class ChatlistFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     private val itemList = ArrayList<RoomlistData>()
+    private lateinit var mContext : Context
+    private var set = HashSet<Int>()
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mContext = context
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,20 +76,43 @@ class ChatlistFragment : Fragment() {
         roomAdapter.setItemClickListener(object: RoomAdapter.OnItemClickListener{
             override fun onClick(v: View, position: Int) {
                 // 클릭 시 이벤트 작성
-                println(itemList.get(position).nickName)
+                var intent = Intent(mContext,ChatRoomActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
             }
         })
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.retrofitChatService.loadRoomList(28).awaitResponse().body()
+            val result = ApplicationClass.retrofitChatService.loadRoomList(29).awaitResponse().body()
             if (result?.flag == "success") {
                 //val data = Gson().fromJson(result.data.toString(),ChatlistData::class.java)
                 for (index in 0 until result.data.size){
                     val chat = result.data.get(index)
-                    itemList.add(RoomlistData(chat.nickName,
+                    set.add(chat.chatData.roomId)
+                    itemList.add(RoomlistData(chat.chatData.roomId,chat.nickName,
                         chat.chatData.content,
                         chat.area))
                 }
                 roomAdapter.notifyDataSetChanged()
+            }
+        }
+        StompClient.stompClient.topic("/roomview/29").subscribe { topicMessage ->
+            run {
+                val json = JSONObject(topicMessage.payload)
+                val roomId = json.getInt("roomId")
+                var index = -1;
+                if(roomId in set) {
+                    for (i in 0 until  itemList.size) {
+                        if(itemList[i].roomId == roomId) {
+                            index = i
+                            break
+                        }
+                    }
+                    itemList[index].content = json.getString("content")
+                } else {
+                    set.add(roomId)
+
+                }
             }
         }
         return rootView

@@ -21,6 +21,7 @@ import kr.co.vilez.ui.share.ShareFragment
 import kr.co.vilez.ui.user.LoginActivity
 import kr.co.vilez.ui.user.ProfileFragment
 import kr.co.vilez.util.ApplicationClass.Companion.sharedPreferences
+import kr.co.vilez.util.StompClient
 
 private const val TAG = "빌리지_MainActivity"
 class MainActivity : AppCompatActivity() {
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         supportActionBar?.hide() // 액션바 숨김
-
+        StompClient.stompClient.connect()
         val target = intent.getStringExtra("target")
         if(target == null) {
             changeFragment("홈")
@@ -69,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             }
             "채팅" -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.frame_layout_main, ChatFragment())
+                    .replace(R.id.frame_layout_main, ChatlistFragment())
                     .commit()
 
                 binding.bottomNavigation.menu.apply {
@@ -136,7 +137,7 @@ class MainActivity : AppCompatActivity() {
 
                 // Fragment 변경
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.frame_layout_main, ChatFragment())
+                    .replace(R.id.frame_layout_main, ChatlistFragment())
                     .commit()
                 return true
             }
