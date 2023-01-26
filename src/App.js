@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import ChatOpenIcon from "./pages/ChatOpenIcon";
-import MainNavBar from "./components/modal/MainNavBar";
+import MainNavBar from "./components/common/MainNavBar";
 import Product from "./pages/Product";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
@@ -28,7 +28,7 @@ function App() {
       </Routes>
       {/* <Oath /> */}
       {/* <Qrcode /> */}
-      <EditProfile />
+      {/* <EditProfile /> */}
     </BrowserRouter>
   );
 }
