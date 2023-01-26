@@ -149,6 +149,8 @@ public class AppointmentController {
     @MessageMapping("/recvchat")
     public ChatVO socketHandler(ChatVO chatVO) {
         appointmentService.recvMsg(chatVO);
+        System.out.println(chatVO);
+        sendingOperations.convertAndSend("/sendmy/"+chatVO.getRoomId()+"/"+chatVO.getFromUserId(),chatVO);
         sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+chatVO.getToUserId(),chatVO);
         return chatVO;
     }
