@@ -177,15 +177,9 @@ public class AppointmentController {
      * */
     @MessageMapping("/recvmap")
     public MapVO mapHandler(MapVO mapVO) {
-        int type = mapVO.getType();
-        if(type == 1) {
-            type = 2;
-        } else {
-            type = 1;
-        }
-        log.info("{}",mapVO);
+        int toUserId = mapVO.getToUserId();
         appointmentService.saveLocation(mapVO);
-        sendingOperations.convertAndSend("/sendmap/"+mapVO.getRoomId()+"/"+type,mapVO);
+        sendingOperations.convertAndSend("/sendmap/"+mapVO.getRoomId()+"/"+toUserId,mapVO);
         return mapVO;
     }
 }

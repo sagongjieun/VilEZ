@@ -78,7 +78,7 @@ public class UserController {
     @ApiOperation(value = "유저 프로필 정보 수정한다.", notes = "{\n\t id : userId(int)" +
             "\n\t 프로필 사진에 아무것도 넣지 않으면 기본 이미지로 설정된다.")
     public ResponseEntity<?> modifyImg(@RequestPart(value = "userId") int userId,
-            @RequestPart(value = "image") MultipartFile file) {
+            @RequestPart(value = "image",required = false) MultipartFile file) {
         try {
             http = userService.modifyProfile(userId, file);
             log.info("회원프로필 수정 성공");
