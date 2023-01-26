@@ -57,4 +57,22 @@ public class SignController {
         return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "서명에 대한 이미지 삭제 API를 제공한다.",
+            notes = "key가 sign인 객체에 userId, boardId 정보 넘겨주면 된다.")
+    @DeleteMapping
+    public ResponseEntity<?> deleteContract(SignImg signImg){
+        HttpVO httpVO = new HttpVO();
+        ArrayList<SignImg> data = new ArrayList<>();
+
+        try{
+            signService.deleteContract(signImg);
+            httpVO.setData(data);
+            httpVO.setFlag("success");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
+    }
+
 }
