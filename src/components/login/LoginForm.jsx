@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { AiOutlineEyeInvisible, AiOutlineEye, AiOutlineExclamationCircle } from "react-icons/ai";
@@ -10,8 +11,11 @@ import useForm from "../../hooks/useForm";
 import { requestLogin } from "../../api/login";
 
 const LoginForm = () => {
+  const navigate = useNavigate();
   const onSubmit = (values) => {
-    requestLogin(values.email, values.password);
+    requestLogin(values.email, values.password).then(() => {
+      navigate("/");
+    });
   };
   const [visible, setVisible] = useState(false);
   const onClickVisible = (event) => {
