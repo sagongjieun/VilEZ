@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
         UserDto userDto = new UserDto();
         userDto.setId(userId);
 
-        if(multipartFile.isEmpty()){
+        if(multipartFile==null || multipartFile.isEmpty()){
             String basicPath = "https://kr.object.ncloudstorage.com/vilez/basicProfile.png";
             userDto.setProfileImg(basicPath);
             userMapper.modifyProfile(userDto);
