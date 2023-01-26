@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,6 +20,7 @@ import kr.co.vilez.databinding.FragmentLoginBinding
 import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.ApplicationClass.Companion.sharedPreferences
+import kr.co.vilez.util.NetworkResult
 import kr.co.vilez.util.StompClient
 import retrofit2.awaitResponse
 
@@ -26,9 +28,12 @@ private const val TAG = "빌리지_LoginFragment"
 class LoginFragment : Fragment() {
     private lateinit var binding:FragmentLoginBinding
     private lateinit var loginActivity:LoginActivity
+    private val userViewModel by activityViewModels<UserViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loginActivity = context as LoginActivity
+
     }
 
     override fun onCreateView(
@@ -47,28 +52,34 @@ class LoginFragment : Fragment() {
         Log.d(TAG, "login: email : $email, password: $password")
 
         CoroutineScope(Dispatchers.Main).launch {
-            val user = User(email, password)
-            val result =
-                ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
-            if (result?.flag == "success") {
-                val data = result.data[0]
-                Log.d(TAG, "로그인 성공, 받아온 user = ${data}")
-                StompClient.runStomp()
+            userViewModel.login(email, password)
+        }
+    }
 
-                // 자동로그인 : sharedPreference에 autoLogin true로 저장
-                sharedPreferences.edit {
-                    putBoolean("autoLogin", true)
-                    putString("email", email)
-                    putString("password", password)
-                    apply()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        userLoginObserver()
+
+    }
+
+    fun userLoginObserver() {
+        userViewModel.userLoginResponseLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is NetworkResult.Success -> {
+                    if (it.data?.flag == "success") {
+                        Log.d(TAG, "userLoginObserver: data: ${it.data?.data?.get(0)}")
+                    }
+                    else {
+                        
+                    }
                 }
-                Log.d(TAG, "sh) 사용자 autoLogin : ${sharedPreferences.getBoolean("autoLogin", false)}")
-                val intent = Intent(loginActivity, MainActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
-            } else {
-                Log.d(TAG, "login: 로그인 실패, result:$result")
+                is NetworkResult.Error -> {
+                    Log.d(TAG, "이메일 체크 Error: ${it.data}")
+                }
+                is NetworkResult.Loading -> {
+                    // progressbar 빙글빙글
+                }
             }
         }
     }
