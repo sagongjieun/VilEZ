@@ -8,11 +8,14 @@ import recommendLocationButton from "../../assets/images/recommendLocationButton
 import selectDateButton from "../../assets/images/selectDateButton.png";
 import startWebRTCButton from "../../assets/images/startWebRTCButton.png";
 import Chatting from "../Chatting";
+import { useLocation } from "react-router-dom";
 
 const ProductChatting = () => {
   const [location, setLocation] = useState("");
   const [hopeAreaLat, setHopeAreaLat] = useState(""); //eslint-disable-line no-unused-vars
   const [hopeAreaLng, setHopeAreaLng] = useState(""); //eslint-disable-line no-unused-vars
+
+  const { state } = useLocation(); // detail로부터 받은 정보들
 
   function receiveLocation(location, lat, lng) {
     setLocation(location);
@@ -23,8 +26,8 @@ const ProductChatting = () => {
   return (
     <div css={wrapper}>
       <div css={articleInfoWrapper}>
-        <h2>닉네임 님과의 대화</h2>
-        <ProductInfo />
+        <h2>{state.writerNickname} 님과의 대화</h2>
+        <ProductInfo infos={state} />
       </div>
       <div css={mapAndChatWrapper}>
         <div css={mapWrapper}>
