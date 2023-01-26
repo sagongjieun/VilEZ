@@ -79,9 +79,11 @@ const flexBox = css`
 const linkWrapper = css`
   display: flex;
   justify-content: center;
+  color: black;
 `;
 const linkTag = css`
   width: 140px;
   text-align: center;
+  color: black;
 `;
 export default Login;

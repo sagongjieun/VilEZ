@@ -201,14 +201,17 @@ const MenuWrap = css`
   position: absolute;
 `;
 
+// box-shadox : x(왼->우), y(아->위), 흐린정도, 그림자크기,색상
 const navMenu = css`
   background-color: white;
   color: #66dd9c;
   border: 0.1px solid #e2e2e2;
+  box-shadow: 5px 5px 5px gray;
   border-radius: 30px;
   width: 125px;
   height: 35px;
   padding: 5px 15px;
+  font-size: 17px;
   text-align: center;
   line-height: 35px;
   cursor: pointer;
