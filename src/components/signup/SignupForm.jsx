@@ -6,32 +6,45 @@ import { AiOutlineEyeInvisible, AiOutlineEye, AiOutlineExclamationCircle } from 
 import LargeWideButton from "../../components/button/LargeWideButton";
 import ConfirmButton from "./ConfirmButton";
 import SignupInputBox from "./SignupInputBox";
+import EmailCodeTimer from "./EmailCodeTimer";
 import Validation from "./SignupValidation";
 import IndividualValidation from "./IndividualValidation";
 import useForm from "../../hooks/useForm";
 import useIndividualForm from "../../hooks/useIndividualForm";
 import { SHA256 } from "./EmailCodeHashFunction";
 import { confirmEmail } from "../../api/signup";
+// import { Link } from "react-router-dom";
+// import { useEffect } from "react";
 
 const SignupForm = () => {
   const [hashedCode, setHashedCode] = useState("");
+  const [userInputCode, setUserInputCode] = useState("");
   const [visible, setVisible] = useState(false);
   const [emailCodeVisible, setEmailCodeVisible] = useState(false);
+  const [codeConfirmed, setCodeConfirmed] = useState(false);
+  const [emailConfirmText, setemailConfirmText] = useState("");
   const onSubmit = () => {};
   const onEmailSubmit = (value) => {
     confirmEmail(value).then((response) => {
-      console.log(response);
+      setHashedCode(response[0]);
     });
     setEmailCodeVisible(true);
   };
-  const onEmailCodeSubmit = (value) => {
-    setHashedCode("");
-    console.log(hashedCode, SHA256(value));
+  const onEmailCodeSubmit = () => {
+    if (SHA256(userInputCode) === hashedCode) {
+      setCodeConfirmed(true);
+      setemailConfirmText("이메일 인증이 완료되었습니다. 회원가입을 계속 진행해주세요.");
+    } else {
+      emailCodeError.emailCode = "인증 코드가 일치하지 않습니다. 이메일을 다시 확인해주세요.";
+    }
   };
   const onNickNameSubmit = () => {};
   const onClickVisible = (event) => {
     event.preventDefault();
     setVisible((prev) => !prev);
+  };
+  const onUserCodeInput = (event) => {
+    setUserInputCode(event.target.value);
   };
   const { errors, handleChange, handleSubmit } = useForm({
     initialValues: {
@@ -160,8 +173,11 @@ const SignupForm = () => {
                 onChange={(event) => {
                   handleChange(event);
                   emailCodeChange(event);
+                  onUserCodeInput(event);
                 }}
+                disabled={codeConfirmed}
               />
+              <EmailCodeTimer setEmailConfirmText={setemailConfirmText} />
             </div>
             <div
               css={css`
@@ -171,8 +187,12 @@ const SignupForm = () => {
               <ConfirmButton text="확인" onClick={emailCodeSubmit} />
             </div>
           </div>
-
-          <small>이메일을 받지 못했나요?</small>
+          <small>{emailConfirmText}</small>
+          {emailConfirmText ? null : (
+            <small>
+              이메일을 받지 못했나요? <button>인증코드 재요청</button>
+            </small>
+          )}
           {emailCodeError.emailCode ? (
             <small css={alertWrapper}>
               <small css={alert}>

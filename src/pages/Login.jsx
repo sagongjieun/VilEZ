@@ -33,8 +33,8 @@ const Login = () => {
             <p>회원가입하기</p>
           </Link>
           |
-          <Link to={"/signup"} css={linkTag}>
-            <p>비밀번호 찾기</p>
+          <Link to={"/password"} css={linkTag}>
+            <p>비밀번호 재설정</p>
           </Link>
         </div>
       </div>
