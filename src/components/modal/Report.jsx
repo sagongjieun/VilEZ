@@ -1,14 +1,19 @@
 import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { useState } from "react";
 
 function Report() {
+  const [report, setReport] = useState("");
+  const onChangeReport = (e) => {
+    setReport(e.target.value);
+  };
   return (
     <div css={reportWrap}>
       <div css={reportContentWrap}>
         <div>
           <h2>신고하기</h2>
-          <textarea css={inputBox} placeholder="신고사유를 작성해주세요." />
+          <textarea css={inputBox} value={report} placeholder="신고사유를 작성해주세요." onChange={onChangeReport} />
         </div>
         <div css={buttonWrap}>
           <button css={badbutton}>취소</button>
