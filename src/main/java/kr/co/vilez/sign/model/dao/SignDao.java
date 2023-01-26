@@ -22,8 +22,10 @@ public class SignDao {
     public void insert(SignImg img) {
         mongoTemplate.insert(img);
     }
-    public void delete(int boardId) {
-        mongoTemplate.remove(Query.query(Criteria.where("boardId").is(boardId)), SignImg.class);
+    public void delete(SignImg signImg) {
+        mongoTemplate.remove(Query.query(Criteria.where("boardId").is(signImg.getBoardId())
+                .and("userId")
+                .is(signImg.getUserId())), SignImg.class);
     }
     public SignImg loadContract(SignImg signImg) {
         SignImg msgs = mongoTemplate.findOne(Query.query(Criteria.where("boardId").is(signImg.getBoardId())
