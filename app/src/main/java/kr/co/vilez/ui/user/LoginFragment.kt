@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,6 +21,7 @@ import kr.co.vilez.databinding.FragmentLoginBinding
 import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.ApplicationClass.Companion.sharedPreferences
+import kr.co.vilez.util.NetworkResult
 import kr.co.vilez.util.StompClient
 import retrofit2.awaitResponse
 
@@ -27,9 +29,12 @@ private const val TAG = "빌리지_LoginFragment"
 class LoginFragment : Fragment() {
     private lateinit var binding:FragmentLoginBinding
     private lateinit var loginActivity:LoginActivity
+    private val userViewModel by activityViewModels<UserViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loginActivity = context as LoginActivity
+
     }
 
     override fun onCreateView(
@@ -58,14 +63,6 @@ class LoginFragment : Fragment() {
                 ApplicationClass.user = data
                 StompClient.runStomp()
 
-                // 자동로그인 : sharedPreference에 autoLogin true로 저장
-                sharedPreferences.edit {
-                    putBoolean("autoLogin", true)
-                    putString("email", email)
-                    putString("password", password)
-                    apply()
-                }
-
                 Log.d(TAG, "sh) 사용자 autoLogin : ${sharedPreferences.getBoolean("autoLogin", false)}")
                 val intent = Intent(loginActivity, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -73,6 +70,7 @@ class LoginFragment : Fragment() {
                 startActivity(intent)
             } else {
                 Log.d(TAG, "login: 로그인 실패, result:$result")
+
             }
         }
     }
