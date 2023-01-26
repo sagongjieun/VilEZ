@@ -1,29 +1,26 @@
 import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import image from "../../assets/images/firstbodyimage.png";
 import { HiLocationMarker, HiCalendar, HiHeart } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
-const ProductInfo = () => {
+const ProductInfo = ({ infos }) => {
   return (
     <div css={productInfoWrapper}>
-      <div>
-        <img src={image} />
-      </div>
+      <div>{/* <img src={infos.thumbnailImage.path} alt="물품 대표사진" /> */}</div>
       <div>
         <div>
-          <h3>맥북 에어 M1 공유해요</h3>
-          {/* Link로 변경 */}
-          <a>글 보러가기</a>
+          <h3>{infos.title}</h3>
+          <Link to={`/product/detail/${infos.boardId}`}>글 보러가기</Link>
         </div>
         <span>
-          <HiLocationMarker /> 진평동
+          <HiLocationMarker /> {infos.location}
         </span>
         <span>
-          <HiCalendar /> 2023.01.23 - 2023.02.22
+          <HiCalendar /> {infos.startDay} - {infos.endDay}
         </span>
         <span>
-          <HiHeart /> 25
+          <HiHeart /> {infos.bookmarkCnt}
         </span>
       </div>
     </div>
