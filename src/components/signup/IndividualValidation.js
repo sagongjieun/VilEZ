@@ -9,8 +9,6 @@ const IndividualValidation = (value) => {
       error.email = "이메일을 입력해주세요.";
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value.email)) {
       error.email = "올바른 이메일 형식이 아닙니다. 다시 입력해주세요.";
-    } else if (value.email === "chopinoff@gmail.com") {
-      error.email = "해당 이메일로 가입된 계정이 존재합니다.";
     }
   }
 
