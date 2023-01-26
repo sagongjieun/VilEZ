@@ -1,5 +1,6 @@
 package kr.co.vilez.ui.user
 
+import android.app.Application
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -52,34 +53,24 @@ class LoginFragment : Fragment() {
         Log.d(TAG, "login: email : $email, password: $password")
 
         CoroutineScope(Dispatchers.Main).launch {
-            userViewModel.login(email, password)
-        }
-    }
+            val user = User(email, password)
+            val result =
+                ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
+            if (result?.flag == "success") {
+                val data = result.data[0]
+                Log.d(TAG, "로그인 성공, 받아온 user = ${data}")
 
+                ApplicationClass.user = data
+                StompClient.runStomp()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        userLoginObserver()
+                Log.d(TAG, "sh) 사용자 autoLogin : ${sharedPreferences.getBoolean("autoLogin", false)}")
+                val intent = Intent(loginActivity, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            } else {
+                Log.d(TAG, "login: 로그인 실패, result:$result")
 
-    }
-
-    fun userLoginObserver() {
-        userViewModel.userLoginResponseLiveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is NetworkResult.Success -> {
-                    if (it.data?.flag == "success") {
-                        Log.d(TAG, "userLoginObserver: data: ${it.data?.data?.get(0)}")
-                    }
-                    else {
-                        
-                    }
-                }
-                is NetworkResult.Error -> {
-                    Log.d(TAG, "이메일 체크 Error: ${it.data}")
-                }
-                is NetworkResult.Loading -> {
-                    // progressbar 빙글빙글
-                }
             }
         }
     }
