@@ -24,12 +24,19 @@ public class SignDao {
     }
     public void delete(SignImg signImg) {
         mongoTemplate.remove(Query.query(Criteria.where("boardId").is(signImg.getBoardId())
-                .and("userId")
-                .is(signImg.getUserId())), SignImg.class);
+                .and("shareUserId")
+                .is(signImg.getShareUserId())
+                .and("notUserId")
+                .is(signImg.getNotUserId())
+        ), SignImg.class);
     }
     public SignImg loadContract(SignImg signImg) {
         SignImg msgs = mongoTemplate.findOne(Query.query(Criteria.where("boardId").is(signImg.getBoardId())
-                .and("userId").is(signImg.getUserId())), SignImg.class);
+                .and("shareUserId")
+                .is(signImg.getShareUserId())
+                .and("notUserId")
+                .is(signImg.getNotUserId())
+        ), SignImg.class);
         return msgs;
     }
 }
