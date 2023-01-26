@@ -106,18 +106,35 @@ class EditProfileFragment : Fragment() {
             val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), file)
             val body = MultipartBody.Part.createFormData("profile_img", file.name, requestFile)
 
+            Log.d(TAG, "body: $body")
             CoroutineScope(Dispatchers.Main).launch {
                 // TODO : 이거 바꿔줘야 함
                 val result = ApplicationClass.retrofitUserService.modifyProfileImage(
                     ApplicationClass.user.accessToken,
+                    ApplicationClass.user.id,
                     body
                 ).awaitResponse().body()
-                Log.d(TAG, "checkNickName: 닉네임 중복 확인, result : $result")
+                val result2 = ApplicationClass.retrofitUserService.modifyProfileImage(
+                    ApplicationClass.user.accessToken,
+                    ApplicationClass.user.id,
+                    body
+                ).awaitResponse().raw()
+                val result3 = ApplicationClass.retrofitUserService.modifyProfileImage(
+                    ApplicationClass.user.accessToken,
+                    ApplicationClass.user.id,
+                    body
+                ).awaitResponse().errorBody()
+                val result4 = ApplicationClass.retrofitUserService.modifyProfileImage(
+                    ApplicationClass.user.accessToken,
+                    ApplicationClass.user.id,
+                    body
+                ).awaitResponse().headers()
+                Log.d(TAG, "이미지 변경 result : $result\n, raw: $result2\n errorBody: $result3\n header: $result4")
                 if (result?.flag == "success") {
                     Log.d(TAG, "프로필이미지변경성공: ")
                     // TODO : 토스트 띄우고 프로필 메인 다시 띄우기
                 } else {
-                    Log.d(TAG, "프로필이미지변경실패: ")
+                    Log.d(TAG, "프로필이미지변경 실패: ")
                 }
             }
         }
@@ -154,12 +171,16 @@ class EditProfileFragment : Fragment() {
             // 기본 이미지로 수정
             BindingAdapter.bindImageFromUrl(binding.ivProfileImg, DEFAULT_PROFILE_IMG)
 
-            // 기본 이미지
-            CoroutineScope(Dispatchers.Main).launch {
-                // TODO : 기본 이미지로 프로필 사진 바꿔줘야 함
+            val uri = ChangeMultipartUtil().changeUriPath(DEFAULT_PROFILE_IMG, mContext)
+            Log.d(TAG, "changeProfileImage: uri: $uri")
+
+//            // 기본 이미지
+//            CoroutineScope(Dispatchers.Main).launch {
+//                // TODO : 기본 이미지로 프로필 사진 바꿔줘야 함
 //                val result = ApplicationClass.retrofitUserService.modifyProfileImage(
 //                    ApplicationClass.user.accessToken,
-//                    body
+//                    ApplicationClass.user.id,
+//                    DEFAULT_PROFILE_IMG
 //                ).awaitResponse().body()
 //                Log.d(TAG, "checkNickName: 닉네임 중복 확인, result : $result")
 //                if (result?.flag == "success") {
@@ -168,7 +189,7 @@ class EditProfileFragment : Fragment() {
 //                } else {
 //                    Log.d(TAG, "프로필이미지변경실패: ")
 //                }
-            }
+//            }
         }
 
 //        CoroutineScope(Dispatchers.Main).launch {
