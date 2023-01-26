@@ -30,6 +30,7 @@ import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentEditProfileBinding
 import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.ui.user.BindingAdapter
+import kr.co.vilez.ui.user.LoginActivity
 import kr.co.vilez.ui.user.ProfileMyShareActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.ChangeMultipartUtil
@@ -218,6 +219,7 @@ class EditProfileFragment : Fragment() {
             view.isEnabled = true
             return
         }
+
         CoroutineScope(Dispatchers.Main).launch {
             val result = ApplicationClass.retrofitUserService.isUsedUserNickName(newNickname).awaitResponse().body()
             Log.d(TAG, "checkNickName: 닉네임 중복 확인, result : $result")
@@ -258,18 +260,49 @@ class EditProfileFragment : Fragment() {
 
 
     fun changePassword(view: View) {
-        val curUser = ApplicationClass.user
         val newPassword = binding.inputProfileNewPassword.editText?.text.toString()
+        val newUser = User(id = ApplicationClass.user.id, nickName = "", password = newPassword)
+        // 현재 비밀번호 체크
+        val curUser = ApplicationClass.user
+        val curPassword = binding.inputProfileCurrentPassword.editText?.text.toString()
 
-        if(checkCurrentPassword()) {
-            // TODO: 입력받은 신규 비밀번호로 회원정보 수정
-            /*CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.Main).launch {
+            val user = User(email = curUser.email, password = curPassword)
+            val result =
+                ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
+            if (result?.flag == "success") {
+                Log.d(TAG, "checkCurrentPassword: 현재 비밀번호 맞음")
+                binding.inputProfileCurrentPassword.error = null
+                val resultModify = ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.user.accessToken, newUser).awaitResponse().body()
 
-            }*/
-            // TODO: 수정 완료 후 수정되었습니다. "변경된 비밀번호로 재로그인 해주세요" 다이얼로그 띄우고 로그인 화면으로 넘어가기
-        } else {
-            Log.d(TAG, "changePassword: 비밀번호 변경 실패")
-            // TODO : 실패 다이얼로그 띄우기
+                if(resultModify?.flag == "success") {
+                    Toast.makeText(mContext, "비밀번호 수정이 완료되었습니다.\n재로그인 해주세요", Toast.LENGTH_SHORT).show()
+                    // Shared Preference 삭제
+                    Log.d(TAG, "logout: 삭제 전 autoLogin = ${ApplicationClass.sharedPreferences.getBoolean("autoLogin",false)}")
+                    ApplicationClass.sharedPreferences.edit {
+                        remove("autoLogin")
+                        remove("email")
+                        remove("password")
+                    }
+                    Log.d(TAG, "logout: 로그아웃 성공")
+                    Log.d(TAG, "logout: 삭제 후 autoLogin = ${ApplicationClass.sharedPreferences.getBoolean("autoLogin", false)}")
+
+                    // 로그아웃 후 로그인 화면이동
+                    val intent = Intent(mContext, LoginActivity::class.java)
+                    intent.addFlags(FLAG_ACTIVITY_CLEAR_TASK)
+                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
+                    intent.addFlags(FLAG_ACTIVITY_NO_ANIMATION)
+
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(mContext, "비밀번호 수정을 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+                }
+
+            } else {
+                Log.d(TAG, "login: 현재 비밀번호 틀림, result:$result")
+                isCorrectCurrentPassword = false
+                binding.inputProfileCurrentPassword.error = "현재 비밀번호가 틀립니다."
+            }
         }
     }
 
@@ -283,7 +316,7 @@ class EditProfileFragment : Fragment() {
                 ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
             if (result?.flag == "success") {
                 // 현재 비밀번호 맞게 입력함 => TODO: 변경한 비밀번호가 올바른지 확인 후 비밀번호 변경
-                val data = result.data[0]
+                Log.d(TAG, "checkCurrentPassword: 현재 비밀번호 맞음")
                 isCorrectCurrentPassword = true
                 binding.inputProfileCurrentPassword.error = null
             } else {

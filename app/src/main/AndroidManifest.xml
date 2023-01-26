@@ -20,7 +20,8 @@
         android:theme="@style/Theme.Vilez"
         android:usesCleartextTraffic="true"
         tools:targetApi="31"
-        android:windowSoftInputMode="adjustResize|stateAlwaysVisible"
+        android:windowSoftInputMode="adjustPan"
+
         android:requestLegacyExternalStorage="true"
         >
         <activity
