@@ -43,6 +43,11 @@ const Chatting = () => {
     setChatMessage("");
   }
 
+  // test
+  useEffect(() => {
+    console.log("보여주는 메시지 : ", showingMessage);
+  }, [showingMessage]);
+
   useEffect(() => {
     const sockJS = new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`);
     client = Stomp.over(sockJS);
@@ -53,11 +58,11 @@ const Chatting = () => {
       // subscribe
       // url, callback, header(option)
       // 내아이디는 임시 데이터
-      client.subscribe(`/sendchat/${chatRoomId}/${28}`, (data) => {
+      client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
         setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
       });
 
-      client.subscribe(`/sendmy/${chatRoomId}/${28}`, (data) => {
+      client.subscribe(`/sendmy/${chatRoomId}/${myUserId}`, (data) => {
         setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
       });
 

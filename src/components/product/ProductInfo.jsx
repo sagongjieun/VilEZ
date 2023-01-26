@@ -8,7 +8,7 @@ const ProductInfo = ({ infos }) => {
   return (
     <div css={productInfoWrapper}>
       <div>
-        <img src={infos.thumbnailImage} alt="물품 대표사진" />
+        <img src={infos.thumbnailImage.path} alt="물품 대표사진" />
       </div>
       <div>
         <div>
