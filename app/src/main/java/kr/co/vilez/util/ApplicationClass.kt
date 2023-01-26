@@ -6,11 +6,14 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import kr.co.vilez.data.model.User
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Converter
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
 import java.lang.reflect.Type
 import java.util.concurrent.TimeUnit
 
@@ -25,6 +28,13 @@ class ApplicationClass: Application() {
         lateinit var retrofitUserService: RetrofitUserService
         lateinit var retrofitEmailService: RetrofitEmailService
         lateinit var retrofitChatService: RetrofitChatService
+
+        // header에 accessTocken 넣는 레트로핏
+        lateinit var hRetrofit : Retrofit
+        lateinit var hRetrofitUserService: RetrofitUserService
+        lateinit var hRetrofitEmailService: RetrofitEmailService
+        lateinit var hRetrofitChatService: RetrofitChatService
+        private lateinit var interceptor: Interceptor
 
         // 로그인 정보를 담기 위한 sharedPreference
         lateinit var sharedPreferences: SharedPreferences
@@ -66,7 +76,21 @@ class ApplicationClass: Application() {
         // 네트워크에 연결되어있는지 확인 후 없으면 앱 종료 시키기위해 네트워크 연결상태 감지 콜백 생성시켜두기
 //        val network: CheckNetwork = CheckNetwork(applicationContext)
 //        network.registerNetworkCallback()
+
+
+        //interceptor = AppInterceptor()
+
     }
+
+//    inner class AppInterceptor : Interceptor {
+//        @Throws(IOException::class)
+//        override fun intercept(chain: Interceptor.Chain): Response = with(chain) {
+//            val newRequest = request().newBuilder()
+//                .addHeader("Authorization", sharedPreferencesUtil.getUserAccessToken())
+//                .build()
+//            proceed(newRequest)
+//        }
+//    } // End of AppInterceptor inner class
 
     private val nullOnEmptyConverterFactory = object : Converter.Factory() {
         fun converterFactory() = this
@@ -85,5 +109,6 @@ class ApplicationClass: Application() {
             }
         }
     }
+
 
 }
