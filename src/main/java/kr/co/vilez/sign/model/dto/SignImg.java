@@ -11,6 +11,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("sign")
 public class SignImg {
     int boardId;
-    int userId;
-    String path;
+    int shareUserId;
+    int notUserId;
+    String shareSign;
+    String notShareSign;
 }

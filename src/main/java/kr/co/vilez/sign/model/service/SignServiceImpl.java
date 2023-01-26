@@ -29,37 +29,7 @@ public class SignServiceImpl implements SignService {
     }
 
     @Override
-    public SignImg signUpload(SignImg signImg, MultipartFile multipartFile) throws Exception {
-        if(multipartFile.isEmpty()){
-            String basicPath = "https://kr.object.ncloudstorage.com/vilez/basicProfile.png";
-            signImg.setPath(basicPath);
-        } else{
-            String [] formats = {".jpeg", ".png", ".bmp", ".jpg"};
-            // 원래 파일 이름 추출
-            String origName = multipartFile.getOriginalFilename();
-
-            // 확장자 추출(ex : .png)
-            String extension = origName.substring(origName.lastIndexOf("."));
-            String folderName = "sign";
-            for(int i = 0; i < formats.length; i++) {
-                if (extension.equals(formats[i])){
-                    File uploadFile = osUpload.convert(multipartFile)        // 파일 생성
-                            .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File convert fail"));
-
-//                osUpload.mkdir(bucketName, folderName);
-
-                    String fileName = folderName + "/" + System.nanoTime() + extension;
-                    osUpload.put(bucketName, fileName, uploadFile);
-
-                    String path = "https://kr.object.ncloudstorage.com/"+bucketName+"/"+fileName;
-                    signImg.setPath(path);
-
-
-                    break;
-                }
-            }
-        }
-
+    public SignImg signUpload(SignImg signImg) throws Exception {
         signDao.insert(signImg);
         return signImg;
     }
