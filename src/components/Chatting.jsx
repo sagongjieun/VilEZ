@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import SockJS from "sockjs-client";
@@ -9,6 +9,8 @@ import baseProfile from "../assets/images/baseProfile.png";
 let client;
 
 const Chatting = () => {
+  const scrollRef = useRef();
+
   const [chatRoomId, setChatRoomId] = useState(10); //eslint-disable-line no-unused-vars
   const [chatMessage, setChatMessage] = useState(""); // 클라이언트가 입력하는 메시지
   const [showingMessage, setShowingMessage] = useState([]); // 서버로부터 받는 메시지
@@ -43,10 +45,11 @@ const Chatting = () => {
     setChatMessage("");
   }
 
-  // test
-  useEffect(() => {
-    console.log("보여주는 메시지 : ", showingMessage);
-  }, [showingMessage]);
+  function scrollToBottom() {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }
 
   useEffect(() => {
     const sockJS = new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`);
@@ -84,9 +87,13 @@ const Chatting = () => {
   //   });
   // }, []);
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [showingMessage]);
+
   return (
     <div css={chatWrapper}>
-      <div>
+      <div ref={scrollRef}>
         {showingMessage.map((message, index) => {
           if (message.fromUserId === myUserId) {
             return (
@@ -190,6 +197,7 @@ const yourMessageWrapper = css`
   flex-direction: row;
   align-items: center;
   margin-bottom: 10px;
+  justify-content: flex-start;
 
   & > img {
     width: 50px;

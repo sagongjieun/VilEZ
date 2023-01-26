@@ -5,7 +5,7 @@ import { css } from "@emotion/react";
 const { kakao } = window;
 
 const Map = ({ readOnly, sendLocation, selectedLat, selectedLng }) => {
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState("지도에서 장소를 선택해주세요!");
   const [lat, setLat] = useState("");
   const [lng, setLng] = useState("");
   let container, options, map, marker;

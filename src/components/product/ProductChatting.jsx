@@ -31,10 +31,7 @@ const ProductChatting = () => {
       </div>
       <div css={mapAndChatWrapper}>
         <div css={mapWrapper}>
-          <div>
-            <span>{location}</span>
-            <small>지도 제어권 넘기기</small>
-          </div>
+          <span>{location}</span>
           <div>
             <Map readOnly={false} sendLocation={receiveLocation} />
           </div>
@@ -90,21 +87,8 @@ const mapWrapper = css`
   flex-direction: column;
   width: 65%;
 
-  & > div:nth-of-type(1) {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 10px;
-
-    & > small {
-      color: #66dd9c;
-      font-weight: bold;
-      cursor: pointer;
-    }
-  }
-
-  & > div:nth-of-type(2) {
+  & > div {
+    margin-top: 10px;
     width: 100%;
     height: 600px;
   }
