@@ -10,8 +10,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @ToString
 @Document("KakaoMap")
 public class MapVO {
-    private String roomId;
-    private int type;
+    private int roomId;
+    private int toUserId;
     private double lat;
     private double lng;
     private int zoomLevel;
