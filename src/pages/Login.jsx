@@ -10,6 +10,12 @@ import Kakao from "../assets/images/social_kakao.png";
 import Naver from "../assets/images/social_naver.png";
 
 const Login = () => {
+  // const RECIRECT_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  const RECIRECT_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=ea2591cb2987ca829df10d3f84562e60&redirect_uri=${RECIRECT_BASE_URL}/oauth2/code/kakao&response_type=code`;
+  const onClickKakao = () => {
+    window.location.href = KAKAO_AUTH_URL;
+  };
   return (
     <div css={container}>
       <div css={loginContainer}>
@@ -25,7 +31,14 @@ const Login = () => {
         </div>
         <div css={loginFormContainer}>
           <OAuthLoginButton text="Sign in with Google" src={Google} alt="구글" backgroundColor="#FFF" color="#000" />
-          <OAuthLoginButton text="카카오로 로그인" src={Kakao} alt="카카오" backgroundColor="#FEE502" color="#000" />
+          <OAuthLoginButton
+            text="카카오로 로그인"
+            onClick={onClickKakao}
+            src={Kakao}
+            alt="카카오"
+            backgroundColor="#FEE502"
+            color="#000"
+          />
           <OAuthLoginButton text="네이버로 로그인" src={Naver} alt="네이버" backgroundColor="#24CD0B" color="#FFF" />
         </div>
         <div css={linkWrapper}>
