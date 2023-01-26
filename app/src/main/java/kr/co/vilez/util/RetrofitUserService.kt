@@ -26,6 +26,7 @@ interface RetrofitUserService {
     // TODO : 리턴 타입 확인
     @Multipart
     @PUT("/vilez/users/profile")
-    fun modifyProfileImage(@Header("access_token")token:String?, @Part body: MultipartBody.Part): Call<RESTResult>
+    fun modifyProfileImage(@Header("access_token")token:String?, @Part("userId") userId: Int, @Part image: MultipartBody.Part): Call<RESTResult>
+
 }
 
