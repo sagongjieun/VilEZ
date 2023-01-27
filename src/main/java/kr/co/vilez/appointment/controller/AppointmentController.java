@@ -155,7 +155,7 @@ public class AppointmentController {
         HashMap<String, Object> map = new HashMap<>();
         UserDto user = null;
         try {
-            user = userService.detail2(chatVO.getToUserId());
+            user = userService.detail2(chatVO.getFromUserId());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -163,9 +163,9 @@ public class AppointmentController {
         map.put("area", user.getArea());
         map.put("content", chatVO.getContent());
         map.put("roomId",chatVO.getRoomId());
-        System.out.println("/roomview/"+chatVO.getToUserId());
+        System.out.println("/room/view/"+chatVO.getToUserId());
         System.out.println(user);
-        sendingOperations.convertAndSend("/room/view/"+chatVO.getFromUserId(),map);
+        sendingOperations.convertAndSend("/room_view/"+chatVO.getToUserId(),map);
         sendingOperations.convertAndSend("/sendmy/"+chatVO.getRoomId()+"/"+chatVO.getFromUserId(),chatVO);
         sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+chatVO.getToUserId(),chatVO);
         return chatVO;
