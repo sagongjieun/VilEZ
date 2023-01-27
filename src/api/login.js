@@ -7,12 +7,19 @@ const jsonAxios = jsonInstance();
 async function requestLogin(email, password) {
   try {
     const { data } = await jsonAxios.post(`/users/login`, { email, password });
+
     if (data.flag === "success") {
-      localStorage.setItem("accessToken", data.data[0].accessToken);
-      localStorage.setItem("refreshToken", data.data[0].refreshToken);
-      localStorage.setItem("id", data.data[0].id);
+      const res = data.data[0];
+
+      localStorage.setItem("accessToken", res.accessToken);
+      localStorage.setItem("refreshToken", res.refreshToken);
+      localStorage.setItem("id", res.id);
+
       return data.data;
-    } else alert("이메일 혹은 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+    } else {
+      alert("이메일 혹은 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+      return false;
+    }
   } catch (error) {
     console.log(error);
   }
