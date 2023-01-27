@@ -5,7 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import kr.co.vilez.R
+import kr.co.vilez.databinding.FragmentEditAccountBinding
+import kr.co.vilez.databinding.FragmentEditAreaBinding
+import kr.co.vilez.ui.user.ProfileMenuActivity
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -18,6 +22,9 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class EditAccountFragment : Fragment() {
+    private lateinit var binding : FragmentEditAccountBinding
+    private lateinit var profileMenuActivity: ProfileMenuActivity
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -28,14 +35,28 @@ class EditAccountFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        setHasOptionsMenu(true)
+        profileMenuActivity = context as ProfileMenuActivity
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_edit_account, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_account, container, false)
+        binding.fragment = this
+        initToolBar()
+        return binding.root
+    }
+
+    private fun initToolBar() {
+        profileMenuActivity.setSupportActionBar(binding.toolbar)
+        profileMenuActivity.supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
+        binding.title = "내 정보 수정"
+    }
+
+    fun onBackPressed(view: View) {
+        profileMenuActivity.finish()
     }
 
     companion object {

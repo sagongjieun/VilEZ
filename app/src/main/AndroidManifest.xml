@@ -26,7 +26,7 @@
             android:name=".ui.share.ShareDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.user.ProfileMyShareActivity"
+            android:name=".ui.user.ProfileMenuActivity"
             android:exported="false" >
             <meta-data
                 android:name="android.app.lib_name"
