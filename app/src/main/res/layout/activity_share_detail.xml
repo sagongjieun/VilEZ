@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.share.ShareDetailActivity">
-
-<!--    <ScrollView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent">-->
-<!--    </ScrollView>-->
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="activity"
+            type="kr.co.vilez.ui.share.ShareDetailActivity"/>
+        <variable
+            name="path"
+            type="String"/>
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.share.ShareDetailActivity">
+        <!--    <ScrollView-->
+        <!--        android:layout_width="match_parent"-->
+        <!--        android:layout_height="match_parent">-->
+        <!--    </ScrollView>-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -42,7 +50,9 @@
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_weight="2"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    app:imageFromUrl="@{path}"
+                    />
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_weight="2"
@@ -54,13 +64,13 @@
                     android:layout_width="0dp"
                     android:layout_weight="4"
                     android:layout_height="match_parent"/>
-                <ToggleButton
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/heart_icon"
-                    android:textOn=""
-                    android:textOff=""
+                <ImageButton
+                    android:id="@+id/test_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="#00000000"
+                    android:src="@drawable/heart_icon"
                     />
             </LinearLayout>
             <LinearLayout
@@ -74,7 +84,6 @@
                 android:layout_weight="1"
                 android:background="@color/bg_sub_1">
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -82,6 +91,5 @@
                 android:background="@color/bg_sub_2">
             </LinearLayout>
         </LinearLayout>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

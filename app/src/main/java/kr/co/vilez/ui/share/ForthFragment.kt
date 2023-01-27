@@ -8,12 +8,10 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import kr.co.vilez.R
 import kr.co.vilez.databinding.FragmentFirstBinding
-import kr.co.vilez.databinding.FragmentSecondBinding
+import kr.co.vilez.databinding.FragmentForthBinding
 
-
-private lateinit var binding: FragmentSecondBinding
-class SecondFragment(var path:String) : Fragment() {
-
+private lateinit var binding: FragmentForthBinding
+class ForthFragment(var path:String) : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
             name="fragment"
             type="kr.co.vilez.ui.share.FirstFragment" />
+        <variable
+            name="src"
+            type="String" />
     </data>
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -11,13 +14,11 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:text="1"
+        <ImageView
             android:id="@+id/firstView"
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:textColor="#000000"
-            android:background="#FFCDD2"
+            app:imageFromUrl="@{src}"
             />
 
     </LinearLayout>
