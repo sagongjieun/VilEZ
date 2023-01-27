@@ -2,12 +2,52 @@ import React, { useRef, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import SignatureCanvas from "react-signature-canvas";
+import { jsonInstance } from "../../api/instance";
+import { postCanvas } from "../../api/oath";
 // https://stackblitz.com/edit/react-signature-canvas-demo?file=index.js
 function Oath() {
+  const jsonAxios = jsonInstance();
+  const canvasRef = useRef(null);
+  const onClickCanvas = async () => {
+    const canvas = canvasRef.current.getTrimmedCanvas().toDataURL("image/png");
+    // console.log(canvas);
+    // const dataURL = canvas.toDataURL();
+    const information = {
+      boardId: 1,
+      userId: 52,
+      notUserId: 55,
+      shareSign: canvas,
+      notShareSign: canvas,
+    };
+    postCanvas(information);
+    // console.log(information);
+  };
+
+  const [base64Img, setBase64Img] = useState("");
+
+  const getOath = async () => {
+    const completeinformation = {
+      boardId: 1,
+      notUserId: 55,
+      shareUserId: 52,
+    };
+    try {
+      const { data } = await jsonAxios.get(
+        `/signs/?boardId=${completeinformation.boardId}&notUserId=${completeinformation.notUserId}&shareUserId=${completeinformation.shareUserId}`
+      );
+      // console.log(data.data[0].shareSign);
+      const base64Encoded = data.data[0].shareSign;
+      console.log(base64Encoded);
+      setBase64Img(data.data[0].shareSign);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const giver = "공유자";
   const reciever = "피공유자";
   const stuff = "노트북";
-  const canvas = useRef(null);
+
   const [isSign, setIsSign] = useState(false);
 
   // 확정 버튼 누르면 서버로 전송할 api
@@ -26,7 +66,7 @@ function Oath() {
         {!isSign && <div css={signContentWrap}>여기에 서명을 해주세요</div>}
         <div>
           <SignatureCanvas
-            ref={canvas}
+            ref={canvasRef}
             backgroundColor="#E8E8E8"
             canvasProps={{ width: 200, height: 100 }}
             onBegin={() => {
@@ -34,22 +74,27 @@ function Oath() {
             }}
           />
         </div>
-        <button
-          css={oathButton}
-          onClick={() => {
-            canvas.current.clear();
-            setIsSign(false);
-          }}
-        >
-          다시쓰기
-        </button>
+        <div>
+          <button
+            css={oathButton}
+            onClick={() => {
+              canvasRef.current.clear();
+              setIsSign(false);
+            }}
+          >
+            다시쓰기
+          </button>
+        </div>
       </div>
       <div>상기 내용을 모두 이해하고, 동의하시면 확정을 눌러주세요</div>
       <div>
         <button css={cancelButton}>아니오</button>
-        <button css={completeButton}>확정</button>
+        <button css={completeButton} onClick={onClickCanvas}>
+          확정
+        </button>
       </div>
-      <canvas></canvas>
+      <button onClick={getOath}>서명보기</button>
+      <img src={base64Img} alt="" />
     </div>
   );
 }
