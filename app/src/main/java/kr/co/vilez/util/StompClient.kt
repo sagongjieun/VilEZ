@@ -2,7 +2,13 @@ package kr.co.vilez.util
 
 import android.content.Context
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kr.co.vilez.ui.chat.RoomlistData
+import org.json.JSONArray
 import org.json.JSONObject
+import retrofit2.awaitResponse
 import ua.naiksoftware.stomp.Stomp
 import ua.naiksoftware.stomp.dto.LifecycleEvent
 import ua.naiksoftware.stomp.dto.StompHeader
@@ -46,6 +52,24 @@ class StompClient {
                     }
                 }
             }
+
+//            CoroutineScope(Dispatchers.Main).launch {
+//                val result =
+//                    ApplicationClass.retrofitChatService.loadRoomList(29).awaitResponse().body()
+//                if (result?.flag == "success") {
+//                    DataState.itemList = ArrayList<RoomlistData>()
+//                    for (index in 0 until result.data.size) {
+//                        val chat = result.data.get(index)
+//                        DataState.itemList.add(
+//                            RoomlistData(
+//                                chat.chatData.roomId, chat.nickName,
+//                                chat.chatData.content,
+//                                chat.area
+//                            )
+//                        )
+//                    }
+//                }
+//            }
 
 
         }

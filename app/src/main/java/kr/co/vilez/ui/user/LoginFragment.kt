@@ -17,9 +17,13 @@ import kr.co.vilez.R
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentLoginBinding
 import kr.co.vilez.ui.MainActivity
+import kr.co.vilez.ui.chat.RoomlistData
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.ApplicationClass.Companion.sharedPreferences
+import kr.co.vilez.util.DataState
 import kr.co.vilez.util.StompClient
+import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.awaitResponse
 
 private const val TAG = "빌리지_LoginFragment"
@@ -61,6 +65,28 @@ class LoginFragment : Fragment() {
                     putString("email", email)
                     putString("password", password)
                     apply()
+                }
+                StompClient.stompClient.topic("/send_room_list/29").subscribe { topicMessage ->
+                    run {
+                        val json = JSONArray(topicMessage.payload)
+                        println(json.toString())
+                        CoroutineScope(Dispatchers.Main).launch {
+
+                            DataState.itemList = ArrayList<RoomlistData>()
+                            for (index in 0 until json.length()) {
+                                val chat = JSONObject(json.get(index).toString())
+                                println(chat)
+
+//                            DataState.itemList.add(
+//                                RoomlistData(
+//                                    chat.chatData.roomId, chat.nickName,
+//                                    chat.chatData.content,
+//                                    chat.area
+//                                )
+//                            )
+                            }
+                        }
+                    }
                 }
                 Log.d(TAG, "sh) 사용자 autoLogin : ${sharedPreferences.getBoolean("autoLogin", false)}")
                 val intent = Intent(loginActivity, MainActivity::class.java)
