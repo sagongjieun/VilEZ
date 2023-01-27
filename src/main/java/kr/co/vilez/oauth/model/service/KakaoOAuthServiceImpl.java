@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class KakaoOAuthServiceImpl implements KakaoOAuthService {
 
-    String clientId = "ea2591cb2987ca829df10d3f84562e60";
+    String clientId = "bc1b0d18239d9332d371b33821ffb2e5";
 
     @Autowired
     KakaoOAuthMapper oAuthMapper;
@@ -48,7 +48,7 @@ public class KakaoOAuthServiceImpl implements KakaoOAuthService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", clientId);
-        body.add("redirect_uri", "http://211.216.215.157:8082/vilez/oauth2/code/kakao");
+        body.add("redirect_uri", "http://i8d111.p.ssafy.io/vilez/oauth2/code/kakao");
         body.add("code", code);
 
         // HTTP 요청 보내기

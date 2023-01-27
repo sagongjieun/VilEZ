@@ -41,8 +41,8 @@ public class OAuthController {
     @GetMapping("/code/kakao")
     @ApiOperation(value = "카카오 OAuth 로그인.",
             notes = "https://kauth.kakao.com/oauth/authorize\n" +
-                    "?client_id=ea2591cb2987ca829df10d3f84562e60\n" +
-                    "&redirect_uri=http://211.216.215.157:8082/vilez/oauth2/code/kakao\n" +
+                    "?client_id=bc1b0d18239d9332d371b33821ffb2e5\n" +
+                    "&redirect_uri=http://i8d111.p.ssafy.io:8082/vilez/oauth2/code/kakao\n" +
                     "&response_type=code" +
                     "해당 주소로 url 연결 부탁합니다.",
             response = String.class)
@@ -117,7 +117,7 @@ public class OAuthController {
                     "response_type=code&\n" +
                     "client_id=KdnHuDfQRJ8OKSLDdgB6&\n" +
                     "state=randomtext&\n" +
-                    "redirect_uri=http://211.216.215.157:8082/vilez/oauth2/code/naver" +
+                    "redirect_uri=http://i8d111.p.ssafy.io:8082/vilez/oauth2/code/naver" +
                     "해당 주소로 url 연결 부탁합니다.",
             response = String.class)
     @GetMapping("/code/naver")
