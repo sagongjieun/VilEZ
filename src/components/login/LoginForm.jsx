@@ -12,11 +12,17 @@ import { requestLogin } from "../../api/login";
 
 const LoginForm = () => {
   const navigate = useNavigate();
+
+  // 로그인
   const onSubmit = (values) => {
-    requestLogin(values.email, values.password).then(() => {
+    requestLogin(values.email, values.password).then((res) => {
+      if (!res) return;
+
+      // recoil에 로그인 정보 저장 필요
       navigate("/");
     });
   };
+
   const [visible, setVisible] = useState(false);
   const onClickVisible = (event) => {
     event.preventDefault();
