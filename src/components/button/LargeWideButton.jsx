@@ -4,8 +4,12 @@ import { css } from "@emotion/react";
 
 // props 옵션 설정
 //outline(boolean) 전달해주면 true일 때 outline 있는 버튼으로 스타일 변경
-const LargeWideButton = ({ text, outline }) => {
-  return <button css={outline ? outlinedButton : basicButton}>{text}</button>;
+const LargeWideButton = ({ text, outline, onClick }) => {
+  return (
+    <button css={outline ? outlinedButton : basicButton} onClick={onClick}>
+      {text}
+    </button>
+  );
 };
 
 const basicButton = css`
