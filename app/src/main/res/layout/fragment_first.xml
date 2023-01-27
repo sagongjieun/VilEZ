@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="fragment"
+            type="kr.co.vilez.ui.share.FirstFragment" />
+    </data>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:text="1"
+            android:id="@+id/firstView"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:textColor="#000000"
+            android:background="#FFCDD2"
+            />
+
+    </LinearLayout>
+</layout>

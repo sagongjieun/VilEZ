@@ -13,6 +13,7 @@ import retrofit2.Converter
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 import java.io.IOException
 import java.lang.reflect.Type
 import java.util.concurrent.TimeUnit
@@ -28,6 +29,7 @@ class ApplicationClass: Application() {
         lateinit var retrofitUserService: RetrofitUserService
         lateinit var retrofitEmailService: RetrofitEmailService
         lateinit var retrofitChatService: RetrofitChatService
+        lateinit var retrofitShareService: RetrofitShareService
 
         // header에 accessTocken 넣는 레트로핏
         lateinit var hRetrofit : Retrofit
@@ -71,6 +73,7 @@ class ApplicationClass: Application() {
         retrofitUserService = wRetrofit.create(RetrofitUserService::class.java)
         retrofitEmailService = wRetrofit.create(RetrofitEmailService::class.java)
         retrofitChatService = wRetrofit.create(RetrofitChatService::class.java)
+        retrofitShareService = wRetrofit.create(RetrofitShareService::class.java)
         Log.d(TAG, "onCreate: ")
 
         // 네트워크에 연결되어있는지 확인 후 없으면 앱 종료 시키기위해 네트워크 연결상태 감지 콜백 생성시켜두기
