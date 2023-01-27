@@ -163,7 +163,9 @@ public class AppointmentController {
         map.put("area", user.getArea());
         map.put("content", chatVO.getContent());
         map.put("roomId",chatVO.getRoomId());
-        sendingOperations.convertAndSend("/roomview/"+chatVO.getToUserId(),map);
+        System.out.println("/roomview/"+chatVO.getToUserId());
+        System.out.println(user);
+        sendingOperations.convertAndSend("/roomview/"+chatVO.getFromUserId(),map);
         sendingOperations.convertAndSend("/sendmy/"+chatVO.getRoomId()+"/"+chatVO.getFromUserId(),chatVO);
         sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+chatVO.getToUserId(),chatVO);
         return chatVO;
