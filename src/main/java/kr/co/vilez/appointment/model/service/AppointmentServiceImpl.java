@@ -137,6 +137,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         List<ChatLastVO> lastVOS = appointmentDao.getChatLastVOList(userId);
         Collections.sort(lastVOS);
         for(ChatLastVO vo : lastVOS) {
+            System.out.println(vo);
             ChatDatasVO chatDatasVO = new ChatDatasVO();
             if(vo.getTime() > userEnterMap.get(vo.getRoomId())) {
                 long count = appointmentDao.getChatCount(vo.getRoomId(),userEnterMap.get(vo.getRoomId()));

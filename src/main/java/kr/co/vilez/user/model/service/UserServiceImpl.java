@@ -185,6 +185,12 @@ public class UserServiceImpl implements UserService {
         return http;
     }
 
+    public UserDto detail2(int id) throws Exception {
+        UserDto user = userMapper.detail(id);
+
+        return user;
+    }
+
     @Override
     public HttpVO list() throws Exception{
         http = new HttpVO();

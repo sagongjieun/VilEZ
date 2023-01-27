@@ -7,6 +7,8 @@ import kr.co.vilez.appointment.model.dto.RoomDto;
 import kr.co.vilez.appointment.model.service.AppointmentService;
 import kr.co.vilez.appointment.model.vo.*;
 import kr.co.vilez.data.HttpVO;
+import kr.co.vilez.user.model.dto.UserDto;
+import kr.co.vilez.user.model.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,7 @@ import java.util.List;
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
+    private final UserService userService;
     private final SimpMessageSendingOperations sendingOperations;
     // 내가 공유받은 물품 목록을 볼 수 있다.
     // 한 게시글에서 여러번 물건을 빌렸으면 가장 최근에 빌린 내역만이 나온다.
@@ -149,8 +152,18 @@ public class AppointmentController {
     @MessageMapping("/recvchat")
     public ChatVO socketHandler(ChatVO chatVO) {
         appointmentService.recvMsg(chatVO);
-        System.out.println(chatVO);
-        sendingOperations.convertAndSend("/roomview/"+chatVO.getToUserId(),chatVO);
+        HashMap<String, Object> map = new HashMap<>();
+        UserDto user = null;
+        try {
+            user = userService.detail2(chatVO.getToUserId());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        map.put("nickName",user.getNickName());
+        map.put("area", user.getArea());
+        map.put("content", chatVO.getContent());
+        map.put("roomId",chatVO.getRoomId());
+        sendingOperations.convertAndSend("/roomview/"+chatVO.getToUserId(),map);
         sendingOperations.convertAndSend("/sendmy/"+chatVO.getRoomId()+"/"+chatVO.getFromUserId(),chatVO);
         sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+chatVO.getToUserId(),chatVO);
         return chatVO;
