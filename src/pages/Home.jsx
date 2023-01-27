@@ -2,28 +2,33 @@ import React, { useState } from "react";
 import { Animated } from "react-animated-css";
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
-import firstbodyimage from "../assets/images/firstbodyimage.png";
+import mainBackgroundImage from "../assets/images/mainBackgroundImage.png";
 import mainarrow from "../assets/images/mainarrow.png";
 import secondbodyimg from "../assets/images/secondbodyimg.png";
 import thirdbodyimg from "../assets/images/thirdbodyimg.png";
 import mapimg from "../assets/images/mapimg.png";
 import chatimg from "../assets/images/chatimg.png";
 import { useNavigate } from "react-router-dom";
+
 function MainBody() {
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
+
   const mainToProduct = () => {
     navigate("/product/");
   };
+
   const onChangeSearch = (e) => {
     setSearch(e.target.value);
     // console.log(e.target.value);
   };
+
   const onKeyPresssearch = (e) => {
     if (e.key === "Enter") {
       mainToProduct();
     }
   };
+
   return (
     <div>
       <div css={FirstBodyWrap}>
@@ -99,6 +104,7 @@ function MainBody() {
     </div>
   );
 }
+
 const FirstWrap = css`
   display: flex;
   margin-top: 186px;
@@ -111,9 +117,10 @@ const FirstWrap = css`
 const FirstBodyWrap = css`
   width: 100%;
   height: 700px;
-  background-image: url(${firstbodyimage});
+  background-image: url(${mainBackgroundImage});
   background-size: cover;
 `;
+
 const FirstBody = css`
   padding-top: 100px;
   font-size: 40px;
@@ -134,23 +141,27 @@ const InputWrap = css`
 
 const InputBox = css`
   display: block;
-  height: 95px;
-  width: 755px;
+  height: 85px;
+  width: 750px;
   border-radius: 20px;
-  line-height: 95px;
-  padding-left: 20px;
+  line-height: 85px;
+  padding: 0 30px;
   font-size: 25px;
+  outline: none;
+  border: 1px solid #e1e2e3;
+  font-size: 20px;
 `;
+
 const floating = keyframes`
-    {
-        transform: translateY(0);    
-    }
-    50% {
-        transform: translateY(-15px);
-    }
-    100% {
-        transform: translateY(0);
-    }
+  {
+      transform: translateY(0);    
+  }
+  50% {
+      transform: translateY(-15px);
+  }
+  100% {
+      transform: translateY(0);
+  }
 `;
 
 const ArrowBox = css`
@@ -178,6 +189,7 @@ const ExplainLeft = css`
 const ExplainRight = css`
   height: 584px;
 `;
+
 const ExplainRightCenter = css`
   display: flex;
   justify-content: center;
@@ -190,13 +202,16 @@ const ExplainTitle = css`
   color: #66dd9c;
   margin-bottom: 20px;
 `;
+
 const ExplainContent = css`
   font-size: 28px;
   padding-bottom: 20px;
 `;
+
 const ImgHeight = css`
   height: 584px;
 `;
+
 const firstImgMargin = css`
   width: 580px;
 `;
@@ -208,4 +223,5 @@ const thirdWrap = css`
   justify-content: space-between;
   height: 600px;
 `;
+
 export default MainBody;

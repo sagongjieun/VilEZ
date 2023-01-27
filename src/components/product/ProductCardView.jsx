@@ -2,7 +2,7 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { HiLocationMarker, HiCalendar, HiHeart } from "react-icons/hi";
-import image from "../../assets/images/firstbodyimage.png";
+import image from "../../assets/images/mainBackgroundImage.png";
 
 const ProductCardView = () => {
   return (
