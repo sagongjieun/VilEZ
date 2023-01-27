@@ -9,7 +9,8 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import kr.co.vilez.R
 import kr.co.vilez.databinding.FragmentHomeBinding
-import kr.co.vilez.ui.share.ShareActivity
+import kr.co.vilez.ui.share.ShareDetailActivity
+
 
 class HomeFragment : Fragment() {
     private lateinit var binding:FragmentHomeBinding
@@ -33,7 +34,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
     }
 
     fun moveToShareActivity(view: View) {
-        val intent = Intent(mainActivity, ShareActivity::class.java)
+        val intent = Intent(mainActivity, ShareDetailActivity::class.java)
         mainActivity.startActivity(intent)
     }
 }
