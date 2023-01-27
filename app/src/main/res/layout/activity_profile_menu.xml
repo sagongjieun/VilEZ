@@ -4,7 +4,7 @@
     <data>
         <variable
             name="activity"
-            type="kr.co.vilez.ui.user.ProfileMyShareActivity" />
+            type="kr.co.vilez.ui.user.ProfileMenuActivity" />
 
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"

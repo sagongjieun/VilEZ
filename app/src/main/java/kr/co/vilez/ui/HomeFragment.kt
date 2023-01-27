@@ -22,11 +22,6 @@ class HomeFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
-    override fun onResume() {
-        super.onResume()
-        mainActivity.invalidateOptionsMenu()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,27 +33,28 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.top_app_bar, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onContextItemSelected(item: MenuItem): Boolean {
+    @Deprecated("Deprecated in Java")
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             R.id.option_menu_menu -> {
                 Log.d(TAG, "onContextItemSelected: ${item.title} clicked")
                 Toast.makeText(mainActivity, "${item.title} 클릭", Toast.LENGTH_SHORT).show()
             }
         }
-        return super.onContextItemSelected(item)
+        return super.onOptionsItemSelected(item)
     }
+
 
     private fun initToolBar() {
         mainActivity.setSupportActionBar(binding.toolbar)
         mainActivity.supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
-        mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.toolbarTitle.text = "진평동"
-
+        binding.title = "진평동"
     }
 
     companion object {
