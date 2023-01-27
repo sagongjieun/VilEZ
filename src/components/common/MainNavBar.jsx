@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { css } from "@emotion/react";
 import { Link } from "react-router-dom";
 import { FiSearch, FiBookmark } from "react-icons/fi";
+import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 
 function MainNavBar() {
@@ -25,8 +26,12 @@ function MainNavBar() {
     navigate("/login");
   }
 
-  function onClickMoveMyPage() {
+  function onClickMoveMyBookmark() {
     // 내가 북마크하고 에약한 페이지로 이동
+  }
+
+  function onClickMoveMyPage() {
+    navigate("/profile");
   }
 
   function onClickMoveSearchPage() {
@@ -35,7 +40,7 @@ function MainNavBar() {
 
   return (
     <>
-      {isLogin ? (
+      {!isLogin ? (
         <nav css={navWrap}>
           <div css={navStyle}>
             <div>
@@ -60,8 +65,9 @@ function MainNavBar() {
               </div>
               <div>
                 <div css={midrightWrap}>
-                  <FiBookmark onClick={onClickMoveMyPage} />
                   <FiSearch onClick={onClickMoveSearchPage} />
+                  <FiBookmark onClick={onClickMoveMyBookmark} />
+                  <CgProfile onClick={onClickMoveMyPage} />
                 </div>
                 <span>로그아웃</span>
               </div>
@@ -185,7 +191,7 @@ const midrightWrap = css`
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-right: 15px;
+  margin-right: 10px;
 
   & > svg {
     font-size: 25px;
