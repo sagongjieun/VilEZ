@@ -1,6 +1,6 @@
 import React from "react";
 import { css } from "@emotion/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 /** @jsxImportSource @emotion/react */
 import DivideLine from "../components/common/DivideLine";
 import OAuthLoginButton from "../components/login/OAuthLoginButton";
@@ -10,11 +10,20 @@ import Kakao from "../assets/images/social_kakao.png";
 import Naver from "../assets/images/social_naver.png";
 
 const Login = () => {
-  // const RECIRECT_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-  const RECIRECT_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=ea2591cb2987ca829df10d3f84562e60&redirect_uri=${RECIRECT_BASE_URL}/oauth2/code/kakao&response_type=code`;
+  const navigate = useNavigate();
+  const KAKAO_REDIRECT_URI = process.env.REACT_APP_KAKAO_REDIRECT_URI;
+  const KAKAO_REST_API_KEY = process.env.REACT_APP_KAKAO_REST_API_KEY;
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_API_KEY}&redirect_uri=${KAKAO_REDIRECT_URI}&response_type=code`;
+  // const NAVER_REDIRECT_URI = process.env.REACT_APP_KAKAO_REDIRECT_URI;
+  // const NAVER_REST_API_KEY = process.env.REACT_APP_KAKAO_REST_API_KEY;
+  // const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_REST_API_KEY}&state=randomtext&redirect_uri=${NAVER_REDIRECT_URI}`;
+  const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=KdnHuDfQRJ8OKSLDdgB6&state=randomtext&redirect_uri=http://i8d111.p.ssafy.io:8082/vilez/oauth2/code/naver`;
   const onClickKakao = () => {
-    window.location.href = KAKAO_AUTH_URL;
+    navigate(KAKAO_AUTH_URL);
+  };
+  const onClickNaver = () => {
+    console.log("네이버허");
+    navigate(NAVER_AUTH_URL);
   };
   return (
     <div css={container}>
@@ -31,15 +40,26 @@ const Login = () => {
         </div>
         <div css={loginFormContainer}>
           <OAuthLoginButton text="Sign in with Google" src={Google} alt="구글" backgroundColor="#FFF" color="#000" />
-          <OAuthLoginButton
-            text="카카오로 로그인"
-            onClick={onClickKakao}
-            src={Kakao}
-            alt="카카오"
-            backgroundColor="#FEE502"
-            color="#000"
-          />
-          <OAuthLoginButton text="네이버로 로그인" src={Naver} alt="네이버" backgroundColor="#24CD0B" color="#FFF" />
+          <a href={KAKAO_AUTH_URL}>
+            <OAuthLoginButton
+              text="카카오로 로그인"
+              onClick={onClickKakao}
+              src={Kakao}
+              alt="카카오"
+              backgroundColor="#FEE502"
+              color="#000"
+            />
+          </a>
+          <a href={NAVER_AUTH_URL}>
+            <OAuthLoginButton
+              text="네이버로 로그인"
+              onClick={onClickNaver}
+              src={Naver}
+              alt="네이버"
+              backgroundColor="#24CD0B"
+              color="#FFF"
+            />
+          </a>
         </div>
         <div css={linkWrapper}>
           <Link to={"/signup"} css={linkTag}>
@@ -92,11 +112,9 @@ const flexBox = css`
 const linkWrapper = css`
   display: flex;
   justify-content: center;
-  color: black;
 `;
 const linkTag = css`
   width: 140px;
   text-align: center;
-  color: black;
 `;
 export default Login;
