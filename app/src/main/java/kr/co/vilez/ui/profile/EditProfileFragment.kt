@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import kotlinx.coroutines.CoroutineScope
@@ -105,7 +106,6 @@ class EditProfileFragment : Fragment() {
 
             Log.d(TAG, "body: $body")
             CoroutineScope(Dispatchers.Main).launch {
-                // TODO : 이거 바꿔줘야 함
                 val result = ApplicationClass.retrofitUserService.modifyProfileImage(
                     ApplicationClass.user.accessToken,
                     ApplicationClass.user.id,
@@ -113,7 +113,6 @@ class EditProfileFragment : Fragment() {
                 ).awaitResponse().body()
                 if (result?.flag == "success") {
                     Log.d(TAG, "프로필이미지변경성공: ")
-                    // TODO : 토스트 띄우고 프로필 메인 다시 띄우기
                     Toast.makeText(profileActivity, "프로필 이미지 변경을 성공했습니다.", Toast.LENGTH_SHORT).show()
                     refreshActivity()
 
@@ -166,7 +165,6 @@ class EditProfileFragment : Fragment() {
             BindingAdapter.bindImageFromUrl(binding.ivProfileImg, DEFAULT_PROFILE_IMG)
 
             CoroutineScope(Dispatchers.Main).launch {
-                // TODO : 이거 바꿔줘야 함
                 val result = ApplicationClass.retrofitUserService.removeProfileImage(
                     ApplicationClass.user.accessToken,
                     ApplicationClass.user.id,
@@ -190,7 +188,6 @@ class EditProfileFragment : Fragment() {
 
                 if (result?.flag == "success") {
                     Log.d(TAG, "프로필이미지 삭제성공: ")
-                    // TODO : 토스트 띄우고 프로필 메인 다시 띄우기
                     Toast.makeText(profileActivity, "프로필 이미지 변경을 성공했습니다.", Toast.LENGTH_SHORT).show()
                     refreshActivity()
                 } else {
@@ -201,18 +198,6 @@ class EditProfileFragment : Fragment() {
         view.isClickable = true
         view.isEnabled = true
 
-//        CoroutineScope(Dispatchers.Main).launch {
-//            val result =
-//                ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.user.accessToken, newUser).awaitResponse().body()
-//            if (result?.flag == "success") {
-//                Log.d(TAG, "changeProfileImage: result: $result")
-//                // 수정했다고 토스트 띄우고 창 돌아가기 or 수정되었습니다 다이얼로그 띄우고 창 닫기
-//                // TODO: 수정 완료 후 수정되었습니다. 다이얼로그 띄우고 창 뒤로가기, ApplicationClass.user data도 갱신
-//            } else {
-//                Log.d(TAG, "changeProfileImage: 수정 실패: $result")
-//                // TODO: 수정 실패 다이얼로그 띄우기
-//            }
-//        }
     }
 
     fun changeNickName(view: View) {
@@ -236,7 +221,6 @@ class EditProfileFragment : Fragment() {
 
                 binding.inputProfileNickname.error = null
 
-                // TODO: 닉네임 수정 in here
                 val newUser = User(id=ApplicationClass.user.id, nickName = newNickname, password = "")
                 val modifyResult = ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.user.accessToken, newUser).awaitResponse().body()
                 Log.d(TAG, "changeNickName: modifyResult: $modifyResult")
@@ -244,8 +228,7 @@ class EditProfileFragment : Fragment() {
                     Log.d(TAG, "changeNickName: 닉네임 변경 성공")
                     binding.inputProfileNickname.helperText = null
                     binding.inputProfileNickname.error = null
-//                binding.inputProfileNickname.helperText = "변경가능한 닉네임입니다."
-                    // TODO: 수정 완료 후 수정되었습니다. 토스트 띄우고 창 뒤로가기, ApplicationClass.user data도 갱신
+
                     Toast.makeText(profileActivity, "닉네임 변경을 성공했습니다.", Toast.LENGTH_SHORT).show()
                     ApplicationClass.user.nickName = newNickname
                     refreshActivity()
@@ -320,7 +303,7 @@ class EditProfileFragment : Fragment() {
             val result =
                 ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
             if (result?.flag == "success") {
-                // 현재 비밀번호 맞게 입력함 => TODO: 변경한 비밀번호가 올바른지 확인 후 비밀번호 변경
+                // 현재 비밀번호 맞게 입력함
                 Log.d(TAG, "checkCurrentPassword: 현재 비밀번호 맞음")
                 isCorrectCurrentPassword = true
                 binding.inputProfileCurrentPassword.error = null
