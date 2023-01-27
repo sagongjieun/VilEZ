@@ -16,6 +16,6 @@ public interface UserService {
     HttpVO detail(int id) throws Exception;
     HttpVO refreshCheck(String token) throws Exception;
     HttpVO join(UserDto userDto) throws Exception;
-
     HttpVO list() throws Exception;
+    UserDto detail2(int id) throws Exception;
 }
