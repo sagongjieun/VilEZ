@@ -29,7 +29,7 @@ import kr.co.vilez.databinding.FragmentEditProfileBinding
 import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.ui.user.BindingAdapter
 import kr.co.vilez.ui.user.LoginActivity
-import kr.co.vilez.ui.user.ProfileMyShareActivity
+import kr.co.vilez.ui.user.ProfileMenuActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.ChangeMultipartUtil
 import kr.co.vilez.util.Common
@@ -44,7 +44,7 @@ private const val TAG = "빌리지_EditProfileFragment"
 class EditProfileFragment : Fragment() {
 
     private lateinit var binding:FragmentEditProfileBinding
-    private lateinit var profileActivity: ProfileMyShareActivity
+    private lateinit var profileMenuActivity: ProfileMenuActivity
     private lateinit var mContext: Context
 
     private var isCorrectCurrentPassword = false
@@ -58,7 +58,7 @@ class EditProfileFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        profileActivity = context as ProfileMyShareActivity
+        profileMenuActivity = context as ProfileMenuActivity
     }
 
     override fun onCreateView(
@@ -71,8 +71,18 @@ class EditProfileFragment : Fragment() {
         binding.user = ApplicationClass.user
         getUserDetail(ApplicationClass.user.id)
         initView()
+        initToolBar()
 
         return binding.root
+    }
+
+    private fun initToolBar() {
+        profileMenuActivity.setSupportActionBar(binding.toolbar)
+        profileMenuActivity.supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
+        binding.toolbarTitle.text = "프로필 수정"
+    }
+    fun onBackPressed(view: View) {
+        profileMenuActivity.finish()
     }
 
     private fun getUserDetail(userId: Int) {
@@ -113,7 +123,7 @@ class EditProfileFragment : Fragment() {
                 ).awaitResponse().body()
                 if (result?.flag == "success") {
                     Log.d(TAG, "프로필이미지변경성공: ")
-                    Toast.makeText(profileActivity, "프로필 이미지 변경을 성공했습니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(profileMenuActivity, "프로필 이미지 변경을 성공했습니다.", Toast.LENGTH_SHORT).show()
                     refreshActivity()
 
                 } else {
@@ -124,7 +134,7 @@ class EditProfileFragment : Fragment() {
     } // End of registerForActivityResult
 
     private fun refreshActivity(data: String? = null) {
-        val intent = Intent(profileActivity, MainActivity::class.java)
+        val intent = Intent(profileMenuActivity, MainActivity::class.java)
         intent.putExtra("target", "나의 빌리지")
         intent.addFlags(FLAG_ACTIVITY_CLEAR_TASK)
         intent.addFlags(FLAG_ACTIVITY_NO_ANIMATION)
@@ -188,7 +198,7 @@ class EditProfileFragment : Fragment() {
 
                 if (result?.flag == "success") {
                     Log.d(TAG, "프로필이미지 삭제성공: ")
-                    Toast.makeText(profileActivity, "프로필 이미지 변경을 성공했습니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(profileMenuActivity, "프로필 이미지 변경을 성공했습니다.", Toast.LENGTH_SHORT).show()
                     refreshActivity()
                 } else {
                     Log.d(TAG, "프로필이미지 삭제 실패: ")
@@ -229,7 +239,7 @@ class EditProfileFragment : Fragment() {
                     binding.inputProfileNickname.helperText = null
                     binding.inputProfileNickname.error = null
 
-                    Toast.makeText(profileActivity, "닉네임 변경을 성공했습니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(profileMenuActivity, "닉네임 변경을 성공했습니다.", Toast.LENGTH_SHORT).show()
                     ApplicationClass.user.nickName = newNickname
                     refreshActivity()
                 } else {
@@ -240,7 +250,6 @@ class EditProfileFragment : Fragment() {
                 binding.inputProfileNickname.error = "이미 사용중인 닉네임입니다."
                 Log.d(TAG, "checkNickName: 이미 사용중인 닉네임")
             }
-
         }
         view.isClickable = true
         view.isEnabled = true
@@ -294,28 +303,6 @@ class EditProfileFragment : Fragment() {
         }
     }
 
-    private fun checkCurrentPassword():Boolean {
-        // 현재 비밀번호 체크
-        val curUser = ApplicationClass.user
-        val curPassword = binding.inputProfileCurrentPassword.editText?.text.toString()
-        CoroutineScope(Dispatchers.Main).launch {
-            val user = User(email = curUser.email, password = curPassword)
-            val result =
-                ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
-            if (result?.flag == "success") {
-                // 현재 비밀번호 맞게 입력함
-                Log.d(TAG, "checkCurrentPassword: 현재 비밀번호 맞음")
-                isCorrectCurrentPassword = true
-                binding.inputProfileCurrentPassword.error = null
-            } else {
-                Log.d(TAG, "login: 현재 비밀번호 틀림, result:$result")
-                isCorrectCurrentPassword = false
-                binding.inputProfileCurrentPassword.error = "현재 비밀번호가 틀립니다."
-            }
-        }
-        return isCorrectCurrentPassword and isValidPassword and isValidPasswordAgain
-    }
-
     private fun initView() {
         // 신규 비밀번호 양식 확인
         binding.inputProfileNewPassword.editText?.addTextChangedListener {
@@ -340,5 +327,4 @@ class EditProfileFragment : Fragment() {
             }
         }
     }
-
 }

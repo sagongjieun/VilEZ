@@ -3,7 +3,9 @@
 
     <item
         android:id="@+id/option_menu_menu"
-        android:title="Menu"
-        app:showAsAction="always" />
+        android:iconTint="@color/bg_dark"
+        android:icon="@drawable/icon_menu"
+        android:title="Menu1"
+        app:showAsAction="never" />
 
 </menu>

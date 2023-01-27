@@ -1,6 +1,5 @@
 package kr.co.vilez.ui.user
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,29 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.SimpleAdapter
-import android.widget.TextView
 import androidx.core.content.edit
-import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import kotlinx.coroutines.*
 import kr.co.vilez.R
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentProfileBinding
-import kr.co.vilez.ui.IntroActivity
 import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.ui.dialog.*
-import kr.co.vilez.ui.profile.CalendarFragment
-import kr.co.vilez.ui.profile.InterestFragment
-import kr.co.vilez.ui.profile.PointFragment
-import kr.co.vilez.ui.profile.SharedListFragment
 import kr.co.vilez.util.ApplicationClass
-import kr.co.vilez.util.StompClient
 import retrofit2.awaitResponse
-import java.util.Objects
 
 private const val TAG = "빌리지_ProfileFragment"
 class ProfileFragment : Fragment() {
@@ -188,7 +174,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun moveEditActivity(fragment: String) {
-        val intent = Intent(mainActivity, ProfileMyShareActivity::class.java)
+        val intent = Intent(mainActivity, ProfileMenuActivity::class.java)
         intent.putExtra("fragment", fragment)
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
         mainActivity.startActivity(intent)
