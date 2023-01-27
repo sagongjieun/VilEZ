@@ -69,7 +69,7 @@
             </LinearLayout>
             <EditText
                 android:id="@+id/editText"
-                android:background="#ffffff"
+                android:background="#00000000"
                 android:maxLength="120"
                 android:maxLines="5"
                 android:inputType="textMultiLine|textNoSuggestions"
@@ -83,7 +83,7 @@
                 android:layout_height="match_parent"
                 android:text="검색"
                 android:textColor="@color/main_1"
-                android:backgroundTint="#ffffff"
+                android:backgroundTint="#00000000"
                 />
         </LinearLayout>
         <androidx.recyclerview.widget.RecyclerView

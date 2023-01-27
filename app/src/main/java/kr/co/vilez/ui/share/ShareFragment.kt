@@ -19,6 +19,10 @@ import kr.co.vilez.databinding.FragmentShareBinding
 import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.util.ApplicationClass
 import retrofit2.awaitResponse
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 private const val TAG = "공유_ShareFragment"
@@ -102,14 +106,27 @@ class ShareFragment : Fragment() {
                 for(data in result.data){
                     var shareData:ShareData
                     if(data.shareListDto.list.size == 0){
+////////////////////////////////
                         shareData = ShareData(
+                            data.shareListDto.id,
                             "https://kr.object.ncloudstorage.com/vilez/basicProfile.png",
-                            data.shareListDto.title + " "
+                            data.shareListDto.title,
+                            elapsedTime(data.shareListDto.date),
+                            "구미",
+                            data.shareListDto.startDay+"~"
+                                    +data.shareListDto.endDay,
+                            Integer.toString(data.listCnt)
                         );
                     } else {
                         shareData = ShareData(
+                            data.shareListDto.id,
                             data.shareListDto.list[0].path,
-                            data.shareListDto.title + " "
+                            data.shareListDto.title,
+                            elapsedTime(data.shareListDto.date),
+                            "구미",
+                            data.shareListDto.startDay+"~"
+                                    +data.shareListDto.endDay,
+                            Integer.toString(data.listCnt)
                         );
                     }
                         shareDatas.add(shareData)
@@ -127,7 +144,6 @@ class ShareFragment : Fragment() {
             android.R.layout.simple_spinner_dropdown_item,
             items
         )
-
 
         binding.spinner.adapter = arrayAdapter
         binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -147,8 +163,6 @@ class ShareFragment : Fragment() {
 
         binding.rv.setOnScrollChangeListener{ v, scollX, scrollY,
                                                   oldScrollX, oldScrollY ->
-//            Log.d(TAG,"스크롤 감지");
-
             if(!v.canScrollVertically(1)){
                 CoroutineScope(Dispatchers.Main).launch {
                     val result =
@@ -161,18 +175,28 @@ class ShareFragment : Fragment() {
                                 var shareData:ShareData
                                 if(data.shareListDto.list.size == 0){
                                     shareData = ShareData(
+                                        data.shareListDto.id,
                                         "https://kr.object.ncloudstorage.com/vilez/basicProfile.png",
-                                        data.shareListDto.title + " "
+                                        data.shareListDto.title,
+                                        elapsedTime(data.shareListDto.date),
+                                        "구미",
+                                        data.shareListDto.startDay+"~"
+                                                +data.shareListDto.endDay,
+                                        Integer.toString(data.listCnt)
                                     );
                                 } else {
                                     shareData = ShareData(
+                                        data.shareListDto.id,
                                         data.shareListDto.list[0].path,
-                                        data.shareListDto.title + " "
+                                        data.shareListDto.title,
+                                        elapsedTime(data.shareListDto.date),
+                                        "구미",
+                                        data.shareListDto.startDay+"~"
+                                                +data.shareListDto.endDay,
+                                        Integer.toString(data.listCnt)
                                     );
                                 }
                                 shareDatas.add(shareData)
-//                            Log.d(TAG, "initView: ${data.shareListDto.nickName}");
-//                    Log.d(TAG, "initView: ${data.shareListDto.list[0].path}");
                             }
                         }
                         shareAdapter.notifyItemInserted(index - 1)
@@ -189,15 +213,27 @@ class ShareFragment : Fragment() {
 //            shareAdapter.notifyItemInserted(index-1) // 이게 아래코드보다 오버헤드 더 적음
 //            // shareAdapter.notifyDataSetChanged()
 //        }
-
     }
+    fun elapsedTime(date:String):String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+        val nowDate: LocalDateTime  = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")
+        val formatted = nowDate.format(formatter)
 
-//
-    fun addItem(view:View) { // 방법 2 : xml의 버튼에 onClick속성으로 addItem 메소드 넣기
-        // 클릭 리스너 달아줘도 되고, xml에 선언해놓은 이 메소드에서 버튼 클릭 이벤트 동작 됨
-        Log.d(TAG, "addItem: 버튼 클릭")
-        val shareData = ShareData("", "test${index++}")
-        shareDatas.add(shareData)
-        shareAdapter.notifyItemInserted(index-1) // 이게 아래코드보다 오버헤드 더 적음
+        val endDate = dateFormat.parse(formatted.toString()).time
+        val startDate = dateFormat.parse(date).time
+
+        val resultTime = (endDate - startDate) / 1000
+
+        val arr = arrayOf(60*60*24*365, 60*60*24*30, 60*60*24, 60*60, 60)
+        val date = arrayOf("년", "개월", "일", "시간", "분")
+        for(i in 0..4){
+            val time = (resultTime / arr[i]).toInt()
+
+            if(time > 0){
+                return Integer.toString(time)+date[i]+"전"
+            }
+        }
+        return "방금 전"
     }
 }
