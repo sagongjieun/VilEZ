@@ -61,7 +61,7 @@ function MainBody() {
           <div css={ExplainContent}>지역 사람들과 공유해봐요.</div>
         </div>
         <div css={ExplainRight}>
-          <img css={ImgHeight} src={secondbodyimg} alt="" />
+          <img css={[ImgHeight, firstImgMargin]} src={secondbodyimg} alt="" />
         </div>
       </div>
       <div css={ExplainWrap}>
@@ -142,7 +142,7 @@ const InputBox = css`
   font-size: 25px;
 `;
 const floating = keyframes`
-    0 {
+    {
         transform: translateY(0);    
     }
     50% {
@@ -196,6 +196,9 @@ const ExplainContent = css`
 `;
 const ImgHeight = css`
   height: 584px;
+`;
+const firstImgMargin = css`
+  width: 580px;
 `;
 
 const thirdWrap = css`
