@@ -11,14 +11,18 @@ const { kakao } = window;
  * @selectedLat readOnly일 때, 부모 컴포넌트로부터 받은 위도
  * @selectedLng readOnly일 때, 부모 컴포넌트로부터 받은 경도
  */
-const Map = ({ readOnly, sendLocation, selectedLat, selectedLng, movedLat, movedLng, movedLevel }) => {
+const Map = ({ readOnly, sendLocation, selectedLat, selectedLng, movedLat, movedLng, movedZoomLevel, movedMarker }) => {
   const [location, setLocation] = useState("지도에서 장소를 선택해주세요!");
   const [lat, setLat] = useState("");
   const [lng, setLng] = useState("");
-  const [level, setLevel] = useState(0);
+  const [zoomLevel, setZoomLevel] = useState(0);
+  const [isMarker, setIsMarker] = useState(false);
+  const [markerLat, setMarkerLat] = useState(""); //eslint-disable-line no-unused-vars
+  const [markerLng, setMarkerLng] = useState(""); //eslint-disable-line no-unused-vars
+
   let container, options, map, marker;
 
-  useEffect(() => {
+  function initMap() {
     // 지도를 표시할 공간과 초기 중심좌표, 레벨 세팅
     container = document.getElementById("map");
     options = {
@@ -26,7 +30,9 @@ const Map = ({ readOnly, sendLocation, selectedLat, selectedLng, movedLat, moved
       level: 4,
     };
     map = new kakao.maps.Map(container, options);
+  }
 
+  function geolocationMap() {
     // 현재 접속위치를 중심좌표로 두기
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function (position) {
@@ -40,90 +46,116 @@ const Map = ({ readOnly, sendLocation, selectedLat, selectedLng, movedLat, moved
       const locPosition = new kakao.maps.LatLng(33.450701, 126.570667);
       map.setCenter(locPosition);
     }
+  }
 
+  function eventDragEnd() {
+    // 드래그 이동
+    kakao.maps.event.addListener(map, "dragend", function () {
+      const center = map.getCenter();
+
+      setLat(center.getLat());
+      setLng(center.getLng());
+      setZoomLevel(map.getLevel());
+
+      // 이미 마커가 존재하면 마커 있음 보내기
+      if (isMarker || movedMarker) setIsMarker(true);
+    });
+  }
+
+  function eventZoomChanged() {
+    // 지도 레벨 변경
+    kakao.maps.event.addListener(map, "zoom_changed", function () {
+      const center = map.getCenter();
+
+      setLat(center.getLat());
+      setLng(center.getLng());
+      setZoomLevel(map.getLevel());
+
+      // 이미 마커가 존재하면 마커 있음 보내기
+      if (isMarker || movedMarker) setIsMarker(true);
+    });
+  }
+
+  function eventSetMarker() {
     marker = new kakao.maps.Marker();
+    // 마커 찍기
+    kakao.maps.event.addListener(map, "click", function (mouseEvent) {
+      const latlng = mouseEvent.latLng;
+
+      marker.setPosition(latlng);
+
+      setLat(latlng.getLat());
+      setLng(latlng.getLng());
+      setZoomLevel(map.getLevel());
+      setIsMarker(true);
+      setMarkerLat(latlng.getLat());
+      setMarkerLng(latlng.getLng());
+
+      map.panTo(latlng);
+
+      searchDetailAddrFromCoords(mouseEvent.latLng, function (result, status) {
+        if (status === kakao.maps.services.Status.OK) {
+          setLocation(result[0].address.address_name);
+          marker.setMap(map);
+        }
+      });
+    });
+  }
+
+  function searchDetailAddrFromCoords(coords, callback) {
     const geocoder = new kakao.maps.services.Geocoder();
+    geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
+  }
 
-    // 지도를 제어할 때
+  useEffect(() => {
+    initMap();
+    geolocationMap();
+
+    /** readOnly : 지도 제어 가능 */
     if (!readOnly) {
-      // 드래그 이동
-      kakao.maps.event.addListener(map, "dragend", function () {
-        const center = map.getCenter();
-
-        setLat(center.getLat());
-        setLng(center.getLng());
-        setLevel(map.getLevel());
-
-        searchDetailAddrFromCoords(center, function (result, status) {
-          if (status === kakao.maps.services.Status.OK) {
-            setLocation(`중심 좌표 : ${result[0].address.address_name}`);
-          }
-        });
-      });
-
-      // 지도 레벨 변경
-      kakao.maps.event.addListener(map, "zoom_changed", function () {
-        const center = map.getCenter();
-
-        setLat(center.getLat());
-        setLng(center.getLng());
-        setLevel(map.getLevel());
-
-        searchDetailAddrFromCoords(center, function (result, status) {
-          if (status === kakao.maps.services.Status.OK) {
-            setLocation(`중심 좌표 : ${result[0].address.address_name}`);
-          }
-        });
-      });
-
-      // 마커 찍기
-      kakao.maps.event.addListener(map, "click", function (mouseEvent) {
-        const latlng = mouseEvent.latLng;
-
-        marker.setPosition(latlng);
-        setLat(latlng.getLat());
-        setLng(latlng.getLng());
-        setLevel(map.getLevel());
-
-        searchDetailAddrFromCoords(mouseEvent.latLng, function (result, status) {
-          if (status === kakao.maps.services.Status.OK) {
-            setLocation(`선택된 장소 : ${result[0].address.address_name}`);
-            marker.setMap(map);
-          }
-        });
-      });
-    }
-
-    function searchDetailAddrFromCoords(coords, callback) {
-      geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
+      eventDragEnd();
+      eventZoomChanged();
+      eventSetMarker();
     }
   }, []);
 
-  // readOnly 아닐 때 (=지도 제어 가능)
+  /** 지도 데이터 보내기 */
   useEffect(() => {
     if (!readOnly) {
-      sendLocation(location, lat, lng, level);
+      sendLocation(location, lat, lng, zoomLevel, isMarker);
     }
-  }, [location, lat, lng, level]);
+  }, [location, lat, lng, zoomLevel]);
 
-  // 실시간 공유 지도 위경도, 지도 레벨 받기
+  /** 실시간 공유 지도 데이터 받기 */
   useEffect(() => {
-    if (movedLat && movedLng && movedLevel) {
-      setLat(movedLat);
-      setLng(movedLng);
-      setLevel(movedLevel);
-    }
-  }, [movedLat, movedLng, movedLevel]);
+    if (movedLat && movedLng && movedZoomLevel) {
+      initMap();
+      const locPosition = new kakao.maps.LatLng(movedLat, movedLng);
 
-  // readOnly 일 때 (=지도 제어 불가능)
+      map.setLevel(movedZoomLevel); // 지도 레벨 동기화
+
+      if (movedMarker) {
+        marker = new kakao.maps.Marker();
+        marker.setPosition(locPosition);
+        marker.setMap(map);
+
+        setMarkerLat(locPosition.getLat());
+        setMarkerLng(locPosition.getLng());
+      }
+
+      map.panTo(locPosition);
+
+      // 상대방이 제어하고나서 나도 제어할 수 있게
+      eventDragEnd();
+      eventZoomChanged();
+      eventSetMarker();
+    }
+  }, [movedLat, movedLng, movedZoomLevel]);
+
+  /** readOnly : 지도 제어 불가능 */
   useEffect(() => {
     if (selectedLat && selectedLng) {
-      container = document.getElementById("map");
-      options = {
-        center: new kakao.maps.LatLng(33.450701, 126.570667),
-        level: 4,
-      };
-      map = new kakao.maps.Map(container, options);
+      initMap();
 
       marker = new kakao.maps.Marker();
 

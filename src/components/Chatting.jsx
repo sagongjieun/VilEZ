@@ -20,41 +20,13 @@ const Chatting = ({ writerNickname }) => {
   const [showingMessage, setShowingMessage] = useState([]); // 서버로부터 받는 메시지
   // 임시 데이터
   const [myUserId, setMyUserId] = useState(28); //eslint-disable-line no-unused-vars
-  const [location, setLocation] = useState("");
+  const [hopeLocation, setHopeLocation] = useState("");
   const [hopeAreaLat, setHopeAreaLat] = useState("");
   const [hopeAreaLng, setHopeAreaLng] = useState("");
-  const [mapLevel, setMapLevel] = useState(0);
   const [movedLat, setMovedLat] = useState("");
   const [movedLng, setMovedLng] = useState("");
-  const [movedLevel, setMovedLevel] = useState(0);
-
-  function receiveLocation(location, lat, lng, level) {
-    setLocation(location);
-    setHopeAreaLat(lat);
-    setHopeAreaLng(lng);
-    setMapLevel(level);
-
-    if (lat && lng && level) {
-      let isMarker = false;
-
-      if (location.includes("선택")) isMarker = true;
-
-      const sendMap = {
-        roomId: chatRoomId,
-        toUserId: 29,
-        lat: hopeAreaLat,
-        lng: hopeAreaLng,
-        zoomLevel: mapLevel,
-        isMarker: isMarker,
-      };
-
-      client.send("/recvmap", {}, JSON.stringify(sendMap));
-    }
-  }
-
-  function onChangeChatMessage(message) {
-    setChatMessage(message);
-  }
+  const [movedZoomLevel, setMovedZoomLevel] = useState(0);
+  const [movedMarker, setMovedMarker] = useState(false);
 
   function onKeyDownSendMessage(e) {
     if (e.keyCode === 13) {
@@ -62,6 +34,17 @@ const Chatting = ({ writerNickname }) => {
     }
   }
 
+  function onChangeChatMessage(message) {
+    setChatMessage(message);
+  }
+
+  function scrollToBottom() {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }
+
+  // 채팅 메시지 서버에 전송
   function onClickSendMessage() {
     if (chatMessage === "") return;
 
@@ -80,31 +63,52 @@ const Chatting = ({ writerNickname }) => {
     setChatMessage("");
   }
 
-  function scrollToBottom() {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  // Map에서 받은 데이터로 서버에 전송
+  function receiveLocation(location, lat, lng, zoomLevel, isMarker) {
+    setHopeLocation(location);
+    setHopeAreaLat(lat);
+    setHopeAreaLng(lng);
+
+    if (lat && lng && zoomLevel) {
+      const sendMapData = {
+        roomId: chatRoomId,
+        toUserId: 29,
+        lat: hopeAreaLat,
+        lng: hopeAreaLng,
+        zoomLevel: zoomLevel,
+        isMarker: isMarker,
+      };
+
+      console.log("############### 여기까진오나", sendMapData);
+      client.send("/recvmap", {}, JSON.stringify(sendMapData));
     }
   }
 
   useEffect(() => {
-    const sockJS = new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`);
-    client = Stomp.over(sockJS);
+    const sockJS = new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
+    client = Stomp.over(sockJS); // 웹소켓 클라이언트 생성
 
+    // 웹소켓과 연결됐을 때 동작하는 콜백함수들
     client.connect({}, () => {
+      // 다른 유저의 채팅을 구독
       client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
         setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
       });
 
+      // 나의 채팅을 구독
       client.subscribe(`/sendmy/${chatRoomId}/${myUserId}`, (data) => {
         setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
       });
 
+      // 공유지도를 구독
       client.subscribe(`/sendmap/${chatRoomId}/${myUserId}`, (data) => {
         data = JSON.parse(data.body);
 
+        // 다른 유저가 움직인 지도의 데이터들
         setMovedLat(data.lat);
         setMovedLng(data.lng);
-        setMovedLevel(data.zoomLevel);
+        setMovedZoomLevel(data.zoomLevel);
+        data.isMarker ? setMovedMarker(true) : setMovedMarker(false);
       });
 
       client.activate();
@@ -136,14 +140,15 @@ const Chatting = ({ writerNickname }) => {
   return (
     <>
       <div css={mapWrapper}>
-        <span>{location}</span>
+        <span>{hopeLocation}</span>
         <div>
           <Map
             readOnly={false}
             sendLocation={receiveLocation}
             movedLat={movedLat}
             movedLng={movedLng}
-            movedLevel={movedLevel}
+            movedZoomLevel={movedZoomLevel}
+            movedMarker={movedMarker}
           />
         </div>
       </div>
