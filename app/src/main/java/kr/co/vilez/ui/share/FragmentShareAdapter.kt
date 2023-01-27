@@ -28,11 +28,17 @@ RecyclerView.Adapter<FragmentShareAdapter.ShareHolder>(){
             binding.path = item.iv_profile
             binding.root.setOnClickListener {
                 //itemClickListener.onClick(it, layoutPosition)
-                val intent = Intent(binding.root.context, MainActivity::class.java)
+                val intent = Intent(binding.root.context, ShareDetailActivity::class.java)
+                intent.putExtra("boardId", item.board_id)
+
                 binding.root.context.startActivity(intent)
             }
 //            binding.ivProfile.set(item.iv_profile)
-            binding.tvName.text = item.tv_name
+            binding.title = item.tv_name
+            binding.time = item.tv_date
+            binding.local = item.tv_local
+            binding.period = item.tv_period
+            binding.bookmark = item.tv_bookmark
         }
     }
 

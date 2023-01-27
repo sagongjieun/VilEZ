@@ -3,7 +3,7 @@
     <data>
         <variable
             name="fragment"
-            type="kr.co.vilez.ui.share.SecondFragment" />
+            type="kr.co.vilez.ui.share.ForthFragment" />
         <variable
             name="src"
             type="String" />
@@ -20,6 +20,5 @@
             android:layout_height="250dp"
             app:imageFromUrl="@{src}"
             />
-
     </LinearLayout>
 </layout>

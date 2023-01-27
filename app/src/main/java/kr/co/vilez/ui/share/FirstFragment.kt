@@ -11,19 +11,13 @@ import kr.co.vilez.databinding.FragmentFirstBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 private lateinit var binding: FragmentFirstBinding
 
 
-/**
- * A simple [Fragment] subclass.
- * Use the [FirstFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class FirstFragment : Fragment() {
+class FirstFragment(var path:String) : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
     }
 
     override fun onCreateView(
@@ -39,7 +33,12 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        binding.src = path
+        println("*******************************************************")
+        println("*******************              **********************")
+        println("${path}")
+        println("*******************              **********************")
+        println("*******************************************************")
     }
 
 }
