@@ -20,12 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Vilez"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31"
         android:windowSoftInputMode="adjustPan"
-
-        android:requestLegacyExternalStorage="true"
-        >
-        android:windowSoftInputMode="adjustResize|stateAlwaysVisible"
         tools:targetApi="31" >
         <activity
             android:name=".ui.share.ShareDetailActivity"
