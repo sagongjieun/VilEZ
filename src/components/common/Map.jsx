@@ -17,10 +17,12 @@ const Map = ({ readOnly, sendLocation, selectedLat, selectedLng, movedLat, moved
   const [lng, setLng] = useState("");
   const [zoomLevel, setZoomLevel] = useState(0);
   const [isMarker, setIsMarker] = useState(false);
-  const [markerLat, setMarkerLat] = useState(""); //eslint-disable-line no-unused-vars
-  const [markerLng, setMarkerLng] = useState(""); //eslint-disable-line no-unused-vars
+  const [hasMarker, setHasMarker] = useState(false);
+  const [markerLat, setMarkerLat] = useState("");
+  const [markerLng, setMarkerLng] = useState("");
 
-  let container, options, map, marker;
+  let container, options, map;
+  let marker = new kakao.maps.Marker();
 
   function initMap() {
     // 지도를 표시할 공간과 초기 중심좌표, 레벨 세팅
@@ -56,9 +58,7 @@ const Map = ({ readOnly, sendLocation, selectedLat, selectedLng, movedLat, moved
       setLat(center.getLat());
       setLng(center.getLng());
       setZoomLevel(map.getLevel());
-
-      // 이미 마커가 존재하면 마커 있음 보내기
-      if (isMarker || movedMarker) setIsMarker(true);
+      setIsMarker(false);
     });
   }
 
@@ -70,19 +70,17 @@ const Map = ({ readOnly, sendLocation, selectedLat, selectedLng, movedLat, moved
       setLat(center.getLat());
       setLng(center.getLng());
       setZoomLevel(map.getLevel());
-
-      // 이미 마커가 존재하면 마커 있음 보내기
-      if (isMarker || movedMarker) setIsMarker(true);
+      setIsMarker(false);
     });
   }
 
   function eventSetMarker() {
-    marker = new kakao.maps.Marker();
     // 마커 찍기
     kakao.maps.event.addListener(map, "click", function (mouseEvent) {
       const latlng = mouseEvent.latLng;
 
       marker.setPosition(latlng);
+      marker.setMap(map);
 
       setLat(latlng.getLat());
       setLng(latlng.getLng());
@@ -96,7 +94,6 @@ const Map = ({ readOnly, sendLocation, selectedLat, selectedLng, movedLat, moved
       searchDetailAddrFromCoords(mouseEvent.latLng, function (result, status) {
         if (status === kakao.maps.services.Status.OK) {
           setLocation(result[0].address.address_name);
-          marker.setMap(map);
         }
       });
     });
@@ -135,12 +132,18 @@ const Map = ({ readOnly, sendLocation, selectedLat, selectedLng, movedLat, moved
       map.setLevel(movedZoomLevel); // 지도 레벨 동기화
 
       if (movedMarker) {
-        marker = new kakao.maps.Marker();
         marker.setPosition(locPosition);
         marker.setMap(map);
-
+        setHasMarker(true);
         setMarkerLat(locPosition.getLat());
         setMarkerLng(locPosition.getLng());
+      } else {
+        // dragend, zoomchange 이벤트의 경우 이전 마커의 위치에 마커 유지
+        if (hasMarker) {
+          const prevMarkerPosition = new kakao.maps.LatLng(markerLat, markerLng);
+          marker.setPosition(prevMarkerPosition);
+          marker.setMap(map);
+        }
       }
 
       map.panTo(locPosition);
