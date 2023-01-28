@@ -9,10 +9,14 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityMainBinding
 import kr.co.vilez.ui.chat.ChatFragment
 import kr.co.vilez.ui.chat.ChatlistFragment
+import kr.co.vilez.ui.chat.RoomlistData
 import kr.co.vilez.ui.profile.CalendarFragment
 import kr.co.vilez.ui.profile.InterestFragment
 import kr.co.vilez.ui.profile.PointFragment
@@ -21,6 +25,10 @@ import kr.co.vilez.ui.share.ShareFragment
 import kr.co.vilez.ui.user.LoginActivity
 import kr.co.vilez.ui.user.ProfileFragment
 import kr.co.vilez.util.ApplicationClass.Companion.sharedPreferences
+import kr.co.vilez.util.DataState
+import kr.co.vilez.util.StompClient
+import org.json.JSONArray
+import org.json.JSONObject
 
 private const val TAG = "빌리지_MainActivity"
 class MainActivity : AppCompatActivity() {
@@ -31,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         supportActionBar?.hide() // 액션바 숨김
-
+        StompClient.stompClient.connect()
         val target = intent.getStringExtra("target")
         if(target == null) {
             changeFragment("홈")
@@ -39,6 +47,8 @@ class MainActivity : AppCompatActivity() {
             changeFragment(target)
         }
         initView()
+        StompClient.runStomp()
+
     }
 
     private fun changeFragment(name: String) {
@@ -69,7 +79,7 @@ class MainActivity : AppCompatActivity() {
             }
             "채팅" -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.frame_layout_main, ChatFragment())
+                    .replace(R.id.frame_layout_main, ChatlistFragment())
                     .commit()
 
                 binding.bottomNavigation.menu.apply {
@@ -136,7 +146,7 @@ class MainActivity : AppCompatActivity() {
 
                 // Fragment 변경
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.frame_layout_main, ChatFragment())
+                    .replace(R.id.frame_layout_main, ChatlistFragment())
                     .commit()
                 return true
             }
@@ -180,6 +190,9 @@ class MainActivity : AppCompatActivity() {
                 changeFragment(item)
             }
         }
+
+
+
     }
 
     override fun onBackPressed() {

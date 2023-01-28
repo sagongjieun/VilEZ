@@ -8,8 +8,8 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface RetrofitChatService {
-    @GET("/vilez/appointments/map")
-    fun loadLocationByRoomId(@Query("roomId") roomId : String): Call<RESTKakaoResult>
+    @GET("/vilez/appointments/map/{roomId}")
+    fun loadLocationByRoomId(@Path("roomId") roomId : Int): Call<RESTKakaoResult>
 
     @GET("/vilez/appointments/room/{userId}")
     fun loadRoomList(@Path("userId") userId : Int): Call<RESTChatListResult>

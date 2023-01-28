@@ -6,9 +6,20 @@ import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.databinding.FragmentHomeBinding
+import kr.co.vilez.ui.chat.RoomlistData
+import kr.co.vilez.util.DataState
+import kr.co.vilez.util.StompClient
+import org.json.JSONArray
+import org.json.JSONObject
 import kr.co.vilez.ui.share.ShareDetailActivity
 
 private const val TAG = "빌리지_HomeFragment"
@@ -30,6 +41,34 @@ class HomeFragment : Fragment() {
         binding.fragment = this
 
         initToolBar()
+
+        var data = JSONObject()
+        data.put("userId", 29)
+        StompClient.runStomp()
+
+        StompClient.stompClient.topic("/send_room_list/29").subscribe { topicMessage ->
+            run {
+                val json = JSONArray(topicMessage.payload)
+                println(json.toString())
+                CoroutineScope(Dispatchers.Main).launch {
+
+                    DataState.itemList = ArrayList<RoomlistData>()
+                    for (index in 0 until json.length()) {
+                        val chat = JSONObject(json.get(index).toString())
+                        val chatData = chat.getJSONObject("chatData")
+                        DataState.itemList.add(
+                            RoomlistData(
+                                chatData.getInt("roomId"), chat.getString("nickName"),
+                                chatData.getString("content"),
+                                chat.getString("area")
+                            )
+                        )
+                        DataState.set.add(chatData.getInt("roomId"))
+                    }
+                }
+            }
+        }
+        StompClient.stompClient.send("/room_list", data.toString()).subscribe()
         return binding.root
     }
 
