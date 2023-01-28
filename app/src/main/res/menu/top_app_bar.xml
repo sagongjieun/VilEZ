@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/option_menu_menu"
+        android:iconTint="@color/bg_dark"
+        android:icon="@drawable/icon_menu"
+        android:title="Menu1"
+        app:showAsAction="never" />
+
+</menu>
