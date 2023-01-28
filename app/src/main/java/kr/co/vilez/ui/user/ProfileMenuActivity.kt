@@ -32,9 +32,13 @@ class ProfileMenuActivity : AppCompatActivity() {
                 transaction
                     .replace(R.id.frame_layout_profile_myshare, CalendarFragment())
             }
-            "공유 목록" -> {
+            "공유 내역" -> {
                 transaction
                     .replace(R.id.frame_layout_profile_myshare, SharedListFragment())
+            }
+            "요청 내역" -> {
+                transaction
+                    .replace(R.id.frame_layout_profile_myshare, RequestListFragment())
             }
             "관심 목록" -> {
                 transaction

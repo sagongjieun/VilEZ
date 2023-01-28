@@ -5,9 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import kr.co.vilez.R
+import kr.co.vilez.databinding.FragmentRequestListBinding
 import kr.co.vilez.databinding.FragmentSharedListBinding
 import kr.co.vilez.ui.user.ProfileMenuActivity
 
@@ -18,42 +18,40 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [SharedListFragment.newInstance] factory method to
+ * Use the [RequestListFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class SharedListFragment : Fragment() {
+class RequestListFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 
-    private lateinit var binding: FragmentSharedListBinding
+    private lateinit var binding: FragmentRequestListBinding
     private lateinit var profileMenuActivity: ProfileMenuActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-
-        profileMenuActivity = context as ProfileMenuActivity
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        profileMenuActivity = context as ProfileMenuActivity
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_shared_list, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_request_list, container, false)
         binding.fragment = this
-        // Inflate the layout for this fragment
         initToolBar()
         return binding.root
     }
+
     private fun initToolBar() {
         profileMenuActivity.setSupportActionBar(binding.toolbar)
         profileMenuActivity.supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
-        binding.title = "공유 내역"
+        binding.title = "요청 내역"
     }
 
     fun onBackPressed(view: View) {
@@ -67,18 +65,16 @@ class SharedListFragment : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment SharedListFragment.
+         * @return A new instance of fragment RequestListFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            SharedListFragment().apply {
+            RequestListFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
                 }
             }
     }
-
-
 }
