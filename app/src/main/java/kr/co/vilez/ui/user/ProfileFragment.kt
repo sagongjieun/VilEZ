@@ -70,7 +70,7 @@ class ProfileFragment : Fragment() {
 
     fun initMenus() {
         // 나의 공유 메뉴 초기화
-        val sharedMenuName = arrayOf("공유 캘린더", "공유 목록", "관심 목록", "포인트 내역")
+        val sharedMenuName = arrayOf("공유 캘린더", "공유 내역", "요청 내역", "관심 목록", "포인트 내역")
         val shareSimpleAdapter = ArrayAdapter(mainActivity, android.R.layout.simple_list_item_1, sharedMenuName)
         binding.lvMenuShare.apply {
             divider = null
