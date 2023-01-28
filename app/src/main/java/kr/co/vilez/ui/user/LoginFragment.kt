@@ -21,7 +21,6 @@ import kr.co.vilez.databinding.FragmentLoginBinding
 import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.ui.chat.RoomlistData
 import kr.co.vilez.util.ApplicationClass
-import kr.co.vilez.util.ApplicationClass.Companion.sharedPreferences
 import kr.co.vilez.util.NetworkResult
 import kr.co.vilez.util.DataState
 import kr.co.vilez.util.StompClient
@@ -47,7 +46,14 @@ class LoginFragment : Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
         binding.fragment = this
+        initToolBar()
         return binding.root
+    }
+
+    private fun initToolBar() {
+        loginActivity.setSupportActionBar(binding.toolbar)
+        loginActivity.supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
+        binding.title = "로그인"
     }
 
     fun login(view: View) {
@@ -61,14 +67,19 @@ class LoginFragment : Fragment() {
             val result =
                 ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
             if (result?.flag == "success") {
-                val data = result.data[0]
-                Log.d(TAG, "로그인 성공, 받아온 user = ${data}")
+                Log.d(TAG, "로그인 성공, 받아온 user = ${result.data[0]}")
+                ApplicationClass.prefs.setUser(result.data[0])
+                ApplicationClass.prefs.setAutoLogin(user) // 로그인시 자동으로 자동로그인 넣기
 
 
-                ApplicationClass.user = data
                 StompClient.runStomp()
 
-                Log.d(TAG, "sh) 사용자 autoLogin : ${sharedPreferences.getBoolean("autoLogin", false)}")
+                val resultDetail = ApplicationClass.retrofitUserService.getUserDetail(result.data[0].id).awaitResponse().body()
+                if(resultDetail?.flag == "success") {
+                    Log.d(TAG, "login: Detail조회도 로그인와 같이 성공~, result: ${resultDetail.data[0]}")
+                    ApplicationClass.prefs.setUserDetail(resultDetail.data[0])
+                }
+
                 val intent = Intent(loginActivity, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

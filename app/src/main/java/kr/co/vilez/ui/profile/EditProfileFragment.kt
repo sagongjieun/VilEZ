@@ -68,8 +68,8 @@ class EditProfileFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile, container, false)
         binding.fragment = this
 
-        binding.user = ApplicationClass.user
-        getUserDetail(ApplicationClass.user.id)
+        binding.user = ApplicationClass.prefs.getUser()
+        getUserDetail(ApplicationClass.prefs.getId())
         initView()
         initToolBar()
 
@@ -116,9 +116,13 @@ class EditProfileFragment : Fragment() {
 
             Log.d(TAG, "body: $body")
             CoroutineScope(Dispatchers.Main).launch {
-                val result = ApplicationClass.retrofitUserService.modifyProfileImage(
-                    ApplicationClass.user.accessToken,
-                    ApplicationClass.user.id,
+//                val result = ApplicationClass.retrofitUserService.modifyProfileImage(
+//                    ApplicationClass.prefs.getUserAccessToken(),
+//                    ApplicationClass.prefs.getId(),
+//                    body
+//                ).awaitResponse().body()
+                val result = ApplicationClass.hRetrofitUserService.modifyProfileImage(
+                    ApplicationClass.prefs.getId(),
                     body
                 ).awaitResponse().body()
                 if (result?.flag == "success") {
@@ -144,9 +148,6 @@ class EditProfileFragment : Fragment() {
     fun changeProfileImage(view: View) {
         view.isClickable = false
         view.isEnabled = false
-        val curUser = ApplicationClass.user
-        val newProfileImage = ""
-
         if (view.id == R.id.btn_profile_img_change) {
             // 바뀐 이미지 가져와서 수정
             val writePermission = ContextCompat.checkSelfPermission(
@@ -171,37 +172,26 @@ class EditProfileFragment : Fragment() {
                 imageResult.launch(intent)
             }
         } else {
-            // 기본 이미지로 수정
-            BindingAdapter.bindImageFromUrl(binding.ivProfileImg, DEFAULT_PROFILE_IMG)
-
             CoroutineScope(Dispatchers.Main).launch {
-                val result = ApplicationClass.retrofitUserService.removeProfileImage(
-                    ApplicationClass.user.accessToken,
-                    ApplicationClass.user.id,
+//                val result = ApplicationClass.retrofitUserService.removeProfileImage(
+//                    ApplicationClass.prefs.getUserAccessToken(),
+//                    ApplicationClass.prefs.getId(),
+//                ).awaitResponse().body()
+                val result = ApplicationClass.hRetrofitUserService.removeProfileImage(
+                    ApplicationClass.prefs.getId(),
                 ).awaitResponse().body()
 
-                val result2 =  ApplicationClass.retrofitUserService.removeProfileImage(
-                    ApplicationClass.user.accessToken,
-                    ApplicationClass.user.id,
-                ).awaitResponse().raw()
-
-                val result3 =  ApplicationClass.retrofitUserService.removeProfileImage(
-                    ApplicationClass.user.accessToken,
-                    ApplicationClass.user.id,
-                ).awaitResponse().errorBody()
-
-                val result4 =  ApplicationClass.retrofitUserService.removeProfileImage(
-                    ApplicationClass.user.accessToken,
-                    ApplicationClass.user.id,
-                ).awaitResponse().headers()
-                Log.d(TAG, "changeProfileImage: body:$result\n raw:$result2\n error body:$result3\n headers: $result4")
-
                 if (result?.flag == "success") {
+                    BindingAdapter.bindImageFromUrl(binding.ivProfileImg, DEFAULT_PROFILE_IMG) // 일단 미리보기 이미지기본 이미지로 수정
                     Log.d(TAG, "프로필이미지 삭제성공: ")
                     Toast.makeText(profileMenuActivity, "프로필 이미지 변경을 성공했습니다.", Toast.LENGTH_SHORT).show()
+
+                    ApplicationClass.prefs.setProfileImg(DEFAULT_PROFILE_IMG) // prefs도 수정
+
                     refreshActivity()
                 } else {
                     Log.d(TAG, "프로필이미지 삭제 실패: ")
+                    Toast.makeText(profileMenuActivity, "프로필 이미지 변경을 실패했습니다.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -215,7 +205,7 @@ class EditProfileFragment : Fragment() {
         view.isEnabled = false
 
         val newNickname = binding.inputProfileNickname.editText?.text.toString()
-        if(newNickname == ApplicationClass.user.nickName) {
+        if(newNickname == ApplicationClass.prefs.getNickName()) {
             binding.inputProfileNickname.helperText = null
             binding.inputProfileNickname.error = "현재 닉네임과 동일합니다."
             view.isClickable = true
@@ -231,8 +221,8 @@ class EditProfileFragment : Fragment() {
 
                 binding.inputProfileNickname.error = null
 
-                val newUser = User(id=ApplicationClass.user.id, nickName = newNickname, password = "")
-                val modifyResult = ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.user.accessToken, newUser).awaitResponse().body()
+                val newUser = User(id=ApplicationClass.prefs.getId(), nickName = newNickname, password = "")
+                val modifyResult = ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.prefs.getUserAccessToken(), newUser).awaitResponse().body()
                 Log.d(TAG, "changeNickName: modifyResult: $modifyResult")
                 if(modifyResult?.flag == "success") {
                     Log.d(TAG, "changeNickName: 닉네임 변경 성공")
@@ -240,7 +230,7 @@ class EditProfileFragment : Fragment() {
                     binding.inputProfileNickname.error = null
 
                     Toast.makeText(profileMenuActivity, "닉네임 변경을 성공했습니다.", Toast.LENGTH_SHORT).show()
-                    ApplicationClass.user.nickName = newNickname
+                    ApplicationClass.prefs.setNickName(newNickname)
                     refreshActivity()
                 } else {
                     Log.d(TAG, "changeNickName: 닉네임 변경 실패")
@@ -258,31 +248,23 @@ class EditProfileFragment : Fragment() {
 
     fun changePassword(view: View) {
         val newPassword = binding.inputProfileNewPassword.editText?.text.toString()
-        val newUser = User(id = ApplicationClass.user.id, nickName = "", password = newPassword)
+        val newUser = User(id = ApplicationClass.prefs.getId(), nickName = "", password = newPassword)
         // 현재 비밀번호 체크
-        val curUser = ApplicationClass.user
         val curPassword = binding.inputProfileCurrentPassword.editText?.text.toString()
 
         CoroutineScope(Dispatchers.Main).launch {
-            val user = User(email = curUser.email, password = curPassword)
+            val user = User(email = ApplicationClass.prefs.getEmail(), password = curPassword)
             val result =
                 ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
             if (result?.flag == "success") {
                 Log.d(TAG, "checkCurrentPassword: 현재 비밀번호 맞음")
                 binding.inputProfileCurrentPassword.error = null
-                val resultModify = ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.user.accessToken, newUser).awaitResponse().body()
+                val resultModify = ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.prefs.getUserAccessToken(), newUser).awaitResponse().body()
 
                 if(resultModify?.flag == "success") {
                     Toast.makeText(mContext, "비밀번호 수정이 완료되었습니다.\n재로그인 해주세요", Toast.LENGTH_SHORT).show()
-                    // Shared Preference 삭제
-                    Log.d(TAG, "logout: 삭제 전 autoLogin = ${ApplicationClass.sharedPreferences.getBoolean("autoLogin",false)}")
-                    ApplicationClass.sharedPreferences.edit {
-                        remove("autoLogin")
-                        remove("email")
-                        remove("password")
-                    }
+                    ApplicationClass.prefs.removeAll() // Shared Preference 삭제
                     Log.d(TAG, "logout: 로그아웃 성공")
-                    Log.d(TAG, "logout: 삭제 후 autoLogin = ${ApplicationClass.sharedPreferences.getBoolean("autoLogin", false)}")
 
                     // 로그아웃 후 로그인 화면이동
                     val intent = Intent(mContext, LoginActivity::class.java)

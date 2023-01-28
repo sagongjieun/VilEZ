@@ -48,7 +48,7 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_intro_enter"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:backgroundTint="@color/main_1"
