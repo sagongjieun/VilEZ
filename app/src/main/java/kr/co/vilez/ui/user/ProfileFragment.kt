@@ -35,15 +35,15 @@ class ProfileFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
         binding.fragment = this
 
-        binding.user = ApplicationClass.user
-        // TODO : 나중엔 저장되어있는 이미지로 변경
-        binding.profileImg = "https://kr.object.ncloudstorage.com/vilez/basicProfile.png"
-        getUserDetail(ApplicationClass.user.id) // 현재 로그인한 유저 id로 user detail 가져오기
+        binding.user = ApplicationClass.prefs.getUser()
+        binding.userDetail = ApplicationClass.prefs.getUserDetail()
+        //getUserDetail(ApplicationClass.prefs.getId()) // 현재 로그인한 유저 id로 user detail 가져오기
 
         return binding.root
     }
 
     private fun getUserDetail(userId: Int) {
+        Log.d(TAG, "getUserDetail: 넘어온 유저 id: $userId")
         CoroutineScope(Dispatchers.IO).launch {
             val result =
                 ApplicationClass.retrofitUserService.getUserDetail(userId).awaitResponse().body()
@@ -51,6 +51,7 @@ class ProfileFragment : Fragment() {
                 val data = result.data[0]
                 Log.d(TAG, "user detail 조회 성공, 받아온 user = $data")
                 binding.userDetail = data // user detail data binding
+                ApplicationClass.prefs.setUserDetail(data) // prefs도 갱신
             } else {
                 Log.d(TAG, "user detail 조회 실패, result:$result")
             }
@@ -131,16 +132,8 @@ class ProfileFragment : Fragment() {
     private fun logout(view: View){ // 로그아웃 preference 지우기
         val dialog = ConfirmDialog(object: ConfirmDialogInterface {
             override fun onYesButtonClick(id: String) {
-                Log.d(TAG, "logout: 삭제 전 autoLogin = ${ApplicationClass.sharedPreferences.getBoolean("autoLogin",false)}")
-                ApplicationClass.sharedPreferences.edit {
-                    remove("autoLogin")
-                    remove("email")
-                    remove("password")
-                }
-
+                ApplicationClass.prefs.removeAll() // Shared Preference 삭제
                 Log.d(TAG, "logout: 로그아웃 성공")
-                Log.d(TAG, "logout: 삭제 후 autoLogin = ${ApplicationClass.sharedPreferences.getBoolean("autoLogin", false)}")
-
                 // 로그아웃 후 로그인 화면이동
                 val intent = Intent(mainActivity, LoginActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)

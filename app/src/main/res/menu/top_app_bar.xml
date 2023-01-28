@@ -5,7 +5,14 @@
         android:id="@+id/option_menu_menu"
         android:iconTint="@color/bg_dark"
         android:icon="@drawable/icon_menu"
-        android:title="Menu1"
-        app:showAsAction="never" />
+        android:title="MENU"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/option_menu_alarm"
+        android:iconTint="@color/bg_dark"
+        android:icon="@drawable/icon_alarm"
+        android:title="Alarm"
+        app:showAsAction="always" />
 
 </menu>
