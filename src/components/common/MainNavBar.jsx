@@ -40,7 +40,7 @@ function MainNavBar() {
 
   return (
     <>
-      {!isLogin ? (
+      {isLogin ? (
         <nav css={navWrap}>
           <div css={navStyle}>
             <div>
@@ -54,7 +54,7 @@ function MainNavBar() {
                 {isMenu ? (
                   <div css={MenuWrap}>
                     {menus.map((menu, idx) => (
-                      <Link to={menu.path} key={idx}>
+                      <Link to={menu.path} key={idx} onClick={onClickShowMenu}>
                         <div css={navMenu}>{menu.name}</div>
                       </Link>
                     ))}
@@ -89,7 +89,7 @@ function MainNavBar() {
                 {isMenu ? (
                   <div css={MenuWrap}>
                     {menus.map((menu, idx) => (
-                      <Link to={menu.path} key={idx}>
+                      <Link to={menu.path} key={idx} onClick={onClickShowMenu}>
                         <div css={navMenu}>{menu.name}</div>
                       </Link>
                     ))}
