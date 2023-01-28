@@ -19,10 +19,14 @@ import kr.co.vilez.R
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentLoginBinding
 import kr.co.vilez.ui.MainActivity
+import kr.co.vilez.ui.chat.RoomlistData
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.ApplicationClass.Companion.sharedPreferences
 import kr.co.vilez.util.NetworkResult
+import kr.co.vilez.util.DataState
 import kr.co.vilez.util.StompClient
+import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.awaitResponse
 
 private const val TAG = "빌리지_LoginFragment"
@@ -59,6 +63,7 @@ class LoginFragment : Fragment() {
             if (result?.flag == "success") {
                 val data = result.data[0]
                 Log.d(TAG, "로그인 성공, 받아온 user = ${data}")
+
 
                 ApplicationClass.user = data
                 StompClient.runStomp()
