@@ -79,7 +79,6 @@ const Chatting = ({ writerNickname }) => {
         isMarker: isMarker,
       };
 
-      console.log("############### 여기까진오나", sendMapData);
       client.send("/recvmap", {}, JSON.stringify(sendMapData));
     }
   }
