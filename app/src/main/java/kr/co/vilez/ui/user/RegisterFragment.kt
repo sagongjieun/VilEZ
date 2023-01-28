@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -26,7 +27,7 @@ import retrofit2.awaitResponse
 private const val TAG = "빌리지_RegisterFragment"
 class RegisterFragment : Fragment() {
     private lateinit var binding:FragmentRegisterBinding
-    private lateinit var loginActivity: LoginActivity
+    private lateinit var registerActivity: RegisterActivity
 
     private val viewModel:RegisterViewModel by lazy {
         ViewModelProvider(this)[RegisterViewModel::class.java] // 생명주기를 RegisterActivity 와 맞춰줌
@@ -46,7 +47,7 @@ class RegisterFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        loginActivity = context as LoginActivity
+        registerActivity = context as RegisterActivity
     }
 
     override fun onCreateView(
@@ -55,6 +56,7 @@ class RegisterFragment : Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_register, container, false)
         binding.fragment = this
+        initToolBar()
         return binding.root
     }
 
@@ -62,8 +64,17 @@ class RegisterFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initBinding()
-        loginActivity.supportActionBar?.title = "빌리지 주민 신청서"
         initView()
+    }
+
+    private fun initToolBar() {
+        registerActivity.setSupportActionBar(binding.toolbar)
+        registerActivity.supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
+        binding.title = "빌리지 주민 신청서"
+    }
+
+    fun onBackPressed(view: View) {
+        registerActivity.finish()
     }
 
     private fun initBinding() {
@@ -76,21 +87,21 @@ class RegisterFragment : Fragment() {
     @SuppressLint("ResourceAsColor")
     private fun initView() {
 
-        binding.inputRegisterEmail.editText?.addTextChangedListener {
-            isValidEmail = Common.verifyEmail(it.toString())
-            if(isValidEmail) { // 인증하기 버튼 활성화 (회색 -> 흰색)
-                binding.inputRegisterEmail.error = null
-                binding.btnRegisterEmailAuth.apply {
-                    isClickable = true
-                    //setBackgroundResource(R.drawable.btn_stroke_fill)
-                    backgroundTintList = context.resources.getColorStateList(R.color.main_1)
-                    setTextColor(context.resources.getColorStateList(R.color.white))
-                }
-            } else { // 에러 메시지
-                binding.inputRegisterEmail.error = "올바르지 않은 이메일 형식입니다"
-                binding.btnRegisterEmailAuth.isClickable = false // 버튼 클릭 불가
-            }
-        }
+//        binding.inputRegisterEmail.editText?.addTextChangedListener {
+//            isValidEmail = Common.verifyEmail(it.toString())
+//            if(isValidEmail) { // 인증하기 버튼 활성화 (회색 -> 흰색)
+//                binding.inputRegisterEmail.error = null
+//                binding.btnRegisterEmailAuth.apply {
+//                    isClickable = true
+//                    //setBackgroundResource(R.drawable.btn_stroke_fill)
+//                    backgroundTintList = context.resources.getColorStateList(R.color.main_1)
+//                    setTextColor(context.resources.getColorStateList(R.color.white))
+//                }
+//            } else { // 에러 메시지
+//                binding.inputRegisterEmail.error = "올바르지 않은 이메일 형식입니다"
+//                binding.btnRegisterEmailAuth.isClickable = false // 버튼 클릭 불가
+//            }
+//        }
 
         binding.inputRegisterPassword.editText?.addTextChangedListener {
             isValidPassword = Common.verifyPassword(it.toString())
@@ -121,7 +132,7 @@ class RegisterFragment : Fragment() {
             isValidNickname = Common.verifyNickname(it.toString())
             if(!isValidNickname) {
                 Log.d(TAG, "initView: 불가 닉네임 체크! ${it.toString()}")
-                binding.inputRegisterNickname.error = "닉네임은 2~6자 사이 한글,영어,숫자만 가능합니다."
+                binding.inputRegisterNickname.error = "2~6자 사이 한글,영어,숫자만 가능합니다."
             } else {
                 Log.d(TAG, "initView: 가능 닉네임 체크! ${it.toString()}")
                 binding.inputRegisterNickname.error = null
@@ -133,10 +144,16 @@ class RegisterFragment : Fragment() {
     fun register(view: View) { // 회원가입
         if(!emailAuthCheck) { // 이메일 확인
             Log.d(TAG, "register: 이메일 인증 안됨")
+            Toast.makeText(registerActivity, "이메일 인증을 해주세요", Toast.LENGTH_SHORT).show()
+            return;
         } else if (!isValidPassword or !isValidPasswordAgain) { // 비밀번호 두개 확인
             Log.d(TAG, "register: 비밀번호 안됨")
+            Toast.makeText(registerActivity, "비밀번호를 확인해주세요", Toast.LENGTH_SHORT).show()
+            return;
         } else if (!nicknameCheck) { // 닉네임 확인 (가장 최근에 인증 완료된 닉네임 vs 지금 입력된 닉네임)
             Log.d(TAG, "register: 닉네임 인증 안됨")
+            Toast.makeText(registerActivity, "닉네임 확인 해주세요", Toast.LENGTH_SHORT).show()
+            return;
         } else { // 모두 통과
             val email = binding.inputRegisterEmail.editText?.text.toString()
             val password = binding.inputRegisterPassword.editText?.text.toString()
@@ -151,21 +168,25 @@ class RegisterFragment : Fragment() {
                             val dialog = AlertDialogWithCallback(object :AlertDialogInterface {
                                 override fun onYesButtonClick(id: String) {
                                     Log.d(TAG, "register: 회원가입 success")
-                                    loginActivity.openFragment(1) // 로그인 화면으로 이동
+                                    registerActivity.moveToLogin() // 로그인 화면으로 이동
                                 }
                             }, "회원가입에 성공했습니다.\n가입한 정보로로그인 해주세요", "")
                             dialog.isCancelable = false // 알림창이 띄워져있는 동안 배경 클릭 막기
-                            dialog.show(loginActivity.supportFragmentManager, "RegisterSucceeded")
+                            dialog.show(registerActivity.supportFragmentManager, "RegisterSucceeded")
                         }
                         else -> {
                             Log.d(TAG, "register: 회원가입 실패")
                         }
                     }
-                } else {
-                    Log.d(TAG, "register: 회원가입 POST 요청 실패")
                 }
+                Log.d(TAG, "register: 회원가입 POST 요청 실패")
+                val dialog = AlertDialogWithCallback(object :AlertDialogInterface {
+                    override fun onYesButtonClick(id: String) {
+                        registerActivity.moveToLogin() // 로그인 화면으로 이동
+                    }
+                }, "회원가입에 실패했습니다.\n다시 시도 해주세요", "")
+                dialog.show(registerActivity.supportFragmentManager, "RegisterFailed")
             }
-            // TODO: 화면 넘어가기
         }
     }
 
@@ -213,6 +234,13 @@ class RegisterFragment : Fragment() {
         view.isClickable = false
         val email = binding.inputRegisterEmail.editText?.text.toString()
         Log.d(TAG, "checkEmail: 이메일 인증 버튼 클릭, email:${email}")
+        isValidEmail = Common.verifyEmail(email)
+        if(!isValidEmail) { // 이메일 형식이 아닌 경우 => 에러 메시지
+            binding.inputRegisterEmail.error = "올바르지 않은 이메일 형식입니다"
+            view.isClickable = true
+            return
+        }
+        // 올바른 이메일 형식이면
         CoroutineScope(Dispatchers.Main).launch {
             val result = ApplicationClass.retrofitEmailService.checkEmail(Email(email)).awaitResponse().body()
             if(result != null) {
@@ -232,21 +260,22 @@ class RegisterFragment : Fragment() {
                             isEnabled = true
                             isClickable = false
                         }
-
                         binding.btnRegisterEmailAuth.text = "다시전송"
                     }
                     "duplicate" -> {
                         isEmailSent = false
+                        binding.inputRegisterEmail.error = "이미 사용중인 이메일입니다."
                         Log.d(TAG, "checkEmail: 이미 사용중인 이메일입니다.")
-
                     }
                     else -> {
                         isEmailSent = false
                         Log.d(TAG, "checkEmail: 이메일 전송 실패")
+                        binding.inputRegisterEmail.error = "인증번호 전송을 실패했습니다."
                     }
                 }
             } else {
                 Log.d(TAG, "checkEmail: Email POST 요청 실패")
+                binding.inputRegisterEmail.error = "인증번호 전송을 실패했습니다."
             }
             view.isClickable = true // 다시 전송 버튼 클릭 가능
         }

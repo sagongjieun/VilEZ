@@ -37,17 +37,11 @@
             </com.google.android.material.appbar.MaterialToolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".ui.HomeFragment">
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="공유액티비티"
-                android:onClick="@{fragment.moveToShareActivity}"/>
-
         </FrameLayout>
     </LinearLayout>
 

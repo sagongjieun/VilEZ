@@ -8,8 +8,8 @@
     <item
         android:id="@+id/page_share"
         android:enabled="true"
-        android:icon="@drawable/location_line"
-        android:title="공유"/>
+        android:icon="@drawable/share_request_line"
+        android:title="공유 요청"/>
     <item
         android:id="@+id/page_chat"
         android:enabled="true"

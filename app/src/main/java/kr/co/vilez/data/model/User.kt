@@ -16,9 +16,6 @@ data class User(
     val state: Int
 ) {
 
-    constructor():this(
-        "","","","",0,0,"","","",0,"","",0
-    )
     constructor(id: Int):this(
         "","","","",id,0,"","","",0,"","",0
     )

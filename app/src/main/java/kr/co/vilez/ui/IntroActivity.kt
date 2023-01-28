@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityIntroBinding
 import kr.co.vilez.ui.user.LoginActivity
+import kr.co.vilez.ui.user.RegisterActivity
 
 class IntroActivity : AppCompatActivity() {
 
@@ -21,12 +22,14 @@ class IntroActivity : AppCompatActivity() {
     fun moveActivity(view: View) {
         when(view.id) {
             R.id.btn_intro_enter -> {
-                startActivity(Intent(this@IntroActivity, MainActivity::class.java))
+                val intent = Intent(this@IntroActivity, RegisterActivity::class.java)
+                startActivity(intent)
             }
             R.id.tv_intro_login -> {
                 startActivity(Intent(this@IntroActivity, LoginActivity::class.java))
+                finish()
             }
         }
-        finish()
+
     }
 }

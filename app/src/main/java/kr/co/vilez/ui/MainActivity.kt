@@ -24,7 +24,6 @@ import kr.co.vilez.ui.profile.SharedListFragment
 import kr.co.vilez.ui.share.ShareFragment
 import kr.co.vilez.ui.user.LoginActivity
 import kr.co.vilez.ui.user.ProfileFragment
-import kr.co.vilez.util.ApplicationClass.Companion.sharedPreferences
 import kr.co.vilez.util.DataState
 import kr.co.vilez.util.StompClient
 import org.json.JSONArray
@@ -60,19 +59,19 @@ class MainActivity : AppCompatActivity() {
 
                 binding.bottomNavigation.menu.apply {
                     findItem(R.id.page_home).setIcon(R.drawable.home_fill)
-                    findItem(R.id.page_share).setIcon(R.drawable.location_line)
+                    findItem(R.id.page_share).setIcon(R.drawable.share_request_line)
                     findItem(R.id.page_chat).setIcon(R.drawable.message_line)
                     findItem(R.id.page_profile).setIcon(R.drawable.user_line)
                 }
             }
-            "공유" -> {
+            "공유 요청" -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.frame_layout_main, ShareFragment())
                     .commit()
 
                 binding.bottomNavigation.menu.apply {
                     findItem(R.id.page_home).setIcon(R.drawable.home_line)
-                    findItem(R.id.page_share).setIcon(R.drawable.location_fill)
+                    findItem(R.id.page_share).setIcon(R.drawable.share_request_fill)
                     findItem(R.id.page_chat).setIcon(R.drawable.message_line)
                     findItem(R.id.page_profile).setIcon(R.drawable.user_line)
                 }
@@ -84,7 +83,7 @@ class MainActivity : AppCompatActivity() {
 
                 binding.bottomNavigation.menu.apply {
                     findItem(R.id.page_home).setIcon(R.drawable.home_line)
-                    findItem(R.id.page_share).setIcon(R.drawable.location_line)
+                    findItem(R.id.page_share).setIcon(R.drawable.share_request_line)
                     findItem(R.id.page_chat).setIcon(R.drawable.message_fill)
                     findItem(R.id.page_profile).setIcon(R.drawable.user_line)
                 }
@@ -96,7 +95,7 @@ class MainActivity : AppCompatActivity() {
 
                 binding.bottomNavigation.menu.apply {
                     findItem(R.id.page_home).setIcon(R.drawable.home_line)
-                    findItem(R.id.page_share).setIcon(R.drawable.location_line)
+                    findItem(R.id.page_share).setIcon(R.drawable.share_request_line)
                     findItem(R.id.page_chat).setIcon(R.drawable.message_line)
                     findItem(R.id.page_profile).setIcon(R.drawable.user_fill)
                 }
@@ -110,7 +109,7 @@ class MainActivity : AppCompatActivity() {
                 // 아이콘 변경
                 item.setIcon(R.drawable.home_fill)
                 binding.bottomNavigation.menu.apply {
-                    findItem(R.id.page_share).setIcon(R.drawable.location_line)
+                    findItem(R.id.page_share).setIcon(R.drawable.share_request_line)
                     findItem(R.id.page_chat).setIcon(R.drawable.message_line)
                     findItem(R.id.page_profile).setIcon(R.drawable.user_line)
                 }
@@ -122,7 +121,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.page_share -> {
                 // 아이콘 변경
-                item.setIcon(R.drawable.location_fill)
+                item.setIcon(R.drawable.share_request_fill)
                 binding.bottomNavigation.menu.apply {
                     findItem(R.id.page_home).setIcon(R.drawable.home_line)
                     findItem(R.id.page_chat).setIcon(R.drawable.message_line)
@@ -140,7 +139,7 @@ class MainActivity : AppCompatActivity() {
                 item.setIcon(R.drawable.message_fill)
                 binding.bottomNavigation.menu.apply {
                     findItem(R.id.page_home).setIcon(R.drawable.home_line)
-                    findItem(R.id.page_share).setIcon(R.drawable.location_line)
+                    findItem(R.id.page_share).setIcon(R.drawable.share_request_line)
                     findItem(R.id.page_profile).setIcon(R.drawable.user_line)
                 }
 
@@ -155,7 +154,7 @@ class MainActivity : AppCompatActivity() {
                 item.setIcon(R.drawable.user_fill)
                 binding.bottomNavigation.menu.apply {
                     findItem(R.id.page_home).setIcon(R.drawable.home_line)
-                    findItem(R.id.page_share).setIcon(R.drawable.location_line)
+                    findItem(R.id.page_share).setIcon(R.drawable.share_request_line)
                     findItem(R.id.page_chat).setIcon(R.drawable.message_line)
                 }
 
@@ -179,7 +178,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.bottomNavigation.menu.apply {
             findItem(R.id.page_home).setIcon(R.drawable.home_fill)
-            findItem(R.id.page_share).setIcon(R.drawable.location_line)
+            findItem(R.id.page_share).setIcon(R.drawable.share_request_line)
             findItem(R.id.page_chat).setIcon(R.drawable.message_line)
             findItem(R.id.page_profile).setIcon(R.drawable.user_line)
         }*/
@@ -190,8 +189,6 @@ class MainActivity : AppCompatActivity() {
                 changeFragment(item)
             }
         }
-
-
 
     }
 

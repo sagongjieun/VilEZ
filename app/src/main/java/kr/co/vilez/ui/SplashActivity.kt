@@ -1,6 +1,7 @@
 package kr.co.vilez.ui
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +16,7 @@ import kr.co.vilez.ui.dialog.AlertDialogWithCallback
 import kr.co.vilez.ui.user.LoginActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
+import kr.co.vilez.util.SharedPreferencesUtil
 import retrofit2.awaitResponse
 import kotlin.concurrent.thread
 
@@ -29,19 +31,21 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
 
         CoroutineScope(Dispatchers.IO).launch {
-            var autoLogin = ApplicationClass.sharedPreferences.getBoolean("autoLogin", false)
+            var autoLogin = ApplicationClass.prefs.isAutoLogin()
             Log.d(TAG, "openLoginActivity: 현재 sharedPreference에 저장된 autoLogin = $autoLogin")
             if (autoLogin) { // 자동로그인 되어있는 경우 : 바로 메인
                 // 로그인해서 유저 정보 넣기
-                val email = ApplicationClass.sharedPreferences.getString("email", "test@naver.com")
-                val password = ApplicationClass.sharedPreferences.getString("password", "12345")
-                val user = User(email ?: "test@naver.com", password ?: "12345")
+                val user = ApplicationClass.prefs.getAutoLogin()
                 val result =
                     ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
-                Thread.sleep(1000)
                 if (result?.flag == "success") {  // 로그인 성공
                     Log.d(TAG, "로그인 성공, 받아온 user = ${result.data[0]}")
-                    ApplicationClass.user = result.data[0] as User
+                    ApplicationClass.prefs.setUser(result.data[0])
+                    val resultDetail = ApplicationClass.retrofitUserService.getUserDetail(result.data[0].id).awaitResponse().body()
+                    if(resultDetail?.flag == "success") {
+                        Log.d(TAG, "login: Detail조회도 로그인와 같이 성공~, result: ${resultDetail.data[0]}")
+                        ApplicationClass.prefs.setUserDetail(resultDetail.data[0])
+                    }
                     isLogin = true
                 } else { // 로그인 실패
                     isLogin = false
