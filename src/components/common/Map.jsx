@@ -76,7 +76,7 @@ const Map = ({ readOnly, sendLocation, selectedLat, selectedLng, movedLat, moved
 
   function eventSetMarker() {
     // 마커 찍기
-    kakao.maps.event.addListener(map, "click", function (mouseEvent) {
+    kakao.maps.event.addListener(map, "rightclick", function (mouseEvent) {
       const latlng = mouseEvent.latLng;
 
       marker.setPosition(latlng);

@@ -2,6 +2,30 @@ import { jsonInstance } from "./instance";
 
 const jsonAxios = jsonInstance();
 
+// GET
+
+async function getLatestMapLocation(chatRoomId) {
+  try {
+    const { data } = await jsonAxios.get(`/appointments/map/${chatRoomId}`);
+
+    if (data.flag === "success") return data.data;
+    else console.log("이전 위치 내역이 없습니다. 😅");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getChatHistory(chatRoomId) {
+  try {
+    const { data } = await jsonAxios.get(`/appointments/room/enter/${chatRoomId}`);
+
+    if (data.flag === "success") return data.data;
+    else console.log("일치하는 채팅 내역이 없습니다. 😅");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // POST
 
 async function postChatRoom(body) {
@@ -15,4 +39,4 @@ async function postChatRoom(body) {
   }
 }
 
-export { postChatRoom };
+export { getLatestMapLocation, getChatHistory, postChatRoom };
