@@ -86,6 +86,7 @@ const Map = ({ readOnly, sendLocation, selectedLat, selectedLng, movedLat, moved
       setLng(latlng.getLng());
       setZoomLevel(map.getLevel());
       setIsMarker(true);
+      setHasMarker(true);
       setMarkerLat(latlng.getLat());
       setMarkerLng(latlng.getLng());
 
