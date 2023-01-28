@@ -9,7 +9,7 @@ import Map from "./common/Map";
 import recommendLocationButton from "../assets/images/recommendLocationButton.png";
 import selectDateButton from "../assets/images/selectDateButton.png";
 import startWebRTCButton from "../assets/images/startWebRTCButton.png";
-import { getLatestMapLocation } from "../api/chat";
+import { getLatestMapLocation, getChatHistory } from "../api/chat";
 
 let client;
 
@@ -126,7 +126,7 @@ const Chatting = ({ writerNickname }) => {
   // }, []);
 
   useEffect(() => {
-    // 채팅방의 마지막 공유지도 장소 받기
+    /** 채팅방의 마지막 공유지도 장소 받기 */
     getLatestMapLocation(chatRoomId).then((res) => {
       res = res[0];
 
@@ -137,6 +137,9 @@ const Chatting = ({ writerNickname }) => {
     });
 
     /** 소켓에 연결되면 채팅 내역 보여주기 */
+    getChatHistory(chatRoomId).then((res) => {
+      res.map((el) => setShowingMessage((prev) => [...prev, el]));
+    });
   }, [chatRoomId]);
 
   useEffect(() => {
