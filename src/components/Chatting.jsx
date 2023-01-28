@@ -21,8 +21,6 @@ const Chatting = ({ writerNickname }) => {
   // 임시 데이터
   const [myUserId, setMyUserId] = useState(28); //eslint-disable-line no-unused-vars
   const [hopeLocation, setHopeLocation] = useState("");
-  const [hopeAreaLat, setHopeAreaLat] = useState("");
-  const [hopeAreaLng, setHopeAreaLng] = useState("");
   const [movedLat, setMovedLat] = useState("");
   const [movedLng, setMovedLng] = useState("");
   const [movedZoomLevel, setMovedZoomLevel] = useState(0);
@@ -66,15 +64,13 @@ const Chatting = ({ writerNickname }) => {
   // Map에서 받은 데이터로 서버에 전송
   function receiveLocation(location, lat, lng, zoomLevel, isMarker) {
     setHopeLocation(location);
-    setHopeAreaLat(lat);
-    setHopeAreaLng(lng);
 
     if (lat && lng && zoomLevel) {
       const sendMapData = {
         roomId: chatRoomId,
         toUserId: 29,
-        lat: hopeAreaLat,
-        lng: hopeAreaLng,
+        lat: lat,
+        lng: lng,
         zoomLevel: zoomLevel,
         isMarker: isMarker,
       };
