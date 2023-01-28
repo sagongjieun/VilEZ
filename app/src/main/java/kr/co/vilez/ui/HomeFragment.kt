@@ -16,6 +16,9 @@ import kr.co.vilez.ui.chat.RoomlistData
 import kr.co.vilez.ui.share.ShareActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.DataState
+import kr.co.vilez.util.StompClient
+import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.awaitResponse
 
 class HomeFragment : Fragment() {
@@ -33,7 +36,33 @@ override fun onCreate(savedInstanceState: Bundle?) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         binding.fragment = this
 
+        var data = JSONObject()
+        data.put("userId", 29)
+        StompClient.runStomp()
 
+        StompClient.stompClient.topic("/send_room_list/29").subscribe { topicMessage ->
+            run {
+                val json = JSONArray(topicMessage.payload)
+                println(json.toString())
+                CoroutineScope(Dispatchers.Main).launch {
+
+                    DataState.itemList = ArrayList<RoomlistData>()
+                    for (index in 0 until json.length()) {
+                        val chat = JSONObject(json.get(index).toString())
+                        val chatData = chat.getJSONObject("chatData")
+                        DataState.itemList.add(
+                            RoomlistData(
+                                chatData.getInt("roomId"), chat.getString("nickName"),
+                                chatData.getString("content"),
+                                chat.getString("area")
+                            )
+                        )
+                        DataState.set.add(chatData.getInt("roomId"))
+                    }
+                }
+            }
+        }
+        StompClient.stompClient.send("/room_list", data.toString()).subscribe()
         return binding.root
     }
 

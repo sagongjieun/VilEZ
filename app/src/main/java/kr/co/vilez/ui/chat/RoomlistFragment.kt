@@ -49,8 +49,6 @@ class ChatlistFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-
-        //StompClient.stompClient.send("/room_list")
     }
 
     @SuppressLint("CheckResult")
@@ -74,10 +72,7 @@ class ChatlistFragment : Fragment() {
             val chat = DataState.itemList.get(index)
             set.add(chat.roomId)
         }
-        println("한번")
-        var data = JSONObject()
-        data.put("userId", 29)
-        StompClient.stompClient.send("/room_list", data.toString()).subscribe()
+
 
         roomAdapter.setItemClickListener(object : RoomAdapter.OnItemClickListener {
             override fun onClick(v: View, position: Int) {
@@ -99,13 +94,14 @@ class ChatlistFragment : Fragment() {
                     println(json.toString())
                     val roomId = json.getInt("roomId")
                     var index = -1;
-                    if (roomId in set) {
+                    if (roomId in DataState.set) {
                         for (i in 0 until DataState.itemList.size) {
                             if (DataState.itemList[i].roomId == roomId) {
                                 index = i
                                 break
                             }
                         }
+
                         DataState.itemList[index].content = json.getString("content")
 
                         val item = DataState.itemList.get(index)
@@ -114,10 +110,9 @@ class ChatlistFragment : Fragment() {
                             DataState.itemList.add(0, item)
                             roomAdapter.notifyItemMoved(index, 0)
                         }
-
                         roomAdapter.notifyItemChanged(0)
                     } else {
-                        set.add(roomId)
+                        DataState.set.add(roomId)
 
                         DataState.itemList.add(
                             0, RoomlistData(

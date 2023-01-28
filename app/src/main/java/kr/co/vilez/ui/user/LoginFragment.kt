@@ -57,7 +57,7 @@ class LoginFragment : Fragment() {
             if (result?.flag == "success") {
                 val data = result.data[0]
                 Log.d(TAG, "로그인 성공, 받아온 user = ${data}")
-                StompClient.runStomp()
+
 
                 // 자동로그인 : sharedPreference에 autoLogin true로 저장
                 sharedPreferences.edit {
@@ -66,28 +66,7 @@ class LoginFragment : Fragment() {
                     putString("password", password)
                     apply()
                 }
-                StompClient.stompClient.topic("/send_room_list/29").subscribe { topicMessage ->
-                    run {
-                        val json = JSONArray(topicMessage.payload)
-                        println(json.toString())
-                        CoroutineScope(Dispatchers.Main).launch {
 
-                            DataState.itemList = ArrayList<RoomlistData>()
-                            for (index in 0 until json.length()) {
-                                val chat = JSONObject(json.get(index).toString())
-                                println(chat)
-
-//                            DataState.itemList.add(
-//                                RoomlistData(
-//                                    chat.chatData.roomId, chat.nickName,
-//                                    chat.chatData.content,
-//                                    chat.area
-//                                )
-//                            )
-                            }
-                        }
-                    }
-                }
                 Log.d(TAG, "sh) 사용자 autoLogin : ${sharedPreferences.getBoolean("autoLogin", false)}")
                 val intent = Intent(loginActivity, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)

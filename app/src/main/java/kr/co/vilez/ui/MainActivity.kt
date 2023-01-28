@@ -190,6 +190,9 @@ class MainActivity : AppCompatActivity() {
                 changeFragment(item)
             }
         }
+
+
+
     }
 
     override fun onBackPressed() {

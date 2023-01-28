@@ -5,5 +5,6 @@ import kr.co.vilez.ui.chat.RoomlistData
 class DataState {
     companion object {
         var itemList = ArrayList<RoomlistData>()
+        var set = HashSet<Int>()
     }
 }
