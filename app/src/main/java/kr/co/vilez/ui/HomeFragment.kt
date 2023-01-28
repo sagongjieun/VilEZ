@@ -10,16 +10,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.databinding.FragmentHomeBinding
 import kr.co.vilez.ui.chat.RoomlistData
-import kr.co.vilez.ui.share.ShareActivity
-import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.DataState
 import kr.co.vilez.util.StompClient
 import org.json.JSONArray
 import org.json.JSONObject
-import retrofit2.awaitResponse
 import kr.co.vilez.ui.share.ShareDetailActivity
 
 private const val TAG = "빌리지_HomeFragment"
