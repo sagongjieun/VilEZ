@@ -57,6 +57,8 @@ const Chatting = ({ writerNickname }) => {
       time: new Date().getTime(),
     };
 
+    setShowingMessage((prev) => [...prev, sendMessage]);
+
     client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
     setChatMessage("");
@@ -91,11 +93,6 @@ const Chatting = ({ writerNickname }) => {
         setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
       });
 
-      // 나의 채팅을 구독
-      client.subscribe(`/sendmy/${chatRoomId}/${myUserId}`, (data) => {
-        setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
-      });
-
       // 공유지도를 구독
       client.subscribe(`/sendmap/${chatRoomId}/${myUserId}`, (data) => {
         data = JSON.parse(data.body);
@@ -106,10 +103,8 @@ const Chatting = ({ writerNickname }) => {
         setMovedZoomLevel(data.zoomLevel);
         data.isMarker ? setMovedMarker(true) : setMovedMarker(false);
       });
-
-      client.activate();
     });
-  }, []);
+  }, [chatRoomId]);
 
   // useEffect(() => {
   //   /** 방이 계속 만들어지니까 일단 주석처리하고 roomId 10번으로 쓰기 */
