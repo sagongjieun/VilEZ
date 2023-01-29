@@ -162,30 +162,24 @@ class RegisterFragment : Fragment() {
                 Log.d(TAG, "register: 회원가입 할 유저 정보 : $user")
                 val result = ApplicationClass.retrofitUserService.getJoinResult(user).awaitResponse().body()
                 Log.d(TAG, "register: $result")
-                if(result != null) {
-                    when(result.flag) {
-                        "success" -> {
-                            val dialog = AlertDialogWithCallback(object :AlertDialogInterface {
-                                override fun onYesButtonClick(id: String) {
-                                    Log.d(TAG, "register: 회원가입 success")
-                                    registerActivity.moveToLogin() // 로그인 화면으로 이동
-                                }
-                            }, "회원가입에 성공했습니다.\n가입한 정보로로그인 해주세요", "")
-                            dialog.isCancelable = false // 알림창이 띄워져있는 동안 배경 클릭 막기
-                            dialog.show(registerActivity.supportFragmentManager, "RegisterSucceeded")
+                if(result?.flag == "success") {
+                    val dialog = AlertDialogWithCallback(object :AlertDialogInterface {
+                        override fun onYesButtonClick(id: String) {
+                            Log.d(TAG, "register: 회원가입 success")
+                            registerActivity.moveToLogin() // 로그인 화면으로 이동
                         }
-                        else -> {
-                            Log.d(TAG, "register: 회원가입 실패")
+                    }, "회원가입에 성공했습니다.\n\n가입한 정보로 로그인 해주세요", "")
+                    dialog.isCancelable = false // 알림창이 띄워져있는 동안 배경 클릭 막기
+                    dialog.show(registerActivity.supportFragmentManager, "RegisterSucceeded")
+                } else {
+                    Log.d(TAG, "register: 회원가입 POST 요청 실패")
+                    val dialog = AlertDialogWithCallback(object :AlertDialogInterface {
+                        override fun onYesButtonClick(id: String) {
+                            registerActivity.moveToLogin() // 로그인 화면으로 이동
                         }
-                    }
+                    }, "회원가입에 실패했습니다.\n다시 시도 해주세요", "")
+                    dialog.show(registerActivity.supportFragmentManager, "RegisterFailed")
                 }
-                Log.d(TAG, "register: 회원가입 POST 요청 실패")
-                val dialog = AlertDialogWithCallback(object :AlertDialogInterface {
-                    override fun onYesButtonClick(id: String) {
-                        registerActivity.moveToLogin() // 로그인 화면으로 이동
-                    }
-                }, "회원가입에 실패했습니다.\n다시 시도 해주세요", "")
-                dialog.show(registerActivity.supportFragmentManager, "RegisterFailed")
             }
         }
     }
@@ -250,6 +244,7 @@ class RegisterFragment : Fragment() {
                         Log.d(TAG, "checkEmail: 이메일 전송 완료, data: ${data[0]}")
                         emailAuthHashed = data[0] as String
                         isEmailSent = true // 이메일 전송 완료
+                        binding.inputRegisterEmail.error = null // 에러 메시지 삭제
 
                         binding.inputRegisterEmailAuth.apply {
                             visibility = View.VISIBLE

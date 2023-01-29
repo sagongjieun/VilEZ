@@ -15,7 +15,7 @@ interface RetrofitUserService {
     fun isUsedUserNickName(@Query("nickname") nickname : String):Call<RESTResult>
 
     @POST("/vilez/users/join")
-    fun getJoinResult(@Body user:User): Call<RESTUserResult>
+    fun getJoinResult(@Body user:User): Call<RESTResult>
 
     @GET("/vilez/users/detail/{id}")
     fun getUserDetail(@Path("id") id:Int) : Call<RESTUserDetailResult>
