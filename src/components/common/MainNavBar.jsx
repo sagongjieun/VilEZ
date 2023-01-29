@@ -121,7 +121,7 @@ const navStyle = css`
   display: flex;
   height: 70px;
   background-color: white;
-  border: 1px solid #e2e2e2;
+  border-bottom: 1px solid #e2e2e2;
   flex-direction: row;
   align-items: center;
   padding: 0 200px 0 0;

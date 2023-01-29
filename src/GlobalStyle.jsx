@@ -42,7 +42,23 @@ const style = css`
     font-size: 14px;
     font-weight: normal;
   }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: initial;
+    border-radius: 10px;
+  }
 `;
+
 const ModalWrap = css`
   font-size: 20px;
   margin: auto;
