@@ -12,8 +12,6 @@ const SignupValidation = ({ email, emailCode, password, password2, nickName }) =
 
   if (!emailCode) {
     errors.emailCode = "이메일로 전송된 인증 코드를 입력해주세요.";
-  } else if (emailCode.length !== 6) {
-    errors.emailCode = "인증 코드가 일치하지 않습니다. 다시 입력해주세요.";
   }
 
   if (!password) {
