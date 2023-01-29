@@ -3,26 +3,47 @@ import React from "react";
 import { css } from "@emotion/react";
 import { useState } from "react";
 
-function Report() {
+function Report({ close }) {
   const [report, setReport] = useState("");
   const onChangeReport = (e) => {
     setReport(e.target.value);
   };
+
+  const onClickClose = () => {
+    close(false);
+  };
   return (
-    <div css={reportWrap}>
-      <div css={reportContentWrap}>
-        <div>
-          <h2>신고하기</h2>
-          <textarea css={inputBox} value={report} placeholder="신고사유를 작성해주세요." onChange={onChangeReport} />
-        </div>
-        <div css={buttonWrap}>
-          <button css={badbutton}>취소</button>
-          <button css={goodbutton}>제출하기</button>
+    <div css={ReportWrap}>
+      <div css={reportWrap}>
+        <div css={reportContentWrap}>
+          <div>
+            <h2>신고하기</h2>
+            <textarea css={inputBox} value={report} placeholder="신고사유를 작성해주세요." onChange={onChangeReport} />
+          </div>
+          <div css={buttonWrap}>
+            <button css={badbutton} onClick={onClickClose}>
+              취소
+            </button>
+            <button css={goodbutton}>제출하기</button>
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
+const ReportWrap = css`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+`;
+
 const reportWrap = css`
   width: 500px;
   height: 600px;

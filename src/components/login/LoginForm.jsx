@@ -9,16 +9,19 @@ import LoginInputBox from "./LoginInputBox";
 import Validation from "../../components/login/LoginValidation";
 import useForm from "../../hooks/useForm";
 import { requestLogin } from "../../api/login";
+import { useSetRecoilState } from "recoil";
+import { loginUserState } from "../../recoil/atom";
 
 const LoginForm = () => {
   const navigate = useNavigate();
+  const setLoginUser = useSetRecoilState(loginUserState);
 
   // 로그인
   const onSubmit = (values) => {
     requestLogin(values.email, values.password).then((res) => {
       if (!res) return;
 
-      // recoil에 로그인 정보 저장 필요
+      setLoginUser(res); // recoil에 로그인유저 정보 저장
       navigate("/");
     });
   };

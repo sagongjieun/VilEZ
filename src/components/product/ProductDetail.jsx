@@ -44,6 +44,8 @@ const ProductDetail = () => {
   const [writerManner, setWriterManner] = useState(""); //eslint-disable-line no-unused-vars
   const [isBookmarked, setIsBookmarked] = useState(false);
 
+  // 신고 모달 창
+
   function onClickBookmark() {
     if (isBookmarked) {
       deleteBookmark(boardId, userId);
@@ -211,6 +213,8 @@ const ProductDetail = () => {
 };
 
 const wrapper = css`
+  width: 100%;
+  position: relative;
   padding: 90px 200px;
   display: flex;
   flex-direction: column;

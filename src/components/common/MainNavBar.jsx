@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { Link } from "react-router-dom";
 import { FiSearch, FiBookmark } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import { loginUserState } from "../../recoil/atom";
 
 function MainNavBar() {
   const navigate = useNavigate();
+  const setLoginUser = useSetRecoilState(loginUserState);
 
   const menus = [
     { name: "물품 공유 목록", path: "/product" }, // 임시 path
@@ -16,7 +19,7 @@ function MainNavBar() {
   ];
 
   const [isMenu, setIsMenu] = useState(false);
-  const [isLogin, setIsLogin] = useState(false); //eslint-disable-line no-unused-vars
+  const [isLogin, setIsLogin] = useState(false);
 
   function onClickShowMenu() {
     setIsMenu(!isMenu);
@@ -37,6 +40,23 @@ function MainNavBar() {
   function onClickMoveSearchPage() {
     navigate("/product");
   }
+
+  function onClickLogout() {
+    localStorage.clear();
+
+    setIsLogin(false);
+    setLoginUser(null);
+  }
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+
+    if (accessToken) {
+      setIsLogin(true);
+    } else {
+      setIsLogin(false);
+    }
+  }, []);
 
   return (
     <>
@@ -69,7 +89,7 @@ function MainNavBar() {
                   <FiBookmark onClick={onClickMoveMyBookmark} />
                   <CgProfile onClick={onClickMoveMyPage} />
                 </div>
-                <span>로그아웃</span>
+                <span onClick={onClickLogout}>로그아웃</span>
               </div>
             </div>
           </div>
@@ -121,7 +141,7 @@ const navStyle = css`
   display: flex;
   height: 70px;
   background-color: white;
-  border: 1px solid #e2e2e2;
+  border-bottom: 1px solid #e2e2e2;
   flex-direction: row;
   align-items: center;
   padding: 0 200px 0 0;

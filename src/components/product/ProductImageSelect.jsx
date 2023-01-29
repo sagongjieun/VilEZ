@@ -18,8 +18,8 @@ const ProductImageSelect = ({ sendImageList }) => {
       return;
     }
 
-    if (imageList.length + e.target.files.length > 8) {
-      alert("사진은 최대 8개 등록 가능합니다.");
+    if (imageList.length + e.target.files.length > 4) {
+      alert("사진은 최대 4개 등록 가능합니다.");
       return;
     }
 

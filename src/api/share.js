@@ -1,6 +1,6 @@
 import { jsonInstance, formdataInstance } from "./instance";
 
-const jsonAxios = jsonInstance(); //eslint-disable-line no-unused-vars
+const jsonAxios = jsonInstance();
 const formdataAxios = formdataInstance();
 
 // GET
@@ -22,6 +22,36 @@ async function getBookmarkStateByUserId(boardId, userId) {
 
     if (data.flag === "success") return data.data;
     else console.log("일치하는 게시글이나 회원정보가 없습니다.");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getShareArticleList() {
+  try {
+    // do something
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getBookmarkListByBoardId(boardId) {
+  try {
+    const { data } = await jsonAxios.get(`/shareboard/bookmark/${boardId}`);
+
+    if (data.flag === "success") return data.data;
+    else console.log("일치하는 게시글이 없습니다.");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getMyShareArticle(userId) {
+  try {
+    const { data } = await jsonAxios.get(`/shareboard/my/${userId}`);
+
+    if (data.flag === "success") return data.data;
+    else console.log("일치하는 회원이 없습니다.");
   } catch (error) {
     console.log(error);
   }
@@ -64,4 +94,39 @@ async function deleteBookmark(boardId, userId) {
   }
 }
 
-export { getShareArticleByBoardId, getBookmarkStateByUserId, postShareArticle, postBookmark, deleteBookmark };
+async function deleteShareArticleByBoardId(boardId) {
+  try {
+    const { data } = await jsonAxios.delete(`/shareboard/${boardId}`);
+
+    if (data.flag === "success") alert("게시글 삭제에 성공하였습니다. 😀");
+    else alert("게시글 삭제에 실패하였습니다 😥");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// PUT
+
+async function putShareArticle(formData) {
+  try {
+    const { data } = await formdataAxios.put(`/shareboard`, formData);
+
+    if (data.flag === "success") alert("수정되었습니다 😀");
+    else alert("공유 글 수정에 실패하였습니다 😥");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export {
+  getShareArticleByBoardId,
+  getBookmarkStateByUserId,
+  getShareArticleList,
+  getBookmarkListByBoardId,
+  getMyShareArticle,
+  postShareArticle,
+  postBookmark,
+  deleteBookmark,
+  deleteShareArticleByBoardId,
+  putShareArticle,
+};

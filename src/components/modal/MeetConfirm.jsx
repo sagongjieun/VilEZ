@@ -1,43 +1,53 @@
 import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState } from "react";
+// import { useState } from "react";
 
-function MeetConfirm() {
+function MeetConfirm({ close }) {
+  // function MeetConfirm({ 전달할 key이름을 넣는 것, 태그에서 사용할 때 <MeetConfirm (MeetConfirm에서 사용하는 키 이름) : (작성중인 컴포넌트에서 사용하는 이름)})
   const user = { nickname: "회먹고싶다요" };
   const startdate = "2023.01.19";
   const enddate = "2023.01.23";
 
-  const [isOpen, setIsOpen] = useState(false);
-  function onClickCancel() {
-    setIsOpen(!isOpen);
-  }
+  const closeModal = () => {
+    close(false);
+  };
   return (
-    <div>
-      {isOpen ? (
-        <div css={ModalWrap}>
-          <strong>{user.nickname}님과</strong>
-          <div>
-            <strong>
-              {startdate} ~ {enddate}
-            </strong>
-          </div>
-          <div>기간동안</div>
-          <div>물품을 공유하시겠어요?</div>
-          <div css={buttonWrap}>
-            <button css={badbutton} onClick={onClickCancel}>
-              취소
-            </button>
-            <button css={goodbutton}>제출하기</button>
-          </div>
+    <div css={modalTop}>
+      <div css={ModalWrap}>
+        <strong>{user.nickname}님과</strong>
+        <div>
+          <strong>
+            {startdate} ~ {enddate}
+          </strong>
         </div>
-      ) : null}
+        <div>기간동안</div>
+        <div>물품을 공유하시겠어요?</div>
+        <div css={buttonWrap}>
+          <button css={badbutton} onClick={closeModal}>
+            취소
+          </button>
+          <button css={goodbutton}>제출하기</button>
+        </div>
+      </div>
     </div>
   );
 }
+const modalTop = css`
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0px;
+  top: 0px;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
 const ModalWrap = css`
   position: absolute;
-  right: 100px;
   font-size: 20px;
   margin: auto;
   margin-bottom: 100px;
@@ -50,7 +60,6 @@ const ModalWrap = css`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 100;
   > div {
     padding: 10px;
   }
