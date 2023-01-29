@@ -34,7 +34,7 @@ function MainNavBar() {
   }
 
   function onClickMoveMyPage() {
-    navigate("/profile");
+    navigate("/profile/product");
   }
 
   function onClickMoveSearchPage() {
