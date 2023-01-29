@@ -10,7 +10,6 @@ import Profile from "./pages/Profile";
 // import EditProfile from "./components/modal/EdifProfile";
 import FindPassword from "./components/login/FindPassword";
 import OAuthKakao from "./components/login/OAuthKakao";
-import { RecoilRoot } from "recoil";
 
 // import Qrcode from "./components/modal/Qrcode";
 // import Oath from "./components/modal/Oath";
@@ -18,19 +17,17 @@ import { RecoilRoot } from "recoil";
 function App() {
   return (
     <BrowserRouter>
-      <RecoilRoot>
-        <MainNavBar />
-        <ChatOpenIcon />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/product/*" element={<Product />} />
-          <Route path="/profile/*" element={<Profile />} />
-          <Route path="/password" element={<FindPassword />} />
-          <Route path="/oauth/kakao/callback" element={<OAuthKakao />} />
-        </Routes>
-      </RecoilRoot>
+      <MainNavBar />
+      <ChatOpenIcon />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/product/*" element={<Product />} />
+        <Route path="/profile/*" element={<Profile />} />
+        <Route path="/password" element={<FindPassword />} />
+        <Route path="/oauth/kakao/callback" element={<OAuthKakao />} />
+      </Routes>
       {/* <Oath /> */}
       {/* <Qrcode /> */}
       {/* <EditProfile /> */}
