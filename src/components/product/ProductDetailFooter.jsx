@@ -1,15 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { HiChevronRight } from "react-icons/hi2";
 import { useLocation } from "react-router-dom";
+import Report from "../modal/Report";
 
 const ProductDetailFooter = () => {
   const location = useLocation();
+  const [showReport, setShowReport] = useState(false);
 
   function onClickReportArticle() {
     /** 모달 띄우기 */
     alert("정말 신고하시겠습니까?");
+    setShowReport(!showReport);
   }
 
   async function onClickShareArticle(url) {
@@ -40,6 +43,7 @@ const ProductDetailFooter = () => {
         <span>맨 위로 이동하기</span>
         <HiChevronRight size="22" />
       </div>
+      <span>{showReport ? <Report close={setShowReport} /> : null}</span>
     </div>
   );
 };
