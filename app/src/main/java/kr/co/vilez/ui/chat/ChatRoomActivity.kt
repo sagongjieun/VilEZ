@@ -1,5 +1,6 @@
 package kr.co.vilez.ui.chat
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
@@ -21,6 +22,8 @@ import net.daum.mf.map.api.MapView
 import org.json.JSONObject
 import retrofit2.awaitResponse
 
+//TODO ROOM 정보 저장
+
 class ChatRoomActivity : AppCompatActivity(),MapView.MapViewEventListener {
     private lateinit var binding: ActivityChatRoomBinding
     private var zoom: Boolean? = false
@@ -37,6 +40,7 @@ class ChatRoomActivity : AppCompatActivity(),MapView.MapViewEventListener {
         initView()
     }
 
+    @SuppressLint("CheckResult")
     fun initView() {
         val rv_chat = binding.root.findViewById(R.id.rv_chat) as RecyclerView
         val txt_edit = binding.root.findViewById(R.id.editText1) as EditText
@@ -47,7 +51,7 @@ class ChatRoomActivity : AppCompatActivity(),MapView.MapViewEventListener {
                 data.put("roomId",10)
                 data.put("boardId",55)
                 data.put("type",2)
-                data.put("fromUserId",29)
+                data.put("fromUserId",ApplicationClass.prefs.getId())
                 data.put("toUserId",28)
                 data.put("content",txt_edit.text)
                 data.put("time",System.currentTimeMillis())
@@ -85,8 +89,14 @@ class ChatRoomActivity : AppCompatActivity(),MapView.MapViewEventListener {
                 zoom = true
             }
         }
-//
-        StompClient.stompClient.topic("/sendmap/10/29").subscribe { topicMessage ->
+
+        CoroutineScope(Dispatchers.Main).launch {
+            val result = ApplicationClass.retrofitChatService.loadLocationByRoomId(10).awaitResponse().body()
+            if (result?.flag == "success") {
+                //TODO Chat List 불러오기 
+        }
+
+        StompClient.stompClient.topic("/sendmap/10/"+ApplicationClass.prefs.getId()).subscribe { topicMessage ->
             run {
                 val json = JSONObject(topicMessage.payload)
                 mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(json.getDouble("lat"),json.getDouble("lng")),true);
@@ -111,7 +121,7 @@ class ChatRoomActivity : AppCompatActivity(),MapView.MapViewEventListener {
                 }
             }
         }
-        StompClient.stompClient.topic("/sendmy/10/29").subscribe { topicMessage ->
+        StompClient.stompClient.topic("/sendmy/10/"+ApplicationClass.prefs.getId()).subscribe { topicMessage ->
             run {
                 CoroutineScope(Dispatchers.Main).launch {
                     val json = JSONObject(topicMessage.payload)
@@ -120,7 +130,7 @@ class ChatRoomActivity : AppCompatActivity(),MapView.MapViewEventListener {
                 }
             }
         }
-        StompClient.stompClient.topic("/sendchat/10/29").subscribe { topicMessage ->
+        StompClient.stompClient.topic("/sendchat/10/"+ApplicationClass.prefs.getId()).subscribe { topicMessage ->
             run {
                 CoroutineScope(Dispatchers.Main).launch {
                     val json = JSONObject(topicMessage.payload)
@@ -130,7 +140,6 @@ class ChatRoomActivity : AppCompatActivity(),MapView.MapViewEventListener {
             }
         }
 
-//
         mapView.setMapViewEventListener(this)
     }
 
@@ -151,7 +160,7 @@ class ChatRoomActivity : AppCompatActivity(),MapView.MapViewEventListener {
         if (p0 != null) {
             if(p0.zoomLevel == zoomLvl) return
             data.put("roomId", 10)
-            data.put("toUserId", 29)
+            data.put("toUserId", ApplicationClass.prefs.getId())
             data.put("lat", p0.getMapCenterPoint().mapPointGeoCoord.latitude)
             data.put("lng", p0.getMapCenterPoint().mapPointGeoCoord.longitude)
             data.put("zoomLevel", p0.zoomLevel)

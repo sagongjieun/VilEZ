@@ -21,6 +21,7 @@ import kr.co.vilez.util.StompClient
 import org.json.JSONArray
 import org.json.JSONObject
 import kr.co.vilez.ui.share.ShareDetailActivity
+import kr.co.vilez.util.ApplicationClass
 
 private const val TAG = "빌리지_HomeFragment"
 class HomeFragment : Fragment() {
@@ -43,10 +44,10 @@ class HomeFragment : Fragment() {
         initToolBar()
 
         var data = JSONObject()
-        data.put("userId", 29)
+        data.put("userId", 28)
         StompClient.runStomp()
 
-        StompClient.stompClient.topic("/send_room_list/29").subscribe { topicMessage ->
+        StompClient.stompClient.topic("/send_room_list/"+ ApplicationClass.prefs.getId()).subscribe { topicMessage ->
             run {
                 val json = JSONArray(topicMessage.payload)
                 println(json.toString())

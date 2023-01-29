@@ -87,7 +87,8 @@ class ChatlistFragment : Fragment() {
             }
         })
         roomAdapter.notifyDataSetChanged()
-        StompClient.stompClient.topic("/sendlist/29").subscribe { topicMessage ->
+        println(ApplicationClass.prefs.getId())
+        StompClient.stompClient.topic("/sendlist/"+ApplicationClass.prefs.getId()).subscribe { topicMessage ->
             run {
                 CoroutineScope(Dispatchers.Main).launch {
                     val json = JSONObject(topicMessage.payload)
