@@ -138,6 +138,12 @@ const Map = ({ readOnly, sendLocation, selectedLat, selectedLng, movedLat, moved
         setHasMarker(true);
         setMarkerLat(locPosition.getLat());
         setMarkerLng(locPosition.getLng());
+
+        searchDetailAddrFromCoords(locPosition, function (result, status) {
+          if (status === kakao.maps.services.Status.OK) {
+            setLocation(result[0].address.address_name);
+          }
+        });
       } else {
         // dragend, zoomchange 이벤트의 경우 이전 마커의 위치에 마커 유지
         if (hasMarker) {
