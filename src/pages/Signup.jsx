@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { css } from "@emotion/react";
 /** @jsxImportSource @emotion/react */
 import DivideLine from "../components/common/DivideLine";
-import SignupForm from "../components/signup/SignupForm";
+// import SignupForm from "../components/signup/SignupForm";
+import SignupForm2 from "../components/signup/SignupForm2";
 
 const Signup = () => {
   return (
@@ -12,7 +13,7 @@ const Signup = () => {
         <div css={[titleFont, signupTitle]}>빌리지 주민 신청서</div>
         <DivideLine />
         <div css={signupFormContainer}>
-          <SignupForm />
+          <SignupForm2 />
         </div>
         <div css={linkWrapper}>
           이미 계정이 있으신가요?
