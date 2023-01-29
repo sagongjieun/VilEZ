@@ -8,7 +8,7 @@ import Product from "./pages/Product";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
 // import EditProfile from "./components/modal/EdifProfile";
-import FindPassword from "./components/login/FindPassword";
+import FindPassword from "./components/signup/FindPassword";
 import OAuthKakao from "./components/login/OAuthKakao";
 
 // import Qrcode from "./components/modal/Qrcode";
