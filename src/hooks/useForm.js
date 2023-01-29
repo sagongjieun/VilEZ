@@ -26,10 +26,8 @@ function useForm({ initialValues, onSubmit, Validation }) {
 
   useEffect(() => {
     if (isLoading) {
-      console.log("흠");
       if (Object.keys(errors).length === 0) {
         onSubmit(values);
-        console.log("흠?");
       }
       setIsLoading(false);
     }
