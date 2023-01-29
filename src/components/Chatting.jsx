@@ -16,7 +16,7 @@ let client;
 const Chatting = ({ writerNickname }) => {
   const scrollRef = useRef();
 
-  const [chatRoomId, setChatRoomId] = useState(10); //eslint-disable-line no-unused-vars
+  const [chatRoomId, setChatRoomId] = useState(null); //eslint-disable-line no-unused-vars
   const [chatMessage, setChatMessage] = useState(""); // 클라이언트가 입력하는 메시지
   const [showingMessage, setShowingMessage] = useState([]); // 서버로부터 받는 메시지
   // 임시 데이터
@@ -83,58 +83,60 @@ const Chatting = ({ writerNickname }) => {
   }
 
   useEffect(() => {
-    const sockJS = new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
-    client = Stomp.over(sockJS); // 웹소켓 클라이언트 생성
+    /** 방이 계속 만들어지니까 일단 주석처리하고 roomId 10번으로 쓰기 */
+    // 공유자와 피공유자 사이에 연결되는 채팅방 id 받기
+    // body값 임시 데이터
+    // postChatRoom({
+    //   type: 2, // 요청글 1 공유글 2
+    //   boardId: 55,
+    //   shareUserId: 28,
+    //   notShareUserId: 29,
+    // }).then((res) => {
+    //   setChatRoomId(res[0].id);
+    // });
 
-    // 웹소켓과 연결됐을 때 동작하는 콜백함수들
-    client.connect({}, () => {
-      // 다른 유저의 채팅을 구독
-      client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
-        setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
-      });
-
-      // 공유지도를 구독
-      client.subscribe(`/sendmap/${chatRoomId}/${myUserId}`, (data) => {
-        data = JSON.parse(data.body);
-
-        // 다른 유저가 움직인 지도의 데이터들
-        setMovedLat(data.lat);
-        setMovedLng(data.lng);
-        setMovedZoomLevel(data.zoomLevel);
-        data.isMarker ? setMovedMarker(true) : setMovedMarker(false);
-      });
-    });
-  }, [chatRoomId]);
-
-  // useEffect(() => {
-  //   /** 방이 계속 만들어지니까 일단 주석처리하고 roomId 10번으로 쓰기 */
-  //   // 공유자와 피공유자 사이에 연결되는 채팅방 id 받기
-  //   // body값 임시 데이터
-  //   postChatRoom({
-  //     type: 2, // 요청글 1 공유글 2
-  //     boardId: 55,
-  //     shareUserId: 28,
-  //     notShareUserId: 29,
-  //   }).then((res) => {
-  //     setChatRoomId(res[0].id);
-  //   });
-  // }, []);
+    setChatRoomId(10);
+  }, []);
 
   useEffect(() => {
-    /** 채팅방의 마지막 공유지도 장소 받기 */
-    getLatestMapLocation(chatRoomId).then((res) => {
-      res = res[0];
+    if (chatRoomId) {
+      /** 채팅방의 마지막 공유지도 장소 받기 */
+      getLatestMapLocation(chatRoomId).then((res) => {
+        res = res[0];
 
-      setMovedLat(res.lat);
-      setMovedLng(res.lng);
-      setMovedZoomLevel(res.zoomLevel);
-      setMovedMarker(res.isMarker);
-    });
+        setMovedLat(res.lat);
+        setMovedLng(res.lng);
+        setMovedZoomLevel(res.zoomLevel);
+        setMovedMarker(res.isMarker);
+      });
 
-    /** 소켓에 연결되면 채팅 내역 보여주기 */
-    getChatHistory(chatRoomId).then((res) => {
-      res.map((el) => setShowingMessage((prev) => [...prev, el]));
-    });
+      /** 소켓에 연결되면 채팅 내역 보여주기 */
+      getChatHistory(chatRoomId).then((res) => {
+        res.map((el) => setShowingMessage((prev) => [...prev, el]));
+      });
+
+      const sockJS = new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
+      client = Stomp.over(sockJS); // 웹소켓 클라이언트 생성
+
+      // 웹소켓과 연결됐을 때 동작하는 콜백함수들
+      client.connect({}, () => {
+        // 다른 유저의 채팅을 구독
+        client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
+          setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
+        });
+
+        // 공유지도를 구독
+        client.subscribe(`/sendmap/${chatRoomId}/${myUserId}`, (data) => {
+          data = JSON.parse(data.body);
+
+          // 다른 유저가 움직인 지도의 데이터들
+          setMovedLat(data.lat);
+          setMovedLng(data.lng);
+          setMovedZoomLevel(data.zoomLevel);
+          data.isMarker ? setMovedMarker(true) : setMovedMarker(false);
+        });
+      });
+    }
   }, [chatRoomId]);
 
   useEffect(() => {
