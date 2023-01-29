@@ -45,6 +45,7 @@ class ApplicationClass: Application() {
         lateinit var hRetrofitUserService: RetrofitUserService
         lateinit var hRetrofitEmailService: RetrofitEmailService
         lateinit var hRetrofitChatService: RetrofitChatService
+        lateinit var hRetrofitShareService: RetrofitShareService
         private lateinit var interceptor: Interceptor
 
         // 정보를 담기 위한 sharedPreference
@@ -110,6 +111,9 @@ class ApplicationClass: Application() {
 
         hRetrofitUserService = hRetrofit.create(RetrofitUserService::class.java)
         hRetrofitTokenService = hRetrofit.create(RetrofitTokenService::class.java)
+        hRetrofitEmailService = hRetrofit.create(RetrofitEmailService::class.java)
+        hRetrofitChatService = hRetrofit.create(RetrofitChatService::class.java)
+        hRetrofitShareService = hRetrofit.create(RetrofitShareService::class.java)
     }
 
     inner class AppInterceptor : Interceptor { // End of AppInterceptor inner class
@@ -117,7 +121,7 @@ class ApplicationClass: Application() {
             var accessToken = prefs.getUserAccessToken()
 
             val request = chain.request().newBuilder()
-                .addHeader("Authorization", accessToken)
+                .addHeader("access_token", accessToken)
                 .build()
 
             val response = chain.proceed(newRequestWithAccessToken(accessToken, request))
