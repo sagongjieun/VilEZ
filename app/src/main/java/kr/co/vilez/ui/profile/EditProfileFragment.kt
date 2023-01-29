@@ -222,7 +222,7 @@ class EditProfileFragment : Fragment() {
                 binding.inputProfileNickname.error = null
 
                 val newUser = User(id=ApplicationClass.prefs.getId(), nickName = newNickname, password = "")
-                val modifyResult = ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.prefs.getUserAccessToken(), newUser).awaitResponse().body()
+                val modifyResult = ApplicationClass.hRetrofitUserService.modifyUser(newUser).awaitResponse().body()
                 Log.d(TAG, "changeNickName: modifyResult: $modifyResult")
                 if(modifyResult?.flag == "success") {
                     Log.d(TAG, "changeNickName: 닉네임 변경 성공")
@@ -259,7 +259,7 @@ class EditProfileFragment : Fragment() {
             if (result?.flag == "success") {
                 Log.d(TAG, "checkCurrentPassword: 현재 비밀번호 맞음")
                 binding.inputProfileCurrentPassword.error = null
-                val resultModify = ApplicationClass.retrofitUserService.modifyUser(ApplicationClass.prefs.getUserAccessToken(), newUser).awaitResponse().body()
+                val resultModify = ApplicationClass.hRetrofitUserService.modifyUser(newUser).awaitResponse().body()
 
                 if(resultModify?.flag == "success") {
                     Toast.makeText(mContext, "비밀번호 수정이 완료되었습니다.\n재로그인 해주세요", Toast.LENGTH_SHORT).show()
