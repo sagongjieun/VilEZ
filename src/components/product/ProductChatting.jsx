@@ -5,15 +5,14 @@ import ProductInfo from "./ProductInfo";
 import MiddleWideButton from "../button/MiddleWideButton";
 import MapAndChatting from "../Chatting";
 import { useLocation } from "react-router-dom";
-// import MeetConfirm from "../modal/MeetConfim";
+import MeetConfirm from "../modal/MeetConfirm";
 import { useState } from "react";
 const ProductChatting = () => {
   const { state } = useLocation(); // detail로부터 받은 정보들
   const [isConfirm, setIsConfirm] = useState(false);
-  console.log(isConfirm);
   function onClickConfirm() {
+    // console.log(isConfirm);
     setIsConfirm(!isConfirm);
-    console.log(isConfirm);
   }
   // state: {
   //   writerNickname: writerNickname,
@@ -30,6 +29,7 @@ const ProductChatting = () => {
     <div css={wrapper}>
       {/* div만든 이유 ? 가리개 만들기 위함 */}
       {/* <div css={modalWrap({ isConfirm })}>{isConfirm ? <MeetConfirm /> : null}</div> */}
+      <div>{isConfirm ? <MeetConfirm close={setIsConfirm} /> : null}</div>
       <div css={articleInfoWrapper}>
         <h2>{state.writerNickname} 님과의 대화</h2>
         <ProductInfo infos={state} />
