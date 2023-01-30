@@ -34,8 +34,10 @@ class SplashActivity : AppCompatActivity() {
             var autoLogin = ApplicationClass.prefs.isAutoLogin()
             Log.d(TAG, "openLoginActivity: 현재 sharedPreference에 저장된 autoLogin = $autoLogin")
             if (autoLogin) { // 자동로그인 되어있는 경우 : 바로 메인
+
                 // 로그인해서 유저 정보 넣기
                 val user = ApplicationClass.prefs.getAutoLogin()
+                Log.d(TAG, "onCreate: 자동 로그인 할 email:${user.email}, password:${user.password}")
                 val result =
                     ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
                 if (result?.flag == "success") {  // 로그인 성공
