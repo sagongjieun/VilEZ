@@ -13,14 +13,13 @@ import { getLatestMapLocation, getChatHistory } from "../api/chat";
 
 let client;
 
-const Chatting = ({ writerNickname }) => {
+const Chatting = ({ roomId, boardId, boardType, otherUserId, otherUserNickname }) => {
   const scrollRef = useRef();
+  const myUserId = localStorage.getItem("id");
+  const chatRoomId = roomId;
 
-  const [chatRoomId, setChatRoomId] = useState(null); //eslint-disable-line no-unused-vars
   const [chatMessage, setChatMessage] = useState(""); // 클라이언트가 입력하는 메시지
   const [showingMessage, setShowingMessage] = useState([]); // 서버로부터 받는 메시지
-  // 임시 데이터
-  const [myUserId, setMyUserId] = useState(28); //eslint-disable-line no-unused-vars
   const [hopeLocation, setHopeLocation] = useState("");
   const [movedLat, setMovedLat] = useState("");
   const [movedLng, setMovedLng] = useState("");
@@ -49,10 +48,10 @@ const Chatting = ({ writerNickname }) => {
 
     const sendMessage = {
       roomId: chatRoomId,
-      boardId: 55,
-      type: 2,
-      fromUserId: 28,
-      toUserId: 29,
+      boardId: boardId,
+      type: boardType,
+      fromUserId: myUserId,
+      toUserId: otherUserId,
       content: chatMessage,
       time: new Date().getTime(),
     };
@@ -71,7 +70,7 @@ const Chatting = ({ writerNickname }) => {
     if (lat && lng && zoomLevel) {
       const sendMapData = {
         roomId: chatRoomId,
-        toUserId: 29,
+        toUserId: otherUserId,
         lat: lat,
         lng: lng,
         zoomLevel: zoomLevel,
@@ -81,22 +80,6 @@ const Chatting = ({ writerNickname }) => {
       client.send("/recvmap", {}, JSON.stringify(sendMapData));
     }
   }
-
-  useEffect(() => {
-    /** 방이 계속 만들어지니까 일단 주석처리하고 roomId 10번으로 쓰기 */
-    // 공유자와 피공유자 사이에 연결되는 채팅방 id 받기
-    // body값 임시 데이터
-    // postChatRoom({
-    //   type: 2, // 요청글 1 공유글 2
-    //   boardId: 55,
-    //   shareUserId: 28,
-    //   notShareUserId: 29,
-    // }).then((res) => {
-    //   setChatRoomId(res[0].id);
-    // });
-
-    setChatRoomId(10);
-  }, []);
 
   useEffect(() => {
     if (chatRoomId) {
@@ -178,7 +161,7 @@ const Chatting = ({ writerNickname }) => {
                   <div key={index} css={yourMessageWrapper}>
                     <img src={baseProfile} />
                     <div>
-                      <small>{writerNickname}</small>
+                      <small>{otherUserNickname}</small>
                       <span>{message.content}</span>
                     </div>
                   </div>
@@ -239,20 +222,7 @@ const chatWrapper = css`
     height: 462px;
     margin-bottom: 20px;
     overflow-y: scroll;
-
-    &::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      height: 30%;
-      background: #c4c4c4;
-      border-radius: 10px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: none;
-    }
+    overflow-x: hidden;
   }
 
   & > div:nth-of-type(2) {
