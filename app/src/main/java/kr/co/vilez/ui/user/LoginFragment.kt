@@ -149,7 +149,11 @@ class LoginFragment : Fragment() {
     }
 
     fun kakaoLogin(view: View) {
-        //NaverIdLoginSDK.logout()
+
+    }
+
+    fun cancelAuth(view: View) {
+        // 네이버 연동 해제 (삭제 테스트용)
         NidOAuthLogin().callDeleteTokenApi(loginActivity, object : OAuthLoginCallback {
             override fun onSuccess() {
                 //서버에서 토큰 삭제에 성공한 상태입니다.
