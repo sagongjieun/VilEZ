@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.WindowManager
 import android.widget.EditText
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,8 +42,8 @@ class ChatRoomActivity : AppCompatActivity(){
         var bundle  = Bundle(2)
         bundle.putInt("roomId",roomId)
         bundle.putInt("otherUserId",otherUserId)
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         initView()
-
         var kakaoMapFragment = KakaoMapFragment()
         kakaoMapFragment.arguments = bundle
         supportFragmentManager.beginTransaction()

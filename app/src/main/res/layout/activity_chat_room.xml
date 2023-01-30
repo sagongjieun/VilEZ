@@ -13,50 +13,80 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:orientation="vertical">
         <!--    tools:context=".ui.chat.ChatRoomActivity"-->
-
-        <!-- TODO: Update blank fragment layout -->
-
-        <FrameLayout
-            android:id="@+id/frameLayout"
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="12dp"
-            android:layout_weight="4"/>
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white">
 
+            <ImageButton
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="start"
+                android:background="@drawable/icon_back"
+                android:scaleType="fitXY" />
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="제목 바꿔야합니다"
+                android:textSize="20sp" />
+        </com.google.android.material.appbar.MaterialToolbar>
+        <!-- TODO: Update blank fragment layout -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_weight="4"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="0dp"
+            <FrameLayout
+                android:id="@+id/frameLayout"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:scaleType="center"
-                android:src="@drawable/chat_cal" />
 
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:scaleType="center"
-                android:src="@drawable/chat_rtc" />
-
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:scaleType="center"
-                android:src="@drawable/char_loc" />
+                />
         </LinearLayout>
 
+
+        <!--        <LinearLayout-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="0dp"-->
+        <!--            android:layout_weight="1"-->
+        <!--            android:orientation="horizontal">-->
+
+        <!--            <ImageView-->
+        <!--                android:layout_width="0dp"-->
+        <!--                android:layout_height="match_parent"-->
+        <!--                android:layout_weight="1"-->
+        <!--                android:scaleType="center"-->
+        <!--                android:src="@drawable/chat_cal" />-->
+
+        <!--            <ImageView-->
+        <!--                android:layout_width="0dp"-->
+        <!--                android:layout_height="match_parent"-->
+        <!--                android:layout_weight="1"-->
+        <!--                android:scaleType="center"-->
+        <!--                android:src="@drawable/chat_rtc" />-->
+
+        <!--            <ImageView-->
+        <!--                android:layout_width="0dp"-->
+        <!--                android:layout_height="match_parent"-->
+        <!--                android:layout_weight="1"-->
+        <!--                android:scaleType="center"-->
+        <!--                android:src="@drawable/char_loc" />-->
+        <!--        </LinearLayout>-->
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="5"
+            android:layout_weight="9"
             android:orientation="vertical">
 
             <LinearLayout
@@ -69,7 +99,7 @@
                     android:id="@+id/rv_chat"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="5"
+                    android:layout_weight="8"
                     android:scrollbars="vertical"
                     tools:itemCount="4"
                     tools:listitem="@layout/chat_left_item"
@@ -78,17 +108,43 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
+
                     android:layout_height="0dp"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_margin="8dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="+"
+                        android:textSize="20dp" />
 
                     <EditText
                         android:id="@+id/editText1"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:background="#a0a0a0"
+                        android:layout_margin="8dp"
+                        android:layout_weight="8"
+                        android:background="@drawable/view_round_white2"
+                        android:elevation="4dp"
                         android:inputType="textMultiLine|textNoSuggestions"
                         android:maxLength="120"
-                        android:maxLines="2" />
+                        android:maxLines="2"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:textSize="12dp" />
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:layout_weight="1"
+
+                        android:src="@drawable/chat_send" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -97,7 +153,24 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"></LinearLayout>
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:src="@drawable/chat_exit"
+                />
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:src="@drawable/chat_accept"
+                />
+        </LinearLayout>
 
 
     </LinearLayout>
