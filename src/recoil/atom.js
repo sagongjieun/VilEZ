@@ -2,7 +2,13 @@ import { atom } from "recoil";
 
 const loginUserState = atom({
   key: "loginUserState",
-  default: null,
+  default: {
+    id: null,
+    nickName: null,
+    manner: null,
+    point: null,
+    profileImg: null,
+  },
 });
 
 export { loginUserState };
