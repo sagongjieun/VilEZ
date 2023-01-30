@@ -57,10 +57,10 @@
     </update>
 
     <insert id = "join">
-        insert into user(email, password, nickname, point, manner,
+        insert into user(email, password, nickname, point, manner, oauth
                          date, state)
         values(#{email}, #{password}, #{nickName},
-               300, 21, now(), 0);
+               300, 21, now(), 0, {oauth});
     </insert>
 
     <select id="login" parameterType="UserDto" resultMap="user">
