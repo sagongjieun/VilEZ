@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.*;
 
 @Service
@@ -26,6 +27,12 @@ public class UserServiceImpl implements UserService {
     final String bucketName = "vilez";
     HttpVO http = null;
     List<Object> data = null;
+
+    @Override
+    public UserDto checkEmail(String email) throws SQLException {
+        return userMapper.checkEmail(email);
+    }
+
     @Override
     public HttpVO check(String nickname) throws Exception {
         http = new HttpVO();

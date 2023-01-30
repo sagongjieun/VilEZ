@@ -18,6 +18,12 @@
         <result column="refresh_token" property="refreshToken"/>
         <result column="state" property="state"/>
     </resultMap>
+    <select id="checkEmail" parameterType="string" resultMap="user">
+        SELECT email
+        FROM user
+        WHERE email = #{email};
+    </select>
+
     <select id="list" resultMap="user">
         select * from user;
     </select>
