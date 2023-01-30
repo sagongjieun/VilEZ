@@ -10,6 +10,7 @@ import java.util.List;
 
 @Mapper
 public interface UserMapper {
+    UserDto checkEmail(String email) throws SQLException;
     UserDto check(String nickname) throws SQLException;
     void modifyUserInfo(HashMap<String,?> user) throws SQLException;
     void modifyProfile(UserDto user) throws SQLException;

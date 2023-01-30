@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @RequestMapping("/users")
@@ -25,6 +26,24 @@ public class UserController {
     HttpVO http = null;
 
     final UserService userService;
+
+    @GetMapping("/check/{email}")
+    @ApiOperation(value = "이메일을 이용한 사용자 회원가입 여부 확인 API"
+    , notes = "email을 보내면 해당 email로 회원가입한 정보가 있으면 해당 email이 리턴 아니면 null이 리턴된다.")
+    public ResponseEntity<?> checkEmail(@RequestParam String email){
+        HttpVO httpVO = new HttpVO();
+        ArrayList<Object> data = new ArrayList<>();
+
+        try{
+            data.add(userService.checkEmail(email));
+            httpVO.setData(data);
+            httpVO.setFlag("success");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
+    }
 
     // access 토큰 갱신
     @PostMapping("/refresh")
