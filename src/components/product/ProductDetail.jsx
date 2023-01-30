@@ -14,15 +14,14 @@ import elapsedTime from "./ProductElapsedTime";
 import bookmarkCancel from "../../assets/images/bookmarkCancel.png";
 import { getUserDetail } from "../../api/user";
 import MannerPoint from "../common/MannerPoint";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { postChatRoom } from "../../api/chat";
-
-const { kakao } = window;
+import { getAskArticleDetailByBoardId } from "../../api/ask";
 
 const ProductDetail = () => {
   const navigate = useNavigate();
-  const params = useParams();
-  const boardId = params.boardId;
+  const boardId = parseInt(useParams().boardId);
+  const pathname = useLocation().pathname;
   const loginUserId = localStorage.getItem("id");
 
   const [userId, setUserId] = useState("");
@@ -55,16 +54,29 @@ const ProductDetail = () => {
   }
 
   function onClickMoveChat() {
-    const type = params.inclues("share") ? 2 : 1; // 요청글 = 1, 공유글 = 2
+    const type = pathname.includes("share") ? 2 : 1; // 요청글 = 1, 공유글 = 2
 
-    postChatRoom({
-      type: type,
-      boardId: boardId,
-      shareUserId: userId,
-      notShareUserId: loginUserId,
-    }).then((res) => {
-      navigate(`/chat/${res[0].id}`);
-    });
+    /** 여기서 이미 공유자와 피공유자간의 boardId 채팅방이 있는지 확인해줘야 함 */
+    // 채팅방 생성
+    // 요청글이면 공유자 = 나, 피공유자 = 상대방
+    // 공유글이면 공유자 = 상대방, 피공유자 = 나
+    type === 1
+      ? postChatRoom({
+          type: type,
+          boardId: boardId,
+          shareUserId: loginUserId,
+          notShareUserId: userId,
+        }).then((res) => {
+          navigate(`/product/chat/${res[0].id}`);
+        })
+      : postChatRoom({
+          type: type,
+          boardId: boardId,
+          shareUserId: userId,
+          notShareUserId: loginUserId,
+        }).then((res) => {
+          navigate(`/product/chat/${res[0].id}`);
+        });
   }
 
   function onClickReturnProduct() {
@@ -77,22 +89,43 @@ const ProductDetail = () => {
 
   // 게시글 정보 얻어오기
   useEffect(() => {
-    getShareArticleByBoardId(boardId).then((res) => {
-      const data = res[0];
+    const type = pathname.includes("share") ? 2 : 1;
 
-      setUserId(data.userId);
-      setTitle(data.title);
-      setCategory(data.category);
-      setDate(elapsedTime(data.date));
-      setImageList(data.list);
-      setContent(data.content);
-      setStartDay(data.startDay);
-      setEndDay(data.endDay);
-      setHopeAreaLat(data.hopeAreaLat);
-      setHopeAreaLng(data.hopeAreaLng);
-      setBookmarkCnt(data.bookmarkCnt);
-      setState(data.state);
-    });
+    type === 1
+      ? getAskArticleDetailByBoardId(boardId).then((res) => {
+          const data = res[0];
+
+          setUserId(data.userId);
+          setTitle(data.title);
+          setCategory(data.category);
+          setDate(elapsedTime(data.date));
+          setImageList(data.list);
+          setContent(data.content);
+          setStartDay(data.startDay);
+          setEndDay(data.endDay);
+          setHopeAreaLat(data.hopeAreaLat);
+          setHopeAreaLng(data.hopeAreaLng);
+          setBookmarkCnt(data.bookmarkCnt);
+          setState(data.state);
+          setLocation(data.location);
+        })
+      : getShareArticleByBoardId(boardId).then((res) => {
+          const data = res[0];
+
+          setUserId(data.userId);
+          setTitle(data.title);
+          setCategory(data.category);
+          setDate(elapsedTime(data.date));
+          setImageList(data.list);
+          setContent(data.content);
+          setStartDay(data.startDay);
+          setEndDay(data.endDay);
+          setHopeAreaLat(data.hopeAreaLat);
+          setHopeAreaLng(data.hopeAreaLng);
+          setBookmarkCnt(data.bookmarkCnt);
+          setState(data.state);
+          setLocation(data.location);
+        });
   }, []);
 
   // 작성자(공유자) 정보 얻어오기
@@ -110,22 +143,6 @@ const ProductDetail = () => {
         .catch((error) => console.log(error));
     }
   }, [userId]);
-
-  // 위경도를 통한 주소 얻어오기
-  useEffect(() => {
-    const geocoder = new kakao.maps.services.Geocoder();
-    const latlng = new kakao.maps.LatLng(hopeAreaLat, hopeAreaLng);
-
-    searchDetailAddrFromCoords(latlng, function (result, status) {
-      if (status === kakao.maps.services.Status.OK) {
-        setLocation(result[0].address.address_name);
-      }
-    });
-
-    function searchDetailAddrFromCoords(coords, callback) {
-      geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
-    }
-  }, [hopeAreaLat, hopeAreaLng]);
 
   // 내가 이 게시글을 북마크했는지 여부 확인
   useEffect(() => {

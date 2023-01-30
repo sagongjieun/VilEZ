@@ -7,12 +7,8 @@ import MainNavBar from "./components/common/MainNavBar";
 import Product from "./pages/Product";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
-// import EditProfile from "./components/modal/EdifProfile";
 import FindPassword from "./components/signup/FindPassword";
 import OAuthKakao from "./components/login/OAuthKakao";
-
-// import Qrcode from "./components/modal/Qrcode";
-// import Oath from "./components/modal/Oath";
 
 function App() {
   return (
@@ -27,11 +23,8 @@ function App() {
         <Route path="/profile/*" element={<Profile />} />
         <Route path="/password" element={<FindPassword />} />
         <Route path="/oauth/kakao/callback" element={<OAuthKakao />} />
+        {/* <Route path="*" element={<NotFound />}></Route> */}
       </Routes>
-
-      {/* <Oath /> */}
-      {/* <Qrcode /> */}
-      {/* <EditProfile /> */}
     </BrowserRouter>
   );
 }

@@ -44,6 +44,7 @@ const productInfoWrapper = css`
       width: 100%;
       height: 100%;
       object-fit: contain;
+      overflow: hidden;
     }
   }
 
