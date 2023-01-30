@@ -5,12 +5,12 @@ import { Link } from "react-router-dom";
 import { FiSearch, FiBookmark } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { loginUserState } from "../../recoil/atom";
 
 function MainNavBar() {
   const navigate = useNavigate();
-  const setLoginUser = useSetRecoilState(loginUserState);
+  const [loginUser, setLoginUser] = useRecoilState(loginUserState);
 
   const menus = [
     { name: "물품 공유 목록", path: "/product" }, // 임시 path
@@ -44,7 +44,6 @@ function MainNavBar() {
   function onClickLogout() {
     localStorage.clear();
 
-    setIsLogin(false);
     setLoginUser(null);
   }
 
@@ -56,7 +55,7 @@ function MainNavBar() {
     } else {
       setIsLogin(false);
     }
-  }, []);
+  }, [loginUser]);
 
   return (
     <>
