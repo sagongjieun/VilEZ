@@ -10,5 +10,7 @@
     <string name="naver_client_secret">iaX0nJ2Q5Z</string>
     <string name="naver_client_name">vilez</string>
 
+    <string name="kakao_oauth_app_key">9ff34f207daffa89c01684489f53c7dc</string>
+    <string name="kakao_native_app_key">kakao9ff34f207daffa89c01684489f53c7dc</string>
 
 </resources>

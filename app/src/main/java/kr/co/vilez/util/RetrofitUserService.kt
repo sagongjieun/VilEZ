@@ -50,5 +50,9 @@ interface RetrofitUserService {
     @PUT("/vilez/users/profile")
     fun removeProfileImage(@Part("userId") userId: Int): Call<RESTResult>
 
+    // 카카오 로그인
+    @GET
+    fun getKakaoOAuth()
+
 }
 

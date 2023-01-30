@@ -66,12 +66,12 @@ class LoginActivity : AppCompatActivity() {
                 finish()
                 return
             }
-            4-> { // 카카오로 로그인
-                transaction.replace(R.id.frame_layout_login, RegisterOauthFragment())
+            5-> { // 네이버로 로그인
+                transaction.replace(R.id.frame_layout_login, RegisterOauthFragment.newInstance(id!!, "naver"))
                     .addToBackStack(null)
             }
-            5-> { // 네이버로 로그인
-                transaction.replace(R.id.frame_layout_login, RegisterOauthFragment.newInstance(id!!))
+            6-> { // 카카오로 로그인
+                transaction.replace(R.id.frame_layout_login, RegisterOauthFragment.newInstance(id!!, "kakao"))
                     .addToBackStack(null)
             }
         }
@@ -85,6 +85,7 @@ class LoginActivity : AppCompatActivity() {
             if (result?.flag == "success") {
                 Log.d(TAG, "로그인 성공, 받아온 user = ${result.data[0]}")
                 ApplicationClass.prefs.setUser(result.data[0])
+                ApplicationClass.prefs.setOAuth(user.oauth) //
                 ApplicationClass.prefs.setAutoLogin(user) // 로그인시 자동으로 자동로그인 넣기
 
                 StompClient.runStomp()
