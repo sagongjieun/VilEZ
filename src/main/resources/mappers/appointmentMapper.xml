@@ -69,7 +69,7 @@
     </insert>
 
     <select id="getBoard" parameterType="int" resultMap="room">
-        select * from Room where id = #{roomId}
+        select * from room where id = #{roomId}
     </select>
 
 
