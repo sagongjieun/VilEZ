@@ -54,7 +54,6 @@ class LoginActivity : AppCompatActivity() {
             }
             2 -> { // 회원가입
                 startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
-                finish()
                 return
             }
             3 -> { // 비밀번호 찾기
