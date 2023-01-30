@@ -213,8 +213,6 @@ const ProductDetail = () => {
 };
 
 const wrapper = css`
-  width: 100%;
-  position: relative;
   padding: 90px 200px;
   display: flex;
   flex-direction: column;

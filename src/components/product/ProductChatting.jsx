@@ -7,9 +7,22 @@ import MapAndChatting from "../Chatting";
 import { useLocation } from "react-router-dom";
 import MeetConfirm from "../modal/MeetConfirm";
 import { useState } from "react";
+import QuitChattingReal from "../modal/QuitChattingReal";
+import Oath from "../modal/Oath";
+import ShareComplete from "../modal/ShareComplete";
+
 const ProductChatting = () => {
   const { state } = useLocation(); // detail로부터 받은 정보들
   const [isConfirm, setIsConfirm] = useState(false);
+  const [isOath, setIsOath] = useState(false);
+  // 채팅 나가기 관련
+  const [isQuit, setIsQuit] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
+  function onClickQuit() {
+    setIsQuit(true);
+    console.log(isQuit);
+  }
+
   function onClickConfirm() {
     // console.log(isConfirm);
     setIsConfirm(!isConfirm);
@@ -29,7 +42,7 @@ const ProductChatting = () => {
     <div css={wrapper}>
       {/* div만든 이유 ? 가리개 만들기 위함 */}
       {/* <div css={modalWrap({ isConfirm })}>{isConfirm ? <MeetConfirm /> : null}</div> */}
-      <div>{isConfirm ? <MeetConfirm close={setIsConfirm} /> : null}</div>
+
       <div css={articleInfoWrapper}>
         <h2>{state.writerNickname} 님과의 대화</h2>
         <ProductInfo infos={state} />
@@ -38,10 +51,15 @@ const ProductChatting = () => {
         <MapAndChatting writerNickname={state.writerNickname} />
       </div>
       <div css={buttonWrapper}>
-        <MiddleWideButton text={"채팅 나가기"} />
+        <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
 
         <MiddleWideButton text={"만남 확정하기"} css={meetconfirmWrap} onclick={onClickConfirm} />
       </div>
+      <div>{isConfirm ? <MeetConfirm close={setIsConfirm} openOath={setIsOath} /> : null}</div>
+      {/* Props 받는 방법 마스터하기 */}
+      <div>{isQuit ? <QuitChattingReal close={setIsQuit} /> : null}</div>
+      <div>{isOath ? <Oath close={setIsOath} openLastConfirm={setIsComplete} /> : null} </div>
+      <div>{isComplete ? <ShareComplete /> : null}</div>
     </div>
   );
 };
