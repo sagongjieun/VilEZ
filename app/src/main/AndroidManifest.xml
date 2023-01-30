@@ -48,7 +48,7 @@
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"
-            android:value="66676a678632bb4a0aa95b77fd0235f8" />
+            android:value="@string/kakao_app_key" />
 
         <activity
             android:name=".ui.IntroActivity"

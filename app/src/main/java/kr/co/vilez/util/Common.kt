@@ -36,7 +36,11 @@ class Common {
             return !trimmedNickname.isNullOrEmpty() && exp.matches(trimmedNickname)
         }
 
-        // *** 스틱코드 등록 코드 ***
+        fun makeRandomPassword(id: String) :String {
+            return "${getHash(id)}"
+        }
+
+        // SHA-256 해시함수
         fun getHash(str: String): String {
             var digest: String = ""
             digest = try {

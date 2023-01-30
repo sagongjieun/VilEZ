@@ -3,4 +3,12 @@
     <string name="app_title">ViLEZ</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="kakao_app_key">66676a678632bb4a0aa95b77fd0235f8</string>
+
+    <string name="naver_client_id">KdnHuDfQRJ8OKSLDdgB6</string>
+    <string name="naver_client_secret">iaX0nJ2Q5Z</string>
+    <string name="naver_client_name">vilez</string>
+
+
 </resources>
