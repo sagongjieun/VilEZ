@@ -58,11 +58,12 @@ public class ShareController {
                     "\n \t startDay : String," +
                     "\n \t endDay : String" +
                     "\n \t }")
-    public ResponseEntity<?> insert(@RequestPart(value = "board") ShareDto shareDto,
+    public ResponseEntity<?> insert(@RequestPart(value ="board") ShareDto shareDto,
                                     @RequestPart(value="image") List<MultipartFile> files){
         httpVO = new HttpVO();
         try {
             httpVO = shareService.insert(shareDto, files);
+            httpVO.setFlag("success");
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -79,7 +80,7 @@ public class ShareController {
                     "\n \t startDay : String," +
                     "\n \t endDay : String" +
                     "\n \t }")
-    public ResponseEntity<?> update(@RequestPart(value = "board") ShareDto shareDto,
+    public ResponseEntity<?> update(@RequestPart(value ="board") ShareDto shareDto,
                                     @RequestPart(value="image") List<MultipartFile> files){
         httpVO = new HttpVO();
         try {
