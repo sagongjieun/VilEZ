@@ -33,12 +33,13 @@ function Report({ close }) {
 }
 
 const ReportWrap = css`
-  position: absolute;
+  position: fixed;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 100%;
+  left: 0px;
   top: 0px;
   background-color: rgba(0, 0, 0, 0.4);
   z-index: 1000;
@@ -50,6 +51,7 @@ const reportWrap = css`
   box-shadow: 1px 1px 5px;
   border-radius: 10px;
   text-align: center;
+  background-color: white;
 `;
 const reportContentWrap = css`
   display: flex;
