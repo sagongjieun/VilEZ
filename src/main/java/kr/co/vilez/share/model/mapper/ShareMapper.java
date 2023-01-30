@@ -1,11 +1,9 @@
 package kr.co.vilez.share.model.mapper;
 
-import kr.co.vilez.share.model.dto.ImgPath;
 import kr.co.vilez.share.model.dto.PageNavigator;
 import kr.co.vilez.share.model.dto.ShareDto;
 import kr.co.vilez.share.model.dto.ShareListDto;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.jdbc.SQL;
 
 import java.sql.SQLException;
 import java.util.List;

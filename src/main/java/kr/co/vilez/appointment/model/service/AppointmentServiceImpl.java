@@ -25,12 +25,14 @@ import java.util.List;
 @AllArgsConstructor
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
-
     private final AppointmentDao appointmentDao;
-
     private final AppointmentMapper appointmentMapper;
-
     private final ShareDao shareDao;
+
+    @Override
+    public BoardStateVO getBoardState(int boardId) throws Exception {
+        return appointmentMapper.getBoardState(boardId);
+    }
 
     @Override
     public List<TotalListVO> getMyAppointmentList(int userId) throws Exception {

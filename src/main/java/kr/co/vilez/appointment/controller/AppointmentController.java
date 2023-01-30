@@ -32,6 +32,28 @@ public class AppointmentController {
     private final AppointmentService appointmentService;
     private final UserService userService;
     private final SimpMessageSendingOperations sendingOperations;
+
+    @GetMapping("/check/{boardId}")
+    @ApiOperation(value = "현재 공유 중인지 아닌지에 대한 정보를 요청하는 API",
+    notes = "boardId에 boardDetail의 boardId 정보를 넣고 전송하면" +
+            "\n\t 현재 날짜와 비교해서 예약중인 boardId면 해당 boardId 값이 return" +
+            "\n\t 그렇지 않으면 null 값이 들어온다.")
+    public ResponseEntity<?> getBoardState(@PathVariable int boardId){
+        HttpVO httpVO = new HttpVO();
+        List<Object> data = new ArrayList<>();
+
+        try {
+            data.add(appointmentService.getBoardState(boardId));
+            httpVO.setData(data);
+            httpVO.setFlag("success");
+            httpVO.setData(data);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
+    }
+
     // 내가 공유받은 물품 목록을 볼 수 있다.
     // 한 게시글에서 여러번 물건을 빌렸으면 가장 최근에 빌린 내역만이 나온다.
     @ResponseBody

@@ -31,6 +31,13 @@
         <result column="not_share_user_id" property="notShareUserId"/>
     </resultMap>
 
+
+    <select id="getBoardState" parameterType="int" resultType="kr.co.vilez.appointment.model.vo.BoardStateVO">
+        SELECT board_id as boardId
+        FROM appointment
+        WHERE now() >= appointment_start and appointment_end >= now() and board_id = #{boardId};
+    </select>
+
     <select id="getMyAppointmentList" parameterType="int" resultMap="mylist">
         select id, user_id, title, hope_area_lat, hope_area_lng, start_day, end_day, appointment_id, share_user_id, not_share_user_id
         from sharing_board as s

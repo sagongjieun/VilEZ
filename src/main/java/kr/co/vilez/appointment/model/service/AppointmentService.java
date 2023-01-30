@@ -9,6 +9,7 @@ import kr.co.vilez.appointment.model.vo.MapVO;
 import java.util.List;
 
 public interface AppointmentService {
+    BoardStateVO getBoardState(int boardId) throws Exception;
     List<TotalListVO> getMyAppointmentList(int userId) throws Exception;
     List<AppointmentDto> getAppointmentList(int boardId) throws Exception;
     void create(AppointmentDto appointmentDto) throws Exception;
