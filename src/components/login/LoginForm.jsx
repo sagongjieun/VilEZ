@@ -21,7 +21,19 @@ const LoginForm = () => {
     requestLogin(values.email, values.password).then((res) => {
       if (!res) return;
 
-      setLoginUser(res); // recoil에 로그인유저 정보 저장
+      res = res[0];
+
+      // recoil에 로그인유저 정보 저장
+      setLoginUser((prev) => {
+        return {
+          ...prev,
+          id: res.id,
+          nickName: res.nickName,
+          manner: res.manner,
+          point: res.point,
+          profileImg: res.profileImg,
+        };
+      });
       navigate("/");
     });
   };

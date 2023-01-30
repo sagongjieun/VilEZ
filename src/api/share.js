@@ -63,7 +63,7 @@ async function postShareArticle(formData) {
   try {
     const { data } = await formdataAxios.post(`/shareboard`, formData);
 
-    if (data.flag === "success") alert("등록되었습니다 😀");
+    if (data.flag === "success") return data.data;
     else alert("공유 글 등록에 실패하였습니다 😥");
   } catch (error) {
     console.log(error);
