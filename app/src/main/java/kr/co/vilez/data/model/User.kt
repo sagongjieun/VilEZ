@@ -22,6 +22,9 @@ data class User(
     constructor(id:Int, password:String, nickName: String):this(
         "","","","",id,0,nickName,"",password,0,"","",0
     )
+    constructor(email: String, password:String, nickName: String, oauth: String):this(
+        "","","",email,0,0,nickName,oauth,password,0,"","",0
+    )
     constructor(email: String, password: String) : this(
         "","","",email,0,0,"","",password,0,"","",0)
     constructor(email: String, password: String, nickName: String) : this(
