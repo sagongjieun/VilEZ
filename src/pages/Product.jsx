@@ -9,7 +9,8 @@ const Product = () => {
     <div>
       <Routes>
         <Route path="/regist" element={<ProductRegist />} />
-        <Route path="/detail/:boardId" element={<ProductDetail />} />
+        <Route path="/detail/share/:boardId" element={<ProductDetail />} />
+        <Route path="/detail/ask/:boardId" element={<ProductDetail />} />
         <Route path="/chat" element={<ProductChatting />} />
       </Routes>
     </div>
