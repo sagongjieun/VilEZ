@@ -30,12 +30,17 @@ public class UserController {
     @GetMapping("/check/{email}")
     @ApiOperation(value = "이메일을 이용한 사용자 회원가입 여부 확인 API"
     , notes = "email을 보내면 해당 email로 회원가입한 정보가 있으면 해당 email이 리턴 아니면 null이 리턴된다.")
-    public ResponseEntity<?> checkEmail(@RequestParam String email){
+    public ResponseEntity<?> checkEmail(@PathVariable String email){
         HttpVO httpVO = new HttpVO();
         ArrayList<Object> data = new ArrayList<>();
 
         try{
-            data.add(userService.checkEmail(email));
+            UserDto userDto = userService.checkEmail(email);
+            if(userDto == null) {
+                data.add(false);
+            } else{
+                data.add(true);
+            }
             httpVO.setData(data);
             httpVO.setFlag("success");
         } catch (Exception e){
