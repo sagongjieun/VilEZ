@@ -15,6 +15,7 @@ import bookmarkCancel from "../../assets/images/bookmarkCancel.png";
 import { getUserDetail } from "../../api/user";
 import MannerPoint from "../common/MannerPoint";
 import { useNavigate, useParams } from "react-router-dom";
+import { postChatRoom } from "../../api/chat";
 
 const { kakao } = window;
 
@@ -54,18 +55,24 @@ const ProductDetail = () => {
   }
 
   function onClickMoveChat() {
-    navigate("/product/chat", {
-      state: {
-        writerNickname: writerNickname,
-        thumbnailImage: imageList[0],
-        boardId: boardId,
-        title: title,
-        location: location,
-        startDay: startDay,
-        endDay: endDay,
-        bookmarkCnt: bookmarkCnt,
-      },
+    const type = params.inclues("share") ? 2 : 1; // 요청글 = 1, 공유글 = 2
+
+    postChatRoom({
+      type: type,
+      boardId: boardId,
+      shareUserId: userId,
+      notShareUserId: loginUserId,
+    }).then((res) => {
+      navigate(`/chat/${res[0].id}`);
     });
+  }
+
+  function onClickReturnProduct() {
+    // 반납완료 로직 구현
+  }
+
+  function onClickReserveProduct() {
+    // 예약하기 로직 구현
   }
 
   // 게시글 정보 얻어오기
@@ -164,9 +171,9 @@ const ProductDetail = () => {
                 <MiddleWideButton text="채팅하기" onclick={onClickMoveChat} />
               )
             ) : loginUserId == userId ? (
-              <MiddleWideButton text="반납완료" />
+              <MiddleWideButton text="반납완료" onclick={onClickReturnProduct} />
             ) : (
-              <MiddleWideButton text="예약하기" />
+              <MiddleWideButton text="예약하기" onclick={onClickReserveProduct} />
             )}
           </div>
         </div>

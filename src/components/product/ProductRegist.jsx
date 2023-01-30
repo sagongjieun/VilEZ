@@ -120,15 +120,23 @@ const ProductRegist = () => {
 
     // API 요청
     if (registType === "물품 공유 등록") {
-      postShareArticle(formData).then((res) => {
-        res = res[0];
-        navigate(`/product/detail/share/${res.id}`);
-      });
+      postShareArticle(formData)
+        .then((res) => {
+          res = res[0];
+          navigate(`/product/detail/share/${res.id}`);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else if (registType === "물품 요청 등록") {
-      postAskArticle(formData).then((res) => {
-        res = res[0];
-        navigate(`/product/detail/ask/${res.id}`);
-      });
+      postAskArticle(formData)
+        .then((res) => {
+          res = res[0];
+          navigate(`/product/detail/ask/${res.id}`);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   }
 

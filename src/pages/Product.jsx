@@ -11,7 +11,7 @@ const Product = () => {
         <Route path="/regist" element={<ProductRegist />} />
         <Route path="/detail/share/:boardId" element={<ProductDetail />} />
         <Route path="/detail/ask/:boardId" element={<ProductDetail />} />
-        <Route path="/chat" element={<ProductChatting />} />
+        <Route path="/chat/:roomId" element={<ProductChatting />} />
       </Routes>
     </div>
   );

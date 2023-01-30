@@ -59,6 +59,17 @@ async function getLatestChattingListByUserId(userId) {
   }
 }
 
+async function getBoardIdByRoomId(roomId) {
+  try {
+    const { data } = await jsonAxios.get(`/appointments/room/board/${roomId}`);
+
+    if (data.flag === "success") return data.data;
+    else console.log("일치하는 채팅방이 없습니다. 😅");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // POST
 
 async function postChatRoom(body) {
@@ -89,6 +100,7 @@ export {
   getAppointmentsByBoardId,
   getMyAppointments,
   getLatestChattingListByUserId,
+  getBoardIdByRoomId,
   postChatRoom,
   postAppointment,
 };
