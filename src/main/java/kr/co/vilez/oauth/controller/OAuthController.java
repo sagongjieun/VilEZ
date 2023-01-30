@@ -28,13 +28,10 @@ public class OAuthController {
     SHA256 sha256 = new SHA256();
     @Autowired
     KakaoOAuthService oAuthService;
-
     @Autowired
     UserService userService;
-
     @Autowired
     JwtProvider jwtProvider;
-
     @Autowired
     NaverOAuthService naverOAuthService;
 
