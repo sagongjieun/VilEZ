@@ -9,8 +9,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class ChatVO {
 
     private int roomId;
-    private int boardId;
-    private int type;
     private int fromUserId;
     private int toUserId;
     private String content;
