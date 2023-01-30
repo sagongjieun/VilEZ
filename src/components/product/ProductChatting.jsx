@@ -1,23 +1,39 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import ProductInfo from "./ProductInfo";
 import MiddleWideButton from "../button/MiddleWideButton";
 import MapAndChatting from "../Chatting";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import MeetConfirm from "../modal/MeetConfirm";
-import { useState } from "react";
+import { getBoardIdByRoomId } from "../../api/chat";
+import { getShareArticleByBoardId } from "../../api/share";
+import { getAskArticleDetailByBoardId } from "../../api/ask";
 import QuitChattingReal from "../modal/QuitChattingReal";
 import Oath from "../modal/Oath";
 import ShareComplete from "../modal/ShareComplete";
 
 const ProductChatting = () => {
-  const { state } = useLocation(); // detail로부터 받은 정보들
+  const roomId = useParams().roomId;
+
   const [isConfirm, setIsConfirm] = useState(false);
+  const [boardId, setBoardId] = useState(null);
+  const [boardType, setBoardType] = useState(null);
+  const [boardDetail, setBoardDetail] = useState({
+    writerNickname: null,
+    thumbnailImage: null,
+    boardId: boardId,
+    title: null,
+    location: null,
+    startDay: null,
+    endDay: null,
+    bookmarkCnt: null,
+  });
   const [isOath, setIsOath] = useState(false);
   // 채팅 나가기 관련
   const [isQuit, setIsQuit] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+
   function onClickQuit() {
     setIsQuit(true);
     console.log(isQuit);
@@ -27,16 +43,53 @@ const ProductChatting = () => {
     // console.log(isConfirm);
     setIsConfirm(!isConfirm);
   }
-  // state: {
-  //   writerNickname: writerNickname,
-  //   thumbnailImage: imageList[0],
-  //   boardId: boardId,
-  //   title: title,
-  //   location: location,
-  //   startDay: startDay,
-  //   endDay: endDay,
-  //   bookmarkCnt: bookmarkCnt,
-  // },
+
+  useEffect(() => {
+    // boardId 얻기
+    getBoardIdByRoomId(roomId)
+      .then((res) => {
+        res = res[0];
+
+        setBoardId(res.id);
+        setBoardType(res.type);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    // 게시글의 상세정보 얻기
+    boardType === 1
+      ? getAskArticleDetailByBoardId(boardId)
+          .then((res) => {
+            res = res[0];
+
+            setBoardDetail((prev) => {
+              return {
+                ...prev,
+                writerNickname: "임시",
+                thumbnailImage: res.list[0],
+                boardId: boardId,
+                title: res.title,
+                location: "임시",
+                startDay: res.startDay,
+                endDay: res.endDay,
+                bookmarkCnt: res.bookmarkCnt,
+              };
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+      : getShareArticleByBoardId(boardId)
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+  }, [boardId, boardType]);
 
   return (
     <div css={wrapper}>
@@ -44,11 +97,11 @@ const ProductChatting = () => {
       {/* <div css={modalWrap({ isConfirm })}>{isConfirm ? <MeetConfirm /> : null}</div> */}
 
       <div css={articleInfoWrapper}>
-        <h2>{state.writerNickname} 님과의 대화</h2>
-        <ProductInfo infos={state} />
+        <h2>{boardDetail.writerNickname} 님과의 대화</h2>
+        <ProductInfo infos={boardDetail} />
       </div>
       <div css={mapAndChatWrapper}>
-        <MapAndChatting writerNickname={state.writerNickname} />
+        <MapAndChatting writerNickname={boardDetail.writerNickname} />
       </div>
       <div css={buttonWrapper}>
         <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />

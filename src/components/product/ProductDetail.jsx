@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import DivideLine from "../common/DivideLine";
 import bookmark from "../../assets/images/bookmark.png";
-import baseProfile from "../../assets/images/baseProfile.png";
 import MiddleWideButton from "../button/MiddleWideButton";
 import ProductDeatilHeader from "./ProductDeatilHeader";
 import Map from "../common/Map";
@@ -16,6 +15,7 @@ import bookmarkCancel from "../../assets/images/bookmarkCancel.png";
 import { getUserDetail } from "../../api/user";
 import MannerPoint from "../common/MannerPoint";
 import { useNavigate, useParams } from "react-router-dom";
+import { postChatRoom } from "../../api/chat";
 
 const { kakao } = window;
 
@@ -23,6 +23,7 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const params = useParams();
   const boardId = params.boardId;
+  const loginUserId = localStorage.getItem("id");
 
   const [userId, setUserId] = useState("");
   const [title, setTitle] = useState("");
@@ -36,39 +37,42 @@ const ProductDetail = () => {
   const [hopeAreaLng, setHopeAreaLng] = useState("");
   const [location, setLocation] = useState("");
   const [bookmarkCnt, setBookmarkCnt] = useState(0);
-  const [state, setState] = useState(0); //eslint-disable-line no-unused-vars
-  // 0 : 일반, 1 : 공유중
-  const [writerProfile, setWriterProfile] = useState(""); //eslint-disable-line no-unused-vars
-  const [writerNickname, setWriterNickname] = useState(""); //eslint-disable-line no-unused-vars
-  const [writerArea, setWriterArea] = useState(""); //eslint-disable-line no-unused-vars
-  const [writerManner, setWriterManner] = useState(""); //eslint-disable-line no-unused-vars
+  const [state, setState] = useState(0); // 0 : 일반, 1 : 공유중
+  const [writerProfile, setWriterProfile] = useState("");
+  const [writerNickname, setWriterNickname] = useState("");
+  const [writerArea, setWriterArea] = useState("");
+  const [writerManner, setWriterManner] = useState("");
   const [isBookmarked, setIsBookmarked] = useState(false);
-
-  // 신고 모달 창
 
   function onClickBookmark() {
     if (isBookmarked) {
-      deleteBookmark(boardId, userId);
+      deleteBookmark(boardId, loginUserId);
       setIsBookmarked(false);
     } else {
-      postBookmark(boardId, userId);
+      postBookmark(boardId, loginUserId);
       setIsBookmarked(true);
     }
   }
 
   function onClickMoveChat() {
-    navigate("/product/chat", {
-      state: {
-        writerNickname: writerNickname,
-        thumbnailImage: imageList[0],
-        boardId: boardId,
-        title: title,
-        location: location,
-        startDay: startDay,
-        endDay: endDay,
-        bookmarkCnt: bookmarkCnt,
-      },
+    const type = params.inclues("share") ? 2 : 1; // 요청글 = 1, 공유글 = 2
+
+    postChatRoom({
+      type: type,
+      boardId: boardId,
+      shareUserId: userId,
+      notShareUserId: loginUserId,
+    }).then((res) => {
+      navigate(`/chat/${res[0].id}`);
     });
+  }
+
+  function onClickReturnProduct() {
+    // 반납완료 로직 구현
+  }
+
+  function onClickReserveProduct() {
+    // 예약하기 로직 구현
   }
 
   // 게시글 정보 얻어오기
@@ -98,8 +102,7 @@ const ProductDetail = () => {
         .then((res) => {
           const data = res[0];
 
-          /** 작성자 프로필이미지 받기 필요 */
-          // setWriterProfile(data.profile);
+          setWriterProfile(data.profile_img);
           setWriterNickname(data.nickName);
           setWriterArea(data.area);
           setWriterManner(MannerPoint(data.manner));
@@ -126,9 +129,8 @@ const ProductDetail = () => {
 
   // 내가 이 게시글을 북마크했는지 여부 확인
   useEffect(() => {
-    /** userId가 아니라 recoil에서 현재 로그인한 유저의 id를 파라미터로 넣어야 함. 테스트를 위해 임시로 userId로 넣음. */
-    if (boardId && userId) {
-      getBookmarkStateByUserId(boardId, userId)
+    if (boardId && loginUserId) {
+      getBookmarkStateByUserId(boardId, loginUserId)
         .then((res) => {
           const data = res[0];
 
@@ -137,7 +139,7 @@ const ProductDetail = () => {
         })
         .catch((error) => console.log(error));
     }
-  }, [boardId, userId]);
+  }, [boardId, loginUserId]);
 
   return (
     <div css={wrapper}>
@@ -149,10 +151,10 @@ const ProductDetail = () => {
         <ImageSlide imageSlideList={imageList} />
         <div css={nickNameAndChatWrapper}>
           <div css={nickNameWrapper}>
-            <img src={baseProfile} alt="baseProfile" />
+            <img src={writerProfile} alt="writerProfileImage" />
             <div>
               <span>{writerNickname}</span>
-              <span>{writerArea}</span>
+              {writerArea ? <span>{writerArea}</span> : <span>동네 미인증</span>}
             </div>
             <span>{writerManner}</span>
           </div>
@@ -162,11 +164,16 @@ const ProductDetail = () => {
             ) : (
               <img src={bookmarkCancel} alt="bookmarkCancel" onClick={onClickBookmark} />
             )}
-            {/* 유저 구분 필요 */}
             {state === 0 ? (
-              <MiddleWideButton text="채팅하기" onclick={onClickMoveChat} />
+              loginUserId == userId ? (
+                <></>
+              ) : (
+                <MiddleWideButton text="채팅하기" onclick={onClickMoveChat} />
+              )
+            ) : loginUserId == userId ? (
+              <MiddleWideButton text="반납완료" onclick={onClickReturnProduct} />
             ) : (
-              <MiddleWideButton text="예약하기" />
+              <MiddleWideButton text="예약하기" onclick={onClickReserveProduct} />
             )}
           </div>
         </div>
