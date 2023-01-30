@@ -23,4 +23,5 @@ public interface AppointmentService {
     ChatDatasVO loadMyChatNoReadList(int userId);
     List<ChatDatasVO> loadMyChatList(int userId);
 
+    RoomDto getBoard(int roomId);
 }

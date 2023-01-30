@@ -167,4 +167,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         return chatDatasVOList;
     }
 
+    @Override
+    public RoomDto getBoard(int roomId) {
+        return appointmentMapper.getBoard(roomId);
+    }
+
 }

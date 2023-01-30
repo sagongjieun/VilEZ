@@ -68,6 +68,9 @@
         values (#{type},#{boardId}, #{shareUserId},#{notShareUserId});
     </insert>
 
+    <select id="getBoard" parameterType="int" resultMap="room">
+        select * from Room where id = #{roomId}
+    </select>
 
 
 </mapper>
