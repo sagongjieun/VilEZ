@@ -23,9 +23,26 @@ android {
     }
 
     buildTypes {
+        debug {
+            // 프로가드 활성화
+            minifyEnabled true
+            // 기본 프로가드 설정
+            proguardFile getDefaultProguardFile('proguard-android.txt')
+            // 프로젝트에 필요한 프로가드 설정
+            proguardFile 'proguard-rules.pro'
+            // 디버그에 필요한 프로가드 설정
+            proguardFile 'proguard-debug.pro'
+        }
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // 프로가드 활성화
+            minifyEnabled true
+            // 기본 프로가드 설정
+            proguardFile getDefaultProguardFile('proguard-android.txt')
+            // 프로젝트에 필요한 프로가드 설정
+            proguardFile 'proguard-rules.pro'
+            // 원래 있던 디폴트값
+            /*minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'*/
         }
     }
     compileOptions {
@@ -35,6 +52,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
     viewBinding {
         enabled = true
     }
@@ -112,6 +130,8 @@ dependencies {
     implementation 'com.squareup.moshi:moshi-kotlin:1.11.0'
     implementation 'com.airbnb.android:lottie:3.1.0'
 
+    // kakao oauth
+    implementation "com.kakao.sdk:v2-user:2.12.1" // 카카오 로그인
 }
 
 tasks.register("prepareKotlinBuildScriptModel"){}

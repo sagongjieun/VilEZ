@@ -23,6 +23,7 @@ import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
 import retrofit2.awaitResponse
 private const val ARG_PARAM1 = "id"
+private const val ARG_PARAM2 = "oauth"
 
 private const val TAG = "빌리지_RegisterOauthFragment"
 class RegisterOauthFragment : Fragment() {
@@ -34,11 +35,13 @@ class RegisterOauthFragment : Fragment() {
     private var checkedNickname = ""
 
     private var profileId: String? = null
+    private var oauth: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             profileId = it.getString(ARG_PARAM1)
+            oauth = it.getString(ARG_PARAM2)
         }
         loginActivity = context as LoginActivity
 
@@ -46,10 +49,11 @@ class RegisterOauthFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(id: String) =
+        fun newInstance(id: String, oauth: String) =
             RegisterOauthFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, id)
+                    putString(ARG_PARAM2, oauth)
                 }
             }
     }
@@ -124,7 +128,7 @@ class RegisterOauthFragment : Fragment() {
     }
     private fun naverUserRegister(id: String) {
         CoroutineScope(Dispatchers.Main).launch {
-            val naverUser = User(email=id, password = Common.makeRandomPassword(id), nickName = "$checkedNickname", oauth = "naver")
+            val naverUser = User(email=id, password = Common.makeRandomPassword(id), nickName = "$checkedNickname", oauth = oauth!!)
             Log.d(TAG, "register: 회원가입 할 네이버 유저 정보 : $naverUser")
             val result = ApplicationClass.retrofitUserService.getJoinResult(naverUser).awaitResponse().body()
             Log.d(TAG, "register: $result")
@@ -132,8 +136,6 @@ class RegisterOauthFragment : Fragment() {
                 val dialog = AlertDialogWithCallback(object : AlertDialogInterface {
                     override fun onYesButtonClick(id: String) {
                         Log.d(TAG, "register: 회원가입 success")
-                        // loginActivity.openFragment(4) // 프로필 화면으로 넘어가기
-                        // TODO : 로그인 데이터 넣은 후 메인화면으로 넘어가기
                         loginActivity.login(naverUser)
                     }
                 }, "회원가입에 성공했습니다.", "")
