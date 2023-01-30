@@ -1,35 +1,44 @@
 import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-// import { useState } from "react";
 
-function MeetConfirm({ close }) {
+function MeetConfirm({ close, openOath }) {
   // function MeetConfirm({ 전달할 key이름을 넣는 것, 태그에서 사용할 때 <MeetConfirm (MeetConfirm에서 사용하는 키 이름) : (작성중인 컴포넌트에서 사용하는 이름)})
   const user = { nickname: "회먹고싶다요" };
   const startdate = "2023.01.19";
   const enddate = "2023.01.23";
 
-  const closeModal = () => {
+  function closeModal() {
     close(false);
-  };
+  }
+  function onClickOpenOath() {
+    openOath(true);
+    close(false);
+  }
   return (
-    <div css={modalTop}>
-      <div css={ModalWrap}>
-        <strong>{user.nickname}님과</strong>
-        <div>
-          <strong>
-            {startdate} ~ {enddate}
-          </strong>
+    <div>
+      {close && (
+        <div css={modalTop}>
+          <div css={ModalWrap}>
+            <strong>{user.nickname}님과</strong>
+            <div>
+              <strong>
+                {startdate} ~ {enddate}
+              </strong>
+            </div>
+            <div>기간동안</div>
+            <div>물품을 공유하시겠어요?</div>
+            <div css={buttonWrap}>
+              <button css={badbutton} onClick={closeModal}>
+                취소
+              </button>
+              <button css={goodbutton} onClick={onClickOpenOath}>
+                제출하기
+              </button>
+            </div>
+          </div>
         </div>
-        <div>기간동안</div>
-        <div>물품을 공유하시겠어요?</div>
-        <div css={buttonWrap}>
-          <button css={badbutton} onClick={closeModal}>
-            취소
-          </button>
-          <button css={goodbutton}>제출하기</button>
-        </div>
-      </div>
+      )}
     </div>
   );
 }

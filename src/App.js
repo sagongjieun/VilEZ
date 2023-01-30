@@ -28,6 +28,7 @@ function App() {
         <Route path="/password" element={<FindPassword />} />
         <Route path="/oauth/kakao/callback" element={<OAuthKakao />} />
       </Routes>
+
       {/* <Oath /> */}
       {/* <Qrcode /> */}
       {/* <EditProfile /> */}
