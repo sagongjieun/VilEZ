@@ -1,8 +1,6 @@
 import React, { useCallback, useState } from "react";
-import classNames from "classnames/bind";
-import style from "./Calander.css";
-
-const cx = classNames.bind(style);
+/** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
 
 const Calendar = () => {
   const today = {
@@ -42,7 +40,7 @@ const Calendar = () => {
     for (let i = 0; i < 12; i++) {
       monthArr.push(
         <option key={i + 1} value={i + 1}>
-          {i + 1}월
+          {i + 1 > 9 ? i + 1 : `0${i + 1}`}
         </option>
       );
     }
@@ -61,16 +59,12 @@ const Calendar = () => {
     for (let i = startYear; i < endYear + 1; i++) {
       yearArr.push(
         <option key={i} value={i}>
-          {i}년
+          {i}
         </option>
       );
     }
     return (
-      <select
-        // className="yearSelect"
-        onChange={changeSelectYear}
-        value={selectedYear}
-      >
+      <select onChange={changeSelectYear} value={selectedYear}>
         {yearArr}
       </select>
     );
@@ -87,11 +81,7 @@ const Calendar = () => {
     //요일 반환 함수
     let weekArr = [];
     week.forEach((v) => {
-      weekArr.push(
-        <div key={v} className={cx({ weekday: true }, { sunday: v === "일" }, { saturday: v === "토" })}>
-          {v}
-        </div>
-      );
+      weekArr.push(<div key={v}>{v}</div>);
     });
     return weekArr;
   }, []);
@@ -105,30 +95,17 @@ const Calendar = () => {
       if (week[day] === nowDay) {
         for (let i = 0; i < dateTotalCount; i++) {
           dayArr.push(
-            <div
-              key={i + 1}
-              className={cx(
-                {
-                  //오늘 날짜일 때 표시할 스타일 클라스네임
-                  today: today.year === selectedYear && today.month === selectedMonth && today.date === i + 1,
-                },
-                { weekday: true }, //전체 날짜 스타일
-                {
-                  //전체 일요일 스타일
-                  sunday: new Date(selectedYear, selectedMonth - 1, i + 1).getDay() === 0,
-                },
-                {
-                  //전체 토요일 스타일
-                  saturday: new Date(selectedYear, selectedMonth - 1, i + 1).getDay() === 6,
-                }
-              )}
-            >
-              {i + 1}
+            <div key={i + 1}>
+              <div>{i + 1}</div>
+              <div css={toDo}>
+                <div>반납</div>
+                <div>반납</div>
+              </div>
             </div>
           );
         }
       } else {
-        dayArr.push(<div className="weekday"></div>);
+        dayArr.push(<div css={blankDay}></div>);
       }
     }
 
@@ -136,20 +113,88 @@ const Calendar = () => {
   }, [selectedYear, selectedMonth, dateTotalCount]);
 
   return (
-    <div className="container">
-      <div className="title">
-        <h3>
-          {yearControl()}년 {monthControl()}월
-        </h3>
-        <div className="pagination">
-          <button onClick={prevMonth}>◀︎</button>
-          <button onClick={nextMonth}>▶︎</button>
+    <div css={container}>
+      <div>
+        <button onClick={prevMonth}>◀︎</button>
+        <div>
+          {yearControl()}. {monthControl()}
         </div>
+        <button onClick={nextMonth}>▶︎</button>
       </div>
-      <div className="week">{returnWeek()}</div>
-      <div className="date">{returnDay()}</div>
+      <div>{returnWeek()}</div>
+      <div>{returnDay()}</div>
     </div>
   );
 };
+
+const container = css`
+  width: 1000px;
+  height: 800px;
+  margin: auto;
+  padding: 20px 20px;
+  border: 1px solid rgba(128, 128, 128, 0.267);
+  border-radius: 5px;
+  & * {
+    box-sizing: border-box;
+  }
+  & select {
+    border: none;
+    font-size: 20px;
+    -webkit-appearance: none;
+  }
+  & > div:nth-of-type(1) {
+    display: flex;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    & > div {
+      width: 100px;
+      display: flex;
+      justify-content: center;
+    }
+    & button {
+      border: none;
+      margin-left: 5px;
+      align-self: center;
+      background: none;
+    }
+  }
+  & > div:nth-of-type(2) {
+    //week
+    display: flex;
+    font-size: 16px;
+    margin-top: 20px;
+    & > div {
+      width: calc(100% / 7);
+      text-align: center;
+      /* background-color: aqua; */
+    }
+  }
+  & > div:nth-of-type(3) {
+    // date
+    margin-top: 10px;
+    font-size: 16px;
+    & > div {
+      width: calc(100% / 7);
+      float: left;
+      padding-top: 4px;
+      text-align: center;
+      height: 120px;
+      border-bottom: 1px solid #efefef;
+    }
+  }
+`;
+
+const blankDay = css`
+  border: none !important;
+`;
+
+const toDo = css`
+  & > div {
+    color: #000;
+    background-color: aliceblue;
+    border: 1px solid #fafafa;
+  }
+`;
 
 export default Calendar;
