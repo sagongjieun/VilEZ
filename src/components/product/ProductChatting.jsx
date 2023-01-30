@@ -33,6 +33,7 @@ const ProductChatting = () => {
   // 채팅 나가기 관련
   const [isQuit, setIsQuit] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+
   function onClickQuit() {
     setIsQuit(true);
     console.log(isQuit);
