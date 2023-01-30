@@ -63,8 +63,8 @@
     </update>
 
     <insert id = "join">
-        insert into user(email, password, nickname, point, manner, oauth
-                         date, state)
+        insert into user(email, password, nickname, point, manner,
+                         date, state, oauth)
         values(#{email}, #{password}, #{nickName},
                300, 21, now(), 0, #{oauth});
     </insert>
