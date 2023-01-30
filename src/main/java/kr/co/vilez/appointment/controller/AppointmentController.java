@@ -147,6 +147,20 @@ public class AppointmentController {
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
 
+    @ResponseBody
+    @GetMapping("/room/board/{roomId}")
+    @ApiOperation(value = "Room ID로 board 정보 가져오는 메소드 (path) ")
+    public ResponseEntity<?> getBoard(@PathVariable int roomId) {
+        HttpVO http = new HttpVO();
+        http.setFlag("success");
+        List<RoomDto> list = new ArrayList<>();
+
+        RoomDto roomDto = appointmentService.getBoard(roomId);
+        list.add(roomDto);
+        http.setData(list);
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
+
     ///////////////////////////////////////////////////////////
 
     @MessageMapping("/recvchat")
