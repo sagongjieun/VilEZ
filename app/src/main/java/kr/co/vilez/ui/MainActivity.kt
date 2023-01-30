@@ -46,7 +46,6 @@ class MainActivity : AppCompatActivity() {
             changeFragment(target)
         }
         initView()
-        StompClient.runStomp()
 
     }
 

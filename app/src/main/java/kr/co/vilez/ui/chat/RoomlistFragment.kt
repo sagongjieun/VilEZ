@@ -62,8 +62,6 @@ class ChatlistFragment : Fragment() {
         val rv_room = rootView.findViewById(R.id.rv_room) as RecyclerView
 
 
-//        val data = JSONObject()
-//        data.put("userId",29)
         val roomAdapter = RoomAdapter(DataState.itemList)
 
         rv_room.adapter = roomAdapter
@@ -78,16 +76,12 @@ class ChatlistFragment : Fragment() {
             override fun onClick(v: View, position: Int) {
                 // 클릭 시 이벤트 작성
                 var intent = Intent(mContext,ChatRoomActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                intent.putExtra("roomId",DataState.itemList[position].roomId)
+                intent.putExtra("otherUserId",DataState.itemList[position].otherUserId)
                 startActivity(intent)
-//                DataState.itemList.add(RoomlistData(itemList.size, "test", "testets", "test"))
-//                itemList[1].content = "테스트"
-                roomAdapter.notifyDataSetChanged()
             }
         })
         roomAdapter.notifyDataSetChanged()
-        println(ApplicationClass.prefs.getId())
         StompClient.stompClient.topic("/sendlist/"+ApplicationClass.prefs.getId()).subscribe { topicMessage ->
             run {
                 CoroutineScope(Dispatchers.Main).launch {
@@ -120,7 +114,8 @@ class ChatlistFragment : Fragment() {
                                 json.getInt("roomId"),
                                 json.getString("nickName"),
                                 json.getString("content"),
-                                json.getString("area")
+                                json.getString("area"),
+                                json.getInt("fromUserId")
                             )
                         )
                         roomAdapter.notifyItemInserted(0)

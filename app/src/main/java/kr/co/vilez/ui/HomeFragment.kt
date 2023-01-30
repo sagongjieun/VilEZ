@@ -44,9 +44,9 @@ class HomeFragment : Fragment() {
         initToolBar()
 
         var data = JSONObject()
-        data.put("userId", 28)
+        data.put("userId", ApplicationClass.prefs.getId())
         StompClient.runStomp()
-
+        println(ApplicationClass.prefs.getId())
         StompClient.stompClient.topic("/send_room_list/"+ ApplicationClass.prefs.getId()).subscribe { topicMessage ->
             run {
                 val json = JSONArray(topicMessage.payload)
@@ -57,11 +57,19 @@ class HomeFragment : Fragment() {
                     for (index in 0 until json.length()) {
                         val chat = JSONObject(json.get(index).toString())
                         val chatData = chat.getJSONObject("chatData")
+                        println(chatData.getInt("fromUserId"))
+                        println(ApplicationClass.prefs.getId())
+                        println(chatData.getInt("toUserId"))
                         DataState.itemList.add(
                             RoomlistData(
                                 chatData.getInt("roomId"), chat.getString("nickName"),
                                 chatData.getString("content"),
-                                chat.getString("area")
+                                chat.getString("area"),
+                                if(chatData.getInt("fromUserId") == ApplicationClass.prefs.getId())
+                                    chatData.getInt("toUserId")
+                                else
+                                    chatData.getInt("fromUserId")
+
                             )
                         )
                         DataState.set.add(chatData.getInt("roomId"))
