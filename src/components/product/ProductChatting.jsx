@@ -4,24 +4,30 @@ import { css } from "@emotion/react";
 import ProductInfo from "./ProductInfo";
 import MiddleWideButton from "../button/MiddleWideButton";
 import MapAndChatting from "../Chatting";
-import { useParams } from "react-router-dom";
 import MeetConfirm from "../modal/MeetConfirm";
-import { getBoardIdByRoomId } from "../../api/chat";
-import { getShareArticleByBoardId } from "../../api/share";
-import { getAskArticleDetailByBoardId } from "../../api/ask";
 import QuitChattingReal from "../modal/QuitChattingReal";
 import Oath from "../modal/Oath";
 import ShareComplete from "../modal/ShareComplete";
+import { useParams } from "react-router-dom";
+import { getBoardIdByRoomId } from "../../api/chat";
+import { getAskArticleDetailByBoardId } from "../../api/ask";
+import { getShareArticleByBoardId } from "../../api/share";
+import { getUserDetail } from "../../api/profile";
 
 const ProductChatting = () => {
-  const roomId = useParams().roomId;
+  const { roomId } = useParams();
 
   const [isConfirm, setIsConfirm] = useState(false);
+  const [isOath, setIsOath] = useState(false);
+  const [isQuit, setIsQuit] = useState(false); // 채팅 나가기 관련
+  const [isComplete, setIsComplete] = useState(false);
+
+  const [otherUserId, setOtherUserId] = useState(null);
   const [boardId, setBoardId] = useState(null);
   const [boardType, setBoardType] = useState(null);
   const [boardDetail, setBoardDetail] = useState({
     writerNickname: null,
-    thumbnailImage: null,
+    thumbnailImage: "",
     boardId: boardId,
     title: null,
     location: null,
@@ -29,18 +35,12 @@ const ProductChatting = () => {
     endDay: null,
     bookmarkCnt: null,
   });
-  const [isOath, setIsOath] = useState(false);
-  // 채팅 나가기 관련
-  const [isQuit, setIsQuit] = useState(false);
-  const [isComplete, setIsComplete] = useState(false);
 
   function onClickQuit() {
     setIsQuit(true);
-    console.log(isQuit);
   }
 
   function onClickConfirm() {
-    // console.log(isConfirm);
     setIsConfirm(!isConfirm);
   }
 
@@ -50,8 +50,19 @@ const ProductChatting = () => {
       .then((res) => {
         res = res[0];
 
-        setBoardId(res.id);
+        setBoardId(res.boardId);
         setBoardType(res.type);
+        setOtherUserId(res.shareUserId);
+
+        // 상대방 nickname 얻기
+        getUserDetail(otherUserId).then((res) => {
+          setBoardDetail((prev) => {
+            return {
+              ...prev,
+              writerNickname: res.nickName,
+            };
+          });
+        });
       })
       .catch((error) => {
         console.log(error);
@@ -59,36 +70,50 @@ const ProductChatting = () => {
   }, []);
 
   useEffect(() => {
-    // 게시글의 상세정보 얻기
-    boardType === 1
-      ? getAskArticleDetailByBoardId(boardId)
-          .then((res) => {
-            res = res[0];
+    if ((boardId, boardType)) {
+      // 게시글의 상세정보 얻기
+      boardType === 1
+        ? // 요청글
+          getAskArticleDetailByBoardId(boardId)
+            .then((res) => {
+              res = res[0];
 
-            setBoardDetail((prev) => {
-              return {
-                ...prev,
-                writerNickname: "임시",
-                thumbnailImage: res.list[0],
-                boardId: boardId,
-                title: res.title,
-                location: "임시",
-                startDay: res.startDay,
-                endDay: res.endDay,
-                bookmarkCnt: res.bookmarkCnt,
-              };
+              setBoardDetail((prev) => {
+                return {
+                  ...prev,
+                  thumbnailImage: res.list[0],
+                  title: res.title,
+                  location: res.location,
+                  startDay: res.startDay,
+                  endDay: res.endDay,
+                  bookmarkCnt: res.bookmarkCnt,
+                };
+              });
+            })
+            .catch((error) => {
+              console.log(error);
+            })
+        : // 공유글
+          getShareArticleByBoardId(boardId)
+            .then((res) => {
+              res = res[0];
+
+              setBoardDetail((prev) => {
+                return {
+                  ...prev,
+                  thumbnailImage: res.list[0],
+                  title: res.title,
+                  location: res.location,
+                  startDay: res.startDay,
+                  endDay: res.endDay,
+                  bookmarkCnt: res.bookmarkCnt,
+                };
+              });
+            })
+            .catch((error) => {
+              console.log(error);
             });
-          })
-          .catch((error) => {
-            console.log(error);
-          })
-      : getShareArticleByBoardId(boardId)
-          .then((res) => {
-            console.log(res);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+    }
   }, [boardId, boardType]);
 
   return (
@@ -101,11 +126,16 @@ const ProductChatting = () => {
         <ProductInfo infos={boardDetail} />
       </div>
       <div css={mapAndChatWrapper}>
-        <MapAndChatting writerNickname={boardDetail.writerNickname} />
+        <MapAndChatting
+          roomId={roomId}
+          boardId={boardId}
+          boardType={boardType}
+          otherUserId={otherUserId}
+          otherUserNickname={boardDetail.writerNickname}
+        />
       </div>
       <div css={buttonWrapper}>
         <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
-
         <MiddleWideButton text={"만남 확정하기"} css={meetconfirmWrap} onclick={onClickConfirm} />
       </div>
       <div>{isConfirm ? <MeetConfirm close={setIsConfirm} openOath={setIsOath} /> : null}</div>
