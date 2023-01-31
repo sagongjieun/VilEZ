@@ -103,6 +103,8 @@ class ShareFragment : Fragment() {
                 ApplicationClass.retrofitShareService.boardList(num++, max).awaitResponse().body();
 
             if(result?.flag == "success") {
+                Log.d(TAG, "initView: result : $result")
+                Log.d(TAG, "initView: data[0] ${result.data[0]}")
                 for(data in result.data){
                     var shareData:ShareData
                     if(data.shareListDto.list.size == 0){

@@ -26,6 +26,7 @@ import kr.co.vilez.util.StompClient
 import org.json.JSONArray
 import org.json.JSONObject
 import kr.co.vilez.ui.share.ShareDetailActivity
+import kr.co.vilez.ui.share.ShareListAdapter
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
 import kr.co.vilez.util.Common.Companion.elapsedTime
@@ -36,7 +37,7 @@ class HomeFragment : Fragment() {
     private lateinit var binding:FragmentHomeBinding
     private lateinit var mainActivity: MainActivity
 
-    private lateinit var shareAdapter: FragmentShareAdapter
+    private lateinit var shareAdapter: ShareListAdapter
     private lateinit var shareDatas: ArrayList<ShareData>
     private var index = 0
 
@@ -84,7 +85,7 @@ class HomeFragment : Fragment() {
         }
         StompClient.stompClient.send("/room_list", data.toString()).subscribe()
 
-        //initList()
+        initList()
         return binding.root
     }
 
@@ -93,8 +94,8 @@ class HomeFragment : Fragment() {
         shareDatas = arrayListOf()
 
         // 어댑터 생성
-        shareAdapter = FragmentShareAdapter(shareDatas)
-        shareAdapter.setItemClickListener(object : FragmentShareAdapter.OnItemClickListener {
+        shareAdapter = ShareListAdapter(shareDatas)
+        shareAdapter.setItemClickListener(object : ShareListAdapter.OnItemClickListener {
             // listview item 클릭시 실행할 메소드
             override fun onClick(view: View, position: Int) {
 

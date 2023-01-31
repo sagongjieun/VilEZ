@@ -68,8 +68,8 @@ class ShareDetailActivity : AppCompatActivity() {
       *****************************************************************************************************
        */
                 Log.d(TAG, "init: success됨, result:$result")
-                count = result!!.data[0]!!.list!!.size
-                val myData = result!!.data[0].list
+                count = result!!.data[0].list.size
+                val myData = result.data[0].list
 
                 mPager = binding.viewpager
                 //Adapter

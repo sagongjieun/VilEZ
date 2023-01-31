@@ -5,11 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import kr.co.vilez.databinding.HomeBoardListItemBinding
-import kr.co.vilez.ui.MainActivity
+import kr.co.vilez.databinding.ProfileBoardListItemBinding
 
-class FragmentShareAdapter(val list:MutableList<ShareData>):
-RecyclerView.Adapter<FragmentShareAdapter.ShareHolder>(){
+class ShareListAdapter(val list:MutableList<ShareData>):
+RecyclerView.Adapter<ShareListAdapter.ShareHolder>(){
 
     var pos = -1
     private lateinit var itemClickListener: OnItemClickListener
@@ -21,7 +20,7 @@ RecyclerView.Adapter<FragmentShareAdapter.ShareHolder>(){
         this.itemClickListener = OnItemClickListener
     }
 
-    inner class ShareHolder(var binding:HomeBoardListItemBinding):
+    inner class ShareHolder(var binding: ProfileBoardListItemBinding):
     RecyclerView.ViewHolder(binding.root) {
 
         fun bindingInfo(item: ShareData) {
@@ -38,7 +37,7 @@ RecyclerView.Adapter<FragmentShareAdapter.ShareHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShareHolder {
         // 아이템 하나를 바인딩해서 바로 xml을 찾아갈 수 있도록 함
-        val binding = HomeBoardListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ProfileBoardListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
         return ShareHolder(binding)
     }
