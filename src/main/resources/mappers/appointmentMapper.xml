@@ -80,9 +80,9 @@
     </select>
 
     <select id="checkRoom" parameterType="int" resultMap="room">
-        SELECT *
+        SELECT r.*
         from
-            (select * from room where share_user_id = #{userId} or not_share_user_id = #{userId})
+            (select * from room where share_user_id = #{userId} or not_share_user_id = #{userId}) r
         where board_id = #{boardId} and type = #{type}
 
 
