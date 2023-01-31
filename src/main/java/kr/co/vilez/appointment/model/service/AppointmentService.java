@@ -25,4 +25,6 @@ public interface AppointmentService {
     List<ChatDatasVO> loadMyChatList(int userId);
 
     RoomDto getBoard(int roomId);
+
+    int checkRoom(int userId, int boardId, int type);
 }

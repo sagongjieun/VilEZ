@@ -174,4 +174,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentMapper.getBoard(roomId);
     }
 
+    @Override
+    public int checkRoom(int userId, int boardId, int type) {
+        return appointmentMapper.checkRoom(userId,boardId,type);
+    }
+
 }

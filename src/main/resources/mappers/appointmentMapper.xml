@@ -79,5 +79,13 @@
         select * from room where id = #{roomId}
     </select>
 
+    <select id="checkRoom" parameterType="int" resultType="int">
+        SELECT count(*)
+        from
+            (select * from room where share_user_id = #{userId} or not_share_user_id = #{userId})
+        where board_id = #{boardId} and type = #{type}
+
+
+    </select>
 
 </mapper>
