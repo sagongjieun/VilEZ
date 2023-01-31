@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
     <data>
         <variable
-            name="activity"
-            type="kr.co.vilez.ui.share.search.ShareSearchActivity" />
+            name="fragment"
+            type="kr.co.vilez.ui.share.category.CategorySearchFragment" />
+
+        <variable
+            name="title"
+            type="String" />
     </data>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -29,18 +33,31 @@
                     android:layout_height="24dp"
                     android:layout_gravity="start"
                     android:background="@drawable/icon_back"
-                    android:onClick="@{activity.onBackPressed}"
+                    android:onClick="@{fragment.onBackPressed}"
                     android:scaleType="fitXY" />
 
-                <EditText
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="30dp"
-                    android:layout_marginEnd="30dp"
-                    android:singleLine="true"/>
+                    android:layout_gravity="center"
+                    android:text="@{title}"
+                    android:textSize="20sp" />
             </com.google.android.material.appbar.MaterialToolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white">
+
+            <!-- TODO: Update blank fragment layout -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/hello_blank_fragment" />
+
+        </FrameLayout>
     </LinearLayout>
 </layout>

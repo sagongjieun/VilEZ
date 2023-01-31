@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.ActivityLoginBinding
-import kr.co.vilez.ui.HomeFragment
 import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.ui.dialog.AlertDialog
 import kr.co.vilez.util.ApplicationClass
