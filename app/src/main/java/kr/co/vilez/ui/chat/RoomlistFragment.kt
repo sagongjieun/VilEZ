@@ -35,8 +35,12 @@ class ChatlistFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private val itemList = ArrayList<RoomlistData>()
     private lateinit var mContext: Context
+    private lateinit var rootView : View
+    private lateinit var rv_room : RecyclerView
+
+
+    val roomAdapter = RoomAdapter(DataState.itemList)
     private var set = HashSet<Int>()
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -51,6 +55,50 @@ class ChatlistFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        StompClient.stompClient.topic("/sendlist/"+ApplicationClass.prefs.getId()).subscribe { topicMessage ->
+            run {
+                CoroutineScope(Dispatchers.Main).launch {
+                    val json = JSONObject(topicMessage.payload)
+                    println(json.toString())
+                    val roomId = json.getInt("roomId")
+                    var index = -1;
+                    if (roomId in DataState.set) {
+                        for (i in 0 until DataState.itemList.size) {
+                            if (DataState.itemList[i].roomId == roomId) {
+                                index = i
+                                break
+                            }
+                        }
+
+                        DataState.itemList[index].content = json.getString("content")
+
+                        val item = DataState.itemList.get(index)
+                        if(index != 0 ) {
+                            DataState.itemList.removeAt(index)
+                            DataState.itemList.add(0, item)
+                            roomAdapter.notifyItemMoved(index, 0)
+                        }
+                        roomAdapter.notifyItemChanged(0)
+                    } else {
+                        DataState.set.add(roomId)
+
+                        DataState.itemList.add(
+                            0, RoomlistData(
+                                json.getInt("roomId"),
+                                json.getString("nickName"),
+                                json.getString("content"),
+                                json.getString("area"),
+                                json.getInt("fromUserId")
+                            )
+                        )
+                        roomAdapter.notifyItemInserted(0)
+                    }
+                }
+            }
+        }
+    }
     @SuppressLint("CheckResult")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,11 +106,8 @@ class ChatlistFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
 
-        val rootView = inflater.inflate(R.layout.fragment_roomlist, container, false)
-        val rv_room = rootView.findViewById(R.id.rv_room) as RecyclerView
-
-
-        val roomAdapter = RoomAdapter(DataState.itemList)
+        rootView = inflater.inflate(R.layout.fragment_roomlist, container, false)
+        rv_room = rootView.findViewById(R.id.rv_room) as RecyclerView
 
         rv_room.adapter = roomAdapter
         rv_room.layoutManager = LinearLayoutManager(requireContext())
@@ -70,7 +115,7 @@ class ChatlistFragment : Fragment() {
             val chat = DataState.itemList.get(index)
             set.add(chat.roomId)
         }
-
+        println("dddd")
 
         roomAdapter.setItemClickListener(object : RoomAdapter.OnItemClickListener {
             override fun onClick(v: View, position: Int) {

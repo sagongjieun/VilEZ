@@ -63,31 +63,24 @@ class LoginFragment : Fragment() {
         Log.d(TAG, "login: email : $email, password: $password")
 
         CoroutineScope(Dispatchers.Main).launch {
-            println("1")
             val user = User(email, password)
-            println("1-2")
             val result =
                 ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
-            println("2")
             if (result?.flag == "success") {
-            println("3")
                 Log.d(TAG, "로그인 성공, 받아온 user = ${result.data[0]}")
                 ApplicationClass.prefs.setUser(result.data[0])
                 ApplicationClass.prefs.setAutoLogin(user) // 로그인시 자동으로 자동로그인 넣기
-            println("4")
 
                 val resultDetail = ApplicationClass.retrofitUserService.getUserDetail(result.data[0].id).awaitResponse().body()
                 if(resultDetail?.flag == "success") {
                     Log.d(TAG, "login: Detail조회도 로그인와 같이 성공~, result: ${resultDetail.data[0]}")
                     ApplicationClass.prefs.setUserDetail(resultDetail.data[0])
                 }
-            println("5")
 
                 val intent = Intent(loginActivity, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
-            println("6")
             } else {
                 Log.d(TAG, "login: 로그인 실패, result:$result")
 

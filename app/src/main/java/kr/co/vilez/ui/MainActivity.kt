@@ -24,6 +24,7 @@ import kr.co.vilez.ui.profile.SharedListFragment
 import kr.co.vilez.ui.share.ShareFragment
 import kr.co.vilez.ui.user.LoginActivity
 import kr.co.vilez.ui.user.ProfileFragment
+import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.DataState
 import kr.co.vilez.util.StompClient
 import org.json.JSONArray
@@ -46,7 +47,37 @@ class MainActivity : AppCompatActivity() {
             changeFragment(target)
         }
         initView()
+        var data = JSONObject()
+        data.put("userId", ApplicationClass.prefs.getId())
+        StompClient.runStomp()
+        StompClient.stompClient.topic("/send_room_list/"+ ApplicationClass.prefs.getId()).subscribe { topicMessage ->
+            run {
+                val json = JSONArray(topicMessage.payload)
+                CoroutineScope(Dispatchers.Main).launch {
 
+                    DataState.itemList = ArrayList<RoomlistData>()
+                    for (index in 0 until json.length()) {
+                        val chat = JSONObject(json.get(index).toString())
+                        val chatData = chat.getJSONObject("chatData")
+                        DataState.itemList.add(
+                            RoomlistData(
+                                chatData.getInt("roomId"), chat.getString("nickName"),
+                                chatData.getString("content"),
+                                chat.getString("area"),
+                                if(chatData.getInt("fromUserId") == ApplicationClass.prefs.getId())
+                                    chatData.getInt("toUserId")
+                                else
+                                    chatData.getInt("fromUserId")
+
+                            )
+                        )
+                        DataState.set.add(chatData.getInt("roomId"))
+                    }
+                }
+            }
+        }
+
+        StompClient.stompClient.send("/room_list", data.toString()).subscribe()
     }
 
     private fun changeFragment(name: String) {

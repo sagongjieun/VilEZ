@@ -22,10 +22,12 @@ import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentChatBinding
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.ApplicationClass.Companion.retrofitChatService
+import kr.co.vilez.util.DataState
 import kr.co.vilez.util.StompClient
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
+import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.awaitResponse
 
@@ -59,6 +61,35 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        StompClient.stompClient.topic("/send_room_list/"+ ApplicationClass.prefs.getId()).subscribe { topicMessage ->
+            run {
+                val json = JSONArray(topicMessage.payload)
+                CoroutineScope(Dispatchers.Main).launch {
+
+                    DataState.itemList = ArrayList<RoomlistData>()
+                    for (index in 0 until json.length()) {
+                        val chat = JSONObject(json.get(index).toString())
+                        val chatData = chat.getJSONObject("chatData")
+                        DataState.itemList.add(
+                            RoomlistData(
+                                chatData.getInt("roomId"), chat.getString("nickName"),
+                                chatData.getString("content"),
+                                chat.getString("area"),
+                                if(chatData.getInt("fromUserId") == ApplicationClass.prefs.getId())
+                                    chatData.getInt("toUserId")
+                                else
+                                    chatData.getInt("fromUserId")
+
+                            )
+                        )
+                        DataState.set.add(chatData.getInt("roomId"))
+                    }
+                }
+            }
+        }
+    }
     @SuppressLint("CheckResult")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,7 +110,6 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
                 data.put("toUserId",28)
                 data.put("content",txt_edit.text)
                 data.put("time",System.currentTimeMillis())
-                println("여기옵니까")
                 //StompClient.stompClient.send("/recvchat", data.toString()).subscribe()
             }
             true

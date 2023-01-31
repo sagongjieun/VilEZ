@@ -40,6 +40,7 @@ class StompClient {
                         Log.i("OPEND", "!!")
                     }
                     LifecycleEvent.Type.CLOSED -> {
+                        stompClient.connect(headerList)
                         Log.i("CLOSED", "!!")
 
                     }
