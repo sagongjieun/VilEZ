@@ -30,6 +30,7 @@
         <result column="end_day" property="endDay"/>
         <result column="state" property="state"/>
         <result column="path" property="path"/>
+        <result column="address" property="address"/>
     </resultMap>
 
     <resultMap id="path" type="imgPath">
