@@ -29,5 +29,6 @@ public class AskDto {
     private String nickName;
     private String area;
     private int state;
+    private String address;
 
 }

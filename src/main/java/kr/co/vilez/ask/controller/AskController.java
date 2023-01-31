@@ -19,8 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/askboard")
 public class AskController {
-
-
     final AskService askService;
 
 

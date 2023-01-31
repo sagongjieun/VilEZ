@@ -50,7 +50,6 @@ public class AppointmentController {
         } catch(Exception e){
             e.printStackTrace();
         }
-
         return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
     }
 
@@ -71,7 +70,6 @@ public class AppointmentController {
         } catch(Exception e){
             e.printStackTrace();
         }
-
         return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
     }
 
