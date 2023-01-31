@@ -85,12 +85,22 @@ const Chatting = ({ roomId, boardId, boardType, otherUserId, otherUserNickname }
     if (chatRoomId) {
       /** 채팅방의 마지막 공유지도 장소 받기 */
       getLatestMapLocation(chatRoomId).then((res) => {
-        res = res[0];
+        // 마지막 장소가 있다면
+        if (res) {
+          res = res[0];
 
-        setMovedLat(res.lat);
-        setMovedLng(res.lng);
-        setMovedZoomLevel(res.zoomLevel);
-        setMovedMarker(res.isMarker);
+          setMovedLat(res.lat);
+          setMovedLng(res.lng);
+          setMovedZoomLevel(res.zoomLevel);
+          setMovedMarker(res.isMarker);
+        }
+        // 마지막 장소가 없다면
+        else {
+          // 서울시청 좌표
+          setMovedLat(37.56682870560737);
+          setMovedLng(126.9786409384806);
+          setMovedZoomLevel(3);
+        }
       });
 
       /** 소켓에 연결되면 채팅 내역 보여주기 */

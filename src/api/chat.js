@@ -70,6 +70,21 @@ async function getBoardIdByRoomId(roomId) {
   }
 }
 
+async function getCheckMyRoom(boardId, type, userId) {
+  try {
+    const { data } = await jsonAxios.get(
+      `/appointments/board/checkroom?boardId=${boardId}&type=${type}&userId=${userId}`
+    );
+
+    // 채팅방 이미 존재
+    if (data.flag === "success") return data.data;
+    // 채팅방 미존재
+    else return false;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // POST
 
 async function postChatRoom(body) {
@@ -101,6 +116,7 @@ export {
   getMyAppointments,
   getLatestChattingListByUserId,
   getBoardIdByRoomId,
+  getCheckMyRoom,
   postChatRoom,
   postAppointment,
 };

@@ -17,6 +17,7 @@ import MannerPoint from "../common/MannerPoint";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { postChatRoom } from "../../api/chat";
 import { getAskArticleDetailByBoardId } from "../../api/ask";
+import { getCheckMyRoom } from "../../api/chat";
 
 const ProductDetail = () => {
   const navigate = useNavigate();
@@ -56,27 +57,34 @@ const ProductDetail = () => {
   function onClickMoveChat() {
     const type = pathname.includes("share") ? 2 : 1; // 요청글 = 1, 공유글 = 2
 
-    /** 여기서 이미 공유자와 피공유자간의 boardId 채팅방이 있는지 확인해줘야 함 */
-    // 채팅방 생성
-    // 요청글이면 공유자 = 나, 피공유자 = 상대방
-    // 공유글이면 공유자 = 상대방, 피공유자 = 나
-    type === 1
-      ? postChatRoom({
-          type: type,
-          boardId: boardId,
-          shareUserId: loginUserId,
-          notShareUserId: userId,
-        }).then((res) => {
-          navigate(`/product/chat/${res[0].id}`);
-        })
-      : postChatRoom({
-          type: type,
-          boardId: boardId,
-          shareUserId: userId,
-          notShareUserId: loginUserId,
-        }).then((res) => {
-          navigate(`/product/chat/${res[0].id}`);
-        });
+    getCheckMyRoom(boardId, type, loginUserId).then((res) => {
+      // 채팅방이 이미 존재하면 해당 방으로 이동
+      if (res) {
+        navigate(`/product/chat/${res[0].id}`);
+      }
+      // 채팅방이 없으면 채팅방 생성
+      else {
+        // 요청글이면 공유자 = 나, 피공유자 = 상대방
+        // 공유글이면 공유자 = 상대방, 피공유자 = 나
+        type === 1
+          ? postChatRoom({
+              type: type,
+              boardId: boardId,
+              shareUserId: loginUserId,
+              notShareUserId: userId,
+            }).then((res) => {
+              navigate(`/product/chat/${res[0].id}`);
+            })
+          : postChatRoom({
+              type: type,
+              boardId: boardId,
+              shareUserId: userId,
+              notShareUserId: loginUserId,
+            }).then((res) => {
+              navigate(`/product/chat/${res[0].id}`);
+            });
+      }
+    });
   }
 
   function onClickReturnProduct() {
@@ -107,7 +115,7 @@ const ProductDetail = () => {
           setHopeAreaLng(data.hopeAreaLng);
           setBookmarkCnt(data.bookmarkCnt);
           setState(data.state);
-          setLocation(data.location);
+          setLocation(data.address);
         })
       : getShareArticleByBoardId(boardId).then((res) => {
           const data = res[0];
@@ -124,7 +132,7 @@ const ProductDetail = () => {
           setHopeAreaLng(data.hopeAreaLng);
           setBookmarkCnt(data.bookmarkCnt);
           setState(data.state);
-          setLocation(data.location);
+          setLocation(data.address);
         });
   }, []);
 
