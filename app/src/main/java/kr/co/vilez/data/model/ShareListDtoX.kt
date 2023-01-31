@@ -16,5 +16,6 @@ data class ShareListDtoX(
     val startDay: String,
     val state: Int,
     val title: String,
-    val userId: Int
+    val userId: Int,
+    val address: String,
 )

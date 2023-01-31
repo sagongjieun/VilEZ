@@ -6,10 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kr.co.vilez.databinding.HomeBoardListItemBinding
-import kr.co.vilez.ui.MainActivity
 
-class FragmentShareAdapter(val list:MutableList<ShareData>):
-RecyclerView.Adapter<FragmentShareAdapter.ShareHolder>(){
+class ShareListAdapter(val list:MutableList<ShareData>):
+RecyclerView.Adapter<ShareListAdapter.ShareHolder>(){
 
     var pos = -1
     private lateinit var itemClickListener: OnItemClickListener
@@ -21,7 +20,7 @@ RecyclerView.Adapter<FragmentShareAdapter.ShareHolder>(){
         this.itemClickListener = OnItemClickListener
     }
 
-    inner class ShareHolder(var binding:HomeBoardListItemBinding):
+    inner class ShareHolder(var binding: HomeBoardListItemBinding):
     RecyclerView.ViewHolder(binding.root) {
 
         fun bindingInfo(item: ShareData) {
