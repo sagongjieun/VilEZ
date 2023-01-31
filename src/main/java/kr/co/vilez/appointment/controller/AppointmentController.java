@@ -157,6 +157,25 @@ public class AppointmentController {
     }
 
     @ResponseBody
+    @GetMapping("/board/checkroom")
+    @ApiOperation(value = "userId와 boardId와 type으로 해당 글에 내 방이 있는지 확인한다.\n (글 읽는사람 시점, 쿼리스트링)")
+    public ResponseEntity<?> checkRoom(@RequestParam int userId,
+                                       @RequestParam int boardId,
+                                       @RequestParam int type) {
+        HttpVO http = new HttpVO();
+        RoomDto room = appointmentService.checkRoom(userId,boardId,type);
+        List<RoomDto> list = new ArrayList<>();
+        if(room != null) {
+            http.setFlag("success");
+            list.add(room);
+            http.setData(list);
+        } else {
+            http.setFlag("fail");
+        }
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
+
+    @ResponseBody
     @PostMapping("/room")
     public ResponseEntity<?> createRoom(@RequestBody RoomDto room) {
         HttpVO http = new HttpVO();
