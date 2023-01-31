@@ -17,14 +17,17 @@ import MannerPoint from "../common/MannerPoint";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { postChatRoom } from "../../api/chat";
 import { getAskArticleDetailByBoardId } from "../../api/ask";
+import { getCheckMyRoom } from "../../api/chat";
 
 const ProductDetail = () => {
   const navigate = useNavigate();
   const boardId = parseInt(useParams().boardId);
   const pathname = useLocation().pathname;
-  const loginUserId = localStorage.getItem("id");
 
-  const [userId, setUserId] = useState("");
+  const loginUserId = localStorage.getItem("id"); // 로그인유저 id
+  const [writerId, setWriterId] = useState(""); // 공유자 id
+  const [isRelated, setIsRelated] = useState(false); // 로그인유저가 현재 공유중인 공유자 or 피공유자인지 확인
+
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [content, setContent] = useState("");
@@ -56,35 +59,38 @@ const ProductDetail = () => {
   function onClickMoveChat() {
     const type = pathname.includes("share") ? 2 : 1; // 요청글 = 1, 공유글 = 2
 
-    /** 여기서 이미 공유자와 피공유자간의 boardId 채팅방이 있는지 확인해줘야 함 */
-    // 채팅방 생성
-    // 요청글이면 공유자 = 나, 피공유자 = 상대방
-    // 공유글이면 공유자 = 상대방, 피공유자 = 나
-    type === 1
-      ? postChatRoom({
-          type: type,
-          boardId: boardId,
-          shareUserId: loginUserId,
-          notShareUserId: userId,
-        }).then((res) => {
-          navigate(`/product/chat/${res[0].id}`);
-        })
-      : postChatRoom({
-          type: type,
-          boardId: boardId,
-          shareUserId: userId,
-          notShareUserId: loginUserId,
-        }).then((res) => {
-          navigate(`/product/chat/${res[0].id}`);
-        });
+    getCheckMyRoom(boardId, type, loginUserId).then((res) => {
+      // 채팅방이 이미 존재하면 해당 방으로 이동
+      if (res) {
+        navigate(`/product/chat/${res[0].id}`);
+      }
+      // 채팅방이 없으면 채팅방 생성
+      else {
+        // 요청글이면 공유자 = 나, 피공유자 = 상대방
+        // 공유글이면 공유자 = 상대방, 피공유자 = 나
+        type === 1
+          ? postChatRoom({
+              type: type,
+              boardId: boardId,
+              shareUserId: loginUserId,
+              notShareUserId: writerId,
+            }).then((res) => {
+              navigate(`/product/chat/${res[0].id}`);
+            })
+          : postChatRoom({
+              type: type,
+              boardId: boardId,
+              shareUserId: writerId,
+              notShareUserId: loginUserId,
+            }).then((res) => {
+              navigate(`/product/chat/${res[0].id}`);
+            });
+      }
+    });
   }
 
   function onClickReturnProduct() {
     // 반납완료 로직 구현
-  }
-
-  function onClickReserveProduct() {
-    // 예약하기 로직 구현
   }
 
   // 게시글 정보 얻어오기
@@ -95,7 +101,7 @@ const ProductDetail = () => {
       ? getAskArticleDetailByBoardId(boardId).then((res) => {
           const data = res[0];
 
-          setUserId(data.userId);
+          setWriterId(data.userId);
           setTitle(data.title);
           setCategory(data.category);
           setDate(elapsedTime(data.date));
@@ -107,12 +113,12 @@ const ProductDetail = () => {
           setHopeAreaLng(data.hopeAreaLng);
           setBookmarkCnt(data.bookmarkCnt);
           setState(data.state);
-          setLocation(data.location);
+          setLocation(data.address);
         })
       : getShareArticleByBoardId(boardId).then((res) => {
           const data = res[0];
 
-          setUserId(data.userId);
+          setWriterId(data.userId);
           setTitle(data.title);
           setCategory(data.category);
           setDate(elapsedTime(data.date));
@@ -124,14 +130,14 @@ const ProductDetail = () => {
           setHopeAreaLng(data.hopeAreaLng);
           setBookmarkCnt(data.bookmarkCnt);
           setState(data.state);
-          setLocation(data.location);
+          setLocation(data.address);
         });
   }, []);
 
   // 작성자(공유자) 정보 얻어오기
   useEffect(() => {
-    if (userId) {
-      getUserDetail(userId)
+    if (writerId) {
+      getUserDetail(writerId)
         .then((res) => {
           const data = res[0];
 
@@ -142,7 +148,7 @@ const ProductDetail = () => {
         })
         .catch((error) => console.log(error));
     }
-  }, [userId]);
+  }, [writerId]);
 
   // 내가 이 게시글을 북마크했는지 여부 확인
   useEffect(() => {
@@ -157,6 +163,18 @@ const ProductDetail = () => {
         .catch((error) => console.log(error));
     }
   }, [boardId, loginUserId]);
+
+  // 이 게시물이 이미 공유중일 때, 내가 공유자 or 피공유자인지 확인
+  useEffect(() => {
+    if (state === 1) {
+      const type = pathname.includes("share") ? 2 : 1; // 요청글 = 1, 공유글 = 2
+
+      getCheckMyRoom(boardId, type, loginUserId).then((res) => {
+        if (!res) setIsRelated(false);
+        else setIsRelated(true);
+      });
+    }
+  }, [state]);
 
   return (
     <div css={wrapper}>
@@ -182,15 +200,17 @@ const ProductDetail = () => {
               <img src={bookmarkCancel} alt="bookmarkCancel" onClick={onClickBookmark} />
             )}
             {state === 0 ? (
-              loginUserId == userId ? (
+              loginUserId == writerId ? (
                 <></>
               ) : (
                 <MiddleWideButton text="채팅하기" onclick={onClickMoveChat} />
               )
-            ) : loginUserId == userId ? (
-              <MiddleWideButton text="반납완료" onclick={onClickReturnProduct} />
+            ) : loginUserId == writerId ? (
+              <MiddleWideButton text="반납확정" onclick={onClickReturnProduct} />
+            ) : isRelated ? (
+              <MiddleWideButton text="채팅하기" onclick={onClickMoveChat} />
             ) : (
-              <MiddleWideButton text="예약하기" onclick={onClickReserveProduct} />
+              <MiddleWideButton text="예약하기" onclick={onClickMoveChat} />
             )}
           </div>
         </div>
@@ -223,6 +243,7 @@ const ProductDetail = () => {
           <a>더 보기</a>
         </div>
         <div>
+          {/* 임시 데이터 */}
           <ProductCardView />
           <ProductCardView />
           <ProductCardView />

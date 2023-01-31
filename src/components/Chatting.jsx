@@ -3,13 +3,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { css } from "@emotion/react";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
-import { postChatRoom } from "../api/chat"; //eslint-disable-line no-unused-vars
 import baseProfile from "../assets/images/baseProfile.png";
 import Map from "./common/Map";
 import recommendLocationButton from "../assets/images/recommendLocationButton.png";
 import selectDateButton from "../assets/images/selectDateButton.png";
 import startWebRTCButton from "../assets/images/startWebRTCButton.png";
 import { getLatestMapLocation, getChatHistory } from "../api/chat";
+import CalendarModal from "./modal/CalendarModal";
 
 let client;
 
@@ -25,6 +25,7 @@ const Chatting = ({ roomId, boardId, boardType, otherUserId, otherUserNickname }
   const [movedLng, setMovedLng] = useState("");
   const [movedZoomLevel, setMovedZoomLevel] = useState(0);
   const [movedMarker, setMovedMarker] = useState(false);
+  const [calendarModalOpen, setCalendarModalOpen] = useState(false);
 
   function onKeyDownSendMessage(e) {
     if (e.keyCode === 13) {
@@ -81,16 +82,38 @@ const Chatting = ({ roomId, boardId, boardType, otherUserId, otherUserNickname }
     }
   }
 
+  function onClickOpenCalendarModal() {
+    setCalendarModalOpen(true);
+  }
+
+  function onClickOpenRTC() {
+    alert("webRTC 열기");
+  }
+
+  function onClickRecommendLocation() {
+    alert("추천 장소 가져오기");
+  }
+
   useEffect(() => {
     if (chatRoomId) {
       /** 채팅방의 마지막 공유지도 장소 받기 */
       getLatestMapLocation(chatRoomId).then((res) => {
-        res = res[0];
+        // 마지막 장소가 있다면
+        if (res) {
+          res = res[0];
 
-        setMovedLat(res.lat);
-        setMovedLng(res.lng);
-        setMovedZoomLevel(res.zoomLevel);
-        setMovedMarker(res.isMarker);
+          setMovedLat(res.lat);
+          setMovedLng(res.lng);
+          setMovedZoomLevel(res.zoomLevel);
+          setMovedMarker(res.isMarker);
+        }
+        // 마지막 장소가 없다면
+        else {
+          // 서울시청 좌표
+          setMovedLat(37.56682870560737);
+          setMovedLng(126.9786409384806);
+          setMovedZoomLevel(3);
+        }
       });
 
       /** 소켓에 연결되면 채팅 내역 보여주기 */
@@ -143,9 +166,10 @@ const Chatting = ({ roomId, boardId, boardType, otherUserId, otherUserNickname }
       </div>
       <div>
         <div css={menusWrapper}>
-          <img src={selectDateButton} />
-          <img src={startWebRTCButton} />
-          <img src={recommendLocationButton} />
+          <img src={selectDateButton} onClick={onClickOpenCalendarModal} />
+          {calendarModalOpen && <CalendarModal setCalendarModalOpen={setCalendarModalOpen} />}
+          <img src={startWebRTCButton} onClick={onClickOpenRTC} />
+          <img src={recommendLocationButton} onClick={onClickRecommendLocation} />
         </div>
         <div css={chatWrapper}>
           <div ref={scrollRef}>
@@ -184,6 +208,15 @@ const Chatting = ({ roomId, boardId, boardType, otherUserId, otherUserNickname }
   );
 };
 
+// const calendar = css`
+//   padding: 14px 18px;
+//   font-size: 18px;
+//   background: #ffffff;
+//   border: 1px solid #e1e2e3;
+//   border-radius: 5px;
+//   width: 200px;
+// `;
+
 const mapWrapper = css`
   display: flex;
   flex-direction: column;
@@ -207,6 +240,7 @@ const menusWrapper = css`
     cursor: pointer;
     width: 60px;
     height: 60px;
+    position: relative;
   }
 `;
 
