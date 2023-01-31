@@ -56,6 +56,25 @@ public class AppointmentController {
 
     // 내가 공유받은 물품 목록을 볼 수 있다.
     // 한 게시글에서 여러번 물건을 빌렸으면 가장 최근에 빌린 내역만이 나온다.
+    @GetMapping("/my/apointlist/{userId}")
+    @ApiOperation(value = "나의 약속 정보들을 불러온다." ,
+                 notes = "List에 dto 담아서 리턴")
+    public ResponseEntity<?> getMyAppointmentList(@PathVariable int userId){
+        HttpVO httpVO = new HttpVO();
+        List<Object> data = new ArrayList<>();
+
+        try {
+            data.add(appointmentService.getMyAppointmentCalendarList(userId));
+//            data.add(appointmentService.getMyAppointmentList(userId));
+            httpVO.setFlag("success");
+            httpVO.setData(data);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
+    }
+
     @ResponseBody
     @GetMapping("/my/{userId}")
     @ApiOperation(value = "나의 약속 정보들을 불러온다." ,

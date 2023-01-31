@@ -5,6 +5,7 @@
     <resultMap id="appointment" type="appointmentDto">
         <result column="appointment_id" property="appointmentId"/>
         <result column="board_id" property="boardId"/>
+        <result column="title" property="title"/>
         <result column="share_user_id" property="shareUserId"/>
         <result column="not_share_user_id" property="notShareUserId"/>
         <result column="appointment_start" property="appointmentStart"/>
@@ -31,6 +32,13 @@
         <result column="not_share_user_id" property="notShareUserId"/>
     </resultMap>
 
+    <select id="getMyAppointmentCalendarList" parameterType="int" resultMap="appointment">
+        select s.id as board_id, s.title as title, a.appointment_start as appointment_start, a.appointment_end as appointment_end
+        from appointment as a
+        left join sharing_board as s
+        on a.board_id = s.id
+        where not_share_user_id = #{userId};
+    </select>
 
     <select id="getBoardState" parameterType="int" resultType="kr.co.vilez.appointment.model.vo.BoardStateVO">
         SELECT board_id as boardId
