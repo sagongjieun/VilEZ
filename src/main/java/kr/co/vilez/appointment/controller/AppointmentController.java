@@ -144,9 +144,12 @@ public class AppointmentController {
                                        @RequestParam int boardId,
                                        @RequestParam int type) {
         HttpVO http = new HttpVO();
-        int cnt = appointmentService.checkRoom(userId,boardId,type);
-        if(cnt == 0) {
+        RoomDto room = appointmentService.checkRoom(userId,boardId,type);
+        List<RoomDto> list = new ArrayList<>();
+        if(room != null) {
             http.setFlag("success");
+            list.add(room);
+            http.setData(list);
         } else {
             http.setFlag("fail");
         }
