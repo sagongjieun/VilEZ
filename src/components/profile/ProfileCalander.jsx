@@ -1,8 +1,7 @@
-import React, { useCallback, useState } from "react";
-import classNames from "classnames/bind";
-import style from "./Calander.css";
-
-const cx = classNames.bind(style);
+import React, { useCallback, useState, useEffect } from "react";
+/** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
+import { getAppointmentsByUserId } from "../../api/appointment";
 
 const Calendar = () => {
   const today = {
@@ -15,9 +14,31 @@ const Calendar = () => {
   const [selectedYear, setSelectedYear] = useState(today.year); //현재 선택된 연도
   const [selectedMonth, setSelectedMonth] = useState(today.month); //현재 선택된 달
   const dateTotalCount = new Date(selectedYear, selectedMonth, 0).getDate(); //선택된 연도, 달의 마지막 날짜
-
+  const [appointments, setAppointments] = useState([]);
+  const [nowStartAppointments, setNowStartAppointments] = useState([]);
+  const [nowEndAppointments, setNowEndAppointments] = useState([]);
+  useEffect(() => {
+    getAppointmentsByUserId(29).then((response) => {
+      setAppointments(response[0]);
+    });
+  }, []);
+  useEffect(() => {
+    const start = appointments?.filter((appoint) => {
+      appoint.appointmentStart.slice(0, 4) == String(selectedYear) &&
+        appoint.appointmentStart.slice(5, 7) == ("0" + String(selectedMonth)).slice(-2);
+    });
+    const end = appointments?.filter((appoint) => {
+      appoint.appointmentEnd.slice(0, 4) == String(selectedYear) &&
+        appoint.appointmentEnd.slice(5, 7) == ("0" + String(selectedMonth)).slice(-2);
+    });
+    setTimeout(() => {
+      console.log(start);
+    }, 2000);
+    setNowStartAppointments(start);
+    setNowEndAppointments(end);
+  }, [appointments]);
   const prevMonth = useCallback(() => {
-    //이전 달 보기 보튼
+    //이전 달 보기 버튼
     if (selectedMonth === 1) {
       setSelectedMonth(12);
       setSelectedYear(selectedYear - 1);
@@ -42,7 +63,7 @@ const Calendar = () => {
     for (let i = 0; i < 12; i++) {
       monthArr.push(
         <option key={i + 1} value={i + 1}>
-          {i + 1}월
+          {i + 1 > 9 ? i + 1 : `0${i + 1}`}
         </option>
       );
     }
@@ -61,16 +82,12 @@ const Calendar = () => {
     for (let i = startYear; i < endYear + 1; i++) {
       yearArr.push(
         <option key={i} value={i}>
-          {i}년
+          {i}
         </option>
       );
     }
     return (
-      <select
-        // className="yearSelect"
-        onChange={changeSelectYear}
-        value={selectedYear}
-      >
+      <select onChange={changeSelectYear} value={selectedYear}>
         {yearArr}
       </select>
     );
@@ -87,11 +104,7 @@ const Calendar = () => {
     //요일 반환 함수
     let weekArr = [];
     week.forEach((v) => {
-      weekArr.push(
-        <div key={v} className={cx({ weekday: true }, { sunday: v === "일" }, { saturday: v === "토" })}>
-          {v}
-        </div>
-      );
+      weekArr.push(<div key={v}>{v}</div>);
     });
     return weekArr;
   }, []);
@@ -99,57 +112,129 @@ const Calendar = () => {
   const returnDay = useCallback(() => {
     //선택된 달의 날짜들 반환 함수
     let dayArr = [];
-
     for (const nowDay of week) {
       const day = new Date(selectedYear, selectedMonth - 1, 1).getDay();
       if (week[day] === nowDay) {
         for (let i = 0; i < dateTotalCount; i++) {
           dayArr.push(
-            <div
-              key={i + 1}
-              className={cx(
-                {
-                  //오늘 날짜일 때 표시할 스타일 클라스네임
-                  today: today.year === selectedYear && today.month === selectedMonth && today.date === i + 1,
-                },
-                { weekday: true }, //전체 날짜 스타일
-                {
-                  //전체 일요일 스타일
-                  sunday: new Date(selectedYear, selectedMonth - 1, i + 1).getDay() === 0,
-                },
-                {
-                  //전체 토요일 스타일
-                  saturday: new Date(selectedYear, selectedMonth - 1, i + 1).getDay() === 6,
-                }
-              )}
-            >
-              {i + 1}
+            <div key={i + 1}>
+              <div css={date}>{i + 1}</div>
+              <div css={toDo}>
+                {nowStartAppointments?.map((appoint) => (
+                  // const startDate = appoint.appointmentStart.slice(8, 10);
+                  // startDate == String(date) ? <div key={appoint.appointmentId}>{appoint.title}</div> : null;
+                  <div key={appoint.id}>{appoint.id}</div>
+                ))}
+              </div>
             </div>
           );
         }
       } else {
-        dayArr.push(<div className="weekday"></div>);
+        dayArr.push(<div css={blankDay}></div>);
       }
     }
 
     return dayArr;
-  }, [selectedYear, selectedMonth, dateTotalCount]);
+  }, [selectedYear, selectedMonth, dateTotalCount, appointments, nowStartAppointments, nowEndAppointments]);
 
   return (
-    <div className="container">
-      <div className="title">
-        <h3>
-          {yearControl()}년 {monthControl()}월
-        </h3>
-        <div className="pagination">
-          <button onClick={prevMonth}>◀︎</button>
-          <button onClick={nextMonth}>▶︎</button>
+    <div css={container}>
+      <div>
+        <button onClick={prevMonth}>◀︎</button>
+        <div>
+          {yearControl()}
+          <span>.</span>
+          {monthControl()}
         </div>
+        <button onClick={nextMonth}>▶︎</button>
       </div>
-      <div className="week">{returnWeek()}</div>
-      <div className="date">{returnDay()}</div>
+      <div>{returnWeek()}</div>
+      <div>{returnDay()}</div>
     </div>
   );
 };
+
+const container = css`
+  width: 1000px;
+  height: 800px;
+  margin: auto;
+  padding: 20px 20px;
+  /* border: 1px solid rgba(128, 128, 128, 0.267); */
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  & * {
+    box-sizing: border-box;
+    text-align: left;
+  }
+  & span {
+    font-size: 20px;
+  }
+  & select {
+    border: none;
+    font-size: 20px;
+    -webkit-appearance: none;
+  }
+  & > div:nth-of-type(1) {
+    display: flex;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    & > div {
+      width: 100px;
+      display: flex;
+      justify-content: center;
+    }
+    & button {
+      cursor: pointer;
+      border: none;
+      padding: 0 10px;
+      align-self: center;
+      background: none;
+    }
+  }
+  & > div:nth-of-type(2) {
+    //week
+    display: flex;
+    font-size: 16px;
+    margin-top: 20px;
+    & > div {
+      width: calc(100% / 7);
+      text-align: left;
+      padding: 0 4px;
+      /* background-color: aqua; */
+    }
+  }
+  & > div:nth-of-type(3) {
+    // date
+    margin-top: 10px;
+    font-size: 16px;
+    & > div {
+      width: calc(100% / 7);
+      float: left;
+      padding-top: 4px;
+      text-align: center;
+      height: 120px;
+      border-bottom: 1px solid #efefef;
+    }
+  }
+`;
+
+const blankDay = css`
+  border: none !important;
+`;
+
+const date = css``;
+
+const toDo = css`
+  margin-top: 5px;
+  & > div {
+    color: #000;
+    background-color: aliceblue;
+    border: 1px solid #fafafa;
+    font-size: 14px;
+    text-align: left;
+    padding: 0 4px;
+  }
+`;
 
 export default Calendar;

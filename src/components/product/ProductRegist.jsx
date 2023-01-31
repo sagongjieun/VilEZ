@@ -149,13 +149,13 @@ const ProductRegist = () => {
         <h3>
           제목 <b>*</b>
         </h3>
-        <InputBox placeholder="제목을 입력해주세요." onChangeValue={onChangeTitle} />
+        <InputBox useMainList={false} placeholder="제목을 입력해주세요." onChangeValue={onChangeTitle} />
       </div>
       <div css={categoryWrapper}>
         <h3>
           카테고리 <b>*</b>
         </h3>
-        <ProductCategory sendCategory={receiveCategory} />
+        <ProductCategory isMain={true} sendCategory={receiveCategory} />
       </div>
       <div css={contentWrapper}>
         <h3>
