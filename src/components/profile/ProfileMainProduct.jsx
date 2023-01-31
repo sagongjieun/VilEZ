@@ -46,7 +46,7 @@ const ProfileMainProduct = () => {
 };
 
 const sectionWrapper = css`
-  padding: 50px 0;
+  padding: 30px 0;
   & > h3 {
     height: 50px;
   }

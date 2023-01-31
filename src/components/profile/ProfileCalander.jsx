@@ -1,8 +1,16 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { getAppointmentsByUserId } from "../../api/appointment";
 
 const Calendar = () => {
+  const [appointments, setAppointments] = useState([]);
+  useEffect(() => {
+    getAppointmentsByUserId(29).then((response) => {
+      setAppointments(response[0]);
+      console.log(appointments);
+    });
+  }, []);
   const today = {
     year: new Date().getFullYear(), //오늘 연도
     month: new Date().getMonth() + 1, //오늘 월
@@ -92,14 +100,21 @@ const Calendar = () => {
 
     for (const nowDay of week) {
       const day = new Date(selectedYear, selectedMonth - 1, 1).getDay();
+      // const nowAppointments = appointments.filter((appoint) => {
+      //   appoint.slice(0, 4) === selectedYear && appoint.slice(5, 7) === selectedMonth;
+      // });
       if (week[day] === nowDay) {
         for (let i = 0; i < dateTotalCount; i++) {
           dayArr.push(
             <div key={i + 1}>
-              <div>{i + 1}</div>
+              <div css={date}>{i + 1}</div>
               <div css={toDo}>
-                <div>반납</div>
-                <div>반납</div>
+                {/* {nowAppointments.map((appoint) => {
+                  const endDate =  nowAppoint.appointmentEnd.slice(0,4) 
+                  <div key={appoint.appointmentId}>{appoint.appointmentEnd}</div>;
+                })} */}
+                <div>노트북 공유</div>
+                <div></div>
               </div>
             </div>
           );
@@ -117,7 +132,9 @@ const Calendar = () => {
       <div>
         <button onClick={prevMonth}>◀︎</button>
         <div>
-          {yearControl()}. {monthControl()}
+          {yearControl()}
+          <span>.</span>
+          {monthControl()}
         </div>
         <button onClick={nextMonth}>▶︎</button>
       </div>
@@ -132,10 +149,15 @@ const container = css`
   height: 800px;
   margin: auto;
   padding: 20px 20px;
-  border: 1px solid rgba(128, 128, 128, 0.267);
+  /* border: 1px solid rgba(128, 128, 128, 0.267); */
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
   & * {
     box-sizing: border-box;
+    text-align: left;
+  }
+  & span {
+    font-size: 20px;
   }
   & select {
     border: none;
@@ -153,8 +175,9 @@ const container = css`
       justify-content: center;
     }
     & button {
+      cursor: pointer;
       border: none;
-      margin-left: 5px;
+      padding: 0 10px;
       align-self: center;
       background: none;
     }
@@ -166,7 +189,8 @@ const container = css`
     margin-top: 20px;
     & > div {
       width: calc(100% / 7);
-      text-align: center;
+      text-align: left;
+      padding: 0 4px;
       /* background-color: aqua; */
     }
   }
@@ -189,11 +213,17 @@ const blankDay = css`
   border: none !important;
 `;
 
+const date = css``;
+
 const toDo = css`
+  margin-top: 5px;
   & > div {
     color: #000;
     background-color: aliceblue;
     border: 1px solid #fafafa;
+    font-size: 14px;
+    text-align: left;
+    padding: 0 4px;
   }
 `;
 
