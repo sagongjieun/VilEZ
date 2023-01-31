@@ -7,6 +7,7 @@ import ProfileInformation from "../components/profile/ProfileInformation";
 import ProfileMainCalander from "../components/profile/ProfileMainCalander";
 import ProfileMainProduct from "../components/profile/ProfileMainProduct";
 import ProfileMainPoint from "../components/profile/ProfileMainPoint";
+import EditProfile from "../components/modal/EdifProfile";
 
 const Profile = () => {
   return (
@@ -23,6 +24,8 @@ const Profile = () => {
         <Route path="/product" element={<ProfileMainProduct />} />
         <Route path="/point" element={<ProfileMainPoint />} />
       </Routes>
+
+      <EditProfile />
     </div>
   );
 };
