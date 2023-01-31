@@ -26,14 +26,14 @@ const ProductChatting = () => {
   const [boardId, setBoardId] = useState(null);
   const [boardType, setBoardType] = useState(null);
   const [boardDetail, setBoardDetail] = useState({
-    writerNickname: null,
+    writerNickname: "",
     thumbnailImage: "",
     boardId: boardId,
-    title: null,
-    location: null,
-    startDay: null,
-    endDay: null,
-    bookmarkCnt: null,
+    title: "",
+    location: "",
+    startDay: "",
+    endDay: "",
+    bookmarkCnt: "",
   });
 
   function onClickQuit() {
@@ -53,21 +53,25 @@ const ProductChatting = () => {
         setBoardId(res.boardId);
         setBoardType(res.type);
         setOtherUserId(res.shareUserId);
-
-        // 상대방 nickname 얻기
-        getUserDetail(otherUserId).then((res) => {
-          setBoardDetail((prev) => {
-            return {
-              ...prev,
-              writerNickname: res.nickName,
-            };
-          });
-        });
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
+
+  useEffect(() => {
+    if (otherUserId) {
+      // 상대방 nickname 얻기
+      getUserDetail(otherUserId).then((res) => {
+        setBoardDetail((prev) => {
+          return {
+            ...prev,
+            writerNickname: res.nickName,
+          };
+        });
+      });
+    }
+  }, [otherUserId]);
 
   useEffect(() => {
     if ((boardId, boardType)) {
@@ -83,7 +87,7 @@ const ProductChatting = () => {
                   ...prev,
                   thumbnailImage: res.list[0],
                   title: res.title,
-                  location: res.location,
+                  location: res.address,
                   startDay: res.startDay,
                   endDay: res.endDay,
                   bookmarkCnt: res.bookmarkCnt,
@@ -103,7 +107,7 @@ const ProductChatting = () => {
                   ...prev,
                   thumbnailImage: res.list[0],
                   title: res.title,
-                  location: res.location,
+                  location: res.address,
                   startDay: res.startDay,
                   endDay: res.endDay,
                   bookmarkCnt: res.bookmarkCnt,
@@ -123,7 +127,7 @@ const ProductChatting = () => {
 
       <div css={articleInfoWrapper}>
         <h2>{boardDetail.writerNickname} 님과의 대화</h2>
-        <ProductInfo infos={boardDetail} />
+        <ProductInfo infos={boardDetail} boardId={boardId} boardType={boardType} />
       </div>
       <div css={mapAndChatWrapper}>
         <MapAndChatting

@@ -112,7 +112,7 @@ const ProductRegist = () => {
             startDay: startDay,
             title: title,
             userId: loginUserId,
-            // location: location 백에 보내야함
+            address: location,
           }),
         ],
         { type: "application/json" }
