@@ -167,7 +167,7 @@ const Chatting = ({ roomId, boardId, boardType, otherUserId, otherUserNickname }
       <div>
         <div css={menusWrapper}>
           <img src={selectDateButton} onClick={onClickOpenCalendarModal} />
-          {calendarModalOpen && <CalendarModal setCalendarModalOpen={setCalendarModalOpen} />}
+          {calendarModalOpen && <CalendarModal setCalendarModalOpen={setCalendarModalOpen} boardId={boardId} />}
           <img src={startWebRTCButton} onClick={onClickOpenRTC} />
           <img src={recommendLocationButton} onClick={onClickRecommendLocation} />
         </div>
