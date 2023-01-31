@@ -11,6 +11,7 @@
         <result column="appointment_start" property="appointmentStart"/>
         <result column="appointment_end" property="appointmentEnd"/>
     </resultMap>
+
     <resultMap id="room" type="roomDto">
         <result column="id" property="id"/>
         <result column="board_id" property="boardId"/>
