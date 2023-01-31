@@ -25,7 +25,7 @@ async function getUserAsk(id) {
 async function getUserShare(id) {
   try {
     const { data } = await jsonAxios.get(`/shareboard/my/${id}`);
-    if (data.flag === "success") return data.data;
+    if (data.flag === "success") return data.data[0];
     else console.log("일치하는 작성글 정보가 없습니다.");
   } catch (error) {
     console.log(error);
