@@ -23,4 +23,5 @@ public class ShareListDto {
     private List<ImgPath> list;
     private String nickName;
     private String area;
+    private String address;
 }
