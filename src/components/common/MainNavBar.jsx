@@ -34,11 +34,11 @@ function MainNavBar() {
   }
 
   function onClickMoveMyPage() {
-    navigate("/profile/product");
+    navigate("/profile/product/");
   }
 
   function onClickMoveSearchPage() {
-    navigate("/product");
+    navigate("/product/list");
   }
 
   function onClickLogout() {
