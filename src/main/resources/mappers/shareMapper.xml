@@ -14,6 +14,7 @@
         <result column="start_day" property="startDay"/>
         <result column="end_day" property="endDay"/>
         <result column="state" property="state"/>
+        <result column="address" property="address"/>
     </resultMap>
 
     <resultMap type="shareListDto" id="sharelist">
@@ -37,8 +38,23 @@
     </resultMap>
 
     <select id="loadShareList" parameterType="pageNavigator" resultMap="sharelist">
-        SELECT *
-        FROM sharing_view
+        select id, user_id, category, title, content, date, hope_area_lat, hope_area_lng, start_day, end_day, nickname, area, manner, appointment_start, appointment_end,
+        (
+        CASE
+        WHEN now() >= a.appointment_start and a.appointment_end >= now() then 1
+        else 0
+        END
+        ) as state
+        from sharing_view as s
+        right join
+        (
+        select *
+        from appointment
+        WHERE now() >= appointment_start and appointment_end >= now()
+        group by board_id
+        )
+        as a
+        on s.id = a.board_id;
         <where>
             <if test ="word != null and word != ''">
                 OR title like #{word}
@@ -81,9 +97,9 @@
     <insert id="insert" parameterType="shareDto" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO sharing_board(user_id, category, title,
                                 content, date, hope_area_lat,
-                                  hope_area_lng, start_day, end_day, state)
+                                  hope_area_lng, start_day, end_day, state, address)
         VALUES (#{userId}, #{category}, #{title},
-                #{content}, now(), #{hopeAreaLat}, #{hopeAreaLng}, #{startDay}, #{endDay}, 0);
+                #{content}, now(), #{hopeAreaLat}, #{hopeAreaLng}, #{startDay}, #{endDay}, 0, #{address});
     </insert>
 
 <!--    <select id="getList" resultMap="sharelist">-->
