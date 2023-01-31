@@ -228,8 +228,10 @@ public class AppointmentController {
         appointmentService.recvMsg(chatVO);
         HashMap<String, Object> map = new HashMap<>();
         UserDto user = null;
+        UserDto user2 = null;
         try {
             user = userService.detail2(chatVO.getFromUserId());
+            user2 = userService.detail2(chatVO.getToUserId());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -239,6 +241,9 @@ public class AppointmentController {
         map.put("roomId",chatVO.getRoomId());
         map.put("fromUserId",chatVO.getFromUserId());
         sendingOperations.convertAndSend("/sendlist/"+chatVO.getToUserId(),map);
+
+        map.put("nickName",user2.getNickName());
+        sendingOperations.convertAndSend("/sendlist/"+chatVO.getFromUserId(),map);
 //        sendingOperations.convertAndSend("/sendmy/"+chatVO.getRoomId()+"/"+chatVO.getFromUserId(),chatVO);
         sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+chatVO.getToUserId(),chatVO);
         return chatVO;
