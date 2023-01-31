@@ -1,33 +1,16 @@
 package kr.co.vilez.ui
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.system.Os.remove
-import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityMainBinding
-import kr.co.vilez.ui.chat.ChatFragment
 import kr.co.vilez.ui.chat.ChatlistFragment
-import kr.co.vilez.ui.chat.RoomlistData
-import kr.co.vilez.ui.profile.CalendarFragment
-import kr.co.vilez.ui.profile.InterestFragment
-import kr.co.vilez.ui.profile.PointFragment
-import kr.co.vilez.ui.profile.SharedListFragment
 import kr.co.vilez.ui.share.ShareFragment
-import kr.co.vilez.ui.user.LoginActivity
 import kr.co.vilez.ui.user.ProfileFragment
-import kr.co.vilez.util.DataState
 import kr.co.vilez.util.StompClient
-import org.json.JSONArray
-import org.json.JSONObject
 
 private const val TAG = "빌리지_MainActivity"
 class MainActivity : AppCompatActivity() {

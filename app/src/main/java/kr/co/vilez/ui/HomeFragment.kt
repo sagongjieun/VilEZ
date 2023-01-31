@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +19,8 @@ import kr.co.vilez.R
 import kr.co.vilez.databinding.FragmentHomeBinding
 import kr.co.vilez.ui.chat.RoomlistData
 import kr.co.vilez.ui.share.*
+import kr.co.vilez.ui.share.category.MenuCategoryActivity
+import kr.co.vilez.ui.share.search.ShareSearchActivity
 import kr.co.vilez.util.DataState
 import kr.co.vilez.util.StompClient
 import org.json.JSONArray
@@ -240,6 +241,7 @@ class HomeFragment : Fragment() {
             R.id.option_menu_menu -> {
                 Log.d(TAG, "onContextItemSelected: ${item.title} clicked")
                 Toast.makeText(mainActivity, "${item.title} 클릭", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(mainActivity, MenuCategoryActivity::class.java))
             }
             R.id.option_menu_search -> {
                 val intent = Intent(mainActivity, ShareSearchActivity::class.java)
