@@ -33,7 +33,7 @@
     </resultMap>
 
     <select id="getMyAppointmentCalendarList" parameterType="int" resultMap="appointment">
-        select s.id as board_id, s.title as title, a.appointment_start as appointment_start, a.appointment_end as appointment_end
+        select a.appointment_id as appointment_id,s.id as board_id, s.title as title, a.appointment_start as appointment_start, a.appointment_end as appointment_end
         from appointment as a
         left join sharing_board as s
         on a.board_id = s.id
