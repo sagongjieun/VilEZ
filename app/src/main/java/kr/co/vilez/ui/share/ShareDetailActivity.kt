@@ -3,6 +3,7 @@ package kr.co.vilez.ui.share
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
@@ -40,6 +41,8 @@ class ShareDetailActivity : AppCompatActivity() {
         init()
     }
 
+
+
     fun init(){
 
 
@@ -60,16 +63,31 @@ class ShareDetailActivity : AppCompatActivity() {
                 ApplicationClass.retrofitShareService.detail(boardId!!).awaitResponse()
 
             Log.d(TAG, "init: $result, result2: $result2")
-            if (result?.flag.equals("success")) {
+            if (result?.flag =="success") {
                 /*
       *****************************************************************************************************
       **************************************** 모바일 캐러셀(carousel) **************************************
       ****************************************      pageNavigator    **************************************
       *****************************************************************************************************
        */
+                Log.d(TAG, "init: @@@공유 디테일 ${result.data[0]}")
+                binding.article = result.data[0]
+
+
+                // 해당 글을 작성한 작성자 데이터 가져오기
+                val userResult = ApplicationClass.retrofitUserService.getUserDetail(result.data[0].userId).awaitResponse().body()
+                if(userResult?.flag == "success") {
+                    binding.writer = userResult.data[0]
+                } else {
+                    return@launch
+                }
+
                 Log.d(TAG, "init: success됨, result:$result")
-                count = result!!.data[0]!!.list!!.size
-                val myData = result!!.data[0].list
+                count = result!!.data[0].list.size
+                val myData = result.data[0].list
+                if(count == 0) {
+                   Log.d(TAG, "init: 사진 없는 게시글임... 일단 종료")
+                }
 
                 mPager = binding.viewpager
                 //Adapter
