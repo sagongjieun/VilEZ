@@ -4,13 +4,6 @@ import { css } from "@emotion/react";
 import { getAppointmentsByUserId } from "../../api/appointment";
 
 const Calendar = () => {
-  const [appointments, setAppointments] = useState([]);
-  useEffect(() => {
-    getAppointmentsByUserId(29).then((response) => {
-      setAppointments(response[0]);
-      console.log(appointments);
-    });
-  }, []);
   const today = {
     year: new Date().getFullYear(), //오늘 연도
     month: new Date().getMonth() + 1, //오늘 월
@@ -21,9 +14,31 @@ const Calendar = () => {
   const [selectedYear, setSelectedYear] = useState(today.year); //현재 선택된 연도
   const [selectedMonth, setSelectedMonth] = useState(today.month); //현재 선택된 달
   const dateTotalCount = new Date(selectedYear, selectedMonth, 0).getDate(); //선택된 연도, 달의 마지막 날짜
-
+  const [appointments, setAppointments] = useState([]);
+  const [nowStartAppointments, setNowStartAppointments] = useState([]);
+  const [nowEndAppointments, setNowEndAppointments] = useState([]);
+  useEffect(() => {
+    getAppointmentsByUserId(29).then((response) => {
+      setAppointments(response[0]);
+    });
+  }, []);
+  useEffect(() => {
+    const start = appointments?.filter((appoint) => {
+      appoint.appointmentStart.slice(0, 4) == String(selectedYear) &&
+        appoint.appointmentStart.slice(5, 7) == ("0" + String(selectedMonth)).slice(-2);
+    });
+    const end = appointments?.filter((appoint) => {
+      appoint.appointmentEnd.slice(0, 4) == String(selectedYear) &&
+        appoint.appointmentEnd.slice(5, 7) == ("0" + String(selectedMonth)).slice(-2);
+    });
+    setTimeout(() => {
+      console.log(start);
+    }, 2000);
+    setNowStartAppointments(start);
+    setNowEndAppointments(end);
+  }, [appointments]);
   const prevMonth = useCallback(() => {
-    //이전 달 보기 보튼
+    //이전 달 보기 버튼
     if (selectedMonth === 1) {
       setSelectedMonth(12);
       setSelectedYear(selectedYear - 1);
@@ -97,24 +112,19 @@ const Calendar = () => {
   const returnDay = useCallback(() => {
     //선택된 달의 날짜들 반환 함수
     let dayArr = [];
-
     for (const nowDay of week) {
       const day = new Date(selectedYear, selectedMonth - 1, 1).getDay();
-      // const nowAppointments = appointments.filter((appoint) => {
-      //   appoint.slice(0, 4) === selectedYear && appoint.slice(5, 7) === selectedMonth;
-      // });
       if (week[day] === nowDay) {
         for (let i = 0; i < dateTotalCount; i++) {
           dayArr.push(
             <div key={i + 1}>
               <div css={date}>{i + 1}</div>
               <div css={toDo}>
-                {/* {nowAppointments.map((appoint) => {
-                  const endDate =  nowAppoint.appointmentEnd.slice(0,4) 
-                  <div key={appoint.appointmentId}>{appoint.appointmentEnd}</div>;
-                })} */}
-                <div>노트북 공유</div>
-                <div></div>
+                {nowStartAppointments?.map((appoint) => (
+                  // const startDate = appoint.appointmentStart.slice(8, 10);
+                  // startDate == String(date) ? <div key={appoint.appointmentId}>{appoint.title}</div> : null;
+                  <div key={appoint.id}>{appoint.id}</div>
+                ))}
               </div>
             </div>
           );
@@ -125,7 +135,7 @@ const Calendar = () => {
     }
 
     return dayArr;
-  }, [selectedYear, selectedMonth, dateTotalCount]);
+  }, [selectedYear, selectedMonth, dateTotalCount, appointments, nowStartAppointments, nowEndAppointments]);
 
   return (
     <div css={container}>
