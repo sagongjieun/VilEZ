@@ -11,10 +11,11 @@ import java.util.List;
 
 @Mapper
 public interface AppointmentMapper {
-    BoardStateVO getBoardState(int boardId) throws SQLException;
-    List<MyAppointListDto> getMyAppointmentList(int userId) throws SQLException;
-    List<AppointmentDto> getAppointmentList(int boardId) throws SQLException;
-    void create(AppointmentDto appointmentDto) throws SQLException;
+    List<AppointmentDto> getMyAppointmentCalendarList(int userId) throws Exception;
+    public BoardStateVO getBoardState(int boardId) throws SQLException;
+    public List<MyAppointListDto> getMyAppointmentList(int userId) throws SQLException;
+    public List<AppointmentDto> getAppointmentList(int boardId) throws SQLException;
+    public void create(AppointmentDto appointmentDto) throws SQLException;
     List<RoomDto> getRoomListByUserId(int userId);
     void createRoom(RoomDto room);
 
