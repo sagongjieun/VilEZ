@@ -34,11 +34,17 @@
     </resultMap>
 
     <select id="getMyAppointmentCalendarList" parameterType="int" resultMap="appointment">
-        select a.appointment_id as appointment_id,s.id as board_id, s.title as title, a.appointment_start as appointment_start, a.appointment_end as appointment_end
+        select s.id, s.title, a.appointment_start, a.appointment_end,
+               (
+                   case
+                       when share_user_id = #{userId} THEN 1
+                       else 0
+                    end
+                   ) as state
         from appointment as a
         left join sharing_board as s
         on a.board_id = s.id
-        where not_share_user_id = #{userId};
+        where not_share_user_id = #{userId} or share_user_id = #{userId};
     </select>
 
     <select id="getBoardState" parameterType="int" resultType="kr.co.vilez.appointment.model.vo.BoardStateVO">

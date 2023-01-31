@@ -57,7 +57,9 @@ public class AppointmentController {
     // 한 게시글에서 여러번 물건을 빌렸으면 가장 최근에 빌린 내역만이 나온다.
     @GetMapping("/my/appointlist/{userId}")
     @ApiOperation(value = "나의 약속 정보들을 불러온다." ,
-                 notes = "List에 dto 담아서 리턴")
+                 notes = "List에 dto 담아서 리턴" +
+                         "\n\t state 가 1이면 내가 공유자 입장" +
+                         "\n\t state 가 0이면 내가 피공유자 입장")
     public ResponseEntity<?> getMyAppointmentList(@PathVariable int userId){
         HttpVO httpVO = new HttpVO();
         List<Object> data = new ArrayList<>();
