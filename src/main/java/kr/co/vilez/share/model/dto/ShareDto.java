@@ -27,5 +27,5 @@ public class ShareDto {
     List<ImgPath> list;
     int bookmarkCnt;
     int state;
-
+    String address;
 }
