@@ -19,14 +19,11 @@ import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.databinding.FragmentHomeBinding
 import kr.co.vilez.ui.chat.RoomlistData
-import kr.co.vilez.ui.share.FragmentShareAdapter
-import kr.co.vilez.ui.share.ShareData
+import kr.co.vilez.ui.share.*
 import kr.co.vilez.util.DataState
 import kr.co.vilez.util.StompClient
 import org.json.JSONArray
 import org.json.JSONObject
-import kr.co.vilez.ui.share.ShareDetailActivity
-import kr.co.vilez.ui.share.ShareListAdapter
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
 import kr.co.vilez.util.Common.Companion.elapsedTime
@@ -86,7 +83,14 @@ class HomeFragment : Fragment() {
         StompClient.stompClient.send("/room_list", data.toString()).subscribe()
 
         initList()
+
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
     }
 
     fun initList() {
@@ -117,6 +121,10 @@ class HomeFragment : Fragment() {
 
             if(result?.flag == "success") {
                 Log.d(TAG, "initList: result: $result")
+                if(result.data.isEmpty()) {
+                    Log.d(TAG, "onViewCreated: 데이터 0개")
+                    binding.tvNoArticleMsg.visibility = View.VISIBLE
+                }
                 for(data in result.data){
                     var shareData:ShareData
                     if(data.shareListDto.list.isEmpty()){
@@ -217,7 +225,6 @@ class HomeFragment : Fragment() {
                     }
                 }
             }
-
         }
     }
 
@@ -233,6 +240,10 @@ class HomeFragment : Fragment() {
             R.id.option_menu_menu -> {
                 Log.d(TAG, "onContextItemSelected: ${item.title} clicked")
                 Toast.makeText(mainActivity, "${item.title} 클릭", Toast.LENGTH_SHORT).show()
+            }
+            R.id.option_menu_search -> {
+                val intent = Intent(mainActivity, ShareSearchActivity::class.java)
+                startActivity(intent)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -251,6 +262,11 @@ class HomeFragment : Fragment() {
 
     fun moveToShareActivity(view: View) {
         val intent = Intent(mainActivity, ShareDetailActivity::class.java)
+        mainActivity.startActivity(intent)
+    }
+
+    fun moveToShareWriteActivity(view: View) {
+        val intent = Intent(mainActivity, ShareWriteActivity::class.java)
         mainActivity.startActivity(intent)
     }
 }

@@ -5,10 +5,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import kr.co.vilez.data.model.ImgPath
-import kr.co.vilez.data.model.ImgPath2
 
 private const val TAG = "빌리지_MyAdapter"
-class MyAdapter(val fa:FragmentActivity, var count: Int = 0, var list:List<ImgPath2>) : FragmentStateAdapter(fa) {
+class MyAdapter(val fa:FragmentActivity, var count: Int = 0, var list:List<ImgPath>) : FragmentStateAdapter(fa) {
 
     override fun createFragment(position: Int): Fragment {
         Log.d(TAG, "createFragment: count:$count, position:$position")

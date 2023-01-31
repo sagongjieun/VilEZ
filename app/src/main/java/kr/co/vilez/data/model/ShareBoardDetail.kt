@@ -1,6 +1,6 @@
 package kr.co.vilez.data.model
 
-data class DataXX(
+data class ShareBoardDetail(
     val bookmarkCnt: Int,
     val category: String,
     val content: String,
@@ -9,9 +9,10 @@ data class DataXX(
     val hopeAreaLat: String,
     val hopeAreaLng: String,
     val id: Int,
-    val list: List<ImgPath2>,
+    val list: List<ImgPath>,
     val startDay: String,
     val state: Int,
     val title: String,
-    val userId: Int
+    val userId: Int,
+    val address: String,
 )

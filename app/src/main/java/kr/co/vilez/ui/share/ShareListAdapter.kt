@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import kr.co.vilez.databinding.ProfileBoardListItemBinding
+import kr.co.vilez.databinding.HomeBoardListItemBinding
 
 class ShareListAdapter(val list:MutableList<ShareData>):
 RecyclerView.Adapter<ShareListAdapter.ShareHolder>(){
@@ -20,7 +20,7 @@ RecyclerView.Adapter<ShareListAdapter.ShareHolder>(){
         this.itemClickListener = OnItemClickListener
     }
 
-    inner class ShareHolder(var binding: ProfileBoardListItemBinding):
+    inner class ShareHolder(var binding: HomeBoardListItemBinding):
     RecyclerView.ViewHolder(binding.root) {
 
         fun bindingInfo(item: ShareData) {
@@ -37,7 +37,7 @@ RecyclerView.Adapter<ShareListAdapter.ShareHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShareHolder {
         // 아이템 하나를 바인딩해서 바로 xml을 찾아갈 수 있도록 함
-        val binding = ProfileBoardListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = HomeBoardListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
         return ShareHolder(binding)
     }

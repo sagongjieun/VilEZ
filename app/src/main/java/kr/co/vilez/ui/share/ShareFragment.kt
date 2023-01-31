@@ -18,6 +18,7 @@ import kr.co.vilez.R
 import kr.co.vilez.databinding.FragmentShareBinding
 import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.util.ApplicationClass
+import kr.co.vilez.util.Common.Companion.elapsedTime
 import retrofit2.awaitResponse
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -66,14 +67,17 @@ class ShareFragment : Fragment() {
         // findViewById 할 필요없이 binding.버튼Id, binding.텍스트뷰Id 로 바로 접근해서 사용 가능!
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_share, container, false)
         binding.fragment = this
+
+        // 뷰 생성 후 초기화
+        initView()
+
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
-        // 뷰 생성 후 초기화
-        initView()
+
     }
 
     fun initView() {
@@ -105,6 +109,10 @@ class ShareFragment : Fragment() {
             if(result?.flag == "success") {
                 Log.d(TAG, "initView: result : $result")
                 Log.d(TAG, "initView: data[0] ${result.data[0]}")
+                if(result.data.isEmpty()) {
+                    Log.d(TAG, "onViewCreated: 데이터 0개")
+                    binding.tvNoArticleMsg.visibility = View.VISIBLE
+                }
                 for(data in result.data){
                     var shareData:ShareData
                     if(data.shareListDto.list.size == 0){
@@ -146,22 +154,6 @@ class ShareFragment : Fragment() {
             android.R.layout.simple_spinner_dropdown_item,
             items
         )
-
-        binding.spinner.adapter = arrayAdapter
-        binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View,
-                position: Int,
-                id: Long
-            ) {
-                binding.textView.setText(items.get(position))
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                binding.textView.setText("선택")
-            }
-        }
 
         binding.rv.setOnScrollChangeListener{ v, scollX, scrollY,
                                                   oldScrollX, oldScrollY ->
@@ -216,26 +208,8 @@ class ShareFragment : Fragment() {
 //            // shareAdapter.notifyDataSetChanged()
 //        }
     }
-    fun elapsedTime(date:String):String {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
-        val nowDate: LocalDateTime  = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")
-        val formatted = nowDate.format(formatter)
 
-        val endDate = dateFormat.parse(formatted.toString()).time
-        val startDate = dateFormat.parse(date).time
+    fun moveToAskWrite(view: View) {
 
-        val resultTime = (endDate - startDate) / 1000
-
-        val arr = arrayOf(60*60*24*365, 60*60*24*30, 60*60*24, 60*60, 60)
-        val date = arrayOf("년", "개월", "일", "시간", "분")
-        for(i in 0..4){
-            val time = (resultTime / arr[i]).toInt()
-
-            if(time > 0){
-                return Integer.toString(time)+date[i]+"전"
-            }
-        }
-        return "방금 전"
     }
 }
