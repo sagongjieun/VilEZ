@@ -17,6 +17,7 @@
         <result column="state" property="state"/>
         <result column="nickname" property="nickName"/>
         <result column="area" property="area"/>
+        <result column="address" property="address"/>
     </resultMap>
 
     <select id="loadAskList" resultMap="ask">
@@ -47,10 +48,9 @@
             SELECT LAST_INSERT_ID()
         </selectKey>
         insert into ask_board (user_id,category,title,content,hope_area_lat,
-                               hope_area_lng,start_day,end_day)
-                                values (#{userId},#{category}, #{title},#{content},#{hopeAreaLat},#{hopeAreaLng}
-                                ,#{startDay},#{endDay});
-
+                               hope_area_lng,start_day,end_day, address)
+        values (#{userId},#{category}, #{title},#{content},#{hopeAreaLat},#{hopeAreaLng}
+        ,#{startDay},#{endDay}, #{address});
     </insert>
 
     <insert id="saveImg" parameterType="ImgPath2">
