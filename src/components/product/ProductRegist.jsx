@@ -99,7 +99,6 @@ const ProductRegist = () => {
       formData.append("image", image);
     });
 
-    console.log("@@@@@", location);
     formData.append(
       "board",
       new Blob(
