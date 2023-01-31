@@ -1,32 +1,22 @@
 package kr.co.vilez.ui
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.system.Os.remove
-import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityMainBinding
-import kr.co.vilez.ui.chat.ChatFragment
 import kr.co.vilez.ui.chat.ChatlistFragment
 import kr.co.vilez.ui.chat.RoomlistData
-import kr.co.vilez.ui.profile.CalendarFragment
-import kr.co.vilez.ui.profile.InterestFragment
-import kr.co.vilez.ui.profile.PointFragment
-import kr.co.vilez.ui.profile.SharedListFragment
 import kr.co.vilez.ui.share.ShareFragment
-import kr.co.vilez.ui.user.LoginActivity
 import kr.co.vilez.ui.user.ProfileFragment
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.DataState
-import kr.co.vilez.util.StompClient
+import kr.co.vilez.util.StompClient2
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -39,7 +29,6 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         supportActionBar?.hide() // 액션바 숨김
-        StompClient.stompClient.connect()
         val target = intent.getStringExtra("target")
         if(target == null) {
             changeFragment("홈")
@@ -49,10 +38,11 @@ class MainActivity : AppCompatActivity() {
         initView()
         var data = JSONObject()
         data.put("userId", ApplicationClass.prefs.getId())
-        StompClient.runStomp()
-        StompClient.stompClient.topic("/send_room_list/"+ ApplicationClass.prefs.getId()).subscribe { topicMessage ->
+        StompClient2.runStomp()
+        StompClient2.stompClient.join("/send_room_list/"+ ApplicationClass.prefs.getId()).subscribe { topicMessage ->
             run {
-                val json = JSONArray(topicMessage.payload)
+                println(topicMessage)
+                val json = JSONArray(topicMessage)
                 CoroutineScope(Dispatchers.Main).launch {
 
                     DataState.itemList = ArrayList<RoomlistData>()
@@ -77,7 +67,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        StompClient.stompClient.send("/room_list", data.toString()).subscribe()
+        StompClient2.stompClient.send("/room_list", data.toString()).subscribe()
     }
 
     private fun changeFragment(name: String) {

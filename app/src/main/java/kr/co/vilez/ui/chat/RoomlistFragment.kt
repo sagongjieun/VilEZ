@@ -16,10 +16,8 @@ import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.DataState
-import kr.co.vilez.util.StompClient
-import org.json.JSONArray
+import kr.co.vilez.util.StompClient2
 import org.json.JSONObject
-import retrofit2.awaitResponse
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -54,51 +52,6 @@ class ChatlistFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-        StompClient.stompClient.topic("/sendlist/"+ApplicationClass.prefs.getId()).subscribe { topicMessage ->
-            run {
-                CoroutineScope(Dispatchers.Main).launch {
-                    val json = JSONObject(topicMessage.payload)
-                    println(json.toString())
-                    val roomId = json.getInt("roomId")
-                    var index = -1;
-                    if (roomId in DataState.set) {
-                        for (i in 0 until DataState.itemList.size) {
-                            if (DataState.itemList[i].roomId == roomId) {
-                                index = i
-                                break
-                            }
-                        }
-
-                        DataState.itemList[index].content = json.getString("content")
-
-                        val item = DataState.itemList.get(index)
-                        if(index != 0 ) {
-                            DataState.itemList.removeAt(index)
-                            DataState.itemList.add(0, item)
-                            roomAdapter.notifyItemMoved(index, 0)
-                        }
-                        roomAdapter.notifyItemChanged(0)
-                    } else {
-                        DataState.set.add(roomId)
-
-                        DataState.itemList.add(
-                            0, RoomlistData(
-                                json.getInt("roomId"),
-                                json.getString("nickName"),
-                                json.getString("content"),
-                                json.getString("area"),
-                                json.getInt("fromUserId")
-                            )
-                        )
-                        roomAdapter.notifyItemInserted(0)
-                    }
-                }
-            }
-        }
-    }
     @SuppressLint("CheckResult")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -115,7 +68,6 @@ class ChatlistFragment : Fragment() {
             val chat = DataState.itemList.get(index)
             set.add(chat.roomId)
         }
-        println("dddd")
 
         roomAdapter.setItemClickListener(object : RoomAdapter.OnItemClickListener {
             override fun onClick(v: View, position: Int) {
@@ -127,10 +79,10 @@ class ChatlistFragment : Fragment() {
             }
         })
         roomAdapter.notifyDataSetChanged()
-        StompClient.stompClient.topic("/sendlist/"+ApplicationClass.prefs.getId()).subscribe { topicMessage ->
+        StompClient2.stompClient.join("/sendlist/"+ApplicationClass.prefs.getId()).subscribe { topicMessage ->
             run {
                 CoroutineScope(Dispatchers.Main).launch {
-                    val json = JSONObject(topicMessage.payload)
+                    val json = JSONObject(topicMessage)
                     println(json.toString())
                     val roomId = json.getInt("roomId")
                     var index = -1;

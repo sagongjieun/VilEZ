@@ -1,10 +1,8 @@
 package kr.co.vilez.ui.chat
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
@@ -15,29 +13,24 @@ import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityChatRoomBinding
-import kr.co.vilez.databinding.ActivityMainBinding
-import kr.co.vilez.ui.HomeFragment
 import kr.co.vilez.ui.chat.map.KakaoMapFragment
 import kr.co.vilez.util.ApplicationClass
-import kr.co.vilez.util.StompClient
-import net.daum.mf.map.api.MapPOIItem
-import net.daum.mf.map.api.MapPoint
-import net.daum.mf.map.api.MapView
-import org.json.JSONArray
+import kr.co.vilez.util.StompClient2
 import org.json.JSONObject
 import retrofit2.awaitResponse
 
-//TODO ROOM 정보 저장
 
 class ChatRoomActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChatRoomBinding
     private var roomId = 0
     private var otherUserId = 0
+    lateinit var topic : Disposable
     private val itemList = ArrayList<ChatlistData>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,18 +42,16 @@ class ChatRoomActivity : AppCompatActivity() {
         bundle.putInt("otherUserId", otherUserId)
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         initView()
-//        var kakaoMapFragment = KakaoMapFragment()
-//        kakaoMapFragment.arguments = bundle
-//        supportFragmentManager.beginTransaction()
-//            .replace(R.id.frameLayout, kakaoMapFragment)
-//            .commit()
+        var kakaoMapFragment = KakaoMapFragment()
+        kakaoMapFragment.arguments = bundle
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.frameLayout, kakaoMapFragment)
+            .commit()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-//        var data = JSONObject()
-//        data.put("userId", ApplicationClass.prefs.getId())
-//        StompClient.stompClient.send("/room_list", data.toString()).subscribe()
+        topic.dispose()
     }
 
     @SuppressLint("CheckResult")
@@ -87,7 +78,7 @@ class ChatRoomActivity : AppCompatActivity() {
                 data.put("time", System.currentTimeMillis())
                 itemList.add(ChatlistData(data.getString("content"), 2))
                 roomAdapter.notifyDataSetChanged()
-                StompClient.stompClient.send("/recvchat", data.toString()).subscribe()
+                StompClient2.stompClient.send("/recvchat", data.toString()).subscribe()
                 txt_edit.setText("")
                 rv_chat.scrollToPosition(itemList.size - 1)
             }
@@ -137,11 +128,11 @@ class ChatRoomActivity : AppCompatActivity() {
 //                }
 //            }
 //        }
-        StompClient.stompClient.topic("/sendchat/" + roomId + "/" + ApplicationClass.prefs.getId())
+        topic = StompClient2.stompClient.join("/sendchat/" + roomId + "/" + ApplicationClass.prefs.getId())
             .subscribe { topicMessage ->
                 run {
                     CoroutineScope(Dispatchers.Main).launch {
-                        val json = JSONObject(topicMessage.payload)
+                        val json = JSONObject(topicMessage)
                         itemList.add(ChatlistData(json.getString("content"), 1))
                         roomAdapter.notifyDataSetChanged()
                         rv_chat.scrollToPosition(itemList.size - 1)

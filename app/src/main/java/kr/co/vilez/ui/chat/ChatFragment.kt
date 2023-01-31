@@ -1,9 +1,7 @@
 package kr.co.vilez.ui.chat
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.KeyEvent.KEYCODE_ENTER
 import android.view.LayoutInflater
@@ -17,19 +15,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
-import kr.co.vilez.data.model.KakaoMap
-import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentChatBinding
-import kr.co.vilez.util.ApplicationClass
-import kr.co.vilez.util.ApplicationClass.Companion.retrofitChatService
-import kr.co.vilez.util.DataState
-import kr.co.vilez.util.StompClient
+import kr.co.vilez.util.StompClient2
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
-import org.json.JSONArray
 import org.json.JSONObject
-import retrofit2.awaitResponse
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -63,32 +54,32 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
 
     override fun onResume() {
         super.onResume()
-        StompClient.stompClient.topic("/send_room_list/"+ ApplicationClass.prefs.getId()).subscribe { topicMessage ->
-            run {
-                val json = JSONArray(topicMessage.payload)
-                CoroutineScope(Dispatchers.Main).launch {
-
-                    DataState.itemList = ArrayList<RoomlistData>()
-                    for (index in 0 until json.length()) {
-                        val chat = JSONObject(json.get(index).toString())
-                        val chatData = chat.getJSONObject("chatData")
-                        DataState.itemList.add(
-                            RoomlistData(
-                                chatData.getInt("roomId"), chat.getString("nickName"),
-                                chatData.getString("content"),
-                                chat.getString("area"),
-                                if(chatData.getInt("fromUserId") == ApplicationClass.prefs.getId())
-                                    chatData.getInt("toUserId")
-                                else
-                                    chatData.getInt("fromUserId")
-
-                            )
-                        )
-                        DataState.set.add(chatData.getInt("roomId"))
-                    }
-                }
-            }
-        }
+//        StompClient.stompClient.topic("/send_room_list/"+ ApplicationClass.prefs.getId()).subscribe { topicMessage ->
+//            run {
+//                val json = JSONArray(topicMessage.payload)
+//                CoroutineScope(Dispatchers.Main).launch {
+//
+//                    DataState.itemList = ArrayList<RoomlistData>()
+//                    for (index in 0 until json.length()) {
+//                        val chat = JSONObject(json.get(index).toString())
+//                        val chatData = chat.getJSONObject("chatData")
+//                        DataState.itemList.add(
+//                            RoomlistData(
+//                                chatData.getInt("roomId"), chat.getString("nickName"),
+//                                chatData.getString("content"),
+//                                chat.getString("area"),
+//                                if(chatData.getInt("fromUserId") == ApplicationClass.prefs.getId())
+//                                    chatData.getInt("toUserId")
+//                                else
+//                                    chatData.getInt("fromUserId")
+//
+//                            )
+//                        )
+//                        DataState.set.add(chatData.getInt("roomId"))
+//                    }
+//                }
+//            }
+//        }
     }
     @SuppressLint("CheckResult")
     override fun onCreateView(
@@ -129,10 +120,10 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
 //                }
 //            }
 //        }
-        StompClient.stompClient.topic("/sendchat/10/29").subscribe { topicMessage ->
+        StompClient2.stompClient.join("/sendchat/10/29").subscribe { topicMessage ->
             run {
                 CoroutineScope(Dispatchers.Main).launch {
-                    val json = JSONObject(topicMessage.payload)
+                    val json = JSONObject(topicMessage)
                     itemList.add(ChatlistData(json.getString("content"), 1))
                     roomAdapter.notifyDataSetChanged()
                 }
@@ -191,7 +182,7 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
             data.put("zoomLevel", p0.zoomLevel)
             data.put("isMarker",false)
             zoomLvl = p0.zoomLevel
-            StompClient.stompClient.send("/recvmap", data.toString()).subscribe()
+            StompClient2.stompClient.send("/recvmap", data.toString()).subscribe()
         }
     }
 
@@ -229,7 +220,7 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
             data.put("lng", p1.mapPointGeoCoord.longitude)
             data.put("isMarker",true)
             data.put("zoomLevel", p0.zoomLevel)
-            StompClient.stompClient.send("/recvmap", data.toString()).subscribe()
+            StompClient2.stompClient.send("/recvmap", data.toString()).subscribe()
             p0.setMapCenterPoint(p1,true)
         }
 
@@ -255,7 +246,7 @@ class ChatFragment : Fragment(), MapView.MapViewEventListener {
             data.put("isMarker",false)
         }
 
-        StompClient.stompClient.send("/recvmap", data.toString()).subscribe()
+        StompClient2.stompClient.send("/recvmap", data.toString()).subscribe()
     }
 
     override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {

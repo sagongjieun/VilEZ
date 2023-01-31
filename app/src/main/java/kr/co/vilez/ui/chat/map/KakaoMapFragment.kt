@@ -8,11 +8,10 @@ import android.view.ViewGroup
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kr.co.vilez.R
 import kr.co.vilez.databinding.FragmentKakaoMapBinding
 import kr.co.vilez.ui.chat.ChatlistData
 import kr.co.vilez.util.ApplicationClass
-import kr.co.vilez.util.StompClient
+import kr.co.vilez.util.StompClient2
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
@@ -87,9 +86,9 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
             }
         }
 
-        StompClient.stompClient.topic("/sendmap/"+roomId+"/"+ApplicationClass.prefs.getId()).subscribe { topicMessage ->
+        StompClient2.stompClient.join("/sendmap/"+roomId+"/"+ApplicationClass.prefs.getId()).subscribe { topicMessage ->
             run {
-                val json = JSONObject(topicMessage.payload)
+                val json = JSONObject(topicMessage)
                 mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(json.getDouble("lat"),json.getDouble("lng")),true);
                 if(mapView.zoomLevel != json.getInt("zoomLevel")) {
                     zoom = true;
@@ -156,7 +155,7 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
             data.put("zoomLevel", p0.zoomLevel)
             data.put("isMarker",false)
             zoomLvl = p0.zoomLevel
-            StompClient.stompClient.send("/recvmap", data.toString()).subscribe()
+            StompClient2.stompClient.send("/recvmap", data.toString()).subscribe()
         }
     }
 
@@ -194,7 +193,7 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
             data.put("lng", p1.mapPointGeoCoord.longitude)
             data.put("isMarker",true)
             data.put("zoomLevel", p0.zoomLevel)
-            StompClient.stompClient.send("/recvmap", data.toString()).subscribe()
+            StompClient2.stompClient.send("/recvmap", data.toString()).subscribe()
             p0.setMapCenterPoint(p1,true)
         }
 
@@ -220,7 +219,7 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
             data.put("isMarker",false)
         }
 
-        StompClient.stompClient.send("/recvmap", data.toString()).subscribe()
+        StompClient2.stompClient.send("/recvmap", data.toString()).subscribe()
     }
 
     override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {
