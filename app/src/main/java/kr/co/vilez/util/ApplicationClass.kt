@@ -62,11 +62,11 @@ class ApplicationClass: Application() {
         prefs = SharedPreferencesUtil(applicationContext)
 
         // Naver OAuth 초기화
-        NaverIdLoginSDK.showDevelopersLog(true)
-        NaverIdLoginSDK.initialize(this,
-            getString(R.string.naver_client_id),
-            getString(R.string.naver_client_secret)
-            , getString(R.string.naver_client_name))
+//        NaverIdLoginSDK.showDevelopersLog(true)
+//        NaverIdLoginSDK.initialize(this,
+//            getString(R.string.naver_client_id),
+//            getString(R.string.naver_client_secret)
+//            , getString(R.string.naver_client_name))
 
         // Kakao OAuth 초기화
         KakaoSdk.init(this, getString(R.string.kakao_oauth_app_key))

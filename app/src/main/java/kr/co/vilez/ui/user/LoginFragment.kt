@@ -186,33 +186,10 @@ class LoginFragment : Fragment() {
         })
     }
 
-    fun naverLogin(view: View) {
-        NaverIdLoginSDK.authenticate(loginActivity, oauthLoginCallback)
-
-        // 토큰 갱신
-        NidOAuthLogin().callRefreshAccessTokenApi(loginActivity, object : OAuthLoginCallback {
-            override fun onSuccess() {
-                // 접근 토큰 갱신에 성공한 경우 수행할 코드 추가
-                Log.d(TAG, "onSuccess: 액세스 토큰 갱신 성공")
-                NidOAuthLogin().callProfileApi(profileCallback)
-            }
-            override fun onFailure(httpStatus: Int, message: String) {
-                val errorCode = NaverIdLoginSDK.getLastErrorCode().code
-                val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
-                Toast.makeText(context, "errorCode: $errorCode, errorDesc: $errorDescription", Toast.LENGTH_SHORT).show()
-            }
-            override fun onError(errorCode: Int, message: String) {
-                onFailure(errorCode, message)
-            }
-        })
-    }
-
     val oauthLoginCallback = object : OAuthLoginCallback {
         override fun onSuccess() {
-            Log.d(TAG, "onSuccess: 네이버 로그인 성공!")
+            Log.d(TAG, "onSuccess: 네이버 로그인 성공! accessToken: ${NaverIdLoginSDK.getAccessToken()}")
             // 네이버 로그인 인증이 성공했을 때 수행할 코드 추가
-            Log.d(TAG, "onSuccess: accessToken: ${NaverIdLoginSDK.getAccessToken()}")
-
             NidOAuthLogin().callProfileApi(profileCallback)
         }
         override fun onFailure(httpStatus: Int, message: String) {
@@ -263,6 +240,19 @@ class LoginFragment : Fragment() {
             Log.d(TAG, "onError: 네이버 프로필 불러오기 에러 $")
             Toast.makeText(loginActivity, "네이버 로그인을 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
         }
+    }
+
+
+    fun naverLogin(view: View) {
+        NaverIdLoginSDK.showDevelopersLog(true)
+
+        NaverIdLoginSDK.initialize(loginActivity,
+            getString(R.string.naver_client_id),
+            getString(R.string.naver_client_secret)
+            , getString(R.string.naver_client_name))
+
+        NaverIdLoginSDK.authenticate(loginActivity, oauthLoginCallback)
+
     }
 
 
