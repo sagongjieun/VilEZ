@@ -38,11 +38,15 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <FrameLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_share_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".ui.HomeFragment">
-        </FrameLayout>
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbarFadeDuration="0"
+            android:scrollbarSize="5dp"
+            android:scrollbarThumbVertical="@android:color/darker_gray"
+            android:scrollbars="vertical" />
     </LinearLayout>
 
 
