@@ -13,10 +13,10 @@ class MyAdapter(val fa:FragmentActivity, var count: Int = 0, var list:List<ImgPa
     override fun createFragment(position: Int): Fragment {
         Log.d(TAG, "createFragment: count:$count, position:$position")
         val index = getRealPosition(position)
-        return if (index == 0) FirstFragment(list.get(index).path)
-        else if (index == 1) SecondFragment(list.get(index).path)
-        else if (index == 2) ThirdFragment(list.get(index).path)
-        else ForthFragment(list.get(index).path)
+        return if (index == 0) FirstFragment(list[index].path)
+        else if (index == 1) SecondFragment(list[index].path)
+        else if (index == 2) ThirdFragment(list[index].path)
+        else ForthFragment(list[index].path)
     }
 
     override fun getItemCount(): Int {
