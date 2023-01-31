@@ -150,7 +150,6 @@ class RegisterOauthFragment : Fragment() {
     }
 
 
-
     fun register(view: View) {
         // 넘어온 네이버 프로필 id 정보로 회원가입 실시
         if (!nicknameCheck) { // 닉네임 확인 (가장 최근에 인증 완료된 닉네임 vs 지금 입력된 닉네임)
