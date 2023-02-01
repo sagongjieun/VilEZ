@@ -18,6 +18,10 @@ const Chatting = ({ roomId, boardId, boardType, otherUserId, otherUserNickname }
   const myUserId = localStorage.getItem("id");
   const chatRoomId = roomId;
 
+  useEffect(() => {
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", roomId, boardId, boardType, otherUserId, otherUserNickname);
+  }, []);
+
   const [chatMessage, setChatMessage] = useState(""); // 클라이언트가 입력하는 메시지
   const [showingMessage, setShowingMessage] = useState([]); // 서버로부터 받는 메시지
   const [hopeLocation, setHopeLocation] = useState("");
