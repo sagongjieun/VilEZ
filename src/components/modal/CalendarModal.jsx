@@ -7,8 +7,13 @@ import MiddleWideButton from "../button/MiddleWideButton";
 import { GrClose } from "react-icons/gr";
 import { ko } from "date-fns/locale";
 import { getAppointmentsByBoardId } from "../../api/chat";
+import { useSetRecoilState } from "recoil";
+import { shareDateState } from "../../recoil/atom";
+import DateFormat from "../common/DateFormat";
 
 const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
+  const setShareDate = useSetRecoilState(shareDateState);
+
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
@@ -25,6 +30,19 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
 
   function onClickCloseModal() {
     setCalendarModalOpen(false);
+  }
+
+  function onClickMakeMeetDate() {
+    if (startDate && endDate) {
+      // recoil에 공유확정날짜 저장 -> MeetConfirmModal.jsx 에서 사용
+      setShareDate({
+        startDate: selectedStartDay,
+        endDate: selectedEndDay,
+      });
+      setCalendarModalOpen(false);
+    } else {
+      alert("기간을 설정해주세요 😀");
+    }
   }
 
   useEffect(() => {
@@ -51,14 +69,6 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
     if (startDate && endDate) {
       let flag = false;
 
-      let syear = startDate.getFullYear();
-      let smonth = startDate.getMonth() + 1;
-      let sday = startDate.getDate();
-
-      let eyear = endDate.getFullYear();
-      let emonth = endDate.getMonth() + 1;
-      let eday = endDate.getDate();
-
       // 기존에 공유중이거나 예약중인 기간 클릭 막기
       if (blockDate.length > 0) {
         for (let date of blockDate) {
@@ -70,8 +80,8 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
       }
 
       if (!flag) {
-        setSelectedStartDay(syear + "년 " + smonth + "월 " + sday + "일");
-        setSelectedEndDay(eyear + "년 " + emonth + "월 " + eday + "일");
+        setSelectedStartDay(DateFormat(startDate));
+        setSelectedEndDay(DateFormat(endDate));
       } else {
         setStartDate(null);
         setEndDate(null);
@@ -103,7 +113,7 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
           <small>* 이미 공유중이거나 예약 완료된 기간 외로 설정해주세요.</small>
         )}
         <div>
-          <MiddleWideButton text={"물건 공유 기간 확정"} />
+          <MiddleWideButton text={"물건 공유 기간 확정"} onclick={onClickMakeMeetDate} />
         </div>
       </div>
     </div>

@@ -23,8 +23,6 @@ const ProductCalendar = ({ sendStartDate, sendEndDate }) => {
   return (
     <div
       css={css`
-        width: 250px;
-
         & .react-datepicker-popper {
           z-index: 9999;
         }
@@ -32,6 +30,8 @@ const ProductCalendar = ({ sendStartDate, sendEndDate }) => {
     >
       <DatePicker
         selectsRange={true}
+        minDate={new Date()} // 과거 날짜 disable
+        showPopperArrow={false}
         startDate={startDate}
         endDate={endDate}
         onChange={(update) => {
@@ -51,7 +51,7 @@ const calendar = css`
   background: #ffffff;
   border: 1px solid #e1e2e3;
   border-radius: 5px;
-  width: 200px;
+  width: 210px;
 `;
 
 export default ProductCalendar;

@@ -13,14 +13,10 @@ import CalendarModal from "./modal/CalendarModal";
 
 let client;
 
-const Chatting = ({ roomId, boardId, boardType, otherUserId, otherUserNickname }) => {
+const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickname }) => {
   const scrollRef = useRef();
   const myUserId = localStorage.getItem("id");
   const chatRoomId = roomId;
-
-  useEffect(() => {
-    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", roomId, boardId, boardType, otherUserId, otherUserNickname);
-  }, []);
 
   const [chatMessage, setChatMessage] = useState(""); // 클라이언트가 입력하는 메시지
   const [showingMessage, setShowingMessage] = useState([]); // 서버로부터 받는 메시지
@@ -212,15 +208,6 @@ const Chatting = ({ roomId, boardId, boardType, otherUserId, otherUserNickname }
   );
 };
 
-// const calendar = css`
-//   padding: 14px 18px;
-//   font-size: 18px;
-//   background: #ffffff;
-//   border: 1px solid #e1e2e3;
-//   border-radius: 5px;
-//   width: 200px;
-// `;
-
 const mapWrapper = css`
   display: flex;
   flex-direction: column;
@@ -323,4 +310,4 @@ const yourMessageWrapper = css`
   }
 `;
 
-export default Chatting;
+export default StompRealTime;
