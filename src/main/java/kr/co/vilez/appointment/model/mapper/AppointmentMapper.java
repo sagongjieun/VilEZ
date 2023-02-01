@@ -14,7 +14,8 @@ public interface AppointmentMapper {
     List<AppointmentDto> getMyAppointmentCalendarListShare(int userId) throws Exception;
     List<AppointmentDto> getMyAppointmentCalendarListAsk(int userId) throws Exception;
     public BoardStateVO getBoardState(int boardId) throws SQLException;
-    public List<MyAppointListDto> getMyAppointmentList(int userId) throws SQLException;
+    public List<MyAppointListDto> getMyAppointmentListShare(int userId) throws SQLException;
+    public List<MyAppointListDto> getMyAppointmentListAsk(int userId) throws SQLException;
     public List<AppointmentDto> getAppointmentList(int boardId) throws SQLException;
     public void create(AppointmentDto appointmentDto) throws SQLException;
     List<RoomDto> getRoomListByUserId(int userId);
