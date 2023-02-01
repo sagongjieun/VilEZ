@@ -9,6 +9,7 @@ import thirdbodyimg from "../assets/images/thirdbodyimg.png";
 import mapimg from "../assets/images/mapimg.png";
 import chatimg from "../assets/images/chatimg.png";
 import { useNavigate } from "react-router-dom";
+import EditProfile from "../components/modal/EdifProfile";
 
 function MainBody() {
   const [search, setSearch] = useState("");
@@ -31,6 +32,7 @@ function MainBody() {
 
   return (
     <div>
+      <EditProfile />
       <div css={FirstBodyWrap}>
         <Animated animationIn="animate__jackInTheBox" animationInDuration={2000}>
           <div css={FirstBody}>
