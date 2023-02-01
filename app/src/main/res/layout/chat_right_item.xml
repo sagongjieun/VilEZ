@@ -13,10 +13,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:orientation="vertical">
+            android:orientation="horizontal">
             <TextView
                 android:id="@+id/textv_msg"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="9"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:layout_marginRight="10dp"
@@ -26,7 +27,16 @@
                 android:padding="10dp"
                 android:text="메세지 내용"
                 android:textColor="#000000"
-                android:textSize="15dp" />
+                android:textSize="15dp"
+                android:gravity="right"
+                />
+            <ImageView
+                android:id="@+id/left_user"
+                android:layout_gravity="right"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/user_default"/>
         </LinearLayout>
 
     </LinearLayout>

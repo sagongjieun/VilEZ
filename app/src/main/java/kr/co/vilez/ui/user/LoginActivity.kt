@@ -16,7 +16,6 @@ import kr.co.vilez.databinding.ActivityLoginBinding
 import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.ui.dialog.AlertDialog
 import kr.co.vilez.util.ApplicationClass
-import kr.co.vilez.util.StompClient
 import retrofit2.awaitResponse
 
 private const val TAG = "빌리지_LoginActivity"
@@ -86,8 +85,6 @@ class LoginActivity : AppCompatActivity() {
                 ApplicationClass.prefs.setUser(result.data[0])
                 ApplicationClass.prefs.setOAuth(user.oauth) //
                 ApplicationClass.prefs.setAutoLogin(user) // 로그인시 자동으로 자동로그인 넣기
-
-                StompClient.runStomp()
 
                 val resultDetail = ApplicationClass.retrofitUserService.getUserDetail(result.data[0].id).awaitResponse().body()
                 if(resultDetail?.flag == "success") {

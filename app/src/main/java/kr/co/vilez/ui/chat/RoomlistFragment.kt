@@ -16,10 +16,8 @@ import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.DataState
-import kr.co.vilez.util.StompClient
-import org.json.JSONArray
+import kr.co.vilez.util.StompClient2
 import org.json.JSONObject
-import retrofit2.awaitResponse
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -35,8 +33,12 @@ class ChatlistFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private val itemList = ArrayList<RoomlistData>()
     private lateinit var mContext: Context
+    private lateinit var rootView : View
+    private lateinit var rv_room : RecyclerView
+
+
+    val roomAdapter = RoomAdapter(DataState.itemList)
     private var set = HashSet<Int>()
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -50,7 +52,6 @@ class ChatlistFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
     }
-
     @SuppressLint("CheckResult")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,13 +59,8 @@ class ChatlistFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
 
-        val rootView = inflater.inflate(R.layout.fragment_roomlist, container, false)
-        val rv_room = rootView.findViewById(R.id.rv_room) as RecyclerView
-
-
-//        val data = JSONObject()
-//        data.put("userId",29)
-        val roomAdapter = RoomAdapter(DataState.itemList)
+        rootView = inflater.inflate(R.layout.fragment_roomlist, container, false)
+        rv_room = rootView.findViewById(R.id.rv_room) as RecyclerView
 
         rv_room.adapter = roomAdapter
         rv_room.layoutManager = LinearLayoutManager(requireContext())
@@ -73,24 +69,20 @@ class ChatlistFragment : Fragment() {
             set.add(chat.roomId)
         }
 
-
         roomAdapter.setItemClickListener(object : RoomAdapter.OnItemClickListener {
             override fun onClick(v: View, position: Int) {
                 // 클릭 시 이벤트 작성
                 var intent = Intent(mContext,ChatRoomActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                intent.putExtra("roomId",DataState.itemList[position].roomId)
+                intent.putExtra("otherUserId",DataState.itemList[position].otherUserId)
                 startActivity(intent)
-//                DataState.itemList.add(RoomlistData(itemList.size, "test", "testets", "test"))
-//                itemList[1].content = "테스트"
-                roomAdapter.notifyDataSetChanged()
             }
         })
         roomAdapter.notifyDataSetChanged()
-        StompClient.stompClient.topic("/sendlist/29").subscribe { topicMessage ->
+        StompClient2.stompClient.join("/sendlist/"+ApplicationClass.prefs.getId()).subscribe { topicMessage ->
             run {
                 CoroutineScope(Dispatchers.Main).launch {
-                    val json = JSONObject(topicMessage.payload)
+                    val json = JSONObject(topicMessage)
                     println(json.toString())
                     val roomId = json.getInt("roomId")
                     var index = -1;
@@ -119,7 +111,8 @@ class ChatlistFragment : Fragment() {
                                 json.getInt("roomId"),
                                 json.getString("nickName"),
                                 json.getString("content"),
-                                json.getString("area")
+                                json.getString("area"),
+                                json.getInt("fromUserId")
                             )
                         )
                         roomAdapter.notifyItemInserted(0)

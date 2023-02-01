@@ -16,11 +16,18 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:gravity="center_vertical"
-            android:orientation="vertical">
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/left_user"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/user_default"/>
 
             <TextView
                 android:id="@+id/textv_msg"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="9"
                 android:layout_height="wrap_content"
                 android:background="#ffffff"
                 android:maxLength="150"
