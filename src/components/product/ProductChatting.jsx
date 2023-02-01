@@ -7,16 +7,21 @@ import StompRealTime from "../StompRealTime";
 import MeetConfirmModal from "../modal/MeetConfirmModal";
 import QuitChattingReal from "../modal/QuitChattingReal";
 import OathMoal from "../modal/OathModal";
-import ShareComplete from "../modal/ShareComplete";
+import ShareCompleteModal from "../modal/ShareCompleteModal";
 import { useParams } from "react-router-dom";
 import { getBoardIdByRoomId } from "../../api/chat";
 import { getAskArticleDetailByBoardId } from "../../api/ask";
 import { getShareArticleByBoardId } from "../../api/share";
 import { getUserDetail } from "../../api/profile";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { shareDateState, shareDataState } from "../../recoil/atom";
 
 const ProductChatting = () => {
   const { roomId } = useParams();
   const loginUserId = localStorage.getItem("id");
+
+  const shareDate = useRecoilValue(shareDateState);
+  const setShareData = useSetRecoilState(shareDataState);
 
   const [isConfirm, setIsConfirm] = useState(false);
   const [isOath, setIsOath] = useState(false);
@@ -24,6 +29,8 @@ const ProductChatting = () => {
   const [isComplete, setIsComplete] = useState(false);
 
   const [otherUserId, setOtherUserId] = useState(null);
+  const [shareUserId, setShareUserId] = useState(null);
+  const [notShareUserId, setNotShareUserId] = useState(null);
   const [boardId, setBoardId] = useState(null);
   const [boardType, setBoardType] = useState(null);
   const [boardDetail, setBoardDetail] = useState({
@@ -42,6 +49,22 @@ const ProductChatting = () => {
   }
 
   function onClickConfirm() {
+    // 유효성 검사
+    if (!shareDate.startDate || !shareDate.endDate) {
+      alert("공유 기간을 확정해주세요 ✅");
+      return;
+    }
+
+    // recoil에 현재 예약하려는 데이터 담기
+    setShareData({
+      boardId: boardId,
+      boardType: boardType,
+      appointmentStart: shareDate.startDate,
+      appointmentEnd: shareDate.endDate,
+      shareUserId: shareUserId,
+      notShareUserId: notShareUserId,
+    });
+
     setIsConfirm(!isConfirm);
   }
 
@@ -54,9 +77,18 @@ const ProductChatting = () => {
         setBoardId(res.boardId);
         setBoardType(res.type);
 
+        // 로그인유저가 공유자면
         if (loginUserId == res.shareUserId) {
           setOtherUserId(res.notShareUserId);
-        } else setOtherUserId(res.shareUserId);
+          setShareUserId(loginUserId);
+          setNotShareUserId(res.notShareUserId);
+        }
+        // 로그인유저가 피공유자면
+        else {
+          setOtherUserId(res.shareUserId);
+          setShareUserId(res.shareUserId);
+          setNotShareUserId(loginUserId);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -156,7 +188,7 @@ const ProductChatting = () => {
       </div>
       <div>{isQuit ? <QuitChattingReal close={setIsQuit} /> : null}</div>
       <div>{isOath ? <OathMoal close={setIsOath} openLastConfirm={setIsComplete} /> : null} </div>
-      <div>{isComplete ? <ShareComplete /> : null}</div>
+      <div>{isComplete ? <ShareCompleteModal /> : null}</div>
     </div>
   );
 };

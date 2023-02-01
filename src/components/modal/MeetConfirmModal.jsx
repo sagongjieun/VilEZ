@@ -2,13 +2,13 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useRecoilValue } from "recoil";
-import { shareDateState } from "../../recoil/atom";
+import { shareDataState } from "../../recoil/atom";
 import MiddleWideButton from "./../button/MiddleWideButton";
 
 function MeetConfirmModal({ close, openOath, otherUserNickname }) {
-  const shareDate = useRecoilValue(shareDateState);
-  const startdate = shareDate.startDate;
-  const enddate = shareDate.endDate;
+  const shareData = useRecoilValue(shareDataState);
+  const startdate = shareData.appointmentStart;
+  const enddate = shareData.appointmentEnd;
 
   function closeModal() {
     close(false);
