@@ -11,6 +11,8 @@ import java.util.List;
 
 @Mapper
 public interface AppointmentMapper {
+    List<MyAppointListDto> getGiveListShare(int userId) throws Exception;
+    List<MyAppointListDto> getGiveListAsk(int userId) throws Exception;
     List<AppointmentDto> getMyAppointmentCalendarListShare(int userId) throws Exception;
     List<AppointmentDto> getMyAppointmentCalendarListAsk(int userId) throws Exception;
     public BoardStateVO getBoardState(int boardId) throws SQLException;

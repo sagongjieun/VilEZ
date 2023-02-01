@@ -33,6 +33,25 @@ public class AppointmentController {
     private final UserService userService;
     private final SimpMessageSendingOperations sendingOperations;
 
+    @GetMapping("/my/give/{userId}")
+    @ApiOperation(value = "내가 빌려준 내역 정보를 요청하는 API",
+            notes = "type = 1 공유 게시글" +
+                    "\n\t type = 2 요청 게시글")
+    public ResponseEntity<?> getGiveList(@PathVariable int userId){
+        HttpVO httpVO = new HttpVO();
+        ArrayList<Object> data = new ArrayList<>();
+
+        try{
+            data.add(appointmentService.getGiveList(userId));
+            httpVO.setFlag("success");
+            httpVO.setData(data);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
+    }
+
     @GetMapping("/check/{boardId}")
     @ApiOperation(value = "현재 공유 중인지 아닌지에 대한 정보를 요청하는 API",
     notes = "boardId에 boardDetail의 boardId 정보를 넣고 전송하면" +
