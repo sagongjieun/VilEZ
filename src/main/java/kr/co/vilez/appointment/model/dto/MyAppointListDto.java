@@ -18,4 +18,5 @@ String endDay;
 String appointmentId;
 String shareUserId;
 String notShareUserId;
+int type;
 }
