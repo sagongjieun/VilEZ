@@ -20,6 +20,9 @@ interface RetrofitUserService {
     @POST("/vilez/users/join")
     fun getJoinResult(@Body user:User): Call<RESTResult>
 
+    @GET("/vilez/users/check/{email}")
+    fun isUsedEmail(@Path("email") email:String) : Call<RESTResult>
+
     @GET("/vilez/users/detail/{id}")
     fun getUserDetail(@Path("id") id:Int) : Call<RESTUserDetailResult>
 
@@ -46,6 +49,10 @@ interface RetrofitUserService {
     @Multipart
     @PUT("/vilez/users/profile")
     fun removeProfileImage(@Part("userId") userId: Int): Call<RESTResult>
+
+    // 카카오 로그인
+    @GET
+    fun getKakaoOAuth()
 
 }
 

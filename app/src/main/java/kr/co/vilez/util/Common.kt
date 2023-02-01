@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity
 import kr.co.vilez.ui.dialog.AlertDialog
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class Common {
 
@@ -36,7 +39,11 @@ class Common {
             return !trimmedNickname.isNullOrEmpty() && exp.matches(trimmedNickname)
         }
 
-        // *** 스틱코드 등록 코드 ***
+        fun makeRandomPassword(id: String) :String {
+            return "${getHash(id)}"
+        }
+
+        // SHA-256 해시함수
         fun getHash(str: String): String {
             var digest: String = ""
             digest = try {
@@ -63,6 +70,30 @@ class Common {
                 "" //오류 뜰경우 stirng은 blank값임
             }
             return digest
+        }
+
+
+        fun elapsedTime(date:String):String {
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+            val nowDate: LocalDateTime = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")
+            val formatted = nowDate.format(formatter)
+
+            val endDate = dateFormat.parse(formatted.toString()).time
+            val startDate = dateFormat.parse(date).time
+
+            val resultTime = (endDate - startDate) / 1000
+
+            val arr = arrayOf(60*60*24*365, 60*60*24*30, 60*60*24, 60*60, 60)
+            val date = arrayOf("년", "개월", "일", "시간", "분")
+            for(i in 0..4){
+                val time = (resultTime / arr[i]).toInt()
+
+                if(time > 0){
+                    return Integer.toString(time)+date[i]+"전"
+                }
+            }
+            return "방금 전"
         }
 
 

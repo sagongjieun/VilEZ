@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="fragment"
             type="kr.co.vilez.ui.profile.EditProfileFragment" />
@@ -92,7 +93,8 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_profile_nickname_change" />
+                app:layout_constraintTop_toBottomOf="@+id/btn_profile_nickname_change"
+                android:visibility="@{user.oauth == `kakao` || user.oauth == `naver` ? View.GONE : View.VISIBLE}"/>
 
             <ImageView
                 android:id="@+id/iv_profile_img"
@@ -174,7 +176,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView3">
+                app:layout_constraintTop_toBottomOf="@+id/textView3"
+                android:visibility="@{user.oauth == `kakao` || user.oauth == `naver` ? View.GONE : View.VISIBLE}">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -196,7 +199,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/input_profile_current_password">
+                app:layout_constraintTop_toBottomOf="@+id/input_profile_current_password"
+                android:visibility="@{user.oauth == `kakao` || user.oauth == `naver` ? View.GONE : View.VISIBLE}">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -219,7 +223,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/input_profile_new_password">
+                app:layout_constraintTop_toBottomOf="@+id/input_profile_new_password"
+                android:visibility="@{user.oauth == `kakao` || user.oauth == `naver` ? View.GONE : View.VISIBLE}">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -237,7 +242,8 @@
                 android:stateListAnimator="@null"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/input_profile_new_password_again"
-                android:onClick="@{fragment.changePassword}"/>
+                android:onClick="@{fragment.changePassword}"
+                android:visibility="@{user.oauth == `kakao` || user.oauth == `naver` ? View.GONE : View.VISIBLE}"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>

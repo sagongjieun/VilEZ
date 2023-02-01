@@ -10,11 +10,14 @@
         <variable
             name="title"
             type="String" />
+
+
     </data>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
             android:layout_width="match_parent"
@@ -38,11 +41,46 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <FrameLayout
+        <TextView
+            android:id="@+id/tv_no_article_msg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".ui.HomeFragment">
+            android:text="@string/home_no_article_message"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:visibility="gone"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_share_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbarFadeDuration="0"
+                android:scrollbarSize="5dp"
+                android:scrollbarThumbVertical="@android:color/darker_gray"
+                android:scrollbars="vertical" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/floating_action_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_margin="16dp"
+                android:backgroundTint="@color/main_1"
+                app:borderWidth="0dp"
+                android:src="@drawable/ic_floating_edit"
+                app:tint="@color/white"
+                android:contentDescription="WRITE"
+                android:onClick="@{fragment.moveToShareWriteActivity}"/>
         </FrameLayout>
+
+
     </LinearLayout>
 
 

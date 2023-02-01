@@ -23,6 +23,27 @@ android {
     }
 
     buildTypes {
+//        debug {
+//            // 프로가드 활성화
+//            minifyEnabled true
+//            // 기본 프로가드 설정
+//            proguardFile getDefaultProguardFile('proguard-android.txt')
+//            // 프로젝트에 필요한 프로가드 설정
+//            proguardFile 'proguard-rules.pro'
+//            // 디버그에 필요한 프로가드 설정
+//            proguardFile 'proguard-debug.pro'
+//        }
+//        release {
+//            // 프로가드 활성화
+//            minifyEnabled true
+//            // 기본 프로가드 설정
+//            proguardFile getDefaultProguardFile('proguard-android.txt')
+//            // 프로젝트에 필요한 프로가드 설정
+//            proguardFile 'proguard-rules.pro'
+//            // 원래 있던 디폴트값
+//            /*minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'*/
+//        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -35,6 +56,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
     viewBinding {
         enabled = true
     }
@@ -60,7 +82,7 @@ dependencies {
 
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
     implementation 'me.relex:circleindicator:2.1.6'
@@ -98,6 +120,22 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation 'com.squareup.okhttp3:logging-interceptor:4.10.0'
 
+    // naver oauth
+    implementation("com.navercorp.nid:oauth-jdk8:5.3.0") // jdk 8
+    implementation 'com.navercorp.nid:oauth-jdk8:5.3.0' // jdk 8
+
+    // naver oauth libraries
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.7.20'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    implementation 'androidx.legacy:legacy-support-core-utils:1.0.0'
+    implementation 'androidx.browser:browser:1.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.security:security-crypto:1.1.0-alpha03'
+    implementation 'com.squareup.moshi:moshi-kotlin:1.11.0'
+    implementation 'com.airbnb.android:lottie:3.1.0'
+
+    // kakao oauth
+    implementation "com.kakao.sdk:v2-user:2.12.1" // 카카오 로그인
 }
 
 tasks.register("prepareKotlinBuildScriptModel"){}

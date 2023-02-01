@@ -8,7 +8,7 @@ data class User(
     val id: Int,
     var manner: Int,
     var nickName: String,
-    val oauth: String,
+    var oauth: String,
     val password: String,
     val point: Int,
     var profileImg: String,
@@ -22,6 +22,9 @@ data class User(
     constructor(id:Int, password:String, nickName: String):this(
         "","","","",id,0,nickName,"",password,0,"","",0
     )
+    constructor(email: String, password:String, nickName: String, oauth: String):this(
+        "","","",email,0,0,nickName,oauth,password,0,"","",0
+    )
     constructor(email: String, password: String) : this(
         "","","",email,0,0,"","",password,0,"","",0)
     constructor(email: String, password: String, nickName: String) : this(
@@ -32,5 +35,4 @@ data class User(
         "","","",email,0,manner,nickName,"",password,point,"","",0)
     constructor(email: String) : this(
         "","","",email,0,0,"","","",0,"","",0)
-
 }

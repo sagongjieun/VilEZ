@@ -50,6 +50,7 @@ class SharedListFragment : Fragment() {
         initToolBar()
         return binding.root
     }
+
     private fun initToolBar() {
         profileMenuActivity.setSupportActionBar(binding.toolbar)
         profileMenuActivity.supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거

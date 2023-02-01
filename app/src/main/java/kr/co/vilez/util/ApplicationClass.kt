@@ -7,10 +7,13 @@ import android.util.Log
 import android.view.View
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.kakao.sdk.common.KakaoSdk
+import com.navercorp.nid.NaverIdLoginSDK
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.internal.synchronized
 import kotlinx.coroutines.launch
+import kr.co.vilez.R
 import kr.co.vilez.data.model.RESTResult
 import kr.co.vilez.data.model.Token
 import kr.co.vilez.ui.dialog.ConfirmDialog
@@ -58,6 +61,16 @@ class ApplicationClass: Application() {
 
         prefs = SharedPreferencesUtil(applicationContext)
 
+        // Naver OAuth 초기화
+//        NaverIdLoginSDK.showDevelopersLog(true)
+//        NaverIdLoginSDK.initialize(this,
+//            getString(R.string.naver_client_id),
+//            getString(R.string.naver_client_secret)
+//            , getString(R.string.naver_client_name))
+
+        // Kakao OAuth 초기화
+        KakaoSdk.init(this, getString(R.string.kakao_oauth_app_key))
+
         val gson: Gson = GsonBuilder()
             .setDateFormat("yyyy-mm-dd HH:mm:ss")
             .setLenient()
@@ -82,8 +95,6 @@ class ApplicationClass: Application() {
         retrofitEmailService = wRetrofit.create(RetrofitEmailService::class.java)
         retrofitChatService = wRetrofit.create(RetrofitChatService::class.java)
         retrofitShareService = wRetrofit.create(RetrofitShareService::class.java)
-        Log.d(TAG, "onCreate: ")
-
 
         // 네트워크에 연결되어있는지 확인 후 없으면 앱 종료 시키기위해 네트워크 연결상태 감지 콜백 생성시켜두기
 //        val network: CheckNetwork = CheckNetwork(applicationContext)

@@ -3,27 +3,17 @@ package kr.co.vilez.util
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.core.content.edit
 import kr.co.vilez.data.model.User
 import kr.co.vilez.data.model.UserDetail
 
+private const val TAG = "빌리지_SharedPreferencesUtil"
 class SharedPreferencesUtil(context: Context) {
-    private var userEmail: String? = null
-
     private val prefs: SharedPreferences = context.getSharedPreferences("userInfo", Application.MODE_PRIVATE)
 
     fun getUserAccessToken(): String {
         return prefs.getString("accessToken", "")!!
-    }
-
-    fun setUserAccessToken(token: String) {
-        prefs.edit().putString("accessToken", token).apply()
-    }
-
-    fun updateUserAccessToken(): Boolean {
-        // TODO: refreshToken을 보내서 자동갱신 하기
-
-        return true
     }
 
     fun getRefreshToken(): String {
@@ -93,6 +83,13 @@ class SharedPreferencesUtil(context: Context) {
         return prefs.getString("nickName", "")!!
     }
 
+    fun setOAuth(oauth: String) {
+        prefs.edit().putString("oauth", oauth).apply()
+    }
+    fun getOAuth():String {
+        return prefs.getString("oauth", "")!!
+    }
+
     fun setUserDetail(detail: UserDetail) {
         prefs.edit {
             putString("profileImg", detail.profile_img)
@@ -126,6 +123,7 @@ class SharedPreferencesUtil(context: Context) {
     }
 
     fun setAutoLogin(user:User) {
+        Log.d(TAG, "setAutoLogin: true")
         prefs.edit {
             putString("email", user.email)
             putString("password", user.password)
@@ -136,14 +134,14 @@ class SharedPreferencesUtil(context: Context) {
     fun getAutoLogin() :User {
         return User(
             email = prefs.getString("email", "test@naver.com")!!,
-            password = prefs.getString("passwqord", "12345")!!
+            password = prefs.getString("password", "12345")!!
         )
     }
 
     fun removeAll() {
         prefs.edit {
             remove("email")
-            remove("passwrod")
+            remove("password")
             remove("autoLogin")
             remove("accessToken")
             remove("area")
