@@ -1,26 +1,48 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import ProfileEditButton from "./ProfileEditButton";
 import ProfileSummary from "./ProfileSummary";
 import ProfileLocation from "./ProfileLocation";
 import ProfilePoint from "./ProfilePoint";
-import ProfileDday from "./ProfileDday";
+import { getUserDetail } from "../../api/profile";
+// import { set } from "date-fns";
 
 const ProfileInformation = () => {
+  const id = localStorage.getItem("id");
+  // const id = 28;
+  const [area, setArea] = useState("동네를 설정해주세요.");
+  const [profileImage, setProfileImage] = useState("");
+  const [nickName, setNickName] = useState("");
+  const [manner, setManner] = useState(0);
+  const [point, setPoint] = useState(0);
+  useEffect(() => {
+    getUserDetail(id).then((response) => {
+      setArea(response.area);
+      setProfileImage(response.profile_img);
+      setNickName(response.nickName);
+      setManner(response.manner);
+      setPoint(response.point);
+    });
+  }, []);
+  useEffect(() => {
+    if (!area) {
+      setArea("동네를 설정해주세요.");
+    }
+  }, [area]);
   return (
     <div css={profileWrapper}>
       <ProfileEditButton text="프로필 수정하기" />
-      <ProfileSummary />
-      <ProfileLocation />
+      <ProfileSummary profileImage={profileImage} manner={manner} nickName={nickName} />
+      <ProfileLocation area={area} />
       <div
         css={css`
           width: 44%;
           padding-left: 20px;
         `}
       >
-        <ProfilePoint />
-        <ProfileDday />
+        <ProfilePoint point={point} />
+        {/* <ProfileDday /> */}
       </div>
     </div>
   );

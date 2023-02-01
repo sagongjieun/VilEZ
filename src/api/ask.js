@@ -44,7 +44,7 @@ async function postAskArticle(formData) {
   try {
     const { data } = await formdataAxios.post(`/askboard`, formData);
 
-    if (data.flag === "success") alert("등록되었습니다 😀");
+    if (data.flag === "success") return data.data;
     else alert("요청 글 등록에 실패하였습니다 😥");
   } catch (error) {
     console.log(error);

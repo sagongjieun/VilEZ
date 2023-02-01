@@ -11,8 +11,12 @@ import ProductCategory from "./ProductCategory";
 import ProductImageSelect from "./ProductImageSelect";
 import ProductRegistType from "./ProductRegistType";
 import Map from "../common/Map";
+import { useNavigate } from "react-router-dom";
 
 const ProductRegist = () => {
+  const loginUserId = localStorage.getItem("id");
+  const navigate = useNavigate();
+
   const [registType, setRegistType] = useState("");
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
@@ -107,7 +111,8 @@ const ProductRegist = () => {
             hopeAreaLng: hopeAreaLng,
             startDay: startDay,
             title: title,
-            userId: 28, // 임시 데이터
+            userId: loginUserId,
+            address: location,
           }),
         ],
         { type: "application/json" }
@@ -116,9 +121,23 @@ const ProductRegist = () => {
 
     // API 요청
     if (registType === "물품 공유 등록") {
-      postShareArticle(formData);
+      postShareArticle(formData)
+        .then((res) => {
+          res = res[0];
+          navigate(`/product/detail/share/${res.id}`);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else if (registType === "물품 요청 등록") {
-      postAskArticle(formData);
+      postAskArticle(formData)
+        .then((res) => {
+          res = res[0];
+          navigate(`/product/detail/ask/${res.id}`);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   }
 
@@ -130,13 +149,13 @@ const ProductRegist = () => {
         <h3>
           제목 <b>*</b>
         </h3>
-        <InputBox placeholder="제목을 입력해주세요." onChangeValue={onChangeTitle} />
+        <InputBox useMainList={false} placeholder="제목을 입력해주세요." onChangeValue={onChangeTitle} />
       </div>
       <div css={categoryWrapper}>
         <h3>
           카테고리 <b>*</b>
         </h3>
-        <ProductCategory sendCategory={receiveCategory} />
+        <ProductCategory isMain={true} sendCategory={receiveCategory} />
       </div>
       <div css={contentWrapper}>
         <h3>

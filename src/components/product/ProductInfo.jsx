@@ -2,16 +2,24 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { HiLocationMarker, HiCalendar, HiHeart } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const ProductInfo = ({ infos }) => {
+const ProductInfo = ({ infos, boardId, boardType }) => {
+  const navigate = useNavigate();
+
+  function onClickMoveArticle() {
+    boardType === 1 ? navigate(`/product/detail/ask/${boardId}`) : navigate(`/product/detail/share/${boardId}`);
+  }
+
   return (
     <div css={productInfoWrapper}>
-      <div>{/* <img src={infos.thumbnailImage.path} alt="물품 대표사진" /> */}</div>
+      <div>
+        <img src={infos.thumbnailImage.path} alt="물품 대표사진" />
+      </div>
       <div>
         <div>
           <h3>{infos.title}</h3>
-          <Link to={`/product/detail/${infos.boardId}`}>글 보러가기</Link>
+          <span onClick={onClickMoveArticle}>글 보러가기</span>
         </div>
         <span>
           <HiLocationMarker /> {infos.location}
@@ -42,6 +50,7 @@ const productInfoWrapper = css`
       width: 100%;
       height: 100%;
       object-fit: contain;
+      overflow: hidden;
     }
   }
 
@@ -59,7 +68,7 @@ const productInfoWrapper = css`
         margin-right: 15px;
       }
 
-      & > a {
+      & > span {
         color: #8a8a8a;
         cursor: pointer;
       }

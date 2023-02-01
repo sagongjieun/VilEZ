@@ -1,18 +1,49 @@
 import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { useNavigate } from "react-router-dom";
 
-function QuitChattingReal() {
+function QuitChattingReal({ close }) {
+  const navigate = useNavigate();
+  // const params = useParams();
+  // const boardId = params.boardId;
+  function onClickCancel() {
+    close(false);
+  }
+  function onClickNavigate() {
+    // navigate(`/product/detail/${boardId}`, {});
+    navigate(`/product/detail/55`, {});
+  }
   return (
-    <div css={ModalWrap}>
-      <div>정말 채팅을 종료하시겠어요?</div>
-      <div css={buttonWrap}>
-        <button css={badbutton}>취소</button>
-        <button css={goodbutton}>종료하기</button>
+    <div css={topWrap}>
+      <div css={ModalWrap}>
+        <div>정말 채팅을 종료하시겠어요?</div>
+        <div css={buttonWrap}>
+          <button css={badbutton} onClick={onClickCancel}>
+            취소
+          </button>
+          <button css={goodbutton} onClick={onClickNavigate}>
+            종료하기
+          </button>
+        </div>
       </div>
     </div>
   );
 }
+
+const topWrap = css`
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+`;
+
 const ModalWrap = css`
   font-size: 20px;
   margin: auto;
@@ -26,6 +57,7 @@ const ModalWrap = css`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: white;
   > div {
     padding: 10px;
   }

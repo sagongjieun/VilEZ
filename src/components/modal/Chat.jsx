@@ -120,6 +120,7 @@ const chatWrap = css`
   bottom: 80px;
   right: 20px;
   background-color: #f5f6f7;
+  z-index: 10000;
 `;
 
 const ChatTitleWrap = css`

@@ -1,19 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { HiChevronRight } from "react-icons/hi2";
 import { useLocation } from "react-router-dom";
-import Report from "../modal/Report";
+// import Report from "../modal/Report";
 
 const ProductDetailFooter = () => {
   const location = useLocation();
-  const [showReport, setShowReport] = useState(false);
+  // const [showReport, setShowReport] = useState(false);
 
-  function onClickReportArticle() {
-    /** 모달 띄우기 */
-    alert("정말 신고하시겠습니까?");
-    setShowReport(!showReport);
-  }
+  // function onClickReportArticle() {
+  //   /** 모달 띄우기 */
+  //   alert("정말 신고하시겠습니까?");
+  //   setShowReport(!showReport);
+  // }
 
   async function onClickShareArticle(url) {
     try {
@@ -31,10 +31,10 @@ const ProductDetailFooter = () => {
 
   return (
     <div css={menusWrapper}>
-      <div onClick={onClickReportArticle}>
+      {/* <div onClick={onClickReportArticle}>
         <span>이 게시물 신고하기</span>
         <HiChevronRight size="22" />
-      </div>
+      </div> */}
       <div onClick={() => onClickShareArticle(`http://localhost:3000${location.pathname}`)}>
         <span>이 게시물 공유하기</span>
         <HiChevronRight size="22" />
@@ -43,7 +43,7 @@ const ProductDetailFooter = () => {
         <span>맨 위로 이동하기</span>
         <HiChevronRight size="22" />
       </div>
-      <span>{showReport ? <Report close={setShowReport} /> : null}</span>
+      {/* <span>{showReport ? <Report close={setShowReport} /> : null}</span> */}
     </div>
   );
 };

@@ -2,21 +2,17 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import location_icon from "../../assets/images/location_icon.png";
-import { useState } from "react";
-import { useEffect } from "react";
+// import { useState } from "react";
+// import { useEffect } from "react";
 
-const ProfileLocation = () => {
-  const [myLocation, setMyLocation] = useState("");
-  useEffect(() => {
-    setMyLocation("구미시 인의동");
-  }, []);
+const ProfileLocation = (props) => {
   const modalQrcode = () => {};
   return (
     <div css={locationWrapper}>
       <div>
         <h4>나의 동네</h4>
         <div css={locationIcon}></div>
-        <div>{myLocation}</div>
+        <div>{props.area}</div>
         <button css={locationButton} onClick={modalQrcode}>
           동네 인증하기
         </button>
