@@ -102,7 +102,7 @@ async function postAppointment(body) {
   try {
     const { data } = await jsonAxios.post(`/appointments`, body);
 
-    if (data.flag === "success") return data.data;
+    if (data.flag === "success") return true;
     else alert("약속 정보 저장에 실패하였습니다. 😅");
   } catch (error) {
     console.log(error);
