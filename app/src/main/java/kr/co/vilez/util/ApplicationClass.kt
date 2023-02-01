@@ -55,6 +55,8 @@ class ApplicationClass: Application() {
         // 정보를 담기 위한 sharedPreference
         lateinit var prefs: SharedPreferencesUtil
         lateinit var editor : SharedPreferences.Editor
+
+
     }
 
     override fun onCreate() {
