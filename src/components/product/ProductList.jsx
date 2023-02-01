@@ -13,7 +13,6 @@ import { HiCalendar } from "react-icons/hi";
 import { HiHeart } from "react-icons/hi";
 
 const ProductList = () => {
-  const [isList, setIsList] = useState(false);
   const [category, setCategory] = useState("");
   const [isClick, setIsClick] = useState(false);
   const [search, setSearch] = useState("");
@@ -35,9 +34,7 @@ const ProductList = () => {
     setSearch(e.target.value);
     console.log(search);
   }
-  function tempShowing() {
-    setIsList(!isList);
-  }
+
   // function onKeyDownSearch(e) {
   //   if (e.key === "Enter") {
   //     console.log("드가자");
@@ -45,70 +42,67 @@ const ProductList = () => {
   // }
   return (
     <div css={topWrap}>
-      <button onClick={tempShowing}>임시버튼</button>
-
-      {isList ? null : (
-        <div css={contentWrap}>
-          <h2>물품 공유 목록</h2>
-          <div css={filterWrap}>
-            <div css={filterLeftWrap}>
-              <ProductCategory isMain={false} sendCategory={receiveCategory} />
-            </div>
-            <div css={filterRighWrap}>
-              <div css={searchWrap}>
-                <InputBox
-                  useMainList={true}
-                  onChangeValue={(e) => onChangeSearch(e)}
-                  // value={search}
-                  // type="text"
-                  placeholder="필요한 물품을 검색해보세요."
-                  // onKeyDown={onKeyDownSearch}
-                />
-                <img src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
-                <button>검색</button>
-              </div>
-              <div onClick={onClickSeePossible} css={isClick ? possibleWrap : unPossibleWrap}>
-                공유가능한 물품만 보기
-              </div>
-            </div>
+      <div css={contentWrap}>
+        <h2>물품 공유 목록</h2>
+        <div css={filterWrap}>
+          <div css={filterLeftWrap}>
+            <ProductCategory isMain={false} sendCategory={receiveCategory} />
           </div>
-          <DivideLine />
-
-          <div css={buttonDiv}>
-            <button css={buttonWrap}>물품 등록</button>
-          </div>
-
-          <div css={relatedProductWrapper}>
-            {getArticle.map((article, idx) => (
-              <div key={idx}>
-                <div css={thumbnailWrapper}>
-                  <img src={image} />
-                </div>
-                <div css={infoWrapper}>
-                  <div>
-                    <span>{article.shareListDto.title}</span>
-                    <small>1시간 전</small>
-                  </div>
-                  <div>
-                    <small>
-                      <HiLocationMarker />
-                      {article.shareListDto.area}
-                    </small>
-                    <small>
-                      <HiCalendar />
-                      {article.shareListDto.startDay} ~ {article.shareListDto.endDay}
-                    </small>
-                    <small>
-                      <HiHeart />
-                      25
-                    </small>
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div css={filterRighWrap}>
+            <div css={searchWrap}>
+              <InputBox
+                useMainList={true}
+                onChangeValue={(e) => onChangeSearch(e)}
+                // value={search}
+                // type="text"
+                placeholder="필요한 물품을 검색해보세요."
+                // onKeyDown={onKeyDownSearch}
+              />
+              <img src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
+              <button>검색</button>
+            </div>
+            <div onClick={onClickSeePossible} css={isClick ? possibleWrap : unPossibleWrap}>
+              공유가능한 물품만 보기
+            </div>
           </div>
         </div>
-      )}
+        <DivideLine />
+
+        <div css={buttonDiv}>
+          <button css={buttonWrap}>물품 등록</button>
+        </div>
+
+        <div css={relatedProductWrapper}>
+          {getArticle.map((article, idx) => (
+            <div key={idx}>
+              <div css={thumbnailWrapper}>
+                <img src={image} />
+              </div>
+              <div css={infoWrapper}>
+                <div>
+                  <span>{article.shareListDto.title}</span>
+                  <small>1시간 전</small>
+                </div>
+                <div>
+                  <small>
+                    <HiLocationMarker />
+                    {article.shareListDto.area}
+                  </small>
+                  <small>
+                    <HiCalendar />
+                    {article.shareListDto.startDay} ~ {article.shareListDto.endDay}
+                  </small>
+                  <small>
+                    <HiHeart />
+                    25
+                  </small>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <NoProductList />
     </div>
   );
