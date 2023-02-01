@@ -30,6 +30,36 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final ShareDao shareDao;
 
     @Override
+    public List<TotalListVO> getGiveList(int userId) throws Exception {
+        List<MyAppointListDto> list = appointmentMapper.getGiveListShare(userId);
+        for(MyAppointListDto myAppointListDto : list){
+            myAppointListDto.setType(1);
+        }
+
+        List<MyAppointListDto> listAsk = appointmentMapper.getGiveListAsk(userId);
+        for(MyAppointListDto myAppointListDto : listAsk){
+            myAppointListDto.setType(2);
+        }
+
+        list.addAll(listAsk);
+
+        List<TotalListVO> totalList = new ArrayList<>();
+        for(MyAppointListDto vo : list){
+            TotalListVO totalListVO = new TotalListVO();
+            totalListVO.setMyAppointListVO(vo);
+
+            List<BookmarkDto> bookmarkDtos = shareDao.selectBookmarkList(vo.getUserId());
+            totalListVO.setBookmarkCnt(bookmarkDtos.size());
+
+            List<ImgPath> imageList = shareDao.list(vo.getUserId());
+            totalListVO.setImgPathList(imageList);
+            totalList.add(totalListVO);
+        }
+
+        return totalList;
+    }
+
+    @Override
     public BoardStateVO getBoardState(int boardId) throws Exception {
         return appointmentMapper.getBoardState(boardId);
     }
