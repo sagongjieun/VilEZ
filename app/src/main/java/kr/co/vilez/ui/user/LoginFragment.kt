@@ -1,5 +1,6 @@
 package kr.co.vilez.ui.user
 
+import android.app.Application
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +24,7 @@ import kr.co.vilez.R
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentLoginBinding
 import kr.co.vilez.ui.MainActivity
+import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.ui.dialog.AlertDialog
 import kr.co.vilez.util.*
 import retrofit2.awaitResponse
@@ -73,14 +75,13 @@ class LoginFragment : Fragment() {
     fun loginToProfile(user: User) {
         // 닉네임을 변경하지 않은 oauth 사용자의 경우 닉네임 변경 유도를 위해 프로필 창으로 이동시킴
         CoroutineScope(Dispatchers.Main).launch {
+            val user = User(user.email, user.password)
             val result =
                 ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
             if (result?.flag == "success") {
                 Log.d(TAG, "로그인 성공, 받아온 user = ${result.data[0]}")
                 ApplicationClass.prefs.setUser(result.data[0])
                 ApplicationClass.prefs.setAutoLogin(user) // 로그인시 자동으로 자동로그인 넣기
-
-                StompClient.runStomp()
 
                 val resultDetail = ApplicationClass.retrofitUserService.getUserDetail(result.data[0].id).awaitResponse().body()
                 if(resultDetail?.flag == "success") {
