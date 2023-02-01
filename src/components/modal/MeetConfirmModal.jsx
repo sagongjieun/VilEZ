@@ -3,6 +3,7 @@ import React from "react";
 import { css } from "@emotion/react";
 import { useRecoilValue } from "recoil";
 import { shareDateState } from "../../recoil/atom";
+import MiddleWideButton from "./../button/MiddleWideButton";
 
 function MeetConfirmModal({ close, openOath, otherUserNickname }) {
   const shareDate = useRecoilValue(shareDateState);
@@ -23,21 +24,19 @@ function MeetConfirmModal({ close, openOath, otherUserNickname }) {
       {close && (
         <div css={modalTop}>
           <div css={ModalWrap}>
-            <strong>{otherUserNickname}님과</strong>
-            <div>
+            <span>
+              <strong>{otherUserNickname} 님과</strong>
+            </span>
+            <span>
               <strong>
                 {startdate} ~ {enddate}
               </strong>
-            </div>
-            <div>기간동안</div>
-            <div>물품을 공유하시겠어요?</div>
+            </span>
+            <span>기간동안</span>
+            <span>물품을 공유하시겠어요?</span>
             <div css={buttonWrap}>
-              <button css={badbutton} onClick={closeModal}>
-                취소
-              </button>
-              <button css={goodbutton} onClick={onClickOpenOath}>
-                제출하기
-              </button>
+              <MiddleWideButton text={"취소"} onclick={closeModal} cancel={true} />
+              <MiddleWideButton text={"네, 공유할래요"} onclick={onClickOpenOath} />
             </div>
           </div>
         </div>
@@ -48,62 +47,45 @@ function MeetConfirmModal({ close, openOath, otherUserNickname }) {
 
 const modalTop = css`
   position: fixed;
-  width: 100%;
-  height: 100%;
   left: 0px;
   top: 0px;
-  background-color: rgba(0, 0, 0, 0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 1000;
 `;
 
 const ModalWrap = css`
-  position: absolute;
-  font-size: 20px;
-  margin: auto;
-  margin-bottom: 100px;
-  width: 600px;
-  height: 450px;
-  box-shadow: 1px 1px 5px;
+  position: fixed;
+  padding: 20px;
+  width: 450px;
+  height: 350px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
   border-radius: 10px;
-  text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  > div {
-    padding: 10px;
-  }
   background-color: white;
+
+  & > span {
+    margin-bottom: 15px;
+  }
 `;
 
 const buttonWrap = css`
-  margin-top: 50px;
-`;
+  display: flex;
+  width: 350px;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 20px;
 
-const goodbutton = css`
-  width: 105px;
-  background-color: #66dd9c;
-  color: white;
-  border: none;
-  height: 45px;
-  font-size: 14px;
-  border-radius: 5px;
-  cursor: pointer;
-`;
-
-const badbutton = css`
-  width: 105px;
-  background-color: #aeaeae;
-  color: white;
-  border: none;
-  height: 45px;
-  font-size: 14px;
-  border-radius: 5px;
-  margin-right: 30px;
-  cursor: pointer;
+  & > button {
+    width: 170px;
+  }
 `;
 
 export default MeetConfirmModal;
