@@ -16,6 +16,7 @@ import { getUserDetail } from "../../api/profile";
 
 const ProductChatting = () => {
   const { roomId } = useParams();
+  const loginUserId = localStorage.getItem("id");
 
   const [isConfirm, setIsConfirm] = useState(false);
   const [isOath, setIsOath] = useState(false);
@@ -52,7 +53,10 @@ const ProductChatting = () => {
 
         setBoardId(res.boardId);
         setBoardType(res.type);
-        setOtherUserId(res.shareUserId);
+
+        if (loginUserId == res.shareUserId) {
+          setOtherUserId(res.notShareUserId);
+        } else setOtherUserId(res.shareUserId);
       })
       .catch((error) => {
         console.log(error);
@@ -130,13 +134,15 @@ const ProductChatting = () => {
         <ProductInfo infos={boardDetail} boardId={boardId} boardType={boardType} />
       </div>
       <div css={mapAndChatWrapper}>
-        <MapAndChatting
-          roomId={roomId}
-          boardId={boardId}
-          boardType={boardType}
-          otherUserId={otherUserId}
-          otherUserNickname={boardDetail.writerNickname}
-        />
+        {boardId && boardType && otherUserId && boardDetail.writerNickname && (
+          <MapAndChatting
+            roomId={roomId}
+            boardId={boardId}
+            boardType={boardType}
+            otherUserId={otherUserId}
+            otherUserNickname={boardDetail.writerNickname}
+          />
+        )}
       </div>
       <div css={buttonWrapper}>
         <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
