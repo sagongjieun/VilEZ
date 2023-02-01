@@ -2,26 +2,30 @@ import React, { useState } from "react";
 import { BsChatSquare } from "react-icons/bs";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import Chat from "../components/modal/Chat";
+import ChattingModal from "../components/modal/ChattingModal";
+
 function ChatOpenIcon() {
   const [isOpen, setIsOpen] = useState(false);
+
   const onClickOpenChat = () => {
     setIsOpen(!isOpen);
   };
+
   return (
-    <div>
+    <>
       <div css={IconBox} onClick={onClickOpenChat}>
-        <BsChatSquare />
+        <BsChatSquare size="25" />
       </div>
-      {isOpen ? <Chat /> : null}
-    </div>
+      {isOpen ? <ChattingModal setIsOpen={setIsOpen} /> : null}
+    </>
   );
 }
+
 const IconBox = css`
   bottom: 30px;
   right: 30px;
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   border-radius: 100%;
   color: white;
   border: 1px solid white;

@@ -85,6 +85,17 @@ async function getCheckMyRoom(boardId, type, userId) {
   }
 }
 
+async function getMyAppointmentList(userId) {
+  try {
+    const { data } = await jsonAxios.post(`/appointments/my/appointlist/${userId}`);
+
+    if (data.flag === "success") return data.data;
+    else console.log("내역이 없습니다. 😥");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // POST
 
 async function postChatRoom(body) {
@@ -117,6 +128,7 @@ export {
   getLatestChattingListByUserId,
   getBoardIdByRoomId,
   getCheckMyRoom,
+  getMyAppointmentList,
   postChatRoom,
   postAppointment,
 };
