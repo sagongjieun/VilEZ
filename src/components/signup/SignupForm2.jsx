@@ -11,7 +11,6 @@ import Validation from "./SignupValidation";
 import useForm from "../../hooks/useForm";
 import { SHA256 } from "./EmailCodeHashFunction";
 import { confirmEmail, checkNickName, postUserInformation } from "../../api/signup";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const SignupForm2 = () => {
@@ -106,7 +105,6 @@ const SignupForm2 = () => {
     event.preventDefault();
     setIsVisible((prev) => !prev);
   };
-  useEffect(() => {}, []);
   const { errors, handleChange, handleSubmit } = useForm({
     initialValues: {
       password: "",
