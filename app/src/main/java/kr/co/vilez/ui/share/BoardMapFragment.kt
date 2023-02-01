@@ -126,10 +126,13 @@ class BoardMapFragment : Fragment(), MapView.MapViewEventListener, ReverseGeoCod
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding.flMap.removeView(mapView)
+    override fun onDetach() {
+        Log.d(TAG, "onDetach: 맵 종료")
+        super.onDetach()
+        if(binding.flMap.contains(mapView))
+            binding.flMap.removeView(mapView)
     }
+
 
     override fun onMapViewInitialized(p0: MapView?) {
 
