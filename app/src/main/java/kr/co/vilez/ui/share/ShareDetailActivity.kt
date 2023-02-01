@@ -1,5 +1,6 @@
 package kr.co.vilez.ui.share
 
+import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -15,26 +16,20 @@ import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityShareDetailBinding
 import kr.co.vilez.util.ApplicationClass
-import kr.co.vilez.util.StompClient
 import me.relex.circleindicator.CircleIndicator3
-import net.daum.mf.map.api.MapPOIItem
-import net.daum.mf.map.api.MapPoint
-import net.daum.mf.map.api.MapView
-import org.json.JSONObject
 import retrofit2.awaitResponse
 
 private const val TAG = "빌리지_ShareDetailActivity"
-class ShareDetailActivity : AppCompatActivity(), MapView.MapViewEventListener {
+class ShareDetailActivity : AppCompatActivity(){
     private lateinit var binding: ActivityShareDetailBinding
     private lateinit var mPager: ViewPager2
     private var pagerAdapter: FragmentStateAdapter? = null
     private var mIndicator: CircleIndicator3? = null
     private var boardId:Int? = 0
 
-    private lateinit var mapView:MapView
-    private var zoom: Boolean? = false
-    private var zoomLvl: Int? = 0
-    private val marker = MapPOIItem()
+    private lateinit var mapLat:String
+    private lateinit var mapLng:String
+
 
     private lateinit var mContext:FragmentActivity
 
@@ -48,16 +43,23 @@ class ShareDetailActivity : AppCompatActivity(), MapView.MapViewEventListener {
         setContentView(binding.root)
         mContext = this@ShareDetailActivity
         initData()
-        initMap()
+
     }
 
-    private fun initMap() {
-        mapView = MapView(mContext)
-        binding.flMap.addView(mapView)
+    fun initMap() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.share_detail_map, BoardMapFragment.newInstance(mapLat.toDouble(), mapLng.toDouble()))
+            .commit()
+    }
 
-        val pos = MapPoint.mapPointWithGeoCoord(binding.article!!.hopeAreaLat.toDouble(), binding.article!!.hopeAreaLng.toDouble())
-        mapView.setMapCenterPoint(pos, true)
-        mapView.setZoomLevel(0, true)
+    override fun onStart() {
+        super.onStart()
+
+       /* Log.d(TAG, "onStart: lat: $lat, lng: $lng")
+        // mapView 를 담은 카카오맵 프래그먼트 생성
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.share_detail_map, BoardMapFragment.newInstance(lat.toDouble(), lng.toDouble()))
+            .commit()*/
     }
 
 
@@ -79,6 +81,11 @@ class ShareDetailActivity : AppCompatActivity(), MapView.MapViewEventListener {
        */
                 Log.d(TAG, "init: @@@공유 디테일 ${result.data[0]}")
                 binding.article = result.data[0]
+                mapLat = result.data[0].hopeAreaLat
+                mapLng = result.data[0].hopeAreaLng
+
+                Log.d(TAG, "initData: lat: $mapLat, lng: $mapLng")
+                initMap()
 
 
                 // 해당 글을 작성한 작성자 데이터 가져오기
@@ -148,49 +155,7 @@ class ShareDetailActivity : AppCompatActivity(), MapView.MapViewEventListener {
 
     }
 
-    override fun onMapViewInitialized(p0: MapView?) {
 
-    }
-
-    override fun onMapViewCenterPointMoved(p0: MapView?, p1: MapPoint?) {
-
-    }
-
-    override fun onMapViewZoomLevelChanged(p0: MapView?, p1: Int) {
-        val data = JSONObject()
-        if(zoom == true) {
-            zoom = false
-            return
-        }
-        if (p0 != null) {
-            if(p0.zoomLevel == zoomLvl) return
-            data.put("roomId", 10)
-            data.put("toUserId", 29)
-            data.put("lat", p0.getMapCenterPoint().mapPointGeoCoord.latitude)
-            data.put("lng", p0.getMapCenterPoint().mapPointGeoCoord.longitude)
-            data.put("zoomLevel", p0.zoomLevel)
-            data.put("isMarker",false)
-            zoomLvl = p0.zoomLevel
-        }
-    }
-
-    override fun onMapViewSingleTapped(p0: MapView?, p1: MapPoint?) {
-    }
-
-    override fun onMapViewDoubleTapped(p0: MapView?, p1: MapPoint?) {
-    }
-
-    override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
-    }
-
-    override fun onMapViewDragStarted(p0: MapView?, p1: MapPoint?) {
-    }
-
-    override fun onMapViewDragEnded(p0: MapView?, p1: MapPoint?) {
-    }
-
-    override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {
-    }
 
 
 }

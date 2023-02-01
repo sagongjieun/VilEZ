@@ -22,7 +22,7 @@ class ForthFragment(var path:String) : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_second, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_forth, container, false)
         binding.fragment = this
 
         return binding.root

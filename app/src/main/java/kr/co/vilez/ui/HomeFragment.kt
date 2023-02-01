@@ -22,10 +22,6 @@ import kr.co.vilez.ui.share.*
 import kr.co.vilez.ui.share.category.MenuCategoryActivity
 import kr.co.vilez.ui.share.search.ShareSearchActivity
 import kr.co.vilez.ui.share.write.ShareWriteActivity
-import kr.co.vilez.util.DataState
-import kr.co.vilez.util.StompClient
-import org.json.JSONArray
-import org.json.JSONObject
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
 import kr.co.vilez.util.Common.Companion.elapsedTime
@@ -56,7 +52,7 @@ class HomeFragment : Fragment() {
         binding.fragment = this
 
         initToolBar()
-
+        initData()
 
         return binding.root
     }
@@ -160,30 +156,6 @@ class HomeFragment : Fragment() {
             }
             shareAdapter.notifyItemInserted(index-1)
         }
-
-        val items = resources.getStringArray(R.array.my_array)
-        //val myAdapter = ArrayAdapter<>(mContext, android.R.layout.simple_spinner_dropdown_item,items)
-        val arrayAdapter = ArrayAdapter<String>(
-            mainActivity,
-            android.R.layout.simple_spinner_dropdown_item,
-            items
-        )
-
-       /* binding.spinner.adapter = arrayAdapter
-        binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View,
-                position: Int,
-                id: Long
-            ) {
-                binding.textView.setText(items.get(position))
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                binding.textView.setText("선택")
-            }
-        }*/
 
         binding.rvShareList.setOnScrollChangeListener{ v, scollX, scrollY,
                                               oldScrollX, oldScrollY ->
