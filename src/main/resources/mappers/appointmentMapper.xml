@@ -68,6 +68,40 @@
         WHERE now() >= appointment_start and appointment_end >= now() and board_id = #{boardId};
     </select>
 
+    <select id="getGiveListShare" parameterType="int" resultMap="mylist">
+        select
+            ANY_VALUE(id) as id, ANY_VALUE(user_id) as user_id,
+            ANY_VALUE(title) as title, ANY_VALUE(hope_area_lat) as hope_area_lat,
+            ANY_VALUE(hope_area_lng) as hope_area_lng, ANY_VALUE(start_day) as start_day,
+            ANY_VALUE(end_day) as end_day, ANY_VALUE(appointment_id) as appointment_id,
+            ANY_VALUE(share_user_id) as share_user_id, ANY_VALUE(not_share_user_id) as not_share_user_id
+        from sharing_board as s
+                 right join(
+            select *
+            from appointment
+            where share_user_id = #{userId}
+        ) as a
+        on a.board_id = s.id
+        where (s.state >= 0 and a.state >= 0)
+        group by board_id;
+    </select>
+    <select id="getGiveListAsk" parameterType="int" resultMap="mylist">
+        select ANY_VALUE(id) as id, ANY_VALUE(user_id) as user_id,
+               ANY_VALUE(title) as title, ANY_VALUE(hope_area_lat) as hope_area_lat,
+               ANY_VALUE(hope_area_lng) as hope_area_lng, ANY_VALUE(start_day) as start_day,
+               ANY_VALUE(end_day) as end_day, ANY_VALUE(appointment_id) as appointment_id,
+               ANY_VALUE(share_user_id) as share_user_id, ANY_VALUE(not_share_user_id) as not_share_user_id
+        from ask_board as s
+                 right join(
+            select *
+            from appointment
+            where share_user_id = #{userId}
+        ) as a
+        on a.board_id = s.id
+        where (s.state >= 0 and a.state >= 0)
+        group by board_id;
+    </select>
+
     <select id="getMyAppointmentListShare" parameterType="int" resultMap="mylist">
         select
             ANY_VALUE(id) as id, ANY_VALUE(user_id) as user_id,
