@@ -34,6 +34,7 @@ import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.ChangeMultipartUtil
 import kr.co.vilez.util.Common
 import kr.co.vilez.util.Common.Companion.DEFAULT_PROFILE_IMG
+import kr.co.vilez.util.PermissionUtil
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -98,9 +99,6 @@ class EditProfileFragment : Fragment() {
             }
         }
     }
-
-    private val REQ_GALLERY = 1
-
     // 이미지 갤러리에서 선택할 시  콜백
     private val imageResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -108,7 +106,6 @@ class EditProfileFragment : Fragment() {
 
         if (result.resultCode == RESULT_OK) {
             val imageUri = result.data?.data ?: return@registerForActivityResult
-            binding.ivProfileImg.setImageURI(imageUri)
 
             val file = File(ChangeMultipartUtil().changeAbsolutelyPath(imageUri, mContext))
             val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), file)
@@ -127,9 +124,15 @@ class EditProfileFragment : Fragment() {
                 ).awaitResponse().body()
                 if (result?.flag == "success") {
                     Log.d(TAG, "프로필이미지변경성공: ")
+                    binding.ivProfileImg.setImageURI(imageUri) // 일단 미리보기 이미지 바뀐 이미지로 변경
                     Toast.makeText(profileMenuActivity, "프로필 이미지 변경을 성공했습니다.", Toast.LENGTH_SHORT).show()
+                    // 디테일 갱신
+                    val resultDetail = ApplicationClass.retrofitUserService.getUserDetail(ApplicationClass.prefs.getId()).awaitResponse().body()
+                    if(resultDetail?.flag == "success") {
+                        Log.d(TAG, "프로필 이미지 수정: Detail조회 성공~, result: ${resultDetail.data[0]}")
+                        ApplicationClass.prefs.setUserDetail(resultDetail.data[0])
+                    }
                     refreshActivity()
-
                 } else {
                     Log.d(TAG, "프로필이미지변경 실패: ")
                 }
@@ -150,36 +153,14 @@ class EditProfileFragment : Fragment() {
         view.isEnabled = false
         if (view.id == R.id.btn_profile_img_change) {
             // 바뀐 이미지 가져와서 수정
-            val writePermission = ContextCompat.checkSelfPermission(
-                mContext, android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
-            val readPermission = ContextCompat.checkSelfPermission(
-                mContext, android.Manifest.permission.READ_EXTERNAL_STORAGE
-            )
-
-            if (writePermission == PackageManager.PERMISSION_DENIED || readPermission == PackageManager.PERMISSION_DENIED) {
-                ActivityCompat.requestPermissions(
-                    mContext as Activity, arrayOf(
-                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        android.Manifest.permission.READ_EXTERNAL_STORAGE
-                    ), REQ_GALLERY
-                )
-            } else {
-                val intent = Intent(Intent.ACTION_PICK)
-                intent.setDataAndType(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*"
-                )
-                imageResult.launch(intent)
-            }
+            PermissionUtil().galleryPermission(false, mContext, imageResult)
         } else {
             CoroutineScope(Dispatchers.Main).launch {
 //                val result = ApplicationClass.retrofitUserService.removeProfileImage(
 //                    ApplicationClass.prefs.getUserAccessToken(),
 //                    ApplicationClass.prefs.getId(),
 //                ).awaitResponse().body()
-                val result = ApplicationClass.hRetrofitUserService.removeProfileImage(
-                    ApplicationClass.prefs.getId(),
-                ).awaitResponse().body()
+                val result = ApplicationClass.hRetrofitUserService.removeProfileImage(ApplicationClass.prefs.getId(),).awaitResponse().body()
 
                 if (result?.flag == "success") {
                     BindingAdapter.bindImageFromUrl(binding.ivProfileImg, DEFAULT_PROFILE_IMG) // 일단 미리보기 이미지기본 이미지로 수정
