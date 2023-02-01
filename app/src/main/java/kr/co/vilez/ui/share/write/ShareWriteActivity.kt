@@ -10,9 +10,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.MaterialDatePicker
 import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityShareWriteBinding
 import kr.co.vilez.util.PermissionUtil
+import java.text.SimpleDateFormat
+import java.util.*
 
 private const val TAG = "빌리지_ShareWriteActivity"
 class ShareWriteActivity : AppCompatActivity() {
@@ -97,12 +101,58 @@ class ShareWriteActivity : AppCompatActivity() {
         finish()
     }
 
-    fun onCategoryClick(view: View) {
 
+    fun onCategoryClick(view: View) {
+        val categoryPicker = androidx.appcompat.app.AlertDialog.Builder(this)
+        val categories = resources.getStringArray(R.array.category)
+        categoryPicker.setTitle("카테고리 선택")
+        categoryPicker.setItems(categories
+        ) { _, pos ->
+            Toast.makeText(this@ShareWriteActivity, "${categories[pos]} 선택", Toast.LENGTH_SHORT).show()
+        }
+        categoryPicker.show()
     }
 
     fun onDateClick(view: View) {
+        val today = MaterialDatePicker.todayInUtcMilliseconds()
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
 
+        calendar.timeInMillis = today
+        val startToday = calendar.timeInMillis
+
+        calendar.timeInMillis = today
+        calendar[Calendar.MONTH] = Calendar.DECEMBER
+        val decThisYear = calendar.timeInMillis
+
+        // Build constraints.
+        val constraintsBuilder =
+            CalendarConstraints.Builder()
+                .setStart(startToday)
+                .setEnd(decThisYear)
+
+        val datePicker =
+            MaterialDatePicker.Builder.dateRangePicker()
+                .setTitleText("공유기간 선택")
+                .setSelection(androidx.core.util.Pair(MaterialDatePicker.thisMonthInUtcMilliseconds(), MaterialDatePicker.todayInUtcMilliseconds())) // 디폴트 날짜
+                .setCalendarConstraints(constraintsBuilder.build())
+                .build()
+        datePicker.addOnPositiveButtonClickListener {
+            Toast.makeText(this@ShareWriteActivity, getDate(it.first, it.second), Toast.LENGTH_SHORT).show()
+        }
+        datePicker.show(supportFragmentManager, "Date")
+    }
+
+    fun getDate(startMills: Long, endMills: Long): String {
+        val dateFormat = "yyyy-MM-dd"
+        // Create a DateFormatter object for displaying date in specified format.
+        val formatter = SimpleDateFormat(dateFormat)
+        // Create a calendar object that will convert the date and time value in milliseconds to date.
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
+        calendar.timeInMillis = startMills
+        val startDay = formatter.format(calendar.time)
+        calendar.timeInMillis = endMills
+        val endDay = formatter.format(calendar.time)
+        return "$startDay ~ $endDay"
     }
 
     fun onPlaceClick(view: View) {
