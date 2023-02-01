@@ -52,51 +52,133 @@
                 android:text="완료"
                 android:textColor="@color/main_1"
                 android:layout_marginEnd="20dp"
-                android:textSize="16sp" />
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:onClick="@{activity.savePost}"/>
         </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:gravity="center_vertical">
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="10dp">
-                    <ImageView
-                        android:id="@+id/iv_photo_add"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:background="@drawable/ic_add_photo"/>
-                    <TextView
-                        android:id="@+id/tv_photo_cnt"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:gravity="center_vertical">
+                    <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:layout_marginBottom="10dp"
-                        android:text="0 / 5"
-                        android:textSize="8sp"
-                        android:layout_alignBottom="@+id/iv_photo_add"
-                        android:layout_alignStart="@id/iv_photo_add"
-                        android:layout_alignEnd="@+id/iv_photo_add"/>
-                </RelativeLayout>
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="10dp">
+                        <ImageView
+                            android:id="@+id/iv_photo_add"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:background="@drawable/ic_add_photo"
+                            android:onClick="@{activity.addImage}"/>
+                        <TextView
+                            android:id="@+id/tv_photo_cnt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:layout_marginBottom="10dp"
+                            android:text="0 / 4"
+                            android:textSize="11sp"
+                            android:layout_alignBottom="@+id/iv_photo_add"
+                            android:layout_alignStart="@id/iv_photo_add"
+                            android:layout_alignEnd="@+id/iv_photo_add"/>
+                    </RelativeLayout>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/hor_recycler_view_img"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </LinearLayout>
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:hint="제목"
+                    android:inputType="text"
+                    android:maxLength="30"
+                    android:gravity="center|start"
+                    android:paddingStart="20dp"
+                    android:background="@null"/>
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center|start"
+                    android:background="@drawable/btn_write_more_toggle"
+                    android:textSize="17sp"
+                    android:paddingStart="20dp"
+                    android:text="카테고리"
+                    android:onClick="@{activity.onCategoryClick}"/>
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="200dp"
+                    android:background="@null"
+                    android:gravity="start|top"
+                    android:hint="물품에 대한 상세한 설명을 해주면 좋아요."
+                    android:padding="20dp" />
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center|start"
+                    android:background="@drawable/btn_write_more_toggle"
+                    android:textSize="17sp"
+                    android:paddingStart="20dp"
+                    android:text="희망 공유 기간"
+                    android:onClick="@{activity.onDateClick}"/>
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center|start"
+                    android:background="@drawable/btn_write_more_toggle"
+                    android:textSize="17sp"
+                    android:paddingStart="20dp"
+                    android:text="희망 공유 장소"
+                    android:onClick="@{activity.onPlaceClick}"
+                    tools:ignore="RtlSymmetry" />
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
             </LinearLayout>
-            <com.google.android.material.divider.MaterialDivider
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+        </ScrollView>
 
-
-
-
-
-        </LinearLayout>
     </LinearLayout>
 </layout>

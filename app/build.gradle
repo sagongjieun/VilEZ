@@ -136,6 +136,12 @@ dependencies {
 
     // kakao oauth
     implementation "com.kakao.sdk:v2-user:2.12.1" // 카카오 로그인
+
+    // Glide
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
+    // RecyclerView에서 Swipe 이벤트시 효과 지원
+    //    implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
+    implementation 'com.github.xabaras:RecyclerViewSwipeDecorator:1.4'
 }
 
 tasks.register("prepareKotlinBuildScriptModel"){}
