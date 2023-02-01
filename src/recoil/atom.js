@@ -11,4 +11,12 @@ const loginUserState = atom({
   },
 });
 
-export { loginUserState };
+const shareDateState = atom({
+  key: "shareDateState",
+  default: {
+    startDate: null,
+    endDate: null,
+  },
+});
+
+export { loginUserState, shareDateState };

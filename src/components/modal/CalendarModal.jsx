@@ -7,8 +7,12 @@ import MiddleWideButton from "../button/MiddleWideButton";
 import { GrClose } from "react-icons/gr";
 import { ko } from "date-fns/locale";
 import { getAppointmentsByBoardId } from "../../api/chat";
+import { useSetRecoilState } from "recoil";
+import { shareDateState } from "../../recoil/atom";
 
 const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
+  const setShareDate = useSetRecoilState(shareDateState);
+
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
@@ -25,6 +29,19 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
 
   function onClickCloseModal() {
     setCalendarModalOpen(false);
+  }
+
+  function onClickMakeMeetDate() {
+    if (startDate && endDate) {
+      // recoil에 공유확정날짜 저장 -> MeetConfirm.jsx 에서 사용
+      setShareDate({
+        startDate: startDate,
+        endDate: endDate,
+      });
+      setCalendarModalOpen(false);
+    } else {
+      alert("기간을 설정해주세요 😀");
+    }
   }
 
   useEffect(() => {
@@ -103,7 +120,7 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
           <small>* 이미 공유중이거나 예약 완료된 기간 외로 설정해주세요.</small>
         )}
         <div>
-          <MiddleWideButton text={"물건 공유 기간 확정"} />
+          <MiddleWideButton text={"물건 공유 기간 확정"} onclick={onClickMakeMeetDate} />
         </div>
       </div>
     </div>

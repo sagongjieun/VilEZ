@@ -1,26 +1,38 @@
-import React from "react";
+import React, { useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { useRecoilValue } from "recoil";
+import { shareDateState } from "../../recoil/atom";
 
-function MeetConfirm({ close, openOath }) {
+function MeetConfirmModal({ close, openOath, otherUserNickname }) {
   // function MeetConfirm({ 전달할 key이름을 넣는 것, 태그에서 사용할 때 <MeetConfirm (MeetConfirm에서 사용하는 키 이름) : (작성중인 컴포넌트에서 사용하는 이름)})
-  const user = { nickname: "회먹고싶다요" };
-  const startdate = "2023.01.19";
-  const enddate = "2023.01.23";
+  // const startdate = "2023.01.19";
+  // const enddate = "2023.01.23";
+
+  const shareDate = useRecoilValue(shareDateState);
+  const startdate = shareDate.startDate.toISOString().substring(0, 10);
+  const enddate = shareDate.endDate.toISOString().substring(0, 10);
+
+  // atom state null 안되는지 확인
+  useEffect(() => {
+    console.log("MeetConfirmMdoal : ", shareDate);
+  }, []);
 
   function closeModal() {
     close(false);
   }
+
   function onClickOpenOath() {
     openOath(true);
     close(false);
   }
+
   return (
     <div>
       {close && (
         <div css={modalTop}>
           <div css={ModalWrap}>
-            <strong>{user.nickname}님과</strong>
+            <strong>{otherUserNickname}님과</strong>
             <div>
               <strong>
                 {startdate} ~ {enddate}
@@ -42,6 +54,7 @@ function MeetConfirm({ close, openOath }) {
     </div>
   );
 }
+
 const modalTop = css`
   position: fixed;
   width: 100%;
@@ -74,6 +87,7 @@ const ModalWrap = css`
   }
   background-color: white;
 `;
+
 const buttonWrap = css`
   margin-top: 50px;
 `;
@@ -88,6 +102,7 @@ const goodbutton = css`
   border-radius: 5px;
   cursor: pointer;
 `;
+
 const badbutton = css`
   width: 105px;
   background-color: #aeaeae;
@@ -99,4 +114,5 @@ const badbutton = css`
   margin-right: 30px;
   cursor: pointer;
 `;
-export default MeetConfirm;
+
+export default MeetConfirmModal;
