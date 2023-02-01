@@ -1,7 +1,7 @@
 package kr.co.vilez.data.model
 
 data class ShareBoardDetail(
-    val bookmarkCnt: Int,
+    var bookmarkCnt: Int,
     val category: String,
     val content: String,
     val date: String,
