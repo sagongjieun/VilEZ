@@ -17,14 +17,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.databinding.FragmentHomeBinding
-import kr.co.vilez.ui.chat.RoomlistData
 import kr.co.vilez.ui.share.*
 import kr.co.vilez.ui.share.category.MenuCategoryActivity
 import kr.co.vilez.ui.share.search.ShareSearchActivity
-import kr.co.vilez.util.DataState
-import kr.co.vilez.util.StompClient
-import org.json.JSONArray
-import org.json.JSONObject
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
 import kr.co.vilez.util.Common.Companion.elapsedTime

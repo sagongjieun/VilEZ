@@ -14,13 +14,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityMainBinding
-import kr.co.vilez.ui.chat.ChatFragment
 import kr.co.vilez.ui.chat.ChatlistFragment
 import kr.co.vilez.ui.chat.RoomlistData
 import kr.co.vilez.ui.share.ShareFragment
-import kr.co.vilez.ui.user.LoginActivity
 import kr.co.vilez.ui.user.ProfileFragment
-import kr.co.vilez.util.StompClient
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.DataState
 import kr.co.vilez.util.StompClient2

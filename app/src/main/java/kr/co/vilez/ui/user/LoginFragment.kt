@@ -75,7 +75,7 @@ class LoginFragment : Fragment() {
     fun loginToProfile(user: User) {
         // 닉네임을 변경하지 않은 oauth 사용자의 경우 닉네임 변경 유도를 위해 프로필 창으로 이동시킴
         CoroutineScope(Dispatchers.Main).launch {
-            val user = User(email, password)
+            val user = User(user.email, user.password)
             val result =
                 ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
             if (result?.flag == "success") {
