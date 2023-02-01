@@ -78,7 +78,8 @@ public class AppointmentController {
     @ResponseBody
     @GetMapping("/my/{userId}")
     @ApiOperation(value = "나의 약속 정보들을 불러온다." ,
-            notes = "List에 dto 담아서 리턴")
+            notes = "type 2는 요청 게시글에 의해 공유 받은 예약 정보" +
+                    "\n\t type 1는 공유 게시글 의해 공유 받은 예약정보")
     public ResponseEntity<?> getMyAppointmentShare(@PathVariable int userId){
         HttpVO httpVO = new HttpVO();
         List<Object> data = new ArrayList<>();
@@ -115,7 +116,9 @@ public class AppointmentController {
     @ResponseBody
     @PostMapping
     @ApiOperation(value = "약속 정보를 저장한다." ,
-            notes = "")
+            notes = "게시글 정보(boarId)" +
+                    "\n\t 약속 기간(appointment_start, end)" +
+                    "\n\t 빌린사람, 빌려주는 사람(not_share_user_id, share_user_id)")
     public ResponseEntity<?> createAppointment(@RequestBody AppointmentDto appointmentDto){
         HttpVO httpVO = new HttpVO();
         try {

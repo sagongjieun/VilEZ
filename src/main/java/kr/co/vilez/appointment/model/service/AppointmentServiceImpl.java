@@ -54,7 +54,17 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<TotalListVO> getMyAppointmentList(int userId) throws Exception {
-        List<MyAppointListDto> list = appointmentMapper.getMyAppointmentList(userId);
+        List<MyAppointListDto> list = appointmentMapper.getMyAppointmentListShare(userId);
+        for(MyAppointListDto myAppointListDto : list){
+            myAppointListDto.setType(1);
+        }
+
+        List<MyAppointListDto> listAsk = appointmentMapper.getMyAppointmentListAsk(userId);
+        for(MyAppointListDto myAppointListDto : listAsk){
+            myAppointListDto.setType(2);
+        }
+
+        list.addAll(listAsk);
 
         List<TotalListVO> totalList = new ArrayList<>();
         for(MyAppointListDto vo : list){
