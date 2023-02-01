@@ -27,8 +27,10 @@ import kr.co.vilez.util.StompClient
 import org.json.JSONArray
 import org.json.JSONObject
 import kr.co.vilez.util.ApplicationClass
+import kr.co.vilez.util.Common
 import kr.co.vilez.util.Common.Companion.elapsedTime
 import retrofit2.awaitResponse
+import kr.co.vilez.ui.share.ShareDetailActivity
 
 private const val TAG = "빌리지_HomeFragment"
 class HomeFragment : Fragment() {
@@ -55,35 +57,6 @@ class HomeFragment : Fragment() {
 
         initToolBar()
 
-        var data = JSONObject()
-        data.put("userId", 29)
-        StompClient.runStomp()
-
-        StompClient.stompClient.topic("/send_room_list/29").subscribe { topicMessage ->
-            run {
-                val json = JSONArray(topicMessage.payload)
-                println(json.toString())
-                CoroutineScope(Dispatchers.Main).launch {
-
-                    DataState.itemList = ArrayList<RoomlistData>()
-                    for (index in 0 until json.length()) {
-                        val chat = JSONObject(json.get(index).toString())
-                        val chatData = chat.getJSONObject("chatData")
-                        DataState.itemList.add(
-                            RoomlistData(
-                                chatData.getInt("roomId"), chat.getString("nickName"),
-                                chatData.getString("content"),
-                                chat.getString("area")
-                            )
-                        )
-                        DataState.set.add(chatData.getInt("roomId"))
-                    }
-                }
-            }
-        }
-        StompClient.stompClient.send("/room_list", data.toString()).subscribe()
-
-        initData()
 
         return binding.root
     }
@@ -91,16 +64,14 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
     }
-
     @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.top_app_bar, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
-
     @Deprecated("Deprecated in Java")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
+        when (item.itemId) {
             R.id.option_menu_menu -> {
                 Log.d(TAG, "onContextItemSelected: ${item.title} clicked")
                 Toast.makeText(mainActivity, "${item.title} 클릭", Toast.LENGTH_SHORT).show()
@@ -261,9 +232,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    companion object {
-
-    }
 
     fun moveToShareActivity(view: View) {
         val intent = Intent(mainActivity, ShareDetailActivity::class.java)

@@ -67,11 +67,6 @@ class ShareFragment : Fragment() {
         // findViewById 할 필요없이 binding.버튼Id, binding.텍스트뷰Id 로 바로 접근해서 사용 가능!
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_share, container, false)
         binding.fragment = this
-
-        // 뷰 생성 후 초기화
-        initView()
-
-
         return binding.root
     }
 

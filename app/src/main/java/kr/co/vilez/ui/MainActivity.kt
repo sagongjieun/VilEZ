@@ -1,16 +1,28 @@
 package kr.co.vilez.ui
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.system.Os.remove
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityMainBinding
 import kr.co.vilez.ui.chat.ChatlistFragment
+import kr.co.vilez.ui.chat.RoomlistData
 import kr.co.vilez.ui.share.ShareFragment
 import kr.co.vilez.ui.user.ProfileFragment
-import kr.co.vilez.util.StompClient
+import kr.co.vilez.util.ApplicationClass
+import kr.co.vilez.util.DataState
+import kr.co.vilez.util.StompClient2
+import org.json.JSONArray
+import org.json.JSONObject
 
 private const val TAG = "빌리지_MainActivity"
 class MainActivity : AppCompatActivity() {
@@ -21,7 +33,6 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         supportActionBar?.hide() // 액션바 숨김
-        StompClient.stompClient.connect()
         val target = intent.getStringExtra("target")
         if(target == null) {
             changeFragment("홈")
@@ -29,8 +40,38 @@ class MainActivity : AppCompatActivity() {
             changeFragment(target)
         }
         initView()
-        StompClient.runStomp()
+        var data = JSONObject()
+        data.put("userId", ApplicationClass.prefs.getId())
+        StompClient2.runStomp()
+        StompClient2.stompClient.join("/send_room_list/"+ ApplicationClass.prefs.getId()).subscribe { topicMessage ->
+            run {
+                println(topicMessage)
+                val json = JSONArray(topicMessage)
+                CoroutineScope(Dispatchers.Main).launch {
 
+                    DataState.itemList = ArrayList<RoomlistData>()
+                    for (index in 0 until json.length()) {
+                        val chat = JSONObject(json.get(index).toString())
+                        val chatData = chat.getJSONObject("chatData")
+                        DataState.itemList.add(
+                            RoomlistData(
+                                chatData.getInt("roomId"), chat.getString("nickName"),
+                                chatData.getString("content"),
+                                chat.getString("area"),
+                                if(chatData.getInt("fromUserId") == ApplicationClass.prefs.getId())
+                                    chatData.getInt("toUserId")
+                                else
+                                    chatData.getInt("fromUserId")
+
+                            )
+                        )
+                        DataState.set.add(chatData.getInt("roomId"))
+                    }
+                }
+            }
+        }
+
+        StompClient2.stompClient.send("/room_list", data.toString()).subscribe()
     }
 
     private fun changeFragment(name: String) {
