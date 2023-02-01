@@ -120,7 +120,8 @@ class ShareFragment : Fragment() {
                             "구미",
                             data.shareListDto.startDay+"~"
                                     +data.shareListDto.endDay,
-                            Integer.toString(data.listCnt)
+                            Integer.toString(data.listCnt),
+                            data.shareListDto.state,
                         );
                     } else {
                         shareData = ShareData(
@@ -131,7 +132,8 @@ class ShareFragment : Fragment() {
                             "구미",
                             data.shareListDto.startDay+"~"
                                     +data.shareListDto.endDay,
-                            Integer.toString(data.listCnt)
+                            Integer.toString(data.listCnt),
+                            data.shareListDto.state,
                         );
                     }
                         shareDatas.add(shareData)
@@ -171,7 +173,8 @@ class ShareFragment : Fragment() {
                                         "구미",
                                         data.shareListDto.startDay+"~"
                                                 +data.shareListDto.endDay,
-                                        Integer.toString(data.listCnt)
+                                        Integer.toString(data.listCnt),
+                                        data.shareListDto.state,
                                     );
                                 } else {
                                     shareData = ShareData(
@@ -182,7 +185,8 @@ class ShareFragment : Fragment() {
                                         "구미",
                                         data.shareListDto.startDay+"~"
                                                 +data.shareListDto.endDay,
-                                        Integer.toString(data.listCnt)
+                                        Integer.toString(data.listCnt),
+                                        data.shareListDto.state,
                                     );
                                 }
                                 shareDatas.add(shareData)

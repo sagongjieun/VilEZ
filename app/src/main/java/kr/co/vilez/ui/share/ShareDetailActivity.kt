@@ -1,9 +1,8 @@
 package kr.co.vilez.ui.share
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
@@ -16,18 +15,28 @@ import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityShareDetailBinding
 import kr.co.vilez.util.ApplicationClass
+import kr.co.vilez.util.StompClient
 import me.relex.circleindicator.CircleIndicator3
+import net.daum.mf.map.api.MapPOIItem
+import net.daum.mf.map.api.MapPoint
+import net.daum.mf.map.api.MapView
+import org.json.JSONObject
 import retrofit2.awaitResponse
 
 private const val TAG = "빌리지_ShareDetailActivity"
-class ShareDetailActivity : AppCompatActivity() {
+class ShareDetailActivity : AppCompatActivity(), MapView.MapViewEventListener {
     private lateinit var binding: ActivityShareDetailBinding
     private lateinit var mPager: ViewPager2
     private var pagerAdapter: FragmentStateAdapter? = null
     private var mIndicator: CircleIndicator3? = null
     private var boardId:Int? = 0
 
-    private lateinit var mConext:FragmentActivity
+    private lateinit var mapView:MapView
+    private var zoom: Boolean? = false
+    private var zoomLvl: Int? = 0
+    private val marker = MapPOIItem()
+
+    private lateinit var mContext:FragmentActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,24 +46,22 @@ class ShareDetailActivity : AppCompatActivity() {
         boardId = intent.getIntExtra("boardId", 0)
         Log.d(TAG, "onCreate: boardId: $boardId")
         setContentView(binding.root)
-        mConext = this@ShareDetailActivity
-        init()
+        mContext = this@ShareDetailActivity
+        initData()
+        initMap()
+    }
+
+    private fun initMap() {
+        mapView = MapView(mContext)
+        binding.flMap.addView(mapView)
+
+        val pos = MapPoint.mapPointWithGeoCoord(binding.article!!.hopeAreaLat.toDouble(), binding.article!!.hopeAreaLng.toDouble())
+        mapView.setMapCenterPoint(pos, true)
+        mapView.setZoomLevel(0, true)
     }
 
 
-
-    fun init(){
-
-
-
-
-        /*
-        ******************************************************************************************************
-        ******************************************************************************************************
-        *******************************           모바일 디테일 뷰           ************************************
-        ******************************************************************************************************
-        ******************************************************************************************************
-         */
+    private fun initData(){
         var count = 0
         CoroutineScope(Dispatchers.Main).launch {
             val result =
@@ -87,52 +94,102 @@ class ShareDetailActivity : AppCompatActivity() {
                 val myData = result.data[0].list
                 if(count == 0) {
                    Log.d(TAG, "init: 사진 없는 게시글임... 일단 종료")
-                }
+                    binding.llPhoto.visibility = View.GONE
+                } else {
+                    binding.llPhoto.visibility = View.VISIBLE
 
-                mPager = binding.viewpager
-                //Adapter
-                pagerAdapter = MyAdapter(mConext, count, myData)
-                Log.d(TAG, "init: pagerAdapter: ${pagerAdapter}")
-                mPager.adapter = pagerAdapter
+
+                    mPager = binding.viewpager
+                    //Adapter
+                    pagerAdapter = MyAdapter(mContext, count, myData)
+                    Log.d(TAG, "init: pagerAdapter: ${pagerAdapter}")
+                    mPager.adapter = pagerAdapter
 //Indicator
-                mIndicator = binding.indicator
-                mIndicator!!.setViewPager(mPager)
-                mIndicator!!.createIndicators(count, 0);
+                    mIndicator = binding.indicator
+                    mIndicator!!.setViewPager(mPager)
+                    mIndicator!!.createIndicators(count, 0);
 
-                mPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
-                mPager!!.setCurrentItem(1000); //시작 지점
-                mPager!!.setOffscreenPageLimit(5); //최대 이미지 수
+                    mPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+                    mPager!!.setCurrentItem(1000); //시작 지점
+                    mPager!!.setOffscreenPageLimit(5); //최대 이미지 수
 
-                mPager!!.registerOnPageChangeCallback(object : OnPageChangeCallback() {
-                    override fun onPageScrolled(
-                        position: Int,
-                        positionOffset: Float,
-                        positionOffsetPixels: Int
-                    ) {
-                        super.onPageScrolled(position, positionOffset, positionOffsetPixels)
-                        if (positionOffsetPixels == 0) {
-                            mPager!!.currentItem = position
+                    mPager!!.registerOnPageChangeCallback(object : OnPageChangeCallback() {
+                        override fun onPageScrolled(
+                            position: Int,
+                            positionOffset: Float,
+                            positionOffsetPixels: Int
+                        ) {
+                            super.onPageScrolled(position, positionOffset, positionOffsetPixels)
+                            if (positionOffsetPixels == 0) {
+                                mPager!!.currentItem = position
+                            }
                         }
-                    }
 
-                    override fun onPageSelected(position: Int) {
-                        super.onPageSelected(position)
-                        mIndicator!!.animatePageSelected(position % count)
-                    }
-                })
+                        override fun onPageSelected(position: Int) {
+                            super.onPageSelected(position)
+                            mIndicator!!.animatePageSelected(position % count)
+                        }
+                    })
 
-                println("*******************************************************")
-                println("*******************              **********************")
-                println("${result?.data}")
-                println("*******************              **********************")
-                println("*******************************************************")
+                    println("*******************************************************")
+                    println("*******************              **********************")
+                    println("${result?.data}")
+                    println("*******************              **********************")
+                    println("*******************************************************")
+                }
             } else {
                 Log.d(TAG, "init: fail, result:$result")
+                Log.d(TAG, "init: 사진 없는 게시글,,,? 가리기")
+                binding.llPhoto.visibility = View.GONE
             }
         }
 
 
 
+    }
+
+    override fun onMapViewInitialized(p0: MapView?) {
+
+    }
+
+    override fun onMapViewCenterPointMoved(p0: MapView?, p1: MapPoint?) {
+
+    }
+
+    override fun onMapViewZoomLevelChanged(p0: MapView?, p1: Int) {
+        val data = JSONObject()
+        if(zoom == true) {
+            zoom = false
+            return
+        }
+        if (p0 != null) {
+            if(p0.zoomLevel == zoomLvl) return
+            data.put("roomId", 10)
+            data.put("toUserId", 29)
+            data.put("lat", p0.getMapCenterPoint().mapPointGeoCoord.latitude)
+            data.put("lng", p0.getMapCenterPoint().mapPointGeoCoord.longitude)
+            data.put("zoomLevel", p0.zoomLevel)
+            data.put("isMarker",false)
+            zoomLvl = p0.zoomLevel
+        }
+    }
+
+    override fun onMapViewSingleTapped(p0: MapView?, p1: MapPoint?) {
+    }
+
+    override fun onMapViewDoubleTapped(p0: MapView?, p1: MapPoint?) {
+    }
+
+    override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
+    }
+
+    override fun onMapViewDragStarted(p0: MapView?, p1: MapPoint?) {
+    }
+
+    override fun onMapViewDragEnded(p0: MapView?, p1: MapPoint?) {
+    }
+
+    override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {
     }
 
 

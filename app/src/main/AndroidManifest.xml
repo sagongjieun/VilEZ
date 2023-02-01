@@ -44,7 +44,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.share.ShareWriteActivity"
+            android:name=".ui.share.write.ShareWriteActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

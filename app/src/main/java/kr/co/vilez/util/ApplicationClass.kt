@@ -32,7 +32,8 @@ import java.util.concurrent.TimeUnit
 private const val TAG = "빌리지_ApplicationClass"
 class ApplicationClass: Application() {
 
-    val SERVER_URL = "http://i8d111.p.ssafy.io:8082"
+    val SERVER_URL = "http://i8d111.p.ssafy.io:8081"
+//    val SERVER_URL = "http://192.168.100.210:8086"
 
     companion object {
         // 전역변수 문법을 통해 Retrofit 인스턴스를 앱 실행 시 1번만 생성하여 사용 (싱글톤 객체)
