@@ -68,7 +68,12 @@
     </select>
 
     <select id="getMyAppointmentList" parameterType="int" resultMap="mylist">
-        select id, user_id, title, hope_area_lat, hope_area_lng, start_day, end_day, appointment_id, share_user_id, not_share_user_id
+        select
+            ANY_VALUE(id), ANY_VALUE(user_id)
+                , ANY_VALUE(title), ANY_VALUE(hope_area_lat),
+            ANY_VALUE(hope_area_lng), ANY_VALUE(start_day),
+            ANY_VALUE(end_day), ANY_VALUE(appointment_id),
+            ANY_VALUE(share_user_id), ANY_VALUE(not_share_user_id)
         from sharing_board as s
         right join(
             select *
