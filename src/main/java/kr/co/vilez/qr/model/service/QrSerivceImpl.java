@@ -22,7 +22,8 @@ public class QrSerivceImpl implements QrService {
     final String bucketName = "vilez";
     @Override
     public Map<String, String> createQR(int userId) throws Exception {
-        String fileName = "../../"+System.nanoTime()+".png";
+        String tempFileName = "../../"+System.nanoTime()+".png";
+        String RealFileName = "qr/"+userId+"/"+System.nanoTime();
 
         // QR 코드 생성
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
@@ -30,14 +31,15 @@ public class QrSerivceImpl implements QrService {
 
         BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
 
-        File file = new File(fileName);
+        File file = new File(tempFileName);
         ImageIO.write(bufferedImage, "png", file);
 
-        osUpload.put(bucketName, fileName, file);
+        osUpload.put(bucketName, RealFileName, file);
 
+        file.delete();
         Map<String, String> map = new HashMap<>();
         map.put("path", "https://kr.object.ncloudstorage.com/"
-                +bucketName+"/"+fileName);
+                +bucketName+"/"+RealFileName);
 
         return map;
     }

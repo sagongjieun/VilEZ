@@ -36,7 +36,20 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<AppointmentDto> getMyAppointmentCalendarList(int userId) throws Exception {
-        return appointmentMapper.getMyAppointmentCalendarList(userId);
+
+            List<AppointmentDto> list = appointmentMapper.getMyAppointmentCalendarListShare(userId);
+            for(AppointmentDto appointmentDto : list){
+                appointmentDto.setType(1);
+            }
+
+            List<AppointmentDto> listAsk = appointmentMapper.getMyAppointmentCalendarListAsk(userId);
+            for(AppointmentDto appointmentDto : listAsk){
+                appointmentDto.setType(2);
+            }
+
+            list.addAll(listAsk);
+
+        return list;
     }
 
     @Override
