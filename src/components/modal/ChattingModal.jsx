@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import luffy from "../../assets/images/luffy.png";
@@ -6,8 +6,17 @@ import onpiecethumb from "../../assets/images/onpiecethumb.jfif";
 import jjangu from "../../assets/images/jjangu.png";
 import sinhyeongman from "../../assets/images/sinhyeongman.jfif";
 import ChattingModalItem from "./ChattingModalItem";
+import { getMyAppointmentList } from "../../api/chat";
 
 function ChattingModal() {
+  const loginUserId = localStorage.getItem("id");
+
+  useEffect(() => {
+    getMyAppointmentList(loginUserId).then((res) => {
+      console.log(res);
+    });
+  }, []);
+
   const dummy = [
     {
       profile: luffy,

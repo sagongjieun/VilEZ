@@ -22,7 +22,7 @@ const ChattingModalItem = ({ chat, key }) => {
 const ChatListWrap = css`
   max-height: 70px;
   margin-right: 3px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   padding: 10px 5px;
   display: flex;
   flex-direction: row;
@@ -30,7 +30,7 @@ const ChatListWrap = css`
   align-items: center;
   background: #ffffff;
   border: 1px solid #e1e2e3;
-  box-shadow: 0px 4px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   cursor: pointer;
 
