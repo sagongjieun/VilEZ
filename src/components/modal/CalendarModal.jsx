@@ -9,6 +9,7 @@ import { ko } from "date-fns/locale";
 import { getAppointmentsByBoardId } from "../../api/chat";
 import { useSetRecoilState } from "recoil";
 import { shareDateState } from "../../recoil/atom";
+import DateFormat from "../common/DateFormat";
 
 const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
   const setShareDate = useSetRecoilState(shareDateState);
@@ -33,10 +34,10 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
 
   function onClickMakeMeetDate() {
     if (startDate && endDate) {
-      // recoil에 공유확정날짜 저장 -> MeetConfirm.jsx 에서 사용
+      // recoil에 공유확정날짜 저장 -> MeetConfirmModal.jsx 에서 사용
       setShareDate({
-        startDate: startDate,
-        endDate: endDate,
+        startDate: selectedStartDay,
+        endDate: selectedEndDay,
       });
       setCalendarModalOpen(false);
     } else {
@@ -68,14 +69,6 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
     if (startDate && endDate) {
       let flag = false;
 
-      let syear = startDate.getFullYear();
-      let smonth = startDate.getMonth() + 1;
-      let sday = startDate.getDate();
-
-      let eyear = endDate.getFullYear();
-      let emonth = endDate.getMonth() + 1;
-      let eday = endDate.getDate();
-
       // 기존에 공유중이거나 예약중인 기간 클릭 막기
       if (blockDate.length > 0) {
         for (let date of blockDate) {
@@ -87,8 +80,8 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
       }
 
       if (!flag) {
-        setSelectedStartDay(syear + "년 " + smonth + "월 " + sday + "일");
-        setSelectedEndDay(eyear + "년 " + emonth + "월 " + eday + "일");
+        setSelectedStartDay(DateFormat(startDate));
+        setSelectedEndDay(DateFormat(endDate));
       } else {
         setStartDate(null);
         setEndDate(null);

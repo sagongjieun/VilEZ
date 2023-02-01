@@ -1,22 +1,13 @@
-import React, { useEffect } from "react";
+import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useRecoilValue } from "recoil";
 import { shareDateState } from "../../recoil/atom";
 
 function MeetConfirmModal({ close, openOath, otherUserNickname }) {
-  // function MeetConfirm({ 전달할 key이름을 넣는 것, 태그에서 사용할 때 <MeetConfirm (MeetConfirm에서 사용하는 키 이름) : (작성중인 컴포넌트에서 사용하는 이름)})
-  // const startdate = "2023.01.19";
-  // const enddate = "2023.01.23";
-
   const shareDate = useRecoilValue(shareDateState);
-  const startdate = shareDate.startDate.toISOString().substring(0, 10);
-  const enddate = shareDate.endDate.toISOString().substring(0, 10);
-
-  // atom state null 안되는지 확인
-  useEffect(() => {
-    console.log("MeetConfirmMdoal : ", shareDate);
-  }, []);
+  const startdate = shareDate.startDate;
+  const enddate = shareDate.endDate;
 
   function closeModal() {
     close(false);
