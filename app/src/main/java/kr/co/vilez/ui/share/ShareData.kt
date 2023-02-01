@@ -7,5 +7,6 @@ class ShareData(
     var tv_date: String,
     var tv_local: String,
     var tv_period:String,
-    var tv_bookmark:String
+    var tv_bookmark:String,
+    var state: Int,
     )

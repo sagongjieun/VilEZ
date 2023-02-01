@@ -1,9 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.share.ShareWriteActivity">
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="activity"
+            type="kr.co.vilez.ui.share.write.ShareWriteActivity" />
+        <variable
+            name="title"
+            type="String" />
+    </data>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white">
+
+            <ImageButton
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="start"
+                android:background="@drawable/icon_back"
+                android:onClick="@{activity.onBackPressed}"
+                android:scaleType="fitXY" />
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@{title}"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/btn_finish"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:text="완료"
+                android:textColor="@color/main_1"
+                android:layout_marginEnd="20dp"
+                android:textSize="16sp" />
+        </com.google.android.material.appbar.MaterialToolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:gravity="center_vertical">
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="10dp">
+                    <ImageView
+                        android:id="@+id/iv_photo_add"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/ic_add_photo"/>
+                    <TextView
+                        android:id="@+id/tv_photo_cnt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_marginBottom="10dp"
+                        android:text="0 / 5"
+                        android:textSize="8sp"
+                        android:layout_alignBottom="@+id/iv_photo_add"
+                        android:layout_alignStart="@id/iv_photo_add"
+                        android:layout_alignEnd="@+id/iv_photo_add"/>
+                </RelativeLayout>
+            </LinearLayout>
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+
+
+
+        </LinearLayout>
+    </LinearLayout>
+</layout>

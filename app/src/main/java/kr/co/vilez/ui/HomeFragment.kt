@@ -17,9 +17,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.databinding.FragmentHomeBinding
+import kr.co.vilez.ui.chat.RoomlistData
 import kr.co.vilez.ui.share.*
 import kr.co.vilez.ui.share.category.MenuCategoryActivity
 import kr.co.vilez.ui.share.search.ShareSearchActivity
+import kr.co.vilez.ui.share.write.ShareWriteActivity
+import kr.co.vilez.util.DataState
+import kr.co.vilez.util.StompClient
+import org.json.JSONArray
+import org.json.JSONObject
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
 import kr.co.vilez.util.Common.Companion.elapsedTime
@@ -57,11 +63,37 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
+    }
+    @Deprecated("Deprecated in Java")
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.top_app_bar, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+    @Deprecated("Deprecated in Java")
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.option_menu_menu -> {
+                Log.d(TAG, "onContextItemSelected: ${item.title} clicked")
+                Toast.makeText(mainActivity, "${item.title} 클릭", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(mainActivity, MenuCategoryActivity::class.java))
+            }
+            R.id.option_menu_search -> {
+                val intent = Intent(mainActivity, ShareSearchActivity::class.java)
+                startActivity(intent)
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
-    fun initList() {
+
+    private fun initToolBar() {
+        mainActivity.setSupportActionBar(binding.toolbar)
+        mainActivity.supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
+        binding.title = "진평동"
+    }
+
+
+    private fun initData() {
         // 데이터 가져오기
         shareDatas = arrayListOf()
 
@@ -101,22 +133,24 @@ class HomeFragment : Fragment() {
                             data.shareListDto.id,
                             "https://kr.object.ncloudstorage.com/vilez/basicProfile.png",
                             data.shareListDto.title,
-                            Common.elapsedTime(data.shareListDto.date),
+                            elapsedTime(data.shareListDto.date),
                             "구미",
                             data.shareListDto.startDay+"~"
                                     +data.shareListDto.endDay,
-                            Integer.toString(data.listCnt)
+                            Integer.toString(data.listCnt),
+                            data.shareListDto.state,
                         );
                     } else {
                         shareData = ShareData(
                             data.shareListDto.id,
                             data.shareListDto.list[0].path,
                             data.shareListDto.title,
-                            Common.elapsedTime(data.shareListDto.date),
+                            elapsedTime(data.shareListDto.date),
                             "구미",
                             data.shareListDto.startDay+"~"
                                     +data.shareListDto.endDay,
-                            Integer.toString(data.listCnt)
+                            Integer.toString(data.listCnt),
+                            data.shareListDto.state,
                         );
                     }
                     shareDatas.add(shareData)
@@ -172,7 +206,8 @@ class HomeFragment : Fragment() {
                                         "구미",
                                         data.shareListDto.startDay+"~"
                                                 +data.shareListDto.endDay,
-                                        Integer.toString(data.listCnt)
+                                        Integer.toString(data.listCnt),
+                                        data.shareListDto.state,
                                     );
                                 } else {
                                     shareData = ShareData(
@@ -183,7 +218,8 @@ class HomeFragment : Fragment() {
                                         "구미",
                                         data.shareListDto.startDay+"~"
                                                 +data.shareListDto.endDay,
-                                        Integer.toString(data.listCnt)
+                                        Integer.toString(data.listCnt),
+                                        data.shareListDto.state,
                                     );
                                 }
                                 shareDatas.add(shareData)
@@ -196,38 +232,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.top_app_bar, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
-            R.id.option_menu_menu -> {
-                Log.d(TAG, "onContextItemSelected: ${item.title} clicked")
-                Toast.makeText(mainActivity, "${item.title} 클릭", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(mainActivity, MenuCategoryActivity::class.java))
-            }
-            R.id.option_menu_search -> {
-                val intent = Intent(mainActivity, ShareSearchActivity::class.java)
-                startActivity(intent)
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-
-    private fun initToolBar() {
-        mainActivity.setSupportActionBar(binding.toolbar)
-        mainActivity.supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
-        binding.title = "진평동"
-    }
-
-    companion object {
-
-    }
 
     fun moveToShareActivity(view: View) {
         val intent = Intent(mainActivity, ShareDetailActivity::class.java)
