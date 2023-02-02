@@ -51,7 +51,8 @@
                         android:id="@+id/toolbar"
                         android:layout_width="match_parent"
                         android:layout_height="?attr/actionBarSize"
-                        android:background="@color/white">
+                        android:background="@color/white"
+                        app:menu="@menu/board_top_app_menu">
 
                         <ImageButton
                             android:layout_width="24dp"
