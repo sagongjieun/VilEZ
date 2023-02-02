@@ -5,9 +5,11 @@ const formdataAxios = formdataInstance();
 
 // GET
 
-async function getAskArticleList() {
+async function getAskArticleList(category, cnt, high, low, word) {
   try {
-    const { data } = await jsonAxios.get(`/askboard`);
+    const { data } = await jsonAxios.get(
+      `/askboard?category=${category}&cnt=${cnt}&high=${high}&low=${low}&word=${word}`
+    );
 
     if (data.flag === "success") return data.data;
     else console.log("요청 글 목록을 불러오는 데 실패하였습니다. 😥");

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { postShareArticle } from "../../api/share";
-import { getAskArticleDetailByBoardId, postAskArticle } from "../../api/ask";
+import { getShareArticleByBoardId, putShareArticle } from "../../api/share";
+import { putAskArticle } from "../../api/ask";
 import DivideLine from "../common/DivideLine";
 import InputBox from "../common/InputBox";
 import ProductCalendar from "./ProductCalendar";
@@ -11,7 +11,7 @@ import ProductCategory from "./ProductCategory";
 import ProductImageSelect from "./ProductImageSelect";
 import ProductRegistType from "./ProductRegistType";
 import Map from "../common/Map";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const ProductPut = () => {
   const loginUserId = localStorage.getItem("id");
@@ -27,24 +27,25 @@ const ProductPut = () => {
   const [hopeAreaLat, setHopeAreaLat] = useState("");
   const [hopeAreaLng, setHopeAreaLng] = useState("");
   const [imageList, setImageList] = useState([]);
-
+  const pathname = useLocation().pathname;
+  const type = pathname.includes("share") ? 2 : 1;
   useEffect(() => {
-    getAskArticleDetailByBoardId(boardId).then((res) => {
-      const data = res[0];
-
-      setTitle(data.title);
-      setCategory(data.category);
-
-      setImageList(data.list);
-      setContent(data.content);
-      setStartDay(data.startDay);
-      setEndDay(data.endDay);
-      setHopeAreaLat(data.hopeAreaLat);
-      setHopeAreaLng(data.hopeAreaLng);
-
-      setLocation(data.address);
-    });
-  });
+    type === 2
+      ? getShareArticleByBoardId(boardId).then((res) => {
+          const data = res[0];
+          setTitle(data.title);
+          setCategory(data.category);
+          setImageList(data.list);
+          setContent(data.content);
+          setStartDay(data.startDay);
+          setEndDay(data.endDay);
+          setHopeAreaLat(data.hopeAreaLat);
+          setHopeAreaLng(data.hopeAreaLng);
+          setLocation(data.address);
+          console.log(data);
+        })
+      : null;
+  }, []);
   function receiveRegistType(registType) {
     setRegistType(registType);
   }
@@ -138,7 +139,7 @@ const ProductPut = () => {
 
     // API 요청
     if (registType === "물품 공유 등록") {
-      postShareArticle(formData)
+      putShareArticle(formData)
         .then((res) => {
           res = res[0];
           navigate(`/product/detail/share/${res.id}`);
@@ -147,7 +148,7 @@ const ProductPut = () => {
           console.log(error);
         });
     } else if (registType === "물품 요청 등록") {
-      postAskArticle(formData)
+      putAskArticle(formData)
         .then((res) => {
           res = res[0];
           navigate(`/product/detail/ask/${res.id}`);
@@ -160,7 +161,7 @@ const ProductPut = () => {
 
   return (
     <div css={wrapper}>
-      <ProductRegistType sendRegistType={receiveRegistType} />
+      <ProductRegistType sendRegistType={receiveRegistType} type={registType} />
       <DivideLine />
       <div css={titleWrapper}>
         <h3>
