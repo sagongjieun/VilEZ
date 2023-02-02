@@ -3,8 +3,11 @@ package kr.co.vilez.ui.chat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import kr.co.vilez.R
 
 class ChatAdapter(val itemList: ArrayList<ChatlistData>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -23,6 +26,13 @@ class ChatAdapter(val itemList: ArrayList<ChatlistData>) : RecyclerView.Adapter<
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if(holder is LeftViewHolder) {
+            if(itemList[position].profile != null) {
+                Glide.with(holder.itemView)
+                    .load(itemList[position].profile)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .circleCrop()
+                    .into(holder.profile)
+            }
             holder.content.text = itemList[position].content
         } else if(holder is RightViewHolder){
             holder.content.text = itemList[position].content
@@ -40,6 +50,7 @@ class ChatAdapter(val itemList: ArrayList<ChatlistData>) : RecyclerView.Adapter<
 
     inner class LeftViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val content = itemView.findViewById<TextView>(R.id.textv_msg)
+        val profile = itemView.findViewById<ImageView>(R.id.left_user)
 
     }
     inner class RightViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

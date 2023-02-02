@@ -1,3 +1,3 @@
 package kr.co.vilez.ui.chat
 
-data class ChatlistData (val content: String, val viewType: Int)
+data class ChatlistData(val content: String, val viewType: Int, val profile: String?)
