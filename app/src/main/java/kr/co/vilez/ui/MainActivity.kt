@@ -1,13 +1,9 @@
 package kr.co.vilez.ui
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.system.Os.remove
-import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +11,7 @@ import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityMainBinding
 import kr.co.vilez.ui.chat.ChatlistFragment
-import kr.co.vilez.ui.chat.RoomlistData
+import kr.co.vilez.data.model.RoomlistData
 import kr.co.vilez.ui.share.ShareFragment
 import kr.co.vilez.ui.user.ProfileFragment
 import kr.co.vilez.util.ApplicationClass
@@ -62,7 +58,8 @@ class MainActivity : AppCompatActivity() {
                                     chatData.getInt("toUserId")
                                 else
                                     chatData.getInt("fromUserId")
-
+                                , chat.getInt("noReadCount")
+                                , chat.getString("profile")
                             )
                         )
                         DataState.set.add(chatData.getInt("roomId"))

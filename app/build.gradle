@@ -142,6 +142,9 @@ dependencies {
     // RecyclerView에서 Swipe 이벤트시 효과 지원
     //    implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
     implementation 'com.github.xabaras:RecyclerViewSwipeDecorator:1.4'
+
+    //circle img view
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }
 
 tasks.register("prepareKotlinBuildScriptModel"){}

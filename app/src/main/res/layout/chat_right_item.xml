@@ -30,13 +30,6 @@
                 android:textSize="15dp"
                 android:gravity="right"
                 />
-            <ImageView
-                android:id="@+id/left_user"
-                android:layout_gravity="right"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/user_default"/>
         </LinearLayout>
 
     </LinearLayout>
