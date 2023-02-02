@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { getUserShare } from "../../api/profile";
-import ProfileCardView from "../profile/ProfileCardView";
+import ProductCardView from "../product/ProductCardView";
 
 // const id = localStorage.getItem("id");
 const ProfileMyWriting = (props) => {
@@ -21,7 +21,7 @@ const ProfileMyWriting = (props) => {
             margin-top: 20px;
           `}
         >
-          <ProfileCardView />
+          <ProductCardView />
         </div>
       ))}
     </div>

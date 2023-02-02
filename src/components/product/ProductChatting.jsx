@@ -93,7 +93,7 @@ const ProductChatting = () => {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [roomId]);
 
   useEffect(() => {
     if (otherUserId) {

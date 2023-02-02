@@ -31,4 +31,9 @@ const shareDataState = atom({
   },
 });
 
-export { loginUserState, shareDateState, shareDataState };
+const modalOpenState = atom({
+  key: "modalOpenState",
+  default: false,
+});
+
+export { loginUserState, shareDateState, shareDataState, modalOpenState };
