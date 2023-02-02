@@ -31,6 +31,21 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final ShareDao shareDao;
 
     @Override
+    public List<PointVO> getPointList(int userId) throws Exception {
+        List<PointVO> list = appointmentDao.getPointList(userId);
+
+        for(PointVO pointVO : list){
+            if(pointVO.getShareUserId() == userId){
+                pointVO.setIncrease(true);
+            } else{
+                pointVO.setIncrease(false);
+            }
+        }
+
+        return list;
+    }
+
+    @Override
     public void deletePeriod(SetPeriodDto setPeriodDto) throws Exception {
         appointmentDao.deleteCheck(setPeriodDto);
     }
@@ -64,7 +79,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         pointVO.setBoardId(appointmentDto.getBoardId());
         pointVO.setTitle(appointmentDto.getTitle());
         pointVO.setDate(appointmentDto.getDate());
-
+        pointVO.setType(1);
+        // 1은 정상적인 예약에 의한 포인트 삭감
+        // 2는 반납 기한을 넘어선 벌금 포인트 삭감
+        
         // 내역 저장
         appointmentDao.savePoint(pointVO);
 
