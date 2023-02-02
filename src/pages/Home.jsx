@@ -189,6 +189,7 @@ const ExplainLeft = css`
 `;
 
 const ExplainRight = css`
+  width: 50%;
   height: 584px;
 `;
 

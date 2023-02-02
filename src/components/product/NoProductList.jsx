@@ -11,8 +11,8 @@ const NoProductList = () => {
   }
   return (
     <div css={topWrap}>
-      <div>근처에 대여 가능한 물품이 더 없네요.😥</div>
-      <div>공유 요청 게시글을 작성해 보는 건 어때요?</div>
+      <span>근처에 대여 가능한 물품이 더 없네요.😥</span>
+      <span>공유 요청 게시글을 작성해 보는 건 어때요?</span>
       <div>
         <SmallWideButton text="게시글 작성하기" onclick={onClicktoRegist} />
       </div>
