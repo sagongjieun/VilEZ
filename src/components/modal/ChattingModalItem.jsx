@@ -2,9 +2,9 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-const ChattingModalItem = ({ chat, key }) => {
+const ChattingModalItem = ({ chat }) => {
   return (
-    <div key={key} css={ChatListWrap}>
+    <div css={ChatListWrap}>
       <img src={chat.profile} alt="profileImage" />
       <div css={chatInfoWrap}>
         <div>
