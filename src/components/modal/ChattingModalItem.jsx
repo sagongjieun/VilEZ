@@ -18,7 +18,7 @@ const ChattingModalItem = ({ chat }) => {
   return (
     <div css={ChatListWrap} onClick={() => onClickMoveChatRoom(chat.chatData.roomId)}>
       <img src={chat.profile} alt="profileImage" />
-      {chat.noReadCount ? <div></div> : <div></div>}
+      {chat.noReadCount ? <div css={newMessageAlarm}></div> : <></>}
       <div css={chatInfoWrap}>
         <div>
           <span>{chat.nickName}</span>
@@ -53,17 +53,17 @@ const ChatListWrap = css`
     border-radius: 100%;
     margin-right: 10px;
   }
+`;
 
-  & > div:nth-of-type(1) {
-    position: absolute;
-    border-radius: 100%;
-    border: 1px solid white;
-    width: 10px;
-    height: 10px;
-    top: 12px;
-    left: 40px;
-    background-color: #fc0101;
-  }
+const newMessageAlarm = css`
+  position: absolute;
+  border-radius: 100%;
+  border: 1px solid white;
+  width: 10px;
+  height: 10px;
+  top: 12px;
+  left: 40px;
+  background-color: #fc0101;
 `;
 
 const chatInfoWrap = css`

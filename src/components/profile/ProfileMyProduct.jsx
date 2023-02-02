@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { getUserShare } from "../../api/profile";
-import ProfileCardView from "../profile/ProfileCardView";
+import ProductCardView from "../product/ProductCardView";
 
 // const id = localStorage.getItem("id");
 const ProfileMyProduct = (props) => {
@@ -15,7 +15,7 @@ const ProfileMyProduct = (props) => {
   return (
     <div css={cardWrapper(props.productPages)}>
       {myShareBoard.map((share) => (
-        <ProfileCardView key={share.id} />
+        <ProductCardView key={share.id} />
       ))}
     </div>
   );
