@@ -10,10 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
+import kr.co.vilez.data.model.RoomlistData
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.DataState
 import kr.co.vilez.util.StompClient2
@@ -34,10 +36,10 @@ class ChatlistFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var mContext: Context
-    private lateinit var rootView : View
-    private lateinit var rv_room : RecyclerView
-
-
+    private lateinit var rootView: View
+    private lateinit var rv_room: RecyclerView
+    private lateinit var topic: Disposable
+    private var data: Int? = 0
     val roomAdapter = RoomAdapter(DataState.itemList)
     private var set = HashSet<Int>()
     override fun onAttach(context: Context) {
@@ -52,13 +54,18 @@ class ChatlistFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        data = 0;
+    }
+
     @SuppressLint("CheckResult")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-
         rootView = inflater.inflate(R.layout.fragment_roomlist, container, false)
         rv_room = rootView.findViewById(R.id.rv_room) as RecyclerView
 
@@ -72,54 +79,65 @@ class ChatlistFragment : Fragment() {
         roomAdapter.setItemClickListener(object : RoomAdapter.OnItemClickListener {
             override fun onClick(v: View, position: Int) {
                 // 클릭 시 이벤트 작성
-                var intent = Intent(mContext,ChatRoomActivity::class.java)
-                intent.putExtra("roomId",DataState.itemList[position].roomId)
-                intent.putExtra("otherUserId",DataState.itemList[position].otherUserId)
+                var intent = Intent(mContext, ChatRoomActivity::class.java)
+                intent.putExtra("roomId", DataState.itemList[position].roomId)
+                intent.putExtra("otherUserId", DataState.itemList[position].otherUserId)
+                intent.putExtra("nickName", DataState.itemList[position].nickName)
+                intent.putExtra("profile", DataState.itemList[position].profile)
+                DataState.itemList[position].noReadCnt = 0
+                data = DataState.itemList[position].roomId
                 startActivity(intent)
             }
         })
         roomAdapter.notifyDataSetChanged()
-        StompClient2.stompClient.join("/sendlist/"+ApplicationClass.prefs.getId()).subscribe { topicMessage ->
-            run {
-                CoroutineScope(Dispatchers.Main).launch {
-                    val json = JSONObject(topicMessage)
-                    println(json.toString())
-                    val roomId = json.getInt("roomId")
-                    var index = -1;
-                    if (roomId in DataState.set) {
-                        for (i in 0 until DataState.itemList.size) {
-                            if (DataState.itemList[i].roomId == roomId) {
-                                index = i
-                                break
+        StompClient2.stompClient.join("/sendlist/" + ApplicationClass.prefs.getId())
+            .subscribe { topicMessage ->
+                run {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        val json = JSONObject(topicMessage)
+                        val roomId = json.getInt("roomId")
+                        var index = -1;
+                        if (roomId in DataState.set) {
+                            for (i in 0 until DataState.itemList.size) {
+                                if (DataState.itemList[i].roomId == roomId) {
+                                    index = i
+                                    break
+                                }
                             }
-                        }
+                            if(data != roomId) {
+                                DataState.itemList[index].noReadCnt++
+                            } else {
+                                DataState.itemList[index].noReadCnt = 0
+                            }
+                            DataState.itemList[index].content = json.getString("content")
 
-                        DataState.itemList[index].content = json.getString("content")
+                            roomAdapter.notifyItemChanged(index)
 
-                        val item = DataState.itemList.get(index)
-                        if(index != 0 ) {
-                            DataState.itemList.removeAt(index)
-                            DataState.itemList.add(0, item)
-                            roomAdapter.notifyItemMoved(index, 0)
-                        }
-                        roomAdapter.notifyItemChanged(0)
-                    } else {
-                        DataState.set.add(roomId)
+                            val item = DataState.itemList.get(index)
+                            if (index != 0) {
+                                DataState.itemList.removeAt(index)
+                                DataState.itemList.add(0, item)
+                            }
+                            roomAdapter.notifyDataSetChanged()
+                        } else {
+                            DataState.set.add(roomId)
 
-                        DataState.itemList.add(
-                            0, RoomlistData(
-                                json.getInt("roomId"),
-                                json.getString("nickName"),
-                                json.getString("content"),
-                                json.getString("area"),
-                                json.getInt("fromUserId")
+                            DataState.itemList.add(
+                                0, RoomlistData(
+                                    json.getInt("roomId"),
+                                    json.getString("nickName"),
+                                    json.getString("content"),
+                                    json.getString("area"),
+                                    json.getInt("fromUserId"),
+                                    1,
+                                    json.getString("profile")
+                                )
                             )
-                        )
-                        roomAdapter.notifyItemInserted(0)
+                            roomAdapter.notifyItemInserted(0)
+                        }
                     }
                 }
             }
-        }
         return rootView
     }
 

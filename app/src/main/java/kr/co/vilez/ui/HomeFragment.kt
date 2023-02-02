@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.CoroutineScope
@@ -17,13 +16,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.databinding.FragmentHomeBinding
-import kr.co.vilez.ui.chat.RoomlistData
 import kr.co.vilez.ui.share.*
 import kr.co.vilez.ui.share.category.MenuCategoryActivity
 import kr.co.vilez.ui.share.search.ShareSearchActivity
 import kr.co.vilez.ui.share.write.ShareWriteActivity
 import kr.co.vilez.util.ApplicationClass
-import kr.co.vilez.util.Common
 import kr.co.vilez.util.Common.Companion.elapsedTime
 import retrofit2.awaitResponse
 import kr.co.vilez.ui.share.ShareDetailActivity

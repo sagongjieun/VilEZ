@@ -1,6 +1,6 @@
 package kr.co.vilez.util
 
-import kr.co.vilez.ui.chat.RoomlistData
+import kr.co.vilez.data.model.RoomlistData
 
 class DataState {
     companion object {

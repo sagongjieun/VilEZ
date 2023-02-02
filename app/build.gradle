@@ -136,6 +136,9 @@ dependencies {
 
     // kakao oauth
     implementation "com.kakao.sdk:v2-user:2.12.1" // 카카오 로그인
+
+    //circle img view
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }
 
 tasks.register("prepareKotlinBuildScriptModel"){}
