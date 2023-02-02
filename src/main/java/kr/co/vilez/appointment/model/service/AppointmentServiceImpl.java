@@ -220,6 +220,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             }
             chatDatasVO.setArea(user.getArea());
             chatDatasVO.setNickName(user.getNickName());
+            chatDatasVO.setProfile(user.getProfileImg());
             chatDatasVO.setChatData(vo);
             chatDatasVOList.add(chatDatasVO);
 
