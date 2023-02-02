@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import { BsChatSquare } from "react-icons/bs";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import ChattingModal from "../components/modal/ChattingModal";
+import { modalOpenState } from "../recoil/atom";
+import { useRecoilState } from "recoil";
 
 function ChatOpenIcon() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useRecoilState(modalOpenState);
 
   const onClickOpenChat = () => {
-    setIsOpen(!isOpen);
+    setModalOpen(!modalOpen);
   };
 
   return (
@@ -16,7 +18,7 @@ function ChatOpenIcon() {
       <div css={IconBox} onClick={onClickOpenChat}>
         <BsChatSquare size="25" />
       </div>
-      {isOpen ? <ChattingModal setIsOpen={setIsOpen} /> : null}
+      {modalOpen ? <ChattingModal /> : null}
     </>
   );
 }

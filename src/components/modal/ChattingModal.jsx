@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-// import luffy from "../../assets/images/luffy.png";
-// import onpiecethumb from "../../assets/images/onpiecethumb.jfif";
-// import jjangu from "../../assets/images/jjangu.png";
-// import sinhyeongman from "../../assets/images/sinhyeongman.jfif";
 import ChattingModalItem from "./ChattingModalItem";
 import { getLatestChattingListByUserId } from "../../api/chat";
 
@@ -16,60 +12,10 @@ function ChattingModal() {
   useEffect(() => {
     if (loginUserId) {
       getLatestChattingListByUserId(loginUserId).then((res) => {
-        res = res[0];
-        // console.log(res);
-        setChatList([...chatList, res]);
+        setChatList(res);
       });
     }
   }, []);
-
-  // const dummy = [
-  //   {
-  //     id: 1,
-  //     profile: luffy,
-  //     nickname: "해적왕",
-  //     location: "신세계",
-  //     time: "1시간 전",
-  //     lastChat: "해적왕은 나야",
-  //     thumbnail: onpiecethumb,
-  //   },
-  //   {
-  //     id: 2,
-  //     profile: luffy,
-  //     nickname: "해적왕",
-  //     location: "신세계",
-  //     time: "1시간 전",
-  //     lastChat: "해적왕은 나야",
-  //     thumbnail: onpiecethumb,
-  //   },
-  //   {
-  //     id: 3,
-  //     profile: luffy,
-  //     nickname: "해적왕",
-  //     location: "신세계",
-  //     time: "1시간 전",
-  //     lastChat: "해적왕은 나야",
-  //     thumbnail: onpiecethumb,
-  //   },
-  //   {
-  //     id: 4,
-  //     profile: jjangu,
-  //     nickname: "액션가면내놔",
-  //     location: "테이블 속",
-  //     time: "1시간 전",
-  //     lastChat: "울랄라울랄라",
-  //     thumbnail: sinhyeongman,
-  //   },
-  //   {
-  //     id: 5,
-  //     profile: jjangu,
-  //     nickname: "액션가면내놔",
-  //     location: "테이블 속",
-  //     time: "1시간 전",
-  //     lastChat: "울랄라울랄라",
-  //     thumbnail: sinhyeongman,
-  //   },
-  // ];
 
   return (
     <div css={chatWrap}>
@@ -77,7 +23,7 @@ function ChattingModal() {
       <div css={chatContentWrap}>
         {chatList.length ? (
           chatList.map((chat) => {
-            return <ChattingModalItem chat={chat} key={chat.id} />;
+            return <ChattingModalItem chat={chat} key={chat.chatData.roomId} />;
           })
         ) : (
           <div css={NochatWrap}>
