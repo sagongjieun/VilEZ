@@ -4,6 +4,8 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import kr.co.vilez.qr.model.dto.QrCodeDto;
+import kr.co.vilez.tool.AES256;
 import kr.co.vilez.tool.OSUpload;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,17 +19,21 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class QrSerivceImpl implements QrService {
+    final AES256 aes256;
     final OSUpload osUpload;
-    final String content = "https://www.naver.com/?userId=";
+    final String content = "https://i8d111.p.ssafy.io/server/?code=";
     final String bucketName = "vilez";
     @Override
     public Map<String, String> createQR(int userId) throws Exception {
+        String code = aes256.encryptAES256(Integer.toString(userId));
+
         String tempFileName = "../../"+System.nanoTime()+".png";
-        String RealFileName = "qr/"+userId+"/"+System.nanoTime();
+        String RealFileName = "qr/"+code+"/"+System.nanoTime();
 
         // QR 코드 생성
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        BitMatrix bitMatrix = qrCodeWriter.encode(content+userId, BarcodeFormat.QR_CODE, 100, 100);
+        BitMatrix bitMatrix = qrCodeWriter.encode(content+code
+                , BarcodeFormat.QR_CODE, 100, 100);
 
         BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
 
