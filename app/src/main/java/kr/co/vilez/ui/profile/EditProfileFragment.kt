@@ -163,7 +163,7 @@ class EditProfileFragment : Fragment() {
                 val result = ApplicationClass.hRetrofitUserService.removeProfileImage(ApplicationClass.prefs.getId(),).awaitResponse().body()
 
                 if (result?.flag == "success") {
-                    BindingAdapter.bindImageFromUrl(binding.ivProfileImg, DEFAULT_PROFILE_IMG) // 일단 미리보기 이미지기본 이미지로 수정
+                    BindingAdapter.bindCircleImageFromUrl(binding.ivProfileImg, DEFAULT_PROFILE_IMG) // 일단 미리보기 이미지기본 이미지로 수정
                     Log.d(TAG, "프로필이미지 삭제성공: ")
                     Toast.makeText(profileMenuActivity, "프로필 이미지 변경을 성공했습니다.", Toast.LENGTH_SHORT).show()
 

@@ -109,6 +109,7 @@
                     android:layout_height="wrap_content"/>
 
                 <EditText
+                    android:id="@+id/et_title"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:hint="제목"
@@ -122,26 +123,46 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
-                <TextView
+
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:gravity="center|start"
-                    android:background="@drawable/btn_write_more_toggle"
-                    android:textSize="17sp"
-                    android:paddingStart="20dp"
-                    android:text="카테고리"
-                    android:onClick="@{activity.onCategoryClick}"/>
+                    android:layout_height="50dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:gravity="center|start"
+                        android:background="@drawable/btn_write_more_toggle"
+                        android:textSize="17sp"
+                        android:paddingStart="20dp"
+                        android:text="카테고리"
+                        android:onClick="@{activity.onCategoryClick}"/>
+
+                    <TextView
+                        android:id="@+id/tv_category"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:gravity="center|end"
+                        android:textColor="@color/main_1"
+                        android:textSize="17sp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="40dp"/>
+
+                </RelativeLayout>
+
 
                 <com.google.android.material.divider.MaterialDivider
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
                 <EditText
+                    android:id="@+id/et_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minHeight="200dp"
                     android:background="@null"
                     android:gravity="start|top"
+                    android:maxLength="300"
                     android:hint="물품에 대한 상세한 설명을 해주면 좋아요."
                     android:padding="20dp" />
 
@@ -149,29 +170,60 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
-                <TextView
+
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:gravity="center|start"
-                    android:background="@drawable/btn_write_more_toggle"
-                    android:textSize="17sp"
-                    android:paddingStart="20dp"
-                    android:text="희망 공유 기간"
-                    android:onClick="@{activity.onDateClick}"/>
+                    android:layout_height="50dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:gravity="center|start"
+                        android:background="@drawable/btn_write_more_toggle"
+                        android:textSize="17sp"
+                        android:paddingStart="20dp"
+                        android:text="희망 공유 기간"
+                        android:onClick="@{activity.onDateClick}"/>
+                    <TextView
+                        android:id="@+id/tv_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:gravity="center|end"
+                        android:textColor="@color/main_1"
+                        android:textSize="17sp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="40dp"/>
+                </RelativeLayout>
+
 
                 <com.google.android.material.divider.MaterialDivider
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-                <TextView
+
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:gravity="center|start"
-                    android:background="@drawable/btn_write_more_toggle"
-                    android:textSize="17sp"
-                    android:paddingStart="20dp"
-                    android:text="희망 공유 장소"
-                    android:onClick="@{activity.onPlaceClick}"
-                    tools:ignore="RtlSymmetry" />
+                    android:layout_height="50dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:gravity="center|start"
+                        android:background="@drawable/btn_write_more_toggle"
+                        android:textSize="17sp"
+                        android:paddingStart="20dp"
+                        android:text="희망 공유 장소"
+                        android:onClick="@{activity.onPlaceClick}"
+                        tools:ignore="RtlSymmetry" />
+
+                    <TextView
+                        android:id="@+id/tv_addr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:gravity="center|end"
+                        android:textColor="@color/main_1"
+                        android:textSize="17sp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="40dp"/>
+                </RelativeLayout>
 
                 <com.google.android.material.divider.MaterialDivider
                     android:layout_width="match_parent"

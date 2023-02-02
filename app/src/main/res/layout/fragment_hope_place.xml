@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="fragment"
+            type="kr.co.vilez.ui.share.write.HopePlaceFragment" />
+    </data>
+
+    <LinearLayout
+    xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <FrameLayout
+            android:id="@+id/fl_map"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+        </FrameLayout>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_place_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:backgroundTint="@color/main_1"
+            android:onClick="@{fragment::onConfirmClicked}"
+            android:text="선 택 완 료"
+            android:textColor="@color/text_white"/>
+    </LinearLayout>
+
+
+</layout>
