@@ -14,9 +14,15 @@ import java.util.*;
 @Slf4j
 @Repository
 public class AppointmentDao {
-
     @Autowired
     private MongoTemplate mongoTemplate;
+    ///////////////////////포인트 관련 내용////////////////////////////////
+    public void savePoint(PointVO pointVO) {
+        mongoTemplate.insert(pointVO);
+    }
+
+
+    ///////////////////// 채팅관련 내용  //////////////////////////
 
     public void saveLocation(MapVO mapVO) {
         MapVO msgs = mongoTemplate.findOne(
