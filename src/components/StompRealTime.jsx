@@ -120,16 +120,19 @@ const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickn
 
       /** 소켓에 연결되면 채팅 내역 보여주기 */
       getChatHistory(chatRoomId).then((res) => {
-        res.map((el) => setShowingMessage((prev) => [...prev, el]));
+        setShowingMessage(res);
       });
 
-      const sockJS = new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
-      client = Stomp.over(sockJS); // 웹소켓 클라이언트 생성
+      // const sockJS = new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
+      client = Stomp.over(function () {
+        return new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`);
+      }); // 웹소켓 클라이언트 생성
 
       // 웹소켓과 연결됐을 때 동작하는 콜백함수들
       client.connect({}, () => {
         // 다른 유저의 채팅을 구독
         client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
+          console.log("다른 유저의 메시지 받기 : ", JSON.parse(data.body));
           setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
         });
 
@@ -176,7 +179,7 @@ const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickn
         <div css={chatWrapper}>
           <div ref={scrollRef}>
             {showingMessage.map((message, index) => {
-              if (message.fromUserId === myUserId) {
+              if (message.fromUserId == myUserId) {
                 return (
                   <div key={index} css={myMessageWrapper}>
                     <span>{message.content}</span>
