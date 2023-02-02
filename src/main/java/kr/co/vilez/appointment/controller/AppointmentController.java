@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import kr.co.vilez.appointment.model.dto.AppointmentDto;
 import kr.co.vilez.appointment.model.dto.RoomDto;
+import kr.co.vilez.appointment.model.dto.SetPeriodDto;
 import kr.co.vilez.appointment.model.service.AppointmentService;
 import kr.co.vilez.appointment.model.vo.*;
 import kr.co.vilez.data.HttpVO;
@@ -33,26 +34,96 @@ public class AppointmentController {
     private final UserService userService;
     private final SimpMessageSendingOperations sendingOperations;
 
+    // 공유자가 만남(예약)을 초기화 하고 싶을 때, 기존 설정한 날짜를 삭제해주는 API
+    @DeleteMapping("/set/period")
+    @ApiOperation(value = "공유자가 만남(예약) 중 희망 공유 기간을 잘못 설정해 삭제하고 싶을때, 사용하는 API",
+            notes ="-- 필요한 데이터 --" +
+                    "\n\t boardId, 현재 채팅을 진행하는 게시글 방 번호" +
+                    "\n\t shareUserId, 공유자의 Id" +
+                    "\n\t notShareUserId, 피공유자의 Id" +
+                    "\n\t startDay, 시작일" +
+                    "\n\t endDay, 종료일" +
+                    "\n\t type, 공유글에 의한 기간설정인지, 요청글에 의한 기간설정인지" +
+                    "1 = 공유글 , 2 = 요청글")
+    public ResponseEntity<?> deletePeriod(@RequestBody SetPeriodDto setPeriodDto){
+        HttpVO http = new HttpVO();
+
+        try{
+            appointmentService.deletePeriod(setPeriodDto);
+            http.setFlag("success");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
+
+    // 공유자가 만남(예약)의 기간을 설정했는지에 대한 여부를 알려주는 API
+    @GetMapping("/set/check")
+    @ApiOperation(value = "공유자가 만남(예약) 중 희망 공유 기간 설정할 때 사용하는 API",
+            notes = "true면 공유자가 희망 공유기간 설정을 마친 후" +
+                    "false면 공유자가 아직 공유기간을 설정하지 않은 것")
+    public ResponseEntity<?> checkSet(@RequestParam int boardId,
+                                      @RequestParam int shareUserId,
+                                      @RequestParam int notShareUserId,
+                                      @RequestParam int type){
+        HttpVO http = new HttpVO();
+        ArrayList<Object> data = new ArrayList<>();
+
+        try{
+            data.add(appointmentService.check(boardId, shareUserId, notShareUserId, type));
+            http.setData(data);
+            http.setFlag("success");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
+
+    // 공유자가 희망공유 기간 설정할 때 사용하는 API
+    @PostMapping("/set/period")
+    @ApiOperation(value = "공유자가 만남(예약) 중 희망 공유 기간 설정할 때 사용하는 API",
+    notes ="-- 필요한 데이터 --" +
+            "\n\t boardId, 현재 채팅을 진행하는 게시글 방 번호" +
+            "\n\t shareUserId, 공유자의 Id" +
+            "\n\t notShareUserId, 피공유자의 Id" +
+            "\n\t startDay, 시작일" +
+            "\n\t endDay, 종료일" +
+            "\n\t type, 공유글에 의한 기간설정인지, 요청글에 의한 기간설정인지" +
+            "1 = 공유글 , 2 = 요청글")
+    public ResponseEntity<?> setPeriod(@RequestBody SetPeriodDto setPeriodDto){
+        HttpVO http = new HttpVO();
+
+        try{
+            appointmentService.setPeriod(setPeriodDto);
+            http.setFlag("success");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
+
 
     ///////////////////////예약 관련 내용////////////////////////
-
     @GetMapping("/my/give/{userId}")
     @ApiOperation(value = "내가 빌려준 내역 정보를 요청하는 API",
             notes = "type = 1 공유 게시글" +
                     "\n\t type = 2 요청 게시글")
     public ResponseEntity<?> getGiveList(@PathVariable int userId){
-        HttpVO httpVO = new HttpVO();
+        HttpVO http = new HttpVO();
         ArrayList<Object> data = new ArrayList<>();
 
         try{
             data.add(appointmentService.getGiveList(userId));
-            httpVO.setFlag("success");
-            httpVO.setData(data);
+            http.setFlag("success");
+            http.setData(data);
         } catch (Exception e){
             e.printStackTrace();
         }
 
-        return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
 
     @GetMapping("/check/{boardId}")
@@ -61,18 +132,18 @@ public class AppointmentController {
             "\n\t 현재 날짜와 비교해서 예약중인 boardId면 해당 boardId 값이 return" +
             "\n\t 그렇지 않으면 null 값이 들어온다.")
     public ResponseEntity<?> getBoardState(@PathVariable int boardId){
-        HttpVO httpVO = new HttpVO();
+        HttpVO http = new HttpVO();
         List<Object> data = new ArrayList<>();
 
         try {
             data.add(appointmentService.getBoardState(boardId));
-            httpVO.setData(data);
-            httpVO.setFlag("success");
-            httpVO.setData(data);
+            http.setData(data);
+            http.setFlag("success");
+            http.setData(data);
         } catch(Exception e){
             e.printStackTrace();
         }
-        return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
 
     // 내가 공유받은 물품 목록을 볼 수 있다.
@@ -83,18 +154,18 @@ public class AppointmentController {
                          "\n\t state 가 1이면 내가 공유자 입장" +
                          "\n\t state 가 0이면 내가 피공유자 입장")
     public ResponseEntity<?> getMyAppointmentList(@PathVariable int userId){
-        HttpVO httpVO = new HttpVO();
+        HttpVO http = new HttpVO();
         List<Object> data = new ArrayList<>();
 
         try {
             data.add(appointmentService.getMyAppointmentCalendarList(userId));
 //            data.add(appointmentService.getMyAppointmentList(userId));
-            httpVO.setFlag("success");
-            httpVO.setData(data);
+            http.setFlag("success");
+            http.setData(data);
         } catch(Exception e){
             e.printStackTrace();
         }
-        return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
 
     @ResponseBody
@@ -103,18 +174,18 @@ public class AppointmentController {
             notes = "type 2는 요청 게시글에 의해 공유 받은 예약 정보" +
                     "\n\t type 1는 공유 게시글 의해 공유 받은 예약정보")
     public ResponseEntity<?> getMyAppointmentShare(@PathVariable int userId){
-        HttpVO httpVO = new HttpVO();
+        HttpVO http = new HttpVO();
         List<Object> data = new ArrayList<>();
 
         try {
             data.add(appointmentService.getMyAppointmentList(userId));
-            httpVO.setFlag("success");
-            httpVO.setData(data);
+            http.setFlag("success");
+            http.setData(data);
         } catch(Exception e){
             e.printStackTrace();
         }
 
-        return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
 
     @ResponseBody
@@ -122,40 +193,49 @@ public class AppointmentController {
     @ApiOperation(value = "글 번호에 약속 정보들을 불러온다." ,
             notes = "List에 dto 담아서 리턴")
     public ResponseEntity<?> getAppointmentList(@PathVariable int boardId){
-        HttpVO httpVO = new HttpVO();
+        HttpVO http = new HttpVO();
         List<Object> data = new ArrayList<>();
         try {
             data.add(appointmentService.getAppointmentList(boardId));
-            httpVO.setFlag("success");
-            httpVO.setData(data);
+            http.setFlag("success");
+            http.setData(data);
         } catch(Exception e){
             e.printStackTrace();
         }
 
-        return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
 
     @ResponseBody
     @PostMapping
-    @ApiOperation(value = "약속 정보를 저장한다." ,
+    @ApiOperation(value = "약속 정보를 저장한다.(만남[예약] 확정)" +
+            "\n\t 약속 정보와 함께 해당하는 공유자와 피공유자의 포인트가 추가/삭감된다." +
+            "\n\t 그리고 해당하는 공유자가 확정한 날짜 정보를 삭제해준다." ,
             notes = "게시글 정보(boarId)" +
-                    "\n\t 약속 기간(appointment_start, end)" +
-                    "\n\t 빌린사람, 빌려주는 사람(not_share_user_id, share_user_id) " +
+                    "\n\t 약속 기간(appointmentStart, End)" +
+                    "\n\t 빌린사람, 빌려주는 사람(notShareUserId, shareUserId) " +
                     "\n\t 현재 날짜(date) 부탁합니다" +
                     "\n\t 요청글에 대한 type인지 share에 의한 type인지도 부탁합니다" +
                     "\n\t 요청은 type = 2, 공유는 type = 1")
     public ResponseEntity<?> createAppointment(@RequestBody AppointmentDto appointmentDto){
-        HttpVO httpVO = new HttpVO();
+        HttpVO http = new HttpVO();
 
         try {
+            appointmentService.deleteCheck(appointmentDto);
+            System.out.println("delete success");
+
             appointmentService.create(appointmentDto);
+            System.out.println("create appointment success");
+
             appointmentService.addPoint(appointmentDto);
-            httpVO.setFlag("success");
+            System.out.println("point decrease/increase success");
+
+            http.setFlag("success");
         } catch (Exception e){
             e.printStackTrace();
         }
 
-        return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
 
 

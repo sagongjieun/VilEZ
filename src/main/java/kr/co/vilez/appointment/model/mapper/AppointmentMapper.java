@@ -4,6 +4,7 @@ import kr.co.vilez.appointment.model.dto.AppointmentDto;
 import kr.co.vilez.appointment.model.dto.MyAppointListDto;
 import kr.co.vilez.appointment.model.dto.RoomDto;
 import kr.co.vilez.appointment.model.vo.BoardStateVO;
+import kr.co.vilez.appointment.model.vo.PointVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.sql.SQLException;
@@ -11,6 +12,12 @@ import java.util.List;
 
 @Mapper
 public interface AppointmentMapper {
+
+    void decreasePoint(PointVO pointVO) throws Exception;
+
+    void increasePoint(PointVO pointVO) throws Exception;
+
+    //////////////////////////////////////////////////////////
     List<MyAppointListDto> getGiveListShare(int userId) throws Exception;
     List<MyAppointListDto> getGiveListAsk(int userId) throws Exception;
     List<AppointmentDto> getMyAppointmentCalendarListShare(int userId) throws Exception;

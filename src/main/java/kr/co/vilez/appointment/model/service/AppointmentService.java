@@ -1,6 +1,7 @@
 package kr.co.vilez.appointment.model.service;
 
 import kr.co.vilez.appointment.model.dto.RoomDto;
+import kr.co.vilez.appointment.model.dto.SetPeriodDto;
 import kr.co.vilez.appointment.model.vo.*;
 import kr.co.vilez.appointment.model.dto.AppointmentDto;
 import kr.co.vilez.appointment.model.vo.ChatVO;
@@ -9,7 +10,14 @@ import kr.co.vilez.appointment.model.vo.MapVO;
 import java.util.List;
 
 public interface AppointmentService {
+    void deletePeriod(SetPeriodDto setPeriodDto) throws Exception;
+    void deleteCheck(AppointmentDto appointmentDto) throws Exception;
+    boolean check(int boardId, int shareUserId, int notShareUserId, int type) throws Exception;
+    void setPeriod(SetPeriodDto setPeriodDto) throws Exception;
+
+
     ////////////////////////포인트 관련 내용 //////////////////////////////////
+
     void addPoint(AppointmentDto appointmentDto) throws Exception;
 
     //////////////////////// 예약관련 ////////////////////////////////////////
