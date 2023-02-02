@@ -15,6 +15,7 @@ import kr.co.vilez.ask.model.dto.AskDto;
 import kr.co.vilez.ask.model.dto.ImgPath2;
 import kr.co.vilez.ask.model.mapper.AskMapper;
 import kr.co.vilez.configuration.NaverObjectStorageConfig;
+import kr.co.vilez.share.model.dto.PageNavigator;
 import kr.co.vilez.tool.OSUpload;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -37,19 +38,25 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class AskServiceImpl implements AskService{
-
-
     final AskMapper askMapper;
     final AskDao askDao;
     final OSUpload osUpload;
-
     final String bucketName = "vilez";
 
     @Override
-    public List<AskDto> loadAskList(){
+    public List<AskDto> loadAskList(PageNavigator pageNavigator){
         List<AskDto> askDtoList = new ArrayList<>();
+
+        if(pageNavigator.getWord() != null && pageNavigator.getWord() != ""){
+            pageNavigator.setWord("%"+pageNavigator.getWord()+"%");
+        }
+
+        int tmp = pageNavigator.getHigh();
+        pageNavigator.setHigh(pageNavigator.getHigh() * pageNavigator.getCnt());
+        pageNavigator.setLow(tmp);
+
         try {
-            askDtoList = askMapper.loadAskList();
+            askDtoList = askMapper.loadAskList(pageNavigator);
             for(AskDto askDto : askDtoList){
                 askDto.setList(askDao.list(askDto.getId()));
             }
