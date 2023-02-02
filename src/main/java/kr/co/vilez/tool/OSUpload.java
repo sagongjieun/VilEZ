@@ -1,12 +1,10 @@
 package kr.co.vilez.tool;
 
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +18,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class OSUpload {
+    private final String bucket = "/vilez";
     private final AmazonS3 naver;
 
     public void mkdir(String bucketName, String folderName) {
@@ -54,5 +53,19 @@ public class OSUpload {
         }
 
         return Optional.empty();
+    }
+    public void delete(String fileName) {
+        try {
+            //Delete 객체 생성
+            DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(this.bucket, fileName);
+            //Delete
+            naver.deleteObject(deleteObjectRequest);
+            System.out.println(String.format("[%s] deletion complete", fileName));
+
+        } catch (AmazonServiceException e) {
+            e.printStackTrace();
+        } catch (SdkClientException e) {
+            e.printStackTrace();
+        }
     }
 }
