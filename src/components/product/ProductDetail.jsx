@@ -20,11 +20,33 @@ import { getAskArticleDetailByBoardId } from "../../api/ask";
 import { getCheckMyRoom } from "../../api/chat";
 
 const ProductDetail = () => {
+  // const parentdata = {
+  //   writerId,
+  //   isRelated,
+  //   title,
+  //   category,
+  //   content,
+  //   imageList,
+  //   date,
+  //   startDay,
+  //   endDay,
+  //   hopeAreaLat,
+  //   hopeAreaLng,
+  //   location,
+  //   bookmarkCnt,
+  //   state,
+  //   writerProfile,
+  //   writerNickname,
+  //   writerArea,
+  //   writerManner,
+  //   isBookmarked,
+  // };
   const navigate = useNavigate();
   const boardId = parseInt(useParams().boardId);
   const pathname = useLocation().pathname;
 
   const loginUserId = localStorage.getItem("id"); // 로그인유저 id
+  // const [isEdit, setIsEdit] = useState(false);
   const [writerId, setWriterId] = useState(""); // 공유자 id
   const [isRelated, setIsRelated] = useState(false); // 로그인유저가 현재 공유중인 공유자 or 피공유자인지 확인
 
@@ -178,7 +200,13 @@ const ProductDetail = () => {
 
   return (
     <div css={wrapper}>
-      <ProductDeatilHeader title={title} category={category} time={date} bookmarkCount={bookmarkCnt} />
+      <ProductDeatilHeader
+        title={title}
+        category={category}
+        time={date}
+        bookmarkCount={bookmarkCnt}
+        // editt={setIsEdit}
+      />
 
       <DivideLine />
 
