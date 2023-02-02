@@ -1,18 +1,38 @@
 import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState } from "react";
-// import bazzie from "../../assets/images/bazzie.jfif";
+import { useState, useEffect } from "react";
+import { AiOutlineEyeInvisible, AiOutlineEye, AiOutlineExclamationCircle } from "react-icons/ai";
+import { BsCheck2Circle } from "react-icons/bs";
+import { IoIosCloseCircle } from "react-icons/io";
+import bazzie from "../../assets/images/bazzie.jfif";
 import ProfileImageSelect from "../profile/ProfileImageSelect";
+import { checkNickName } from "../../api/signup";
+import { getUserDetail } from "../../api/user";
+// import DefaultProfile from "../../assets/default_profile.png"
 
 function EditProfile() {
   const userId = localStorage.getItem("id");
+  const [userNickName, setUserNickName] = useState("");
+  const [userProfileImage, setUserProfileImage] = useState("");
   const [nickName, setNickName] = useState("");
   const [nickNameCheck, setNickNameCheck] = useState("");
+  const [nickNameError, setNickNameError] = useState("");
   const [isNickNameAvailable, setIsNickNameAvailable] = useState(false);
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [password2Error, setPassword2Error] = useState("");
+  const [isVisible, setIsVisible] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(true);
+  const [isPasswordConfirmed, setIsPasswordConfirmed] = useState("");
   const [imageList, setImageList] = useState([]);
+  const image = bazzie;
+  function onKeyDown(event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+    }
+  }
   function onChangeNickName(event) {
     setNickName(event.target.value);
   }
@@ -22,20 +42,72 @@ function EditProfile() {
   function onChangePassword2(event) {
     setPassword2(event.target.value);
   }
-  // function onClickImageChange(event) {
-  //   event.preventDefault();
-  //   const imgInput = document.getElementById("imgInput");
-  //   imgInput.click();
-  // }
+  function onClickNickNameCheck() {
+    checkNickName(nickName).then((response) => {
+      setNickNameCheck(response.text);
+      setIsNickNameAvailable(response.isNickNameAvailable);
+    });
+  }
+  function onClickVisible() {
+    setIsVisible((prev) => !prev);
+  }
+  function onClickDelete() {
+    setIsDeleted(true);
+    setPassword("");
+    setPassword2("");
+    console.log("here");
+  }
   function receiveImageList(imageList) {
     setImageList(imageList);
   }
   function onSubmit() {
-    // console.log(errors, handleChange, handleSubmit);
-    console.log(nickName, nickNameCheck, isNickNameAvailable, password, password2, imageList, userId);
-    setNickNameCheck("");
-    setIsNickNameAvailable("");
+    const formData = new FormData();
+    formData.append("image", image);
   }
+  useEffect(() => {
+    getUserDetail(userId).then((response) => {
+      setUserNickName(response[0].nickName);
+      setUserProfileImage(response[0].profile_img);
+    });
+  }, []);
+  useEffect(() => {
+    if (nickName === userNickName) {
+      setNickNameError(`${nickName}"은(는) 현재 닉네임과 동일합니다.`);
+    } else if (nickName && nickName.length > 6) {
+      setNickNameError("닉네임은 최대 6자까지 설정할 수 있어요.");
+    } else {
+      setNickNameError("");
+    }
+  }, [nickName]);
+  useEffect(() => {
+    if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/i.test(password) && password) {
+      setPasswordError("영어 소문자, 숫자 조합 8~16자리로 입력해주세요.");
+    } else {
+      setPasswordError("");
+    }
+  }, [password]);
+  useEffect(() => {
+    if (password !== password2 && password2) {
+      setPassword2Error("비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
+    } else {
+      setPassword2Error("");
+    }
+    if (password || password2) {
+      setIsDeleted(false);
+    } else {
+      setIsDeleted(true);
+    }
+  }, [password, password2]);
+  useEffect(() => {
+    if (password && password2 && !passwordError && !password2Error) {
+      setIsPasswordConfirmed("비밀번호가 일치합니다.");
+    } else {
+      setIsPasswordConfirmed("");
+    }
+  }, [passwordError, password2Error]);
+  useEffect(() => {
+    console.log(imageList);
+  }, [imageList]);
   return (
     <form css={EditProfileBox}>
       <h3>프로필 수정</h3>
@@ -53,10 +125,27 @@ function EditProfile() {
             placeholder="닉네임을 입력해주세요."
             css={inputBox}
             onChange={onChangeNickName}
+            onKeyDown={onKeyDown}
           />
-          <button css={duplicateCheck}>중복확인</button>
+          <button
+            css={duplicateCheck}
+            type="button"
+            onClick={() => {
+              onClickNickNameCheck();
+            }}
+          >
+            중복확인
+          </button>
         </div>
-        <div css={possibleNickWrap}>사용가능한 닉네임입니다.</div>
+        {nickNameError ? (
+          <small css={errorWrapper({ color: "#fc0101" })}>
+            <AiOutlineExclamationCircle size={12} />
+            {nickNameError}
+          </small>
+        ) : null}
+        {nickNameCheck ? (
+          <small css={errorWrapper({ color: isNickNameAvailable ? "#66dd9c" : "#fc0101" })}>{nickNameCheck}</small>
+        ) : null}
       </div>
 
       {/* 비밀번호 파트 */}
@@ -65,23 +154,61 @@ function EditProfile() {
           <strong>비밀번호</strong>
         </div>
         <div css={condition}>8자 이상 16자 이하 영소문자와 숫자로만 작성해주세요</div>
-        <div>
+        <div css={passwordWrapper}>
           <input
             name="password"
-            type="text"
+            type={isVisible ? "text" : "password"}
             placeholder="비밀번호를 입력해주세요"
             css={inputBox}
             onChange={onChangePassword}
+            value={password}
           />
+          {passwordError ? (
+            <small css={errorWrapper({ color: "#fc0101" })}>
+              <AiOutlineExclamationCircle size={12} />
+              {passwordError}
+            </small>
+          ) : null}
+          <div
+            onClick={() => {
+              onClickVisible();
+            }}
+          >
+            {isVisible ? (
+              <AiOutlineEye size="28" color="#66dd9c" />
+            ) : (
+              <AiOutlineEyeInvisible size="28" color="#66dd9c" />
+            )}
+          </div>
         </div>
-        <div>
+        <div css={passwordWrapper}>
           <input
             name="password2"
-            type="text"
+            type={isVisible ? "text" : "password"}
             placeholder="비밀번호를 재입력해주세요"
             css={inputBox}
             onChange={onChangePassword2}
+            value={password2}
           />
+          {password2Error ? (
+            <small css={errorWrapper({ color: "#fc0101" })}>
+              <AiOutlineExclamationCircle size={12} />
+              {password2Error}
+            </small>
+          ) : null}
+          {isPasswordConfirmed ? (
+            <small css={errorWrapper({ color: "#66dd9c" })}>
+              <BsCheck2Circle />
+              {isPasswordConfirmed}
+            </small>
+          ) : null}
+          <div
+            onClick={() => {
+              onClickDelete();
+            }}
+          >
+            {isDeleted ? null : <IoIosCloseCircle />}
+          </div>
         </div>
       </div>
 
@@ -90,29 +217,20 @@ function EditProfile() {
         <div css={subTitleWrap}>
           <strong>프로필 사진</strong>
         </div>
-        {/* <div css={imgContentWrap}>
-          <div css={FirstImgContent}>
-            <img src={bazzie} alt="" css={profileImgWrap} />
-          </div>
-          <div css={modifyButtonWrap}>
-            <input type="file" id="imgInput" accept=".jpg,.jpeg,.png" css={inputWrap} />
-            <button css={modifyButton} onClick={onClickImageChange}>
-              변경
-            </button>
-            <button css={deleteButton}>삭제</button>
-          </div>
-        </div> */}
-        <ProfileImageSelect sendImageList={receiveImageList} />
+        <ProfileImageSelect sendImageList={receiveImageList} userProfileImage={userProfileImage} />
       </div>
       {/* 취소 / 완료 버튼 */}
       <div css={commitButtonWrapper}>
-        <button>취소</button>
-        <button onClick={onSubmit}>완료</button>
+        <button type="button">취소</button>
+        <button type="button" onClick={onSubmit}>
+          완료
+        </button>
       </div>
       {/* flex 3개 마지막 div */}
     </form>
   );
 }
+
 const EditProfileBox = css`
   padding: 30px 40px;
   width: 440px;
@@ -143,7 +261,7 @@ const doubleCheckBox = css`
   /* width: 100%; */
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
 `;
 
 const inputBox = css`
@@ -157,12 +275,13 @@ const inputBox = css`
   background-color: #ffffff;
   outline: none;
   padding: 0 10px;
-  margin: 5px 0;
+  margin: 6px 0 0;
   & ::placeholder {
     color: #c4c4c4;
   }
 `;
 const duplicateCheck = css`
+  position: relative;
   cursor: pointer;
   width: 110px;
   font-size: 14px;
@@ -174,66 +293,38 @@ const duplicateCheck = css`
   color: #66dd9c;
 `;
 
-const possibleNickWrap = css`
-  font-size: 13px;
-  color: #66dd9c;
-  margin-top: 4px;
-`;
-
 const secondWrap = css`
   display: flex;
   flex-direction: column;
   width: 100%;
 `;
+
 const thirdWrap = css`
   display: flex;
   flex-direction: column;
   width: 100%;
 `;
 
-// const imgContentWrap = css`
-//   display: flex;
-// `;
+const errorWrapper = ({ color }) => css`
+  font-size: 12px;
+  color: ${color};
+  display: flex;
+  align-items: center;
+  line-height: 20px;
+`;
 
-// const FirstImgContent = css`
-//   width: 135px;
-// `;
-
-// const profileImgWrap = css`
-//   border-radius: 100%;
-//   width: 65%;
-//   margin-top: 10px;
-// `;
-// const inputWrap = css`
-//   display: none;
-// `;
-
-// const modifyButtonWrap = css`
-//   display: flex;
-//   align-items: flex-end;
-// `;
-
-// const modifyButton = css`
-//   width: 80px;
-//   height: 35px;
-//   font-size: 14px;
-//   color: white;
-//   background-color: #66dd9c;
-//   border-radius: 5px;
-//   border: none;
-//   margin-right: 20px;
-//   cursor: pointer;
-// `;
-
-// const deleteButton = css`
-//   width: 80px;
-//   height: 35px;
-//   font-size: 14px;
-//   color: white;
-//   background-color: #c82333;
-//   border-radius: 5px;
-//   border: none;
-// `;
+const passwordWrapper = css`
+  position: relative;
+  cursor: pointer;
+  & > div {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    right: 144px;
+    height: 44px;
+    top: 6px;
+  }
+`;
 
 const commitButtonWrapper = css`
   display: flex;

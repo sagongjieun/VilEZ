@@ -14,6 +14,7 @@ async function requestLogin(email, password) {
       localStorage.setItem("accessToken", res.accessToken);
       localStorage.setItem("refreshToken", res.refreshToken);
       localStorage.setItem("id", res.id);
+      localStorage.setItem("nickName", res.nickName);
 
       return data.data;
     } else {

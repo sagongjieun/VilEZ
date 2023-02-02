@@ -9,7 +9,6 @@ function Qrcode() {
       <div>
         <strong>동네 인증</strong>
       </div>
-      <div>{/* <QRCode value="https://map.kakao.com" /> */}</div>
       <div>
         <div>휴대폰으로 QR코드를 찍어</div>
         <div>동네를 인증을 진행해주세요.</div>

@@ -8,6 +8,7 @@ import ProfileMainCalander from "../components/profile/ProfileMainCalander";
 import ProfileMainProduct from "../components/profile/ProfileMainProduct";
 import ProfileMainPoint from "../components/profile/ProfileMainPoint";
 import EditProfile from "../components/modal/EdifProfile";
+import Qrcode from "../components/modal/Qrcode";
 
 const Profile = () => {
   return (
@@ -26,6 +27,7 @@ const Profile = () => {
       </Routes>
 
       <EditProfile />
+      <Qrcode />
     </div>
   );
 };
