@@ -3,6 +3,7 @@ package kr.co.vilez.appointment.model.service;
 import kr.co.vilez.appointment.model.dao.AppointmentDao;
 import kr.co.vilez.appointment.model.dto.AppointmentDto;
 import kr.co.vilez.appointment.model.dto.MyAppointListDto;
+import kr.co.vilez.appointment.model.dto.SetPeriodDto;
 import kr.co.vilez.appointment.model.mapper.AppointmentMapper;
 import kr.co.vilez.appointment.model.vo.ChatVO;
 import kr.co.vilez.appointment.model.vo.MapVO;
@@ -29,9 +30,31 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentMapper appointmentMapper;
     private final ShareDao shareDao;
 
+    @Override
+    public void deletePeriod(SetPeriodDto setPeriodDto) throws Exception {
+        appointmentDao.deleteCheck(setPeriodDto);
+    }
+
+    @Override
+    public void deleteCheck(AppointmentDto appointmentDto) throws Exception {
+        appointmentDao.deleteCheck(appointmentDto);
+    }
+
+    @Override
+    public boolean check(int boardId, int shareUserId, int notShareUserId, int type) throws Exception {
+        if(appointmentDao.loadCheck(boardId, shareUserId, notShareUserId, type) == null){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    @Override
+    public void setPeriod(SetPeriodDto setPeriodDto) throws Exception {
+        appointmentDao.setPeriod(setPeriodDto);
+    }
+
     ///////////////////////////////포인트 관련 내용 ///////////////////////////////
-
-
     @Override
     public void addPoint(AppointmentDto appointmentDto) throws Exception {
         PointVO pointVO = new PointVO();
@@ -42,7 +65,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         pointVO.setTitle(appointmentDto.getTitle());
         pointVO.setDate(appointmentDto.getDate());
 
+        // 내역 저장
         appointmentDao.savePoint(pointVO);
+
+        // 공유자 포인트 추가
+        appointmentMapper.increasePoint(pointVO);
+
+        // 피공유자 포인트 삭감
+        appointmentMapper.decreasePoint(pointVO);
     }
 
     ///////////////////////////////예약 관련 내용////////////////////////////////
