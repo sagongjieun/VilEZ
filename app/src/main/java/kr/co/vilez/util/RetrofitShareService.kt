@@ -35,9 +35,19 @@ interface RetrofitShareService {
     fun addBookmark(@Body bookmark : Bookmark): Call <RESTResult>
 
     // 새로운 공유 게시글을 추가한다.
-    // 이미지 리스트는 멀티파트로 param에, 나머지 정보는 json으로 body에 넣어서 보낸다.
+    // 이미지 리스트는 멀티파트 리스트로 param에, 나머지 정보는 json으로 멀티파트에 넣어서 보낸다.
     @Multipart
     @POST("/vilez/shareboard")
     fun postShareBoard(@Part("board") board: WriteBoard, @Part image: List<MultipartBody.Part>?) : Call<RESTShareBoardDetail>
+
+    // 공유 게시글을 삭제한다. 성공시 flag에 success
+    @DELETE("/vilez/shareboard/{boardId}")
+    fun deleteShareBoard(@Path("boardId")boardId: Int) : Call<RESTResult>
+
+    // 공유 게시글을 수정한다.
+    // 파라미터는 게시글 추가와 같다.
+    @Multipart
+    @PUT("/vilez/shareboard")
+    fun putShareBoard(@Part("board") board: WriteBoard, @Part image: List<MultipartBody.Part>?) : Call<RESTShareBoardDetail>
 
 }

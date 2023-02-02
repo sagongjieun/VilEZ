@@ -3,6 +3,9 @@ package kr.co.vilez.ui.share
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -18,8 +21,14 @@ import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.model.Bookmark
 import kr.co.vilez.data.model.Chatroom
+import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.ActivityShareDetailBinding
 import kr.co.vilez.ui.chat.ChatRoomActivity
+import kr.co.vilez.ui.dialog.AlertDialogInterface
+import kr.co.vilez.ui.dialog.AlertDialogWithCallback
+import kr.co.vilez.ui.dialog.ConfirmDialog
+import kr.co.vilez.ui.dialog.ConfirmDialogInterface
+import kr.co.vilez.ui.share.write.ShareWriteActivity
 import kr.co.vilez.ui.user.ProfileMenuActivity
 import kr.co.vilez.util.ApplicationClass
 import me.relex.circleindicator.CircleIndicator3
@@ -54,10 +63,10 @@ class ShareDetailActivity : AppCompatActivity(){
         initToolBar()
     }
 
-    fun initMap() {
-        supportFragmentManager.beginTransaction()
+    private fun initMap() {
+        /*supportFragmentManager.beginTransaction()
             .replace(R.id.share_detail_map, BoardMapFragment.newInstance(mapLat.toDouble(), mapLng.toDouble()))
-            .commit()
+            .commit()*/
     }
 
     fun clickBookmark(view: View) {
@@ -189,6 +198,7 @@ class ShareDetailActivity : AppCompatActivity(){
                 val userResult = ApplicationClass.retrofitUserService.getUserDetail(result.data[0].userId).awaitResponse().body()
                 Log.d(TAG, "initData: @@@@@@@@공유글 작성자: ${result.data[0].userId}")
                 otherUserId = result.data[0].userId
+                checkWriter() // 작성자 유무 확인하기
                 if(userResult?.flag == "success") {
                     binding.writer = userResult.data[0]
                 } else {
@@ -252,12 +262,55 @@ class ShareDetailActivity : AppCompatActivity(){
                 finish()
             }
         }
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.board_top_app_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
 
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.board_edit -> { // 게시글 수정
+                val intent = Intent(this@ShareDetailActivity, ShareWriteActivity::class.java)
+                intent.putExtra("boardId", boardId)
+                startActivity(intent)
+                finish()
+            }
+            R.id.board_remove -> { // 게시글 삭제
+                val dialog = ConfirmDialog(object : ConfirmDialogInterface {
+                    override fun onYesButtonClick(id: String) {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            val result = ApplicationClass.retrofitShareService.deleteShareBoard(boardId!!).awaitResponse().body()
+                            if(result?.flag == "success") { // 삭제 성공
+                                // TODO : 채팅 목록 삭제시키기 (or 채팅종료)
+                                Toast.makeText(this@ShareDetailActivity, "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                                finish()
+                            } else {
+                                Toast.makeText(this@ShareDetailActivity, "게시글 삭제를 실패했습니다.", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }, "정말로 삭제하시겠습니까?\n진행중인 채팅 목록도 종료됩니다.", "")
+                dialog.isCancelable = true // 알림창이 띄워져있는 동안 배경 클릭 막기
+                dialog.show(supportFragmentManager, "DeleteShareBoard")
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 
-
+    // 게시글 작성자가 나인지 확인한다
+    // 나인경우 수정하기, 삭제하기 버튼이 보여야 하고 채팅하기 버튼 비활성화
+    fun checkWriter() {
+        if(ApplicationClass.prefs.getId() != otherUserId) { // 내가 작성자가 아니면 수정/삭제 메뉴 없애기
+            Log.d(TAG, "checkWriter: 내가 작성자 아님/")
+            binding.toolbar.invalidateMenu()
+            binding.toolbar.menu.removeItem(R.id.board_edit)
+            binding.toolbar.menu.removeItem(R.id.board_remove)
+        } else {
+            Log.d(TAG, "checkWriter: 내가작성자")
+        }
+    }
 
 }
