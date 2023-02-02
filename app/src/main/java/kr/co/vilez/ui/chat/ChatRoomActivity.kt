@@ -3,16 +3,15 @@ package kr.co.vilez.ui.chat
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.MaterialDatePicker
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,8 +23,11 @@ import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.StompClient2
 import org.json.JSONObject
 import retrofit2.awaitResponse
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
-
+private const val TAG = "빌리지_채팅_ChatRoomActivity"
 class ChatRoomActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChatRoomBinding
     private var roomId = 0
@@ -36,6 +38,8 @@ class ChatRoomActivity : AppCompatActivity() {
     private var now : Int = 0
     private val itemList = ArrayList<ChatlistData>()
     private val kakaoMapFragment = KakaoMapFragment()
+
+    private var pickedDate : Pair<Long, Long>? = null // 약속 시간 저장하는 변수
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -168,7 +172,52 @@ class ChatRoomActivity : AppCompatActivity() {
             }
 
 
+            initScheduleButton()
+    }
 
+    private fun initScheduleButton() {
+        binding.btnChatCalendar.setOnClickListener {
+            onCalendarClick()
+            // 선택된 날짜는 pickedDate 에 저장됨
+        }
+    }
+
+    fun onCalendarClick() { // 캘린더 버튼클릭
+        var startDay:Long = 0
+        var endDay:Long = 0
+
+        Log.d(TAG, "onCalendarClick: 캘린더 클릭")
+
+        if(pickedDate == null) { // 아직 날짜 선택 안한경우
+            val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
+            calendar.time = Date()
+            startDay = calendar.timeInMillis
+            calendar.add(Calendar.DATE, 1) // 디폴트 end날짜 : 내일
+            endDay = calendar.timeInMillis
+
+        } else { // 기존 선택된 날짜 띄워주기
+            startDay = pickedDate!!.first
+            endDay = pickedDate!!.second
+        }
+
+        // Build constraints.
+        val constraintsBuilder =
+            CalendarConstraints.Builder()
+                .setStart(startDay)
+
+        val datePicker =
+            MaterialDatePicker.Builder.dateRangePicker()
+                .setTitleText("공유기간 선택")
+                .setSelection(androidx.core.util.Pair(
+                    startDay
+                    , endDay))
+                .setCalendarConstraints(constraintsBuilder.build())
+                .build()
+        datePicker.addOnPositiveButtonClickListener {
+            pickedDate = Pair<Long, Long>(it.first!!, it.second!!)
+        }
+        datePicker.show(supportFragmentManager, "Date")
 
     }
+
 }
