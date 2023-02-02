@@ -1,13 +1,14 @@
 package kr.co.vilez.ask.model.mapper;
 
 import kr.co.vilez.ask.model.dto.AskDto;
+import kr.co.vilez.share.model.dto.PageNavigator;
 import org.apache.ibatis.annotations.Mapper;
 import java.sql.SQLException;
 import java.util.List;
 
 @Mapper
 public interface AskMapper {
-    List<AskDto> loadAskList() throws SQLException;
+    List<AskDto> loadAskList(PageNavigator pageNavigator) throws SQLException;
 
     List<AskDto> loadMyAskList(int userId) throws SQLException;
 
