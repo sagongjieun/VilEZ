@@ -30,5 +30,6 @@ public class AskDto {
     private String area;
     private int state;
     private String address;
+    private String type;
 
 }

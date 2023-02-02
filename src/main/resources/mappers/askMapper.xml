@@ -18,10 +18,38 @@
         <result column="nickname" property="nickName"/>
         <result column="area" property="area"/>
         <result column="address" property="address"/>
+        <result column="type" property="type"/>
     </resultMap>
 
     <select id="loadAskList" resultMap="ask">
-        select * from ask_view;
+        select b.id, b.title, b.address, b.start_day, b.end_day, b.date, b.state,
+               (
+                    case
+                       when a.type = 2 then "요청완료"
+                       else "요청중"
+                    end
+                ) as type
+        from ask_view as b
+        left join(
+            select *
+            from appointment
+            where type = 2
+        )as a
+        on b.id = a.board_id
+        where b.state != -1
+        <where>
+            <if test ="word != null and word != ''">
+                OR title like #{word}
+            </if>
+            <if test ="word != null and word != ''">
+                OR content like #{word}
+            </if>
+            <if test="category != null and category != ''">
+                AND category = #{category}
+            </if>
+        </where>
+        LIMIT #{low}
+        OFFSET #{high}
     </select>
 
     <select id="loadMyAskList" parameterType="int" resultMap="ask">

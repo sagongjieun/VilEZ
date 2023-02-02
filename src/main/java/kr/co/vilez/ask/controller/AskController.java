@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import kr.co.vilez.ask.model.dto.AskDto;
 import kr.co.vilez.ask.model.service.AskService;
 import kr.co.vilez.data.HttpVO;
+import kr.co.vilez.share.model.dto.PageNavigator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,6 @@ import java.util.List;
 public class AskController {
     final AskService askService;
 
-
     @GetMapping("/my/{userid}")
     @ApiOperation(value = "내의 요청글 리스트를 불러온다.", notes = "userId : Number \n" +
             "List로 AskDto가 출력된다.")
@@ -38,9 +38,9 @@ public class AskController {
     @GetMapping
     @ApiOperation(value = "전체 요청글 리스트를 불러온다." ,
                  notes = "List로 전체 AskDto가 출력된다.")
-    public ResponseEntity<?> loadAskList() {
+    public ResponseEntity<?> loadAskList(PageNavigator pageNavigator) {
         HttpVO http = new HttpVO();
-        List<AskDto> askDtoList = askService.loadAskList();
+        List<AskDto> askDtoList = askService.loadAskList(pageNavigator);
         http.setFlag("success");
 
         http.setData(askDtoList);
