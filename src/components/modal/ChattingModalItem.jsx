@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import elapsedTime from "./../product/ProductElapsedTime";
@@ -14,6 +14,10 @@ const ChattingModalItem = ({ chat }) => {
     setModalOpen(!modalOpen);
     navigate(`/product/chat/${roomId}`);
   }
+
+  useEffect(() => {
+    console.log(chat.chatData.roomId, " : ", chat.noReadCount);
+  }, [chat]);
 
   return (
     <div css={ChatListWrap} onClick={() => onClickMoveChatRoom(chat.chatData.roomId)}>

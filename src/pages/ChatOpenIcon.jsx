@@ -37,11 +37,9 @@ function ChatOpenIcon() {
         client.subscribe(`/sendlist/${loginUserId}`, (data) => {
           data = JSON.parse(data.body);
           // 상대방이 메시지 보낼 때만 새로운 메시지 알림
-          /** 이거 안되는 문제 */
-          if (data.fromUserId !== loginUserId) {
-            setIsNewMessage(true); // 새로운 메시지 알림
+          if (data.fromUserId != loginUserId) {
+            setIsNewMessage(true);
           }
-          console.log(data);
         });
       });
     }
