@@ -1,43 +1,107 @@
-
 <html>
-    <head>
-    <meta charset="utf-8">
-    <title>:: JAVASCRIPT 지오로케이션 ::</title>
-    <script type="text/JavaScript" src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="style.css" />
+    <title>VILEZ 위치 정보 시스템</title>
+    <script
+      type="text/JavaScript"
+      src="https://code.jquery.com/jquery-1.12.4.js"
+    ></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
-         
+      jQuery(document).ready(function () {
+        var URLSearch = new URLSearchParams(location.search);
+        var code = URLSearch.get("code");
+        code = code.replaceAll(" ", "+");
+        var access_token = URLSearch.get("access_token");
+        var refresh_token = URLSearch.get("refresh_token");
 
-        jQuery(document).ready(function() { 
-            var URLSearch = new URLSearchParams(location.search);
-            var id = URLSearch.get("userId");
-                 
+        // Geolocation 객체를 사용
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            function (position) {
+              // 위치를 가져오는데 성공할 경우
 
-            // Geolocation 객체를 사용
-            if(navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    // 위치를 가져오는데 성공할 경우
-                    jQuery.each(position.coords, function(key, item) {
-                        jQuery("<h3></h3>").html("● " + key + " : " + item).appendTo("body");
-                    });
-                    
-                }, function(error) {
-                    // 위치를 가져오는데 실패한 경우
-                    consol.log(error.message);
+              var arr = [];
+              jQuery.each(position.coords, function (key, item) {
+                arr.push(item);
+              });
+
+              axios
+                .put("https://i8d111.p.ssafy.io/vilez/users/location", {
+                  code: code,
+                  lng: arr[0],
+                  lat: arr[1],
+                })
+                .then((result) => {
+                  alert(JSON.stringify(result.data.data[0].url));
+
+                  console.log(window);
+                  this.location.assign("https://i8d111.p.ssafy.io/check");
+                })
+                .catch(function (error) {
+                  // 오류발생시 실행
                 });
-            } else {
-                consol.log("Geolocation을 지원하지 않는 브라우저 입니다.");
+            },
+            function (error) {
+              // 위치를 가져오는데 실패한 경우
+              consol.log(error.message);
             }
-
-            jQuery("<h1><h1>").html("● " + " userId" + " : " + id).appendTo("body");
-        });
-        
+          );
+        } else {
+          consol.log("Geolocation을 지원하지 않는 브라우저 입니다.");
+        }
+      });
     </script>
-    </head>
-    <body>
-
-
-        <div id = "이미지">
-            
+  </head>
+  <body style="background-color: #f1f2f3">
+    <div id="wrap" class="wrap">
+      <header class="header" role="banner">
+        <div class="header_inner">
+          <a class="logo">
+            <h1 class="blind">VILEZ</h1>
+          </a>
+          <div class="lang" id="show_locale_switch">
+            <h3>위치 정보 검색 중 입니다.</h3>
+          </div>
         </div>
-    </body>
+      </header>
+
+      <div id="container" class="container">
+        <!-- content -->
+        <div class="content">
+          <div class="login_wrap">
+            <img
+              src="https://kr.object.ncloudstorage.com/vilez/KakaoTalk_20230202_090444722.gif"
+            />
+          </div>
+          <ul class="find_wrap" id="find_wrap"></ul>
+          <!--배너-->
+          <div id="gladbanner" class="banner_wrap">
+            <div style="width: 100%; height: auto; margin: 0px auto">
+              <iframe
+                id="gladbanner_tgtLREC"
+                frameborder="no"
+                scrolling="no"
+                tabindex="0"
+                name=""
+                title="AD"
+                style="
+                  width: 100%;
+                  height: 74px;
+                  visibility: inherit;
+                  display: block;
+                  border: 0px;
+                  vertical-align: bottom;
+                "
+                sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
+                src="https://ssl.pstatic.net/tveta/libs/glad/prod/2.9.1/res/r.html"
+              ></iframe>
+            </div>
+          </div>
+        </div>
+        <!-- //content -->
+      </div>
+    </div>
+  </body>
 </html>
