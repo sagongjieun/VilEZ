@@ -3,8 +3,13 @@ import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import { AiOutlineClose } from "react-icons/ai";
 import MiddleWideButton from "../button/MiddleWideButton";
+import { useLocation, useParams } from "react-router-dom";
+import { getShareArticleByBoardId } from "../../api/share";
 
 const ProductImageSelect = ({ sendImageList }) => {
+  const pathname = useLocation().pathname;
+  const boardId = parseInt(useParams().boardId);
+  const type = pathname.includes("share") ? 2 : 1;
   const [imageList, setImageList] = useState([]);
 
   function onClickFileUpload() {
@@ -33,6 +38,17 @@ const ProductImageSelect = ({ sendImageList }) => {
   useEffect(() => {
     sendImageList(imageList);
   }, [imageList]);
+  useEffect(() => {
+    type === 2
+      ? getShareArticleByBoardId(boardId).then((res) => {
+          const data = res[0].list;
+          // console.log(data);
+          const tempimage = data.map((d) => d);
+          const filename = tempimage.map((obj) => obj.fileName);
+          setImageList(filename);
+        })
+      : null;
+  }, []);
 
   return (
     <div css={imageWrapper}>
