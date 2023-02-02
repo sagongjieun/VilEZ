@@ -144,6 +144,20 @@ public class SwaggerConfiguration {
                 .build();  // Docket 객체 생성
     }
     @Bean
+    public Docket QrCommentApi() {
+        final ApiInfo apiInfo = new ApiInfoBuilder().title("Qr  API")
+                .description("<h3>Qr API에 대한 문서를 제공한다.</h3>")
+                .version("0.0").build();
+
+        return new Docket(DocumentationType.SWAGGER_2) // Swagger 2.0 기반의 문서 작성
+                .apiInfo(apiInfo) // 문서에 대한 정보를 설정한다.
+                .groupName("I. Qr")
+                .select() // ApiSelectorBuilder를 반환하며 상세한 설정 처리
+                .apis(RequestHandlerSelectors.basePackage("kr.co.vilez.qr"))// 대상으로하는 api 설정
+                .paths(PathSelectors.any()) // controller에서 swagger를 지정할 대상 path 설정
+                .build();  // Docket 객체 생성
+    }
+    @Bean
     public Docket AllApi() {
         final ApiInfo apiInfo = new ApiInfoBuilder().title("전체 API")
                 .description("<h3>모든 Api에 대한 문서를 제공한다.</h3>")
