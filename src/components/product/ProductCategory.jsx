@@ -20,7 +20,6 @@ const ProductCategory = ({ isMain, sendCategory }) => {
 
   const [openCategory, setOpenCategory] = useState(false);
   const [category, setCategory] = useState("카테고리");
-
   function onClickOpenCategory() {
     if (openCategory) {
       setOpenCategory(false);
