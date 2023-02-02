@@ -16,6 +16,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(userInterceptor)
                 .order(1)
+                .excludePathPatterns("/users/location")
                 .excludePathPatterns("/users/login")
                 .excludePathPatterns("/users/join")
                 .excludePathPatterns("/users/refresh")

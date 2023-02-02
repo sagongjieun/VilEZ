@@ -2,6 +2,7 @@ package kr.co.vilez.user.controller;
 
 import io.swagger.annotations.ApiOperation;
 import kr.co.vilez.data.HttpVO;
+import kr.co.vilez.user.model.dto.LocationDto;
 import kr.co.vilez.user.model.dto.UserDto;
 import kr.co.vilez.user.model.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 @RequestMapping("/users")
 @RestController
@@ -26,6 +28,31 @@ public class UserController {
     HttpVO http = null;
 
     final UserService userService;
+
+    @PutMapping("/location")
+    @ApiOperation(value = "유저의 GPS 정보를 받아 주소를 인증해주는 API"
+            , notes = "dto의 모든 변수를 채워넣어 전송하면 해당 정보를 토대로 내 동네가 인증된다.")
+    public ResponseEntity<?> saveLocation(@RequestBody LocationDto locationDto){
+        http = new HttpVO();
+        ArrayList<Object> data = new ArrayList<>();
+
+//        System.out.println(locationDto.getCode());
+
+        try{
+
+            userService.saveLocation(locationDto);
+
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("url", "https://i8d111.p.ssafy.io/check");
+            data.add(map);
+            http.setData(data);
+            http.setFlag("success");
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
 
     @GetMapping("/check/{email}")
     @ApiOperation(value = "이메일을 이용한 사용자 회원가입 여부 확인 API"

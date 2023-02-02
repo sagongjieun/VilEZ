@@ -1,14 +1,17 @@
 package kr.co.vilez.user.model.service;
 
 import kr.co.vilez.data.HttpVO;
+import kr.co.vilez.user.model.dto.LocationDto;
 import kr.co.vilez.user.model.dto.UserDto;
 import org.apache.catalina.User;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLException;
 import java.util.HashMap;
 
 public interface UserService {
+    void saveLocation(LocationDto locationDto) throws Exception;
     UserDto checkEmail(String email) throws SQLException;
     HttpVO check(String nickname) throws  Exception;
     HttpVO modifyUserInfo(HashMap<String,?> userDto) throws Exception;
