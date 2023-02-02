@@ -29,6 +29,23 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentMapper appointmentMapper;
     private final ShareDao shareDao;
 
+    ///////////////////////////////포인트 관련 내용 ///////////////////////////////
+
+
+    @Override
+    public void addPoint(AppointmentDto appointmentDto) throws Exception {
+        PointVO pointVO = new PointVO();
+
+        pointVO.setShareUserId(appointmentDto.getShareUserId());
+        pointVO.setNotShareUserId(appointmentDto.getNotShareUserId());
+        pointVO.setBoardId(appointmentDto.getBoardId());
+        pointVO.setTitle(appointmentDto.getTitle());
+        pointVO.setDate(appointmentDto.getDate());
+
+        appointmentDao.savePoint(pointVO);
+    }
+
+    ///////////////////////////////예약 관련 내용////////////////////////////////
     @Override
     public List<TotalListVO> getGiveList(int userId) throws Exception {
         List<MyAppointListDto> list = appointmentMapper.getGiveListShare(userId);

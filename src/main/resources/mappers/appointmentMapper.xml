@@ -10,6 +10,7 @@
         <result column="not_share_user_id" property="notShareUserId"/>
         <result column="appointment_start" property="appointmentStart"/>
         <result column="appointment_end" property="appointmentEnd"/>
+        <result column="type" property="type"/>
     </resultMap>
 
     <resultMap id="room" type="roomDto">
@@ -144,8 +145,8 @@
 
     <insert id="create" parameterType="appointmentDto">
         INSERT INTO appointment(board_id, share_user_id, not_share_user_id,
-                                appointment_start, appointment_end)
-        VALUES (#{boardId}, #{shareUserId}, #{notShareUserId}, #{appointmentStart}, #{appointmentEnd});
+                                appointment_start, appointment_end, type)
+        VALUES (#{boardId}, #{shareUserId}, #{notShareUserId}, #{appointmentStart}, #{appointmentEnd}, #{type});
     </insert>
 
     <select id="getRoomListByUserId" parameterType="int" resultMap="room">

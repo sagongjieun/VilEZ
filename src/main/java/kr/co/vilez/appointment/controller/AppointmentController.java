@@ -33,6 +33,9 @@ public class AppointmentController {
     private final UserService userService;
     private final SimpMessageSendingOperations sendingOperations;
 
+
+    ///////////////////////예약 관련 내용////////////////////////
+
     @GetMapping("/my/give/{userId}")
     @ApiOperation(value = "내가 빌려준 내역 정보를 요청하는 API",
             notes = "type = 1 공유 게시글" +
@@ -137,11 +140,16 @@ public class AppointmentController {
     @ApiOperation(value = "약속 정보를 저장한다." ,
             notes = "게시글 정보(boarId)" +
                     "\n\t 약속 기간(appointment_start, end)" +
-                    "\n\t 빌린사람, 빌려주는 사람(not_share_user_id, share_user_id)")
+                    "\n\t 빌린사람, 빌려주는 사람(not_share_user_id, share_user_id) " +
+                    "\n\t 현재 날짜(date) 부탁합니다" +
+                    "\n\t 요청글에 대한 type인지 share에 의한 type인지도 부탁합니다" +
+                    "\n\t 요청은 type = 2, 공유는 type = 1")
     public ResponseEntity<?> createAppointment(@RequestBody AppointmentDto appointmentDto){
         HttpVO httpVO = new HttpVO();
+
         try {
             appointmentService.create(appointmentDto);
+            appointmentService.addPoint(appointmentDto);
             httpVO.setFlag("success");
         } catch (Exception e){
             e.printStackTrace();

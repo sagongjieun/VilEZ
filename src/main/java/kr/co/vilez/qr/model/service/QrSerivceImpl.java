@@ -33,7 +33,7 @@ public class QrSerivceImpl implements QrService {
         // QR 코드 생성
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = qrCodeWriter.encode(content+code
-                , BarcodeFormat.QR_CODE, 100, 100);
+                , BarcodeFormat.QR_CODE, 200, 200);
 
         BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
 

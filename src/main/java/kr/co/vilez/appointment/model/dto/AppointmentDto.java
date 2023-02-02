@@ -16,6 +16,7 @@ public class AppointmentDto {
     private String appointmentStart;
     private String appointmentEnd;
     private int state;
+    private String date;
     private int type;
 
 }

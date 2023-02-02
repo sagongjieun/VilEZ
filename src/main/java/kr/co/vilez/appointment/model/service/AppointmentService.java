@@ -9,6 +9,10 @@ import kr.co.vilez.appointment.model.vo.MapVO;
 import java.util.List;
 
 public interface AppointmentService {
+    ////////////////////////포인트 관련 내용 //////////////////////////////////
+    void addPoint(AppointmentDto appointmentDto) throws Exception;
+
+    //////////////////////// 예약관련 ////////////////////////////////////////
     List<TotalListVO> getGiveList(int userId) throws Exception;
     List<AppointmentDto> getMyAppointmentCalendarList(int userId) throws Exception;
     BoardStateVO getBoardState(int boardId) throws Exception;
