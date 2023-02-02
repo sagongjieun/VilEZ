@@ -34,6 +34,27 @@ public class AppointmentController {
     private final UserService userService;
     private final SimpMessageSendingOperations sendingOperations;
 
+    @GetMapping("/my/point")
+    @ApiOperation(value = "나의 포인트 목록을 보여주는 정보를 출력하는 API",
+            notes = "\n\t type = 1 정상적인 포인트 추가/삭감" +
+                    "\n\t type = 2 반납기한을 넘겨 얻은 패널티 포인트 삭감" +
+                    "\n\t isIncrease가 true면 +10" +
+                    "\n\t false면 -10")
+    public ResponseEntity<?> getPointList(@RequestParam int userId){
+        HttpVO http = new HttpVO();
+        ArrayList<Object> data = new ArrayList<>();
+
+        try{
+            data.add(appointmentService.getPointList(userId));
+            http.setData(data);
+            http.setFlag("success");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
+
     // 공유자가 만남(예약)을 초기화 하고 싶을 때, 기존 설정한 날짜를 삭제해주는 API
     @DeleteMapping("/set/period")
     @ApiOperation(value = "공유자가 만남(예약) 중 희망 공유 기간을 잘못 설정해 삭제하고 싶을때, 사용하는 API",
@@ -214,6 +235,7 @@ public class AppointmentController {
             notes = "게시글 정보(boarId)" +
                     "\n\t 약속 기간(appointmentStart, End)" +
                     "\n\t 빌린사람, 빌려주는 사람(notShareUserId, shareUserId) " +
+                    "\n\t 글의 제목(title) 정보 부탁합니다." +
                     "\n\t 현재 날짜(date) 부탁합니다" +
                     "\n\t 요청글에 대한 type인지 share에 의한 type인지도 부탁합니다" +
                     "\n\t 요청은 type = 2, 공유는 type = 1")

@@ -18,7 +18,19 @@ import java.util.*;
 public class AppointmentDao {
     @Autowired
     private MongoTemplate mongoTemplate;
+    public List<PointVO> getPointList(int userId) {
+        List<PointVO> list = mongoTemplate.find(
+                Query.query(Criteria.where("shareUserId").is(userId)),
+                PointVO.class
+        );
 
+        list.addAll(mongoTemplate.find(
+                Query.query(Criteria.where("notShareUserId").is(userId)),
+                PointVO.class
+        ));
+
+        return list;
+    }
     public void deleteCheck(SetPeriodDto setPeriodDto) {
         mongoTemplate.remove(Query.query(Criteria.where("boardId").is(setPeriodDto.getBoardId())
                         .and("shareUserId").is(setPeriodDto.getShareUserId())

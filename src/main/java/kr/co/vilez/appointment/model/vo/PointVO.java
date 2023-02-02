@@ -15,4 +15,6 @@ public class PointVO {
     int boardId;
     String title;
     String date;
+    int type;
+    boolean isIncrease;
 }
