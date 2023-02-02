@@ -2,7 +2,9 @@ package kr.co.vilez.user.model.service;
 
 import kr.co.vilez.data.HttpVO;
 import kr.co.vilez.jwt.JwtProviderImpl;
+import kr.co.vilez.tool.AES256;
 import kr.co.vilez.tool.OSUpload;
+import kr.co.vilez.user.model.dto.LocationDto;
 import kr.co.vilez.user.model.dto.UserDto;
 import kr.co.vilez.user.model.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    final AES256 aes256;
     final UserMapper userMapper;
     final JwtProviderImpl jwtProvider;
     final ResourceLoader resourceLoader;
@@ -27,6 +30,16 @@ public class UserServiceImpl implements UserService {
     final String bucketName = "vilez";
     HttpVO http = null;
     List<Object> data = null;
+
+    @Override
+    public void saveLocation(LocationDto locationDto) throws Exception {
+        String userId = locationDto.getCode();
+        userId = aes256.decryptAES256(userId);
+
+        locationDto.setCode(userId);
+
+        userMapper.saveLocation(locationDto);
+    }
 
     @Override
     public UserDto checkEmail(String email) throws SQLException {

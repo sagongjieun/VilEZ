@@ -2,12 +2,12 @@ package kr.co.vilez.qr.controller;
 
 import kr.co.vilez.data.HttpVO;
 import kr.co.vilez.qr.model.service.QrService;
+import kr.co.vilez.tool.AES256;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 
 @RestController

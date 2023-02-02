@@ -1,5 +1,6 @@
 package kr.co.vilez.user.model.mapper;
 
+import kr.co.vilez.user.model.dto.LocationDto;
 import kr.co.vilez.user.model.dto.UserDto;
 import org.apache.catalina.User;
 import org.apache.ibatis.annotations.Mapper;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Mapper
 public interface UserMapper {
+    void saveLocation(LocationDto locationDto) throws Exception;
     UserDto checkEmail(String email) throws SQLException;
     UserDto check(String nickname) throws SQLException;
     void modifyUserInfo(HashMap<String,?> user) throws SQLException;

@@ -18,6 +18,19 @@
         <result column="refresh_token" property="refreshToken"/>
         <result column="state" property="state"/>
     </resultMap>
+
+    <resultMap type="locationDto" id="location">
+        <result column="userId" property="user_id"/>
+        <result column="lng" property="area_lng"/>
+        <result column="lat" property="area_lat"/>
+    </resultMap>
+
+    <select id="saveLocation" parameterType="locationDto" resultMap="location">
+        UPDATE user
+        SET area_lng = #{lng}, area_lat=#{lat}
+        WHERE id = #{code};
+    </select>
+
     <select id="checkEmail" parameterType="string" resultMap="user">
         SELECT email
         FROM user

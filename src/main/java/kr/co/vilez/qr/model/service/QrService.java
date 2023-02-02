@@ -1,5 +1,7 @@
 package kr.co.vilez.qr.model.service;
 
+import kr.co.vilez.qr.model.dto.QrCodeDto;
+
 import java.util.Map;
 
 public interface QrService {
