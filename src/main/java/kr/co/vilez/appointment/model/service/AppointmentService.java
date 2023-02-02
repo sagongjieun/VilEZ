@@ -18,6 +18,8 @@ public interface AppointmentService {
 
     ////////////////////////포인트 관련 내용 //////////////////////////////////
 
+
+    List<PointVO> getPointList(int userId) throws Exception;
     void addPoint(AppointmentDto appointmentDto) throws Exception;
 
     //////////////////////// 예약관련 ////////////////////////////////////////
