@@ -27,8 +27,8 @@ public class QrSerivceImpl implements QrService {
     public Map<String, String> createQR(int userId) throws Exception {
         String code = aes256.encryptAES256(Integer.toString(userId));
 
-        String tempFileName = "../../"+System.nanoTime()+".png";
-        String RealFileName = "qr/"+code+"/"+System.nanoTime();
+        String tempFileName = "../../"+userId+".png";
+        String RealFileName = "qr/"+userId+"/"+userId;
 
         // QR 코드 생성
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
@@ -48,5 +48,10 @@ public class QrSerivceImpl implements QrService {
                 +bucketName+"/"+RealFileName);
 
         return map;
+    }
+
+    @Override
+    public void deleteQr(String url) throws Exception {
+        osUpload.delete(url);
     }
 }
