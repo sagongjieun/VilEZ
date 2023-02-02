@@ -1,6 +1,8 @@
 package kr.co.vilez.appointment.model.dao;
 
+import kr.co.vilez.appointment.model.dto.AppointmentDto;
 import kr.co.vilez.appointment.model.dto.RoomDto;
+import kr.co.vilez.appointment.model.dto.SetPeriodDto;
 import kr.co.vilez.appointment.model.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,40 @@ import java.util.*;
 public class AppointmentDao {
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    public void deleteCheck(SetPeriodDto setPeriodDto) {
+        mongoTemplate.remove(Query.query(Criteria.where("boardId").is(setPeriodDto.getBoardId())
+                        .and("shareUserId").is(setPeriodDto.getShareUserId())
+                        .and("notShareUserId").is(setPeriodDto.getNotShareUserId())
+                        .and("type").is(setPeriodDto.getType())
+                ),
+                SetPeriodDto.class);
+    }
+
+    public void deleteCheck(AppointmentDto appointmentDto) {
+        mongoTemplate.remove(Query.query(Criteria.where("boardId").is(appointmentDto.getBoardId())
+                                .and("shareUserId").is(appointmentDto.getShareUserId())
+                                .and("notShareUserId").is(appointmentDto.getNotShareUserId())
+                                .and("type").is(appointmentDto.getType())
+                        ),
+                SetPeriodDto.class);
+    }
+
+    public SetPeriodDto loadCheck(int boardId, int shareUserId, int notShareUserId, int type) {
+        SetPeriodDto setPeriodDto = mongoTemplate.findOne(
+                Query.query(Criteria.where("boardId").is(boardId)
+                        .and("shareUserId").is(shareUserId)
+                        .and("notShareUserId").is(notShareUserId)
+                        .and("type").is(type)),
+                SetPeriodDto.class
+        );
+        return setPeriodDto;
+    }
+
+    public void setPeriod(SetPeriodDto setPeriodDto){
+        mongoTemplate.insert(setPeriodDto);
+    }
+
     ///////////////////////포인트 관련 내용////////////////////////////////
     public void savePoint(PointVO pointVO) {
         mongoTemplate.insert(pointVO);

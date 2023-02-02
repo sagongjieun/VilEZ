@@ -35,6 +35,18 @@
         <result column="not_share_user_id" property="notShareUserId"/>
     </resultMap>
 
+    <update id="increasePoint" parameterType="kr.co.vilez.appointment.model.vo.PointVO" >
+        update user
+        set point = point + 10
+        where id = #{shareUserId};
+    </update>
+
+    <update id="decreasePoint" parameterType="kr.co.vilez.appointment.model.vo.PointVO" >
+        update user
+        set point = point - 10
+        where id = #{notShareUserId};
+    </update>
+
     <select id="getMyAppointmentCalendarListShare" parameterType="int" resultMap="appointment">
         select s.id, s.title, a.appointment_start, a.appointment_end,
                (
