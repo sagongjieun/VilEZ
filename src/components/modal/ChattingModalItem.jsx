@@ -25,7 +25,11 @@ const ChattingModalItem = ({ chat }) => {
           {chat.area ? <small>{chat.area}</small> : <small>지역 미인증</small>}
           <small>{elapsedTime(chat.chatData.time)}</small>
         </div>
-        <span>{chat.chatData.content}</span>
+        {chat.chatData.content ? (
+          <span>{chat.chatData.content}</span>
+        ) : (
+          <span css={noLatestMessage}>최근 채팅 내역이 없습니다.</span>
+        )}
       </div>
     </div>
   );
@@ -88,6 +92,10 @@ const chatInfoWrap = css`
   & > span {
     font-size: 13px;
   }
+`;
+
+const noLatestMessage = css`
+  color: #8a8a8a;
 `;
 
 export default ChattingModalItem;

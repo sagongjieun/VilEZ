@@ -68,6 +68,8 @@ const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickn
   function receiveLocation(location, lat, lng, zoomLevel, isMarker) {
     setHopeLocation(location);
 
+    /** 마커찍을때만 내가 받은 걸 다시 send하게 돼서 문제 생김 */
+
     if (lat && lng && zoomLevel) {
       const sendMapData = {
         roomId: chatRoomId,
