@@ -1,5 +1,6 @@
 package kr.co.vilez.util
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -12,6 +13,7 @@ import androidx.core.content.ContextCompat
 
 class PermissionUtil {
     private val REQ_GALLERY = 1
+    private val REQ_LOCATION = 1
 
     /**
      * @param multiple : 이미지를 여러장 요청하는가
@@ -34,13 +36,33 @@ class PermissionUtil {
                 ), REQ_GALLERY
             )
         } else {
-
             val intent = Intent(Intent.ACTION_PICK)
             if(multiple) intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
             intent.setDataAndType(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*"
             )
             imageResult.launch(intent)
+        }
+    }
+
+    fun locationPermission(context: Context, locationResult: ActivityResultLauncher<Intent>) {
+        val locationFinePermission = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+        val locationCoarsePermission = ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+        if(locationFinePermission == PackageManager.PERMISSION_DENIED || locationCoarsePermission == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(
+                context as Activity, arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ), REQ_LOCATION
+            )
+        } else {
+            locationResult.launch(Intent())
         }
     }
 

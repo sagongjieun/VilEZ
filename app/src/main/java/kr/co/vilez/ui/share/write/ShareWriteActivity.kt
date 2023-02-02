@@ -1,6 +1,7 @@
 package kr.co.vilez.ui.share.write
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -12,15 +13,38 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kr.co.vilez.R
+import kr.co.vilez.data.dto.WriteBoard
 import kr.co.vilez.databinding.ActivityShareWriteBinding
+import kr.co.vilez.ui.share.ShareDetailActivity
+import kr.co.vilez.util.ApplicationClass
+import kr.co.vilez.util.ChangeMultipartUtil
 import kr.co.vilez.util.PermissionUtil
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.awaitResponse
+import java.io.File
 import java.text.SimpleDateFormat
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.util.*
 
 private const val TAG = "빌리지_ShareWriteActivity"
 class ShareWriteActivity : AppCompatActivity() {
     private lateinit var binding:ActivityShareWriteBinding
+
+    private var imgMultiPart = mutableListOf<MultipartBody.Part>()
+    private var sDay:String?= null
+    private var eDay:String?= null
+    private var category:String? = null
+    private var lat:String? = null
+    private var lng:String? = null
+    private var place:String?=null // 주소 한글 확인용
 
     val imgList = mutableListOf<Uri>()
     lateinit var imageAdapter: BoardWriteImageAdapter
@@ -108,41 +132,42 @@ class ShareWriteActivity : AppCompatActivity() {
         categoryPicker.setTitle("카테고리 선택")
         categoryPicker.setItems(categories
         ) { _, pos ->
-            Toast.makeText(this@ShareWriteActivity, "${categories[pos]} 선택", Toast.LENGTH_SHORT).show()
+            category = categories[pos]
+            binding.tvCategory.text = category
         }
         categoryPicker.show()
     }
 
     fun onDateClick(view: View) {
-        val today = MaterialDatePicker.todayInUtcMilliseconds()
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
-
-        calendar.timeInMillis = today
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
+        calendar.time = Date()
         val startToday = calendar.timeInMillis
-
-        calendar.timeInMillis = today
-        calendar[Calendar.MONTH] = Calendar.DECEMBER
-        val decThisYear = calendar.timeInMillis
+        calendar.add(Calendar.DATE, 1)
+        val endTomorrow = calendar.timeInMillis
 
         // Build constraints.
         val constraintsBuilder =
             CalendarConstraints.Builder()
                 .setStart(startToday)
-                .setEnd(decThisYear)
 
         val datePicker =
             MaterialDatePicker.Builder.dateRangePicker()
                 .setTitleText("공유기간 선택")
-                .setSelection(androidx.core.util.Pair(MaterialDatePicker.thisMonthInUtcMilliseconds(), MaterialDatePicker.todayInUtcMilliseconds())) // 디폴트 날짜
+                .setSelection(androidx.core.util.Pair(
+                    startToday
+                    , endTomorrow))
                 .setCalendarConstraints(constraintsBuilder.build())
                 .build()
         datePicker.addOnPositiveButtonClickListener {
-            Toast.makeText(this@ShareWriteActivity, getDate(it.first, it.second), Toast.LENGTH_SHORT).show()
+            val pickedDate = getDate(it.first, it.second)
+            sDay = pickedDate.first
+            eDay = pickedDate.second
         }
         datePicker.show(supportFragmentManager, "Date")
     }
 
-    fun getDate(startMills: Long, endMills: Long): String {
+    @SuppressLint("SetTextI18n")
+    fun getDate(startMills: Long, endMills: Long): Pair<String, String> {
         val dateFormat = "yyyy-MM-dd"
         // Create a DateFormatter object for displaying date in specified format.
         val formatter = SimpleDateFormat(dateFormat)
@@ -152,15 +177,93 @@ class ShareWriteActivity : AppCompatActivity() {
         val startDay = formatter.format(calendar.time)
         calendar.timeInMillis = endMills
         val endDay = formatter.format(calendar.time)
-        return "$startDay ~ $endDay"
+
+        binding.tvDate.text = "$startDay ~ $endDay"
+        return Pair(startDay, endDay)
     }
 
     fun onPlaceClick(view: View) {
+        val intent = Intent(this@ShareWriteActivity, PlacePickerActivity::class.java)
+        requestLauncher.launch(intent)
+    }
 
+    val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        // Handle the returned Uri
+    }
+
+    @SuppressLint("ResourceAsColor")
+    private val requestLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if(it.resultCode== RESULT_OK) {
+            place = it.data?.getStringExtra("address") as String
+            lat = it.data?.getStringExtra("lat") as String
+            lng = it.data?.getStringExtra("lng") as String
+            //Toast.makeText(this@ShareWriteActivity, "$place 가져오기 성공!", Toast.LENGTH_SHORT).show()
+            binding.tvAddr.text = place
+        }
     }
 
     fun savePost(view: View) {
+        // 여러번 클릭 못하게 하기
+        view.isClickable = false
+        view.isEnabled = false
+        if (binding.etTitle.text.toString().isEmpty()) {
+            Snackbar.make(view, "제목을 입력해주세요.", Snackbar.LENGTH_SHORT).show()
+        } else if (binding.etContent.text.toString().isEmpty()) {
+            Snackbar.make(view, "내용을 입력해주세요.", Snackbar.LENGTH_SHORT).show();
+        } else if (imgList.size < 1) {
+            Snackbar.make(view, "이미지를 1개 이상 등록해주세요.", Snackbar.LENGTH_SHORT).show()
+        } else if(category == null) {
+            Snackbar.make(view, "카테고리를 선택해주세요.", Snackbar.LENGTH_SHORT).show();
+        } else if ((sDay== null) or (eDay== null)) {
+            Snackbar.make(view, "희망 공유 기간을 선택해주세요.", Snackbar.LENGTH_SHORT).show();
+        } else if (place == null) {
+            Snackbar.make(view, "공유 희망 장소를 선택해주세요.", Snackbar.LENGTH_SHORT).show()
+        } else {
+            Snackbar.make(view, "이제 글 POST 요청 시작하기", Snackbar.LENGTH_SHORT).show()
 
+            try {
+                // 이미지 리스트 multipart list에 넣기
+                makeMultiPartList()
+
+                val writeBoard = WriteBoard(category= category!!, startDay = sDay!!, endDay = eDay!!,
+                    hopeAreaLat = lat!!, hopeAreaLng = lng!!, title = binding.etTitle.text.toString(),
+                    content = binding.etContent.text.toString(), userId = ApplicationClass.prefs.getId())
+
+                CoroutineScope(Dispatchers.Main).launch {
+                    val result = ApplicationClass.retrofitShareService.postShareBoard(writeBoard, imgMultiPart).awaitResponse().body()
+                    Log.d(TAG, "savePost: 게시글 추가결과 : $result")
+                    if(result?.flag == "success") {
+                        Log.d(TAG, "savePost: 게시글 추가 성공!")
+                        Toast.makeText(this@ShareWriteActivity, "게시글 작성을 완료했습니다.", Toast.LENGTH_SHORT).show()
+                        val boardId = result.data[0].id
+                        Log.d(TAG, "savePost: 새로 작성된 게시글 id: $boardId")
+
+                        // 게시글 상세보기로 이동
+                        val intent = Intent(this@ShareWriteActivity, ShareDetailActivity::class.java)
+                        intent.putExtra("boardId", boardId)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        Toast.makeText(this@ShareWriteActivity, "게시글 작성을 실패했습니다", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@ShareWriteActivity, "게시글 작성을 실패했습니다", Toast.LENGTH_SHORT).show()
+            }
+        }
+        view.isClickable = true
+        view.isEnabled = true
     }
 
+
+    fun makeMultiPartList() {
+        for (img in imgList) {
+            val file = File(ChangeMultipartUtil().changeAbsolutelyPath(img, this@ShareWriteActivity))
+            val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), file)
+            val body = MultipartBody.Part.createFormData("image", file.name, requestFile)
+
+            imgMultiPart.add(body)
+        }
+
+    }
 }

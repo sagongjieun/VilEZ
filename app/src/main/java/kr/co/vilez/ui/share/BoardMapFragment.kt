@@ -86,11 +86,11 @@ class BoardMapFragment : Fragment(), MapView.MapViewEventListener, ReverseGeoCod
         initMap()
     }
 
-
     private fun initMap() {
         mapView = MapView(activity)
         binding.flMap.addView(mapView)
         mapView.setMapViewEventListener(this)
+        mapView.setShowCurrentLocationMarker(false)
 
         Log.d(TAG, "initMap: lat: $param1, lng: $param2")
         pos = MapPoint.mapPointWithGeoCoord(param1!!, param2!!)
@@ -143,19 +143,12 @@ class BoardMapFragment : Fragment(), MapView.MapViewEventListener, ReverseGeoCod
     }
 
     override fun onMapViewZoomLevelChanged(p0: MapView?, p1: Int) {
-        val data = JSONObject()
         if(zoom == true) {
             zoom = false
             return
         }
         if (p0 != null) {
             if(p0.zoomLevel == zoomLvl) return
-            data.put("roomId", 10)
-            data.put("toUserId", 29)
-            data.put("lat", p0.getMapCenterPoint().mapPointGeoCoord.latitude)
-            data.put("lng", p0.getMapCenterPoint().mapPointGeoCoord.longitude)
-            data.put("zoomLevel", p0.zoomLevel)
-            data.put("isMarker",false)
             zoomLvl = p0.zoomLevel
         }
     }
@@ -180,6 +173,9 @@ class BoardMapFragment : Fragment(), MapView.MapViewEventListener, ReverseGeoCod
     }
 
     override fun onReverseGeoCoderFoundAddress(p0: MapReverseGeoCoder?, p1: String?) {
+        if (p1 != null) {
+            addr = p1
+        }
         val marker = MapPOIItem()
         marker.apply {
             itemName = p1

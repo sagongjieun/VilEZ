@@ -248,6 +248,8 @@ class ShareDetailActivity : AppCompatActivity(){
                 Log.d(TAG, "init: fail, result:$result")
                 Log.d(TAG, "init: 사진 없는 게시글,,,? 가리기")
                 binding.llPhoto.visibility = View.GONE
+                Toast.makeText(this@ShareDetailActivity, "불러올 수 없는 게시글입니다.", Toast.LENGTH_SHORT).show()
+                finish()
             }
         }
 
