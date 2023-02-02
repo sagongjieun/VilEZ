@@ -4,6 +4,7 @@ import ProductRegist from "../components/product/ProductRegist";
 import ProductDetail from "../components/product/ProductDetail";
 import ProductChatting from "../components/product/ProductChatting";
 import ProductList from "../components/product/ProductList";
+import ProductPut from "../components/product/ProductPut";
 
 const Product = () => {
   return (
@@ -16,6 +17,7 @@ const Product = () => {
         <Route path="/list/share" element={<ProductList />} />
         <Route path="/list/ask" element={<ProductList />} />
         {/* useEffect로, pathname에 share, ask포함되어있으면 요청글 */}
+        <Route path="/edit/:boardId" element={<ProductPut />} />
       </Routes>
     </div>
   );

@@ -2,8 +2,13 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import bookmark from "../../assets/images/bookmark.png";
+import { Link, useParams } from "react-router-dom";
 
 const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
+  // function onclickShowEdit() {
+  //   editt(true);
+  // }
+  const boardId = parseInt(useParams().boardId);
   return (
     <div css={headerWrapper}>
       <div css={headerLeftSectionWrapper}>
@@ -13,7 +18,12 @@ const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
       </div>
       <div css={headerRightSectionWrapper}>
         {/* Link로 변경 */}
-        <a>목록</a>
+        <Link to={"/product/list/share"}>
+          <span>목록</span>
+        </Link>
+        <Link to={`/product/edit/${boardId}`}>
+          <span>수정</span>
+        </Link>
         <div>
           <img src={bookmark} alt="bookmark" />
           <small>{bookmarkCount}</small>
