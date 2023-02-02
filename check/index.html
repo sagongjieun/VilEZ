@@ -22,13 +22,16 @@
             // 오류발생시 실행
           });
         setTimeout(() => {
-          window.close();
+          window.open("", "_self").close();
         }, 10000);
         let time = 10;
-        setInterval(() => {
+        const timer = setInterval(() => {
           time -= 1;
           $(".setTime").text(time);
         }, 1000);
+        if (time === 0) {
+          clearInterval(timer);
+        }
       });
     </script>
   </head>
