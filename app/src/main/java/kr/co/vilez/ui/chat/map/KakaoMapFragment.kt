@@ -79,8 +79,8 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
 
                     marker.selectedMarkerType =
                         MapPOIItem.MarkerType.RedPin // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
-                    mapView.addPOIItem(marker)
                     markertouch = true
+                    mapView.addPOIItem(marker)
                 }
                 zoom = true
             }
@@ -89,7 +89,6 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
         StompClient2.stompClient.join("/sendmap/"+roomId+"/"+ApplicationClass.prefs.getId()).subscribe { topicMessage ->
             run {
                 val json = JSONObject(topicMessage)
-                mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(json.getDouble("lat"),json.getDouble("lng")),true);
                 if(mapView.zoomLevel != json.getInt("zoomLevel")) {
                     zoom = true;
                     mapView.setZoomLevel(json.getInt("zoomLevel"),true);
@@ -101,14 +100,18 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
                         }
                         isMarkerOn = false
                     }
+                    markertouch = true
+                    isMarkerOn = true
                     marker.itemName = "hope area"
                     marker.tag = 0
-                    marker.mapPoint = mapView.mapCenterPoint;
+                    marker.mapPoint = MapPoint.mapPointWithGeoCoord(json.getDouble("lat"),json.getDouble("lng"))
                     marker.markerType = MapPOIItem.MarkerType.BluePin // 기본으로 제공하는 BluePin 마커 모양.
 
                     marker.selectedMarkerType =
                         MapPOIItem.MarkerType.RedPin // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                    mapView.addPOIItem(marker)
                 }
+                mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(json.getDouble("lat"),json.getDouble("lng")),true);
             }
         }
     }
@@ -185,10 +188,10 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
         markertouch = true
         val data = JSONObject()
         if (p0 != null && p1 != null) {
-            p0.addPOIItem(marker)
             isMarkerOn = true;
             data.put("roomId", roomId)
             data.put("toUserId", otherUserId)
+            println(otherUserId)
             data.put("lat", p1.mapPointGeoCoord.latitude)
             data.put("lng", p1.mapPointGeoCoord.longitude)
             data.put("isMarker",true)
@@ -196,7 +199,7 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
             StompClient2.stompClient.send("/recvmap", data.toString()).subscribe()
             p0.setMapCenterPoint(p1,true)
         }
-
+        p0!!.addPOIItem(marker)
 
     }
 
