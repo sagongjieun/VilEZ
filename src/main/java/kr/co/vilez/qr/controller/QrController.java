@@ -1,5 +1,6 @@
 package kr.co.vilez.qr.controller;
 
+import io.swagger.annotations.ApiOperation;
 import kr.co.vilez.data.HttpVO;
 import kr.co.vilez.qr.model.service.QrService;
 import kr.co.vilez.tool.AES256;
