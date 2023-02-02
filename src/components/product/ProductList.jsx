@@ -19,10 +19,10 @@ const ProductList = () => {
   const [isClick, setIsClick] = useState(false);
   const [search, setSearch] = useState("");
   const [getArticle, setArticles] = useState([]);
-  // const [getId, setId] = useState("");
+
   const pathname = useLocation().pathname;
   const navigate = useNavigate();
-
+  const [list, setList] = useState("");
   useEffect(() => {
     const type = pathname.includes("share") ? 2 : 1;
 
@@ -30,11 +30,14 @@ const ProductList = () => {
       ? getAskArticleList(category, 0, 200, 0, "").then((res) => {
           const data = res;
           setArticles(data);
+          console.log(data);
+          setList("물품 요청 목록");
         })
       : getShareArticleList(category, 0, 200, 0, "").then((res) => {
           const data = res;
           // console.log(data);
           setArticles(data);
+          setList("물품 공유 목록");
           // console.log(data[0].shareListDto.list[0].path);
         });
   }, [category]);
@@ -59,7 +62,7 @@ const ProductList = () => {
   return (
     <div css={topWrap}>
       <div css={contentWrap}>
-        <h2>물품 공유 목록</h2>
+        <h2>{list}</h2>
         <div css={filterWrap}>
           <div css={filterLeftWrap}>
             <ProductCategory isMain={false} sendCategory={receiveCategory} />

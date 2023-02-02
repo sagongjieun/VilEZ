@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { HiChevronRight, HiChevronLeft } from "react-icons/hi2";
+import { useLocation, useParams } from "react-router-dom";
+import { getShareArticleByBoardId } from "../../api/share";
 
 const ProductCategory = ({ isMain, sendCategory }) => {
   const categoryType = [
@@ -17,7 +19,9 @@ const ProductCategory = ({ isMain, sendCategory }) => {
     "패션의류",
     "도서",
   ];
-
+  const pathname = useLocation().pathname;
+  const boardId = parseInt(useParams().boardId);
+  const type = pathname.includes("share") ? 2 : 1;
   const [openCategory, setOpenCategory] = useState(false);
   const [category, setCategory] = useState("카테고리");
   function onClickOpenCategory() {
@@ -36,6 +40,16 @@ const ProductCategory = ({ isMain, sendCategory }) => {
   useEffect(() => {
     sendCategory(category);
   }, [category]);
+
+  useEffect(() => {
+    type === 2
+      ? getShareArticleByBoardId(boardId).then((res) => {
+          const data = res[0];
+          setCategory(data.category);
+          // console.log(data);
+        })
+      : null;
+  }, []);
 
   return (
     <div css={isMain ? categoryWrapper : noBorder}>

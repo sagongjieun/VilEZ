@@ -3,10 +3,13 @@ import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import { HiChevronDown, HiChevronUp } from "react-icons/hi2";
 import DivideLine from "./../common/DivideLine";
+import { useLocation } from "react-router-dom";
 
 const ProductRegistType = ({ sendRegistType }) => {
+  const pathname = useLocation().pathname;
+  const type = pathname.includes("share") ? "물품 공유 등록" : "물품 요청 등록";
   const [openRegistType, setOpenRegistType] = useState(false);
-  const [registType, setRegistType] = useState("선택해주세요.");
+  const [registType, setRegistType] = useState(type);
 
   function onClickOpenRegistType() {
     if (openRegistType) {
