@@ -13,8 +13,8 @@ function MainNavBar() {
   const [loginUser, setLoginUser] = useRecoilState(loginUserState);
 
   const menus = [
-    { name: "물품 공유 목록", path: "/product" }, // 임시 path
-    { name: "물품 요청 목록", path: "/product" }, // 임시 path
+    { name: "물품 공유 목록", path: "/product/list/share" }, // 임시 path
+    { name: "물품 요청 목록", path: "/product/list/ask" }, // 임시 path
     { name: "글 등록하기", path: "/product/regist" },
   ];
 
@@ -38,7 +38,7 @@ function MainNavBar() {
   }
 
   function onClickMoveSearchPage() {
-    navigate("/product/list");
+    navigate("/product/list/share");
   }
 
   function onClickLogout() {
