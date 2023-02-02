@@ -11,21 +11,33 @@ import { getShareArticleList } from "../../api/share";
 import { HiLocationMarker } from "react-icons/hi";
 import { HiCalendar } from "react-icons/hi";
 import { HiHeart } from "react-icons/hi";
+import { useLocation } from "react-router-dom";
+import { getAskArticleList } from "../../api/ask";
 
 const ProductList = () => {
   const [category, setCategory] = useState("");
   const [isClick, setIsClick] = useState(false);
   const [search, setSearch] = useState("");
   const [getArticle, setArticles] = useState([]);
+  const pathname = useLocation().pathname;
   useEffect(() => {
-    getShareArticleList("디지털/가전", 0, 100, 0, "").then((res) => {
-      const data = res;
-      console.log(data);
-      setArticles(data);
-    });
-  }, []);
-  function receiveCategory() {
-    setCategory(category);
+    const type = pathname.includes("share") ? 2 : 1;
+
+    type === 1
+      ? getAskArticleList(category, 0, 200, 0, "").then((res) => {
+          const data = res;
+          setArticles(data);
+        })
+      : getShareArticleList(category, 0, 200, 0, "").then((res) => {
+          const data = res;
+          // console.log(data);
+          setArticles(data);
+        });
+  }, [category]);
+  // props에서 받아온 값이 newCategory에 들어감
+  // setCategory에 넘어온 값을 입력
+  function receiveCategory(newCategory) {
+    setCategory(newCategory);
   }
   function onClickSeePossible() {
     setIsClick(!isClick);
@@ -94,7 +106,7 @@ const ProductList = () => {
                   </small>
                   <small>
                     <HiHeart />
-                    25
+                    {article.listCnt}
                   </small>
                 </div>
               </div>
@@ -102,8 +114,9 @@ const ProductList = () => {
           ))}
         </div>
       </div>
-
-      <NoProductList />
+      <div css={NoProductWrap}>
+        <NoProductList />
+      </div>
     </div>
   );
 };
@@ -168,24 +181,7 @@ const unPossibleWrap = css`
   font-weight: bold;
   box-sizing: border-box;
   background-color: white;
-  /* border: 1px solid gray;
-  border-radius: 10px; */
 `;
-
-// const arrayWrap = css`
-//   box-sizing: border-box;
-//   display: block;
-//   width: 200px;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   height: 55px;
-
-//   border-radius: 5px;
-//   font-size: 15px;
-//   background-color: #ffffff;
-//   outline: none;
-// `;
 
 const buttonDiv = css`
   width: 100%;
@@ -272,6 +268,10 @@ const infoWrapper = css`
       }
     }
   }
+`;
+
+const NoProductWrap = css`
+  height: 250px;
 `;
 
 export default ProductList;
