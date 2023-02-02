@@ -1,71 +1,30 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import luffy from "../../assets/images/luffy.png";
-import onpiecethumb from "../../assets/images/onpiecethumb.jfif";
-import jjangu from "../../assets/images/jjangu.png";
-import sinhyeongman from "../../assets/images/sinhyeongman.jfif";
 import ChattingModalItem from "./ChattingModalItem";
-import { getMyAppointmentList } from "../../api/chat";
+import { getLatestChattingListByUserId } from "../../api/chat";
 
 function ChattingModal() {
   const loginUserId = localStorage.getItem("id");
 
-  useEffect(() => {
-    getMyAppointmentList(loginUserId).then((res) => {
-      console.log(res);
-    });
-  }, []);
+  const [chatList, setChatList] = useState([]);
 
-  const dummy = [
-    {
-      profile: luffy,
-      nickname: "해적왕",
-      location: "신세계",
-      time: "1시간 전",
-      lastChat: "해적왕은 나야",
-      thumbnail: onpiecethumb,
-    },
-    {
-      profile: luffy,
-      nickname: "해적왕",
-      location: "신세계",
-      time: "1시간 전",
-      lastChat: "해적왕은 나야",
-      thumbnail: onpiecethumb,
-    },
-    {
-      profile: luffy,
-      nickname: "해적왕",
-      location: "신세계",
-      time: "1시간 전",
-      lastChat: "해적왕은 나야",
-      thumbnail: onpiecethumb,
-    },
-    {
-      profile: jjangu,
-      nickname: "액션가면내놔",
-      location: "테이블 속",
-      time: "1시간 전",
-      lastChat: "울랄라울랄라",
-      thumbnail: sinhyeongman,
-    },
-    {
-      profile: jjangu,
-      nickname: "액션가면내놔",
-      location: "테이블 속",
-      time: "1시간 전",
-      lastChat: "울랄라울랄라",
-      thumbnail: sinhyeongman,
-    },
-  ];
+  useEffect(() => {
+    if (loginUserId) {
+      getLatestChattingListByUserId(loginUserId).then((res) => {
+        setChatList(res);
+      });
+    }
+  }, []);
 
   return (
     <div css={chatWrap}>
       <span>채팅 목록</span>
       <div css={chatContentWrap}>
-        {dummy.length ? (
-          dummy.map((chat, idx) => <ChattingModalItem chat={chat} key={idx} />)
+        {chatList.length ? (
+          chatList.map((chat) => {
+            return <ChattingModalItem chat={chat} key={chat.chatData.roomId} />;
+          })
         ) : (
           <div css={NochatWrap}>
             <span>채팅목록이 없어요 😥</span>

@@ -2,7 +2,7 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { HiLocationMarker, HiCalendar, HiHeart } from "react-icons/hi";
-import image from "../../assets/images/mainBackgroundImage.png";
+import image from "../../assets/images/product_thumbnail.png";
 
 const ProductCardView = () => {
   return (
@@ -35,12 +35,15 @@ const ProductCardView = () => {
 };
 
 const relatedProductWrapper = css`
-  width: 312px;
+  width: 100%;
   height: 250px;
-  margin-right: 50px;
   border-radius: 10px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  background-color: aqua;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `;
 
 const thumbnailWrapper = css`
@@ -51,19 +54,20 @@ const thumbnailWrapper = css`
   & > img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     border-radius: 10px 10px 0 0;
   }
 `;
 
 const infoWrapper = css`
-  max-height: 80px;
+  height: 80px;
   padding: 10px;
   background: #ffffff;
   border-radius: 0 0 10px 10px;
 
   & small {
     color: #8a8a8a;
+    font-size: 12px;
   }
 
   & > div:nth-of-type(1) {

@@ -239,11 +239,10 @@ const ProductDetail = () => {
 
       <div css={relatedProductWrapper}>
         <div>
-          <h3>관련 게시글</h3>
-          <a>더 보기</a>
+          <h3>관련 인기 게시글</h3>
         </div>
         <div>
-          {/* 임시 데이터 */}
+          {/* 카테고리별 북마크 많은 거 3개 */}
           <ProductCardView />
           <ProductCardView />
           <ProductCardView />
@@ -392,7 +391,7 @@ const hopeAreaWrapper = css`
 `;
 
 const relatedProductWrapper = css`
-  margin: 60px 0;
+  margin: 50px 0;
   display: flex;
   flex-direction: column;
 
