@@ -9,24 +9,24 @@ import kr.co.vilez.R
 
 object BindingAdapter {
     @JvmStatic
-    @BindingAdapter("imageFromUrl")
+    @BindingAdapter("boardImageFromUrl")
     fun bindImageFromUrl(view: ImageView, imageUrl: String?) {
         if (!imageUrl.isNullOrEmpty()) {
             Glide.with(view.context)
                 .load(imageUrl).apply(RequestOptions().placeholder(R.drawable.loading_animation))
                 .transition(DrawableTransitionOptions.withCrossFade())
-                .circleCrop()
                 .into(view)
         }
     }
 
     @JvmStatic
     @BindingAdapter("circleImageFromUrl")
-    fun bindImageFromUrl(view: de.hdodenhof.circleimageview.CircleImageView, imageUrl: String?) {
+    fun bindCircleImageFromUrl(view: ImageView, imageUrl: String?) {
         if (!imageUrl.isNullOrEmpty()) {
             Glide.with(view.context)
                 .load(imageUrl)
                 .transition(DrawableTransitionOptions.withCrossFade())
+                .circleCrop()
                 .into(view)
         }
     }

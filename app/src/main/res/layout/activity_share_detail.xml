@@ -105,7 +105,7 @@
                     <ImageView
                         android:layout_width="60dp"
                         android:layout_height="60dp"
-                        app:imageFromUrl="@{writer.profile_img}" />
+                        app:circleImageFromUrl="@{writer.profile_img}" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
