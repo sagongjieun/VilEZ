@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class SignImg {
     int boardId;
     int shareUserId;
-    int notUserId;
+    int notShareUserId;
     String shareSign;
     String notShareSign;
 }
