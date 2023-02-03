@@ -42,10 +42,10 @@ async function checkNickName(nickName) {
     console.log(nickName);
     const { data } = await jsonAxios.get(`/users/check?nickname=${nickName}`);
     if (data.flag === "success") {
-      return { text: `${nickName}은(는) 사용 가능한 닉네임입니다.`, isNickNameAvailable: true };
+      return { text: `"${nickName}"은(는) 사용 가능한 닉네임입니다.`, isNickNameAvailable: true };
     } else if (data.flag === "fail") {
       return {
-        text: `${nickName}은(는) 사용중인 닉네임입니다. 다른 닉네임을 입력해 주세요.`,
+        text: `"${nickName}"은(는) 사용중인 닉네임입니다. 다른 닉네임을 입력해 주세요.`,
         isNickNameAvailable: false,
       };
     }
