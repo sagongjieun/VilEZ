@@ -8,7 +8,7 @@ import ProfilePoint from "./ProfilePoint";
 import { getUserDetail } from "../../api/profile";
 // import { set } from "date-fns";
 
-const ProfileInformation = ({ setIsQrCodeOpen }) => {
+const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen }) => {
   const id = localStorage.getItem("id");
   // const id = 28;
   const [area, setArea] = useState("동네를 설정해주세요.");
@@ -16,6 +16,10 @@ const ProfileInformation = ({ setIsQrCodeOpen }) => {
   const [nickName, setNickName] = useState("");
   const [manner, setManner] = useState(0);
   const [point, setPoint] = useState(0);
+  function onClickEditProfileOpen() {
+    setIsEditProfileOpen(true);
+    console.log("true true");
+  }
   useEffect(() => {
     getUserDetail(id).then((response) => {
       setArea(response.area);
@@ -32,7 +36,7 @@ const ProfileInformation = ({ setIsQrCodeOpen }) => {
   }, [area]);
   return (
     <div css={profileWrapper}>
-      <ProfileEditButton text="프로필 수정하기" />
+      <ProfileEditButton text="프로필 수정하기" onClick={onClickEditProfileOpen} />
       <ProfileSummary profileImage={profileImage} manner={manner} nickName={nickName} />
       <ProfileLocation area={area} setIsQrCodeOpen={setIsQrCodeOpen} />
       <div
