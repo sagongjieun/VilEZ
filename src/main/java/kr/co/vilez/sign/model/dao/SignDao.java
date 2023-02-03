@@ -20,8 +20,8 @@ public class SignDao {
         mongoTemplate.remove(Query.query(Criteria.where("boardId").is(signImg.getBoardId())
                 .and("shareUserId")
                 .is(signImg.getShareUserId())
-                .and("notUserId")
-                .is(signImg.getNotUserId())
+                .and("notShareUserId")
+                .is(signImg.getNotShareUserId())
         ), SignImg.class);
     }
     public SignImg loadContract(SignImg signImg) {
@@ -29,7 +29,7 @@ public class SignDao {
                 .and("shareUserId")
                 .is(signImg.getShareUserId())
                 .and("notUserId")
-                .is(signImg.getNotUserId())
+                .is(signImg.getNotShareUserId())
         ), SignImg.class);
         return msgs;
     }
