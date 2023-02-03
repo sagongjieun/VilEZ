@@ -11,14 +11,6 @@ const loginUserState = atom({
   },
 });
 
-const shareDateState = atom({
-  key: "shareDateState",
-  default: {
-    startDate: null,
-    endDate: null,
-  },
-});
-
 const shareDataState = atom({
   key: "shareDataState",
   default: {
@@ -41,4 +33,4 @@ const enterChatRoomState = atom({
   default: null,
 });
 
-export { loginUserState, shareDateState, shareDataState, modalOpenState, enterChatRoomState };
+export { loginUserState, shareDataState, modalOpenState, enterChatRoomState };

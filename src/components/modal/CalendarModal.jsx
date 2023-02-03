@@ -7,13 +7,13 @@ import MiddleWideButton from "../button/MiddleWideButton";
 import { GrClose } from "react-icons/gr";
 import { ko } from "date-fns/locale";
 import { getAppointmentsByBoardId } from "../../api/chat";
-import { useSetRecoilState } from "recoil";
-import { shareDateState } from "../../recoil/atom";
+import { useRecoilValue } from "recoil";
+import { shareDataState } from "../../recoil/atom";
 import DateFormat from "../common/DateFormat";
-// import { postShareDate } from "../../api/appointment";
+import { postShareDate, deleteShareDate } from "../../api/appointment";
 
 const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
-  const setShareDate = useSetRecoilState(shareDateState);
+  const shareData = useRecoilValue(shareDataState);
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -33,21 +33,44 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
     setCalendarModalOpen(false);
   }
 
-  function onClickResetMeetDate() {}
-
   function onClickMakeMeetDate() {
     if (startDate && endDate) {
-      // recoil에 공유확정날짜 저장 -> MeetConfirmModal.jsx 에서 사용
-      setShareDate({
-        startDate: selectedStartDay,
-        endDate: selectedEndDay,
-      });
+      const body = {
+        boardId: boardId,
+        startDay: startDate,
+        endDay: endDate,
+        notShareUserId: shareData.notShareUserId,
+        shareUserId: shareData.shareUserId,
+        type: shareData.boardType,
+      };
 
-      // postShareDate()
+      postShareDate(body).then((res) => {
+        if (res) {
+          alert("공유 기간을 설정하였습니다. 😀");
+        }
+      });
       setCalendarModalOpen(false);
     } else {
-      alert("기간을 설정해주세요 😀");
+      alert("기간을 설정해주세요. 😀");
     }
+  }
+
+  function onClickResetMeetDate() {
+    /** reset할 때는 startDay, endDay를 줄 필요가 없지 않은지 */
+    const body = {
+      boardId: boardId,
+      startDay: startDate,
+      endDay: endDate,
+      notShareUserId: shareData.notShareUserId,
+      shareUserId: shareData.shareUserId,
+      type: shareData.boardType,
+    };
+
+    deleteShareDate(body).then((res) => {
+      if (res) {
+        alert("공유 기간을 초기화하였습니다. 😀");
+      }
+    });
   }
 
   useEffect(() => {

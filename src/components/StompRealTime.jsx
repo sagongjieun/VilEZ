@@ -86,8 +86,9 @@ const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickn
 
   function onClickOpenCalendarModal() {
     // 공유자만 클릭 가능
+    /** 임시 alert, 피공유자에게는 disable된 달력 띄우기 */
     if (myUserId == shareUserId) setCalendarModalOpen(true);
-    else alert("공유자만이 공유 기간 확정을 할 수 있어요 😀");
+    else alert("공유자만 공유 기간 확정을 할 수 있어요 😀");
   }
 
   function onClickOpenRTC() {
