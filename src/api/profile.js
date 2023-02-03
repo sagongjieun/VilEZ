@@ -3,6 +3,8 @@ import { jsonInstance, formdataInstance } from "./instance";
 const jsonAxios = jsonInstance();
 const formDataAxios = formdataInstance();
 
+// GET
+
 async function getUserDetail(id) {
   try {
     const { data } = await jsonAxios.get(`/users/detail/${id}`);
@@ -33,9 +35,11 @@ async function getUserShare(id) {
   }
 }
 
-async function putUserPasswordNickname(userId, nickName, password) {
+// PUT
+
+async function putUserPasswordNickName(id, nickName, password) {
   try {
-    const { data } = await jsonAxios.put("/users/modify", { id: userId, nickName, password });
+    const { data } = await jsonAxios.put("/users/modify", { id, nickName, password });
     if (data.flag === "success") {
       alert("프로필 정보가 변경되었습니다.");
     } else alert("프로필 변경에 실패했습니다. 다시 시도해주세요.");
@@ -46,11 +50,11 @@ async function putUserPasswordNickname(userId, nickName, password) {
 
 async function putUserProfileImage(formData) {
   try {
-    const { data } = await formDataAxios.put("/users/modify", formData);
+    const { data } = await formDataAxios.put("/users/profile", formData);
     console.log(data);
   } catch (error) {
     console.log(error);
   }
 }
 
-export { getUserDetail, getUserAsk, getUserShare, putUserPasswordNickname, putUserProfileImage };
+export { getUserDetail, getUserAsk, getUserShare, putUserPasswordNickName, putUserProfileImage };

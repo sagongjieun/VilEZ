@@ -39,12 +39,7 @@ const Profile = () => {
         </div>
       ) : null}
       {isQrCodeOpen ? (
-        <div
-          css={modalWrapper}
-          onClick={() => {
-            setIsQrCodeOpen(false);
-          }}
-        >
+        <div css={modalWrapper}>
           <Qrcode setIsQrCodeOpen={setIsQrCodeOpen} />
         </div>
       ) : null}

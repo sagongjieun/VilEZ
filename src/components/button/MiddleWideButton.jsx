@@ -3,9 +3,16 @@ import React from "react";
 import { css } from "@emotion/react";
 
 // props로 outline(boolean) 전달해주면 true일 때 outline 있는 버튼으로 스타일 변경
-const MiddleWideButton = ({ text, outline, onclick, cancel }) => {
+const MiddleWideButton = ({ text, outline, onclick, cancel, isActive }) => {
   return (
-    <button css={([outline ? outlinedButton : basicButton], [cancel ? cancelButton : basicButton])} onClick={onclick}>
+    <button
+      css={
+        ([outline ? outlinedButton : basicButton],
+        [cancel ? cancelButton : basicButton],
+        [isActive ? nonActiveButton : basicButton])
+      }
+      onClick={onclick}
+    >
       {text}
     </button>
   );
@@ -48,6 +55,20 @@ const cancelButton = css`
   border: none;
   border-radius: 5px;
   font-size: 18px;
+  margin-top: 14px;
+  padding: 0 20px;
+  color: #fff;
+`;
+
+const nonActiveButton = css`
+  cursor: not-allowed;
+  display: block;
+  height: 45px;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  background-color: #c4c4c4;
   margin-top: 14px;
   padding: 0 20px;
   color: #fff;
