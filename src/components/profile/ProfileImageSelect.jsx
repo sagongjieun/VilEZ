@@ -1,90 +1,116 @@
 import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { AiOutlineClose } from "react-icons/ai";
-import MiddleWideButton from "../button/MiddleWideButton";
+// import { AiOutlineClose } from "react-icons/ai";
+import SmallWideButton from "../button/SmallWideButton";
+import DefaultProfile from "../../assets/images/default_profile.png";
+import editIcon from "../../assets/images/edit_icon.png";
 
-const ProfileImageSelect = ({ sendImageList }) => {
+const ProductImageSelect = ({ sendImageList, userProfileImage }) => {
   const [imageList, setImageList] = useState([]);
+  const [imageUrl, setImageUrl] = useState("");
 
   function onClickFileUpload() {
     const fileInput = document.getElementById("file-input");
     fileInput.click();
   }
-
   function onChangeImage(e) {
     if (!e.target.files) {
       e.preventDefault();
       return;
     }
-
-    if (imageList.length + e.target.files.length > 4) {
-      alert("사진은 최대 4개 등록 가능합니다.");
-      return;
+    setImageList([e.target.files]);
+  }
+  function onClickDeleteImage() {
+    setImageList(DefaultProfile);
+    // setImageUrl(DefaultProfile);
+  }
+  function readImage(event) {
+    // 인풋 태그에 파일이 있는 경우
+    if (event.target.files && event.target.files[0]) {
+      // FileReader 인스턴스 생성
+      const reader = new FileReader();
+      // 이미지가 로드가 된 경우
+      reader.onload = (event) => {
+        setImageUrl(event.target.result);
+      };
+      // reader가 이미지 읽도록 하기
+      reader.readAsDataURL(event.target.files[0]);
     }
-
-    setImageList([...imageList, ...e.target.files]);
   }
-
-  function onClickDeleteImage(deletedImage) {
-    setImageList(imageList.filter((image) => image !== deletedImage));
-  }
-
   useEffect(() => {
-    sendImageList(imageList);
+    sendImageList(imageList[0]);
   }, [imageList]);
-
+  useEffect(() => {
+    setImageUrl(userProfileImage);
+  }, [userProfileImage]);
   return (
     <div css={imageWrapper}>
-      <input type="file" id="file-input" accept=".jpg,.jpeg,.png" onChange={onChangeImage} />
-      <div>
-        <MiddleWideButton text="사진 찾기" onclick={onClickFileUpload} />
+      <input
+        type="file"
+        id="file-input"
+        accept=".jpg,.jpeg,.png"
+        onChange={(event) => {
+          onChangeImage(event), readImage(event);
+        }}
+      />
+      <div onClick={onClickFileUpload}>
+        <img src={imageUrl} alt="프로필 사진" />
+        <div>
+          <img src={editIcon} alt="프로필 수정" />
+        </div>
       </div>
       <div>
-        {imageList.map((image, index) => (
-          <small key={index}>
-            {image.name}
-            <AiOutlineClose onClick={() => onClickDeleteImage(image)} />
-          </small>
-        ))}
+        <SmallWideButton text="사진 초기화" onclick={onClickDeleteImage} type={"button"} />
       </div>
     </div>
   );
 };
 
 const imageWrapper = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 250px;
   & > input {
     display: none;
   }
 
   & > div:nth-of-type(1) {
-    width: 165px;
-  }
-
-  & > div:nth-of-type(2) {
-    max-width: 100%;
-    height: 55px;
-    background: #ffffff;
-    border: 1px solid #e1e2e3;
-    border-radius: 5px;
-    margin-top: 10px;
+    position: relative;
+    cursor: pointer;
+    width: 100px;
+    height: 100px;
     display: flex;
-    flex-direction: row;
+    justify-content: center;
     align-items: center;
-    padding: 0 25px;
-
-    & small {
-      color: #8a8a8a;
-      margin-right: 20px;
+    & > img:nth-of-type(1) {
+      width: 100%;
+      object-fit: cover;
+    }
+    & > div {
+      position: absolute;
       display: flex;
+      justify-content: center;
       align-items: center;
-
-      & svg {
-        margin-left: 5px;
-        cursor: pointer;
+      height: 24px;
+      width: 24px;
+      bottom: 4px;
+      right: 0px;
+      border-radius: 100%;
+      background-color: #fff;
+      & > img {
+        width: 110%;
+        height: 110%;
+        filter: invert(60%);
       }
     }
   }
+
+  & > div:nth-of-type(2) > button {
+    width: 130px;
+    background: #fc0101;
+  }
 `;
 
-export default ProfileImageSelect;
+export default ProductImageSelect;
