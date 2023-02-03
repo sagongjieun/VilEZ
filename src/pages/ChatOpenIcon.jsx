@@ -44,15 +44,20 @@ function ChatOpenIcon() {
         });
       });
     }
-  });
+  }, []);
 
   useEffect(() => {
-    if (enterChatRoom) {
-      // 해당 방으로 들어갔다는 의미이므로 소켓 send
-      client.send("/room_enter", {}, JSON.stringify({ roomId: enterChatRoom, userId: loginUserId }));
+    if (enterChatRoom && loginUserId) {
+      // 해당 방으로 들어갔다는 소켓 send
+      const data = {
+        roomId: enterChatRoom,
+        userId: loginUserId,
+      };
+
+      client.send("/room_enter", {}, JSON.stringify(data));
       setEnterChatRoom(null);
     }
-  }, [enterChatRoom]);
+  }, [enterChatRoom, loginUserId]);
 
   return (
     <>

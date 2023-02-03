@@ -42,6 +42,8 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
         startDate: selectedStartDay,
         endDate: selectedEndDay,
       });
+
+      // postShareDate()
       setCalendarModalOpen(false);
     } else {
       alert("기간을 설정해주세요 😀");
