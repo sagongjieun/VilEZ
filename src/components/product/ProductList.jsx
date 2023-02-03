@@ -6,12 +6,12 @@ import InputBox from "../common/InputBox";
 import ProductCategory from "./ProductCategory";
 import { useState, useEffect } from "react";
 import NoProductList from "./NoProductList";
-import image from "../../assets/images/mainBackgroundImage.png";
+// import image from "../../assets/images/mainBackgroundImage.png";
 import { getShareArticleList } from "../../api/share";
 import { HiLocationMarker } from "react-icons/hi";
 import { HiCalendar } from "react-icons/hi";
 import { HiHeart } from "react-icons/hi";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getAskArticleList } from "../../api/ask";
 
 const ProductList = () => {
@@ -19,7 +19,10 @@ const ProductList = () => {
   const [isClick, setIsClick] = useState(false);
   const [search, setSearch] = useState("");
   const [getArticle, setArticles] = useState([]);
+
   const pathname = useLocation().pathname;
+  const navigate = useNavigate();
+  const [list, setList] = useState("");
   useEffect(() => {
     const type = pathname.includes("share") ? 2 : 1;
 
@@ -27,11 +30,15 @@ const ProductList = () => {
       ? getAskArticleList(category, 0, 200, 0, "").then((res) => {
           const data = res;
           setArticles(data);
+          console.log(data);
+          setList("물품 요청 목록");
         })
       : getShareArticleList(category, 0, 200, 0, "").then((res) => {
           const data = res;
           // console.log(data);
           setArticles(data);
+          setList("물품 공유 목록");
+          // console.log(data[0].shareListDto.list[0].path);
         });
   }, [category]);
   // props에서 받아온 값이 newCategory에 들어감
@@ -55,7 +62,7 @@ const ProductList = () => {
   return (
     <div css={topWrap}>
       <div css={contentWrap}>
-        <h2>물품 공유 목록</h2>
+        <h2>{list}</h2>
         <div css={filterWrap}>
           <div css={filterLeftWrap}>
             <ProductCategory isMain={false} sendCategory={receiveCategory} />
@@ -86,9 +93,9 @@ const ProductList = () => {
 
         <div css={relatedProductWrapper}>
           {getArticle.map((article, idx) => (
-            <div key={idx}>
+            <div key={idx} onClick={() => navigate(`/product/detail/share/${article.shareListDto.id}`)}>
               <div css={thumbnailWrapper}>
-                <img src={image} />
+                <img src={article.shareListDto?.list[0]?.path} />
               </div>
               <div css={infoWrapper}>
                 <div>
@@ -230,7 +237,7 @@ const thumbnailWrapper = css`
   & > img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     border-radius: 10px 10px 0 0;
   }
 `;

@@ -23,8 +23,9 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const boardId = parseInt(useParams().boardId);
   const pathname = useLocation().pathname;
-
+  console.log(pathname);
   const loginUserId = localStorage.getItem("id"); // 로그인유저 id
+
   const [writerId, setWriterId] = useState(""); // 공유자 id
   const [isRelated, setIsRelated] = useState(false); // 로그인유저가 현재 공유중인 공유자 or 피공유자인지 확인
 
@@ -178,7 +179,13 @@ const ProductDetail = () => {
 
   return (
     <div css={wrapper}>
-      <ProductDeatilHeader title={title} category={category} time={date} bookmarkCount={bookmarkCnt} />
+      <ProductDeatilHeader
+        title={title}
+        category={category}
+        time={date}
+        bookmarkCount={bookmarkCnt}
+        // editt={setIsEdit}
+      />
 
       <DivideLine />
 
@@ -239,11 +246,10 @@ const ProductDetail = () => {
 
       <div css={relatedProductWrapper}>
         <div>
-          <h3>관련 게시글</h3>
-          <a>더 보기</a>
+          <h3>관련 인기 게시글</h3>
         </div>
         <div>
-          {/* 임시 데이터 */}
+          {/* 카테고리별 북마크 많은 거 3개 */}
           <ProductCardView />
           <ProductCardView />
           <ProductCardView />
@@ -392,7 +398,7 @@ const hopeAreaWrapper = css`
 `;
 
 const relatedProductWrapper = css`
-  margin: 60px 0;
+  margin: 50px 0;
   display: flex;
   flex-direction: column;
 

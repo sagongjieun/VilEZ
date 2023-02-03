@@ -2,10 +2,11 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-const InputBox = ({ useMainList, placeholder, onChangeValue }) => {
+const InputBox = ({ useMainList, placeholder, onChangeValue, value }) => {
   return (
     <input
       css={useMainList ? MainInputBox : inputBox}
+      value={value}
       placeholder={placeholder}
       onChange={(e) => onChangeValue(e.target.value)}
     />
