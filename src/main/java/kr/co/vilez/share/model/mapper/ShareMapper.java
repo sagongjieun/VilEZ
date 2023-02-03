@@ -11,6 +11,7 @@ import java.util.List;
 @Mapper
 public interface ShareMapper {
 
+    List<ShareListDto> getBestList(PageNavigator pageNavigator) throws SQLException;
     List<ShareListDto> loadMyShareList(int userId) throws SQLException;
     List<ShareListDto> loadShareList(PageNavigator pageNavigator) throws SQLException;
     void delete(int boardId) throws SQLException;
