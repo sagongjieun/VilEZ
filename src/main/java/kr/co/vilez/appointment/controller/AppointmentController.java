@@ -244,8 +244,8 @@ public class AppointmentController {
             appointmentService.create(appointmentDto);
             System.out.println("create appointment success");
 
-            appointmentService.addPoint(appointmentDto);
-            System.out.println("point decrease/increase success");
+//            appointmentService.addPoint(appointmentDto);
+//            System.out.println("point decrease/increase success");
 
             http.setFlag("success");
         } catch (Exception e){
