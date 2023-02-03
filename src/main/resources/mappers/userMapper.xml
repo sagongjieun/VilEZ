@@ -17,6 +17,8 @@
         <result column="access_token" property="accessToken"/>
         <result column="refresh_token" property="refreshToken"/>
         <result column="state" property="state"/>
+        <result column="area_lng" property="areaLng"/>
+        <result column="area_lat" property="areaLat"/>
     </resultMap>
 
     <resultMap type="locationDto" id="location">
@@ -53,7 +55,7 @@
     </select>
 
     <select id="detail" parameterType="int" resultMap="user">
-        SELECT nickname,area,point,manner,profile_img from user where id = #{id}
+        SELECT nickname,area,point,manner,profile_img, area_lat, area_lng from user where id = #{id} and state >= 0
     </select>
 
     <update id="modifyUserInfo" parameterType="map">

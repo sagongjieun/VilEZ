@@ -6,6 +6,8 @@ import kr.co.vilez.share.model.dto.*;
 import kr.co.vilez.share.model.dao.ShareDao;
 import kr.co.vilez.share.model.mapper.ShareMapper;
 import kr.co.vilez.tool.OSUpload;
+import kr.co.vilez.user.model.dto.UserDto;
+import kr.co.vilez.user.model.mapper.UserMapper;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +32,8 @@ public class ShareServiceImpl implements ShareService{
 
     final ShareDao shareDao;
     final ShareMapper shareMapper;
-
     final OSUpload osUpload;
-
+    final UserMapper userMapper;
     final String bucketName = "vilez";
     @Override
     public HttpVO bookmarkList(int boardId) throws Exception {
@@ -204,6 +205,12 @@ public class ShareServiceImpl implements ShareService{
         int tmp = pageNavigator.getHigh();
         pageNavigator.setHigh(pageNavigator.getHigh() * pageNavigator.getCnt());
         pageNavigator.setLow(tmp);
+
+        UserDto userDto = userMapper.detail(pageNavigator.getUserId());
+        System.out.println("userDto = " + userDto);
+
+        pageNavigator.setAreaLat(userDto.getAreaLat());
+        pageNavigator.setAreaLng(userDto.getAreaLng());
         List<ShareListDto> list = shareMapper.loadShareList(pageNavigator);
 
         for(ShareListDto shareListDto : list){
