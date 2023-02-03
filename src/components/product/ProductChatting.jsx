@@ -13,14 +13,14 @@ import { getBoardIdByRoomId } from "../../api/chat";
 import { getAskArticleDetailByBoardId } from "../../api/ask";
 import { getShareArticleByBoardId } from "../../api/share";
 import { getUserDetail } from "../../api/profile";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { shareDateState, shareDataState } from "../../recoil/atom";
+import { useSetRecoilState } from "recoil";
+import { shareDataState } from "../../recoil/atom";
+import { getShareDate } from "../../api/appointment";
 
 const ProductChatting = () => {
   const { roomId } = useParams();
   const loginUserId = localStorage.getItem("id");
 
-  const shareDate = useRecoilValue(shareDateState);
   const setShareData = useSetRecoilState(shareDataState);
 
   const [isConfirm, setIsConfirm] = useState(false);
@@ -43,29 +43,37 @@ const ProductChatting = () => {
     endDay: "",
     bookmarkCnt: "",
   });
+  const [confirmedStartDate, setConfirmedStartDate] = useState("");
+  const [confirmedEndDate, setConfirmedEndDate] = useState("");
 
   function onClickQuit() {
     setIsQuit(true);
   }
 
   function onClickConfirm() {
-    // 유효성 검사
-    if (!shareDate.startDate || !shareDate.endDate) {
-      alert("공유 기간을 확정해주세요 ✅");
-      return;
-    }
+    getShareDate(boardId, notShareUserId, shareUserId, boardType).then((res) => {
+      res = res[0];
+      // 공유자가 기간을 확정했다면
+      if (res) {
+        /** res에서 받은 확정 시작날, 종료날을 밑의 API요청에 담고, MeetConfirmModal컴포넌트에도 쏴줘야함  */
+        setConfirmedStartDate(res.startDate); // 임시 데이터
+        setConfirmedEndDate(res.endDate); // 임시 데이터
 
-    // recoil에 현재 예약하려는 데이터 담기
-    setShareData({
-      boardId: boardId,
-      boardType: boardType,
-      appointmentStart: shareDate.startDate,
-      appointmentEnd: shareDate.endDate,
-      shareUserId: shareUserId,
-      notShareUserId: notShareUserId,
+        // recoil에 현재 예약하려는 데이터 담기
+        setShareData({
+          boardId: boardId,
+          boardType: boardType,
+          appointmentStart: confirmedStartDate,
+          appointmentEnd: confirmedEndDate,
+          shareUserId: shareUserId,
+          notShareUserId: notShareUserId,
+        });
+
+        setIsConfirm(!isConfirm);
+      } else {
+        alert("공유자가 아직 기간을 확정하지 않았습니다. 😥");
+      }
     });
-
-    setIsConfirm(!isConfirm);
   }
 
   useEffect(() => {
@@ -170,12 +178,18 @@ const ProductChatting = () => {
             boardType={boardType}
             otherUserId={otherUserId}
             otherUserNickname={boardDetail.otherUserNickname}
+            shareUserId={shareUserId}
           />
         )}
       </div>
       <div css={buttonWrapper}>
         <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
-        <MiddleWideButton text={"만남 확정하기"} onclick={onClickConfirm} />
+        {loginUserId == notShareUserId ? (
+          <MiddleWideButton text={"예약 확정"} onclick={onClickConfirm} />
+        ) : (
+          // 임시
+          <MiddleWideButton text={"공유자가 봐야할 버튼"} />
+        )}
       </div>
       <div>
         {isConfirm ? (
@@ -183,6 +197,8 @@ const ProductChatting = () => {
             close={setIsConfirm}
             openOath={setIsOath}
             otherUserNickname={boardDetail.otherUserNickname}
+            confirmedStartDate={confirmedStartDate}
+            confirmedEndDate={confirmedEndDate}
           />
         ) : null}
       </div>
