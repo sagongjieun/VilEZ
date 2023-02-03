@@ -1,17 +1,20 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useState, useEffect } from "react";
 import { AiOutlineEyeInvisible, AiOutlineEye, AiOutlineExclamationCircle } from "react-icons/ai";
 import { BsCheck2Circle } from "react-icons/bs";
 import { IoIosCloseCircle } from "react-icons/io";
-import bazzie from "../../assets/images/bazzi.jpg";
+// import bazzie from "../../assets/images/bazzi.jpg";
 import ProfileImageSelect from "../profile/ProfileImageSelect";
 import { checkNickName } from "../../api/signup";
 import { getUserDetail } from "../../api/user";
+import { putUserPasswordNickName, putUserProfileImage } from "../../api/profile";
 // import DefaultProfile from "../../assets/default_profile.png"
 
 function EditProfile() {
+  const navigate = useNavigate();
   const userId = localStorage.getItem("id");
   const [userNickName, setUserNickName] = useState("");
   const [userProfileImage, setUserProfileImage] = useState("");
@@ -27,7 +30,8 @@ function EditProfile() {
   const [isDeleted, setIsDeleted] = useState(true);
   const [isPasswordConfirmed, setIsPasswordConfirmed] = useState("");
   const [imageList, setImageList] = useState([]);
-  const image = bazzie;
+  const [isNickNameOpen, setIsNickNameOpen] = useState(false);
+  const [isPasswordOpen, setIsPasswordOpen] = useState(false);
   function onKeyDown(event) {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -35,12 +39,22 @@ function EditProfile() {
   }
   function onChangeNickName(event) {
     setNickName(event.target.value);
+    setIsNickNameAvailable(false);
+    setIsNickNameAvailable(false);
   }
   function onChangePassword(event) {
     setPassword(event.target.value);
   }
   function onChangePassword2(event) {
     setPassword2(event.target.value);
+  }
+  function onClickNickName() {
+    setIsNickNameOpen(true);
+    console.log("클릭은 되나");
+  }
+  function onClickPassword() {
+    setIsPasswordOpen(true);
+    console.log("클릭은 되나");
   }
   function onClickNickNameCheck() {
     checkNickName(nickName).then((response) => {
@@ -51,27 +65,44 @@ function EditProfile() {
   function onClickVisible() {
     setIsVisible((prev) => !prev);
   }
-  function onClickDelete() {
+  function onClickDeleteNickName() {
+    setNickName("");
+    setIsNickNameOpen(false);
+    console.log("here");
+  }
+  function onClickDeletePassword() {
     setIsDeleted(true);
     setPassword("");
     setPassword2("");
+    setIsPasswordOpen(false);
     console.log("here");
   }
   function receiveImageList(imageList) {
     setImageList(imageList);
   }
   function onSubmit() {
-    const formData = new FormData();
-    formData.append("image", image);
+    if ((isNickNameAvailable || !isNickNameOpen) && !passwordError && !password2Error) {
+      const formData = new FormData();
+      console.log("서브밋");
+      formData.append("image", imageList[0]);
+      formData.append("userId", userId);
+      putUserProfileImage(formData);
+      console.log(userId, nickName, password);
+      putUserPasswordNickName(userId, nickName, password).then((response) => {
+        console.log(response);
+        navigate("/profile/product");
+      });
+    }
   }
   useEffect(() => {
     getUserDetail(userId).then((response) => {
       setUserNickName(response[0].nickName);
       setUserProfileImage(response[0].profile_img);
+      setImageList([response[0].profile_img]);
     });
   }, []);
   useEffect(() => {
-    if (nickName === userNickName) {
+    if (nickName === userNickName && nickName) {
       setNickNameError(`${nickName}"은(는) 현재 닉네임과 동일합니다.`);
     } else if (nickName && nickName.length > 6) {
       setNickNameError("닉네임은 최대 6자까지 설정할 수 있어요.");
@@ -122,10 +153,13 @@ function EditProfile() {
           <input
             name="nickName"
             type="text"
-            placeholder="닉네임을 입력해주세요."
-            css={inputBox}
+            placeholder={isNickNameOpen ? "닉네임을 입력해주세요." : "수정을 원하면 클릭해주세요."}
+            css={isNickNameOpen ? inputBox : [inputBox, disabled]}
+            onClick={onClickNickName}
             onChange={onChangeNickName}
             onKeyDown={onKeyDown}
+            value={nickName}
+            // disabled={!isNickNameOpen}
           />
           <button
             css={duplicateCheck}
@@ -136,6 +170,13 @@ function EditProfile() {
           >
             중복확인
           </button>
+          <div
+            onClick={() => {
+              onClickDeleteNickName();
+            }}
+          >
+            {!isNickNameOpen ? null : <IoIosCloseCircle />}
+          </div>
         </div>
         {nickNameError ? (
           <small css={errorWrapper({ color: "#fc0101" })}>
@@ -158,10 +199,14 @@ function EditProfile() {
           <input
             name="password"
             type={isVisible ? "text" : "password"}
-            placeholder="비밀번호를 입력해주세요"
-            css={inputBox}
+            placeholder={isPasswordOpen ? "비밀번호를 입력해주세요." : "수정을 원하면 클릭해주세요."}
+            css={isPasswordOpen ? inputBox : [inputBox, disabled]}
             onChange={onChangePassword}
+            onClick={() => {
+              onClickPassword();
+            }}
             value={password}
+            // disabled={!isPasswordOpen}
           />
           {passwordError ? (
             <small css={errorWrapper({ color: "#fc0101" })}>
@@ -185,10 +230,11 @@ function EditProfile() {
           <input
             name="password2"
             type={isVisible ? "text" : "password"}
-            placeholder="비밀번호를 재입력해주세요"
-            css={inputBox}
+            placeholder={isPasswordOpen ? "비밀번호를 재입력해주세요." : null}
+            css={isPasswordOpen ? inputBox : [inputBox, disabled]}
             onChange={onChangePassword2}
             value={password2}
+            // disabled={!isPasswordOpen}
           />
           {password2Error ? (
             <small css={errorWrapper({ color: "#fc0101" })}>
@@ -204,7 +250,7 @@ function EditProfile() {
           ) : null}
           <div
             onClick={() => {
-              onClickDelete();
+              onClickDeletePassword();
             }}
           >
             {isDeleted ? null : <IoIosCloseCircle />}
@@ -232,7 +278,7 @@ function EditProfile() {
 }
 
 const EditProfileBox = css`
-  padding: 30px 40px;
+  padding: 50px 40px 30px;
   width: 440px;
   border: 1px solid #d8d8d8;
   border-radius: 10px;
@@ -260,9 +306,16 @@ const condition = css`
 `;
 const doubleCheckBox = css`
   /* width: 100%; */
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  & > div {
+    position: absolute;
+    right: 145px;
+    top: 19px;
+    cursor: pointer;
+  }
 `;
 
 const inputBox = css`
@@ -277,10 +330,16 @@ const inputBox = css`
   outline: none;
   padding: 0 10px;
   margin: 6px 0 0;
-  & ::placeholder {
+  ::placeholder {
     color: #c4c4c4;
   }
 `;
+
+const disabled = css`
+  background-color: #e7e7e7;
+  cursor: pointer;
+`;
+
 const duplicateCheck = css`
   position: relative;
   cursor: pointer;
@@ -329,16 +388,19 @@ const passwordWrapper = css`
 
 const commitButtonWrapper = css`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   padding-top: 20px;
+  margin-top: 10px;
   & > button {
+    cursor: pointer;
     font-size: 14px;
-    width: 127px;
     height: 45px;
     color: white;
     border: none;
     border-radius: 5px;
     margin: 0 10px;
+    font-size: 14px;
+    width: 48%;
   }
   & > button:nth-of-type(1) {
     background-color: #d7d9dc;

@@ -2,26 +2,23 @@ import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import receiptSide from "../../assets/images/receipt_side.png";
+import { getPointListByUserId } from "../../api/appointment";
+import ProfilePointCategory from "./ProfilePointCategory";
 
 const ProfilePointDetails = () => {
+  // const userId = localStorage.getItem("id");
+  const userId = 42;
   const [pointList, setPointList] = useState([]);
+  const [filteredPointList, setFilteredPointList] = useState([]);
+  const [category, setCategory] = useState("전체");
+  console.log(pointList, category);
   useEffect(() => {
-    setPointList([
-      { date: "2023.01.25", type: "적립", title: "충전기 빌려주세요", pointNum: "50" },
-      { date: "2023.01.25", type: "적립", title: "충전기 빌려주세d요", pointNum: "50" },
-      { date: "2023.01.25", type: "적립", title: "충전기 빌려주세d요", pointNum: "50" },
-      { date: "2023.01.25", type: "적립", title: "충전기 빌려주세d요", pointNum: "50" },
-      { date: "2023.01.25", type: "적립", title: "충전기 빌려주세d요", pointNum: "50" },
-      { date: "2023.01.25", type: "적립", title: "충전기 빌려주세d요", pointNum: "50" },
-      { date: "2023.01.25", type: "적립", title: "충전기 빌려주세d요", pointNum: "50" },
-      { date: "2023.01.25", type: "적립", title: "충전기 빌려주세d요", pointNum: "50" },
-      { date: "2023.01.25", type: "적립", title: "충전기 빌려주세d요", pointNum: "50" },
-      { date: "2023.01.25", type: "적립", title: "충전기 빌려주세d요", pointNum: "50" },
-    ]);
+    getPointListByUserId(userId).then((response) => {
+      setPointList(response[0]);
+      setFilteredPointList(response[0]);
+    });
   }, []);
-  // const pointListTag = pointList.map((data, index) => {
-  //   <div key={index}>{data.title}</div>;
-  // });
+
   return (
     <div css={pointDetailsWrapper}>
       <div css={receiptBox}>
@@ -29,33 +26,34 @@ const ProfilePointDetails = () => {
         <h3>
           <div>VilEZ</div>공유 영수증
         </h3>
+        <div css={dropDownWrapper}>
+          <ProfilePointCategory sendCategory={setCategory} />
+        </div>
         <div css={pointListWrapper}>
-          {pointList.map(function (data, index) {
-            return (
-              <div key={index} css={pointItem}>
+          {filteredPointList.map((data, index) => (
+            <div key={index} css={pointItem}>
+              <div>
                 <div>
-                  <div>{data.date}</div>
-                  <div>{data.type}</div>
+                  {data.date.slice(0, 4)}.{data.date.slice(5, 7)}.{data.date.slice(8, 10)}
                 </div>
-                <div>
-                  <div>{data.title}</div>
-                  <div
-                    css={css`
-                      font-size: 40px;
-                      font-weight: 200;
-                    `}
-                  >
-                    {data.pointNum}p
-                  </div>
+                <div css={data.type === 2 ? redText : data.increase === true ? greenText : grayText}>
+                  {data.type === 2 ? "미반납 페널티" : data.increase === true ? "공유" : "반납"}
                 </div>
               </div>
-            );
-          })}
+              <div>
+                <div>{data.title}</div>
+                <div css={[pointWrapper, data.type === 2 ? redText : data.increase === true ? greenText : grayText]}>
+                  {data.increase === true ? "+10" : "-10"}p
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
   );
 };
+const dropDownWrapper = css``;
 const pointDetailsWrapper = css`
   width: 100%;
   margin-top: 50px;
@@ -109,5 +107,18 @@ const pointItem = css`
     align-items: end;
     padding: 0 20px;
   }
+`;
+const redText = css`
+  color: #fc0101;
+`;
+const greenText = css`
+  color: #66dd9c;
+`;
+const grayText = css`
+  color: #8a8a8a;
+`;
+const pointWrapper = css`
+  font-size: 40px;
+  font-weight: 200;
 `;
 export default ProfilePointDetails;
