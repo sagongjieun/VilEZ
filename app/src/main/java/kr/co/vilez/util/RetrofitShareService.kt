@@ -16,7 +16,7 @@ interface RetrofitShareService {
 
     // 모든 공유 게시글을 가져온다. 특정 동네에 대한것을 가져오는 기능은 현재 없다.
     @GET("/vilez/shareboard")
-    fun boardList(@Query(value = "cnt") cnt:Int, @Query(value = "high") high:Int): Call<RestShare>
+    fun boardList(@Query(value = "cnt") cnt:Int, @Query(value = "low") low:Int,@Query(value = "high") high:Int, @Query(value =  "userId") id:Int): Call<RestShare>
 
     // 해당 게시글의 상세 정보를 가져온다.
     @GET("/vilez/shareboard/detail/{boardId}")

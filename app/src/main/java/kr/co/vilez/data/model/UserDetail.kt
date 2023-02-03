@@ -6,4 +6,6 @@ data class UserDetail(
     val nickName: String,
     val point: Int,
     val profile_img: String,
+    val areaLat: String,
+    val areaLng: String
 )

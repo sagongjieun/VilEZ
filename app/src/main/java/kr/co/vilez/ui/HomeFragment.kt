@@ -108,10 +108,13 @@ class HomeFragment : Fragment() {
 
         var num = 0;
         var max = 10;
+        val lat = ApplicationClass.prefs.getLat();
+        val lng = ApplicationClass.prefs.getLng();
+        Log.d(TAG,"$lat $lng")
         CoroutineScope(Dispatchers.Main).launch {
             val result =
-                ApplicationClass.retrofitShareService.boardList(num++, max).awaitResponse().body();
-
+                ApplicationClass.retrofitShareService.boardList(num++, 0,max, ApplicationClass.prefs.getId()).awaitResponse().body();
+            Log.d(TAG, "onViewCreated: 데이터 불러오는중 result : $result")
             if(result?.flag == "success") {
                 Log.d(TAG, "initList: result: $result")
                 if(result.data.isEmpty()) {
@@ -132,6 +135,7 @@ class HomeFragment : Fragment() {
                                     +data.shareListDto.endDay,
                             Integer.toString(data.listCnt),
                             data.shareListDto.state,
+                            data.shareListDto.userId
                         );
                     } else {
                         shareData = ShareData(
@@ -144,6 +148,7 @@ class HomeFragment : Fragment() {
                                     +data.shareListDto.endDay,
                             Integer.toString(data.listCnt),
                             data.shareListDto.state,
+                            data.shareListDto.userId
                         );
                     }
                     shareDatas.add(shareData)
@@ -159,7 +164,7 @@ class HomeFragment : Fragment() {
             if(!v.canScrollVertically(1)){
                 CoroutineScope(Dispatchers.Main).launch {
                     val result =
-                        ApplicationClass.retrofitShareService.boardList(num++, max).awaitResponse()
+                        ApplicationClass.retrofitShareService.boardList(num++, 0,max, ApplicationClass.prefs.getId()).awaitResponse()
                             .body();
                     Log.d(TAG, "initView: ${result?.data}")
                     if (result?.data?.size != 0) {
@@ -177,6 +182,7 @@ class HomeFragment : Fragment() {
                                                 +data.shareListDto.endDay,
                                         Integer.toString(data.listCnt),
                                         data.shareListDto.state,
+                                        data.shareListDto.userId,
                                     );
                                 } else {
                                     shareData = ShareData(
@@ -189,6 +195,7 @@ class HomeFragment : Fragment() {
                                                 +data.shareListDto.endDay,
                                         Integer.toString(data.listCnt),
                                         data.shareListDto.state,
+                                        data.shareListDto.userId,
                                     );
                                 }
                                 shareDatas.add(shareData)

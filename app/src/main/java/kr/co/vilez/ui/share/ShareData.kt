@@ -9,4 +9,5 @@ class ShareData(
     var tv_period:String,
     var tv_bookmark:String,
     var state: Int,
+    var userId: Int,
     )
