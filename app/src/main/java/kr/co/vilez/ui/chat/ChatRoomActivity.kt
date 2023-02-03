@@ -11,14 +11,18 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
+import kr.co.vilez.data.model.SetPeriodDto
+import kr.co.vilez.data.model.Room
 import kr.co.vilez.databinding.ActivityChatRoomBinding
 import kr.co.vilez.ui.chat.map.KakaoMapFragment
+import kr.co.vilez.ui.dialog.AlertDialog
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.StompClient2
 import org.json.JSONObject
@@ -38,8 +42,9 @@ class ChatRoomActivity : AppCompatActivity() {
     private var now : Int = 0
     private val itemList = ArrayList<ChatlistData>()
     private val kakaoMapFragment = KakaoMapFragment()
-
+    private var setPeriodDto : SetPeriodDto? = null
     private var pickedDate : Pair<Long, Long>? = null // 약속 시간 저장하는 변수
+    private lateinit var room: Room
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,15 +56,34 @@ class ChatRoomActivity : AppCompatActivity() {
         var bundle = Bundle(2)
         bundle.putInt("roomId", roomId)
         bundle.putInt("otherUserId", otherUserId)
+        CoroutineScope(Dispatchers.Main).launch {
+            println(roomId)
+            val result = ApplicationClass.retrofitChatService.getRoomData(roomId).awaitResponse().body()
+            if (result?.flag == "success") {
+                room = result.data.get(0)
+                CoroutineScope(Dispatchers.Main).launch {
+                    val result = ApplicationClass.retrofitChatService.getAppointment(
+                        room.boardId, room.notShareUserId,
+                        room.shareUserId,room.type
+                    ).awaitResponse().body()
+                    if (result?.flag == "success") {
+                        setPeriodDto = result.data.get(0)
+                    }
+                }
+            }
+        }
+
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         initView()
 
-        kakaoMapFragment.arguments = bundle
+//        kakaoMapFragment.arguments = bundle
+//
+//
+//        supportFragmentManager.beginTransaction()
+//            .replace(R.id.frameLayout, kakaoMapFragment)
+//            .commit()
 
 
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.frameLayout, kakaoMapFragment)
-            .commit()
     }
 
     override fun onDestroy() {
@@ -177,7 +201,18 @@ class ChatRoomActivity : AppCompatActivity() {
 
     private fun initScheduleButton() {
         binding.btnChatCalendar.setOnClickListener {
-            onCalendarClick()
+            if(ApplicationClass.prefs.getId() == room.shareUserId) {
+                onCalendarClick()
+            } else {
+                println("공유자만 가능한 페이집니다.")
+                if(setPeriodDto == null) {
+                    var dialog = AlertDialog(this, "설정된 예약일자가 없습니다.")
+                    dialog.show(this.supportFragmentManager, "Appoint")
+                } else {
+                    var dialog = AlertDialog(this, "예약 일자 : ${setPeriodDto?.startDay} \n~ ${setPeriodDto?.endDay}")
+                    dialog.show(this.supportFragmentManager, "Appoint")
+                }
+            }
             // 선택된 날짜는 pickedDate 에 저장됨
         }
     }
@@ -185,25 +220,32 @@ class ChatRoomActivity : AppCompatActivity() {
     fun onCalendarClick() { // 캘린더 버튼클릭
         var startDay:Long = 0
         var endDay:Long = 0
+        val SDF = SimpleDateFormat ("yyyy-MM-dd")
 
         Log.d(TAG, "onCalendarClick: 캘린더 클릭")
 
-        if(pickedDate == null) { // 아직 날짜 선택 안한경우
-            val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
+        SDF.timeZone = TimeZone.getTimeZone("Asia/Seoul")
+        SDF.calendar = calendar
+        if(setPeriodDto == null) {
             calendar.time = Date()
             startDay = calendar.timeInMillis
             calendar.add(Calendar.DATE, 1) // 디폴트 end날짜 : 내일
             endDay = calendar.timeInMillis
-
-        } else { // 기존 선택된 날짜 띄워주기
-            startDay = pickedDate!!.first
-            endDay = pickedDate!!.second
+        } else {
+            var date = SDF.parse(setPeriodDto?.startDay)
+            calendar.time = date
+            startDay = calendar.timeInMillis + 32400000
+            date = SDF.parse(setPeriodDto?.endDay)
+            calendar.time = date
+            endDay = calendar.timeInMillis + 32400000
         }
+
 
         // Build constraints.
         val constraintsBuilder =
             CalendarConstraints.Builder()
-                .setStart(startDay)
+                .setStart(Date().time).setValidator(DateValidatorPointForward.now())
 
         val datePicker =
             MaterialDatePicker.Builder.dateRangePicker()
@@ -213,8 +255,22 @@ class ChatRoomActivity : AppCompatActivity() {
                     , endDay))
                 .setCalendarConstraints(constraintsBuilder.build())
                 .build()
+
         datePicker.addOnPositiveButtonClickListener {
             pickedDate = Pair<Long, Long>(it.first!!, it.second!!)
+            if(pickedDate == null)
+                return@addOnPositiveButtonClickListener
+            var start : String = SDF.format(Date(pickedDate!!.first))
+            var end : String = SDF.format(Date(pickedDate!!.second))
+            setPeriodDto  = SetPeriodDto(room.boardId,room.shareUserId,room.notShareUserId,start,end,room.type)
+            CoroutineScope(Dispatchers.Main).launch {
+                val result = ApplicationClass.retrofitChatService.setAppointment(setPeriodDto!!).awaitResponse().body()
+                if (result?.flag == "success") {
+                    println("success")
+                }
+            }
+
+
         }
         datePicker.show(supportFragmentManager, "Date")
 
