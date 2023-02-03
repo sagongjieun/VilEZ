@@ -37,7 +37,8 @@ public class AskController {
 
     @GetMapping
     @ApiOperation(value = "전체 요청글 리스트를 불러온다." ,
-                 notes = "List로 전체 AskDto가 출력된다.")
+                 notes = "List로 전체 AskDto가 출력된다." +
+                         "\n \t 좌표 정보 꼭 보내주셔야합니다. 이제는 좌표 정보를 토대로 해당 범위 안에 있는 게시글만 보여줍니다.")
     public ResponseEntity<?> loadAskList(PageNavigator pageNavigator) {
         HttpVO http = new HttpVO();
         ArrayList<Object> data = new ArrayList<>();
