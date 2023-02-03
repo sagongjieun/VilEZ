@@ -63,7 +63,7 @@ public class AppointmentController {
                     "\n\t startDay, 시작일" +
                     "\n\t endDay, 종료일" +
                     "\n\t type, 공유글에 의한 기간설정인지, 요청글에 의한 기간설정인지" +
-                    "1 = 공유글 , 2 = 요청글")
+                    "1 = 요청글 , 2 = 공유글")
     public ResponseEntity<?> deletePeriod(@RequestBody SetPeriodDto setPeriodDto){
         HttpVO http = new HttpVO();
 
@@ -110,7 +110,7 @@ public class AppointmentController {
             "\n\t startDay, 시작일" +
             "\n\t endDay, 종료일" +
             "\n\t type, 공유글에 의한 기간설정인지, 요청글에 의한 기간설정인지" +
-            "1 = 공유글 , 2 = 요청글")
+            "1 = 요청글 , 2 = 공유글")
     public ResponseEntity<?> setPeriod(@RequestBody SetPeriodDto setPeriodDto){
         HttpVO http = new HttpVO();
 
@@ -128,8 +128,8 @@ public class AppointmentController {
     ///////////////////////예약 관련 내용////////////////////////
     @GetMapping("/my/give/{userId}")
     @ApiOperation(value = "내가 빌려준 내역 정보를 요청하는 API",
-            notes = "type = 1 공유 게시글" +
-                    "\n\t type = 2 요청 게시글")
+            notes = "\n\t type = 1 요청 게시글 "+"\n\t type = 2 공유 게시글"
+                    )
     public ResponseEntity<?> getGiveList(@PathVariable int userId){
         HttpVO http = new HttpVO();
         ArrayList<Object> data = new ArrayList<>();
@@ -190,8 +190,8 @@ public class AppointmentController {
     @ResponseBody
     @GetMapping("/my/{userId}")
     @ApiOperation(value = "나의 약속 정보들을 불러온다." ,
-            notes = "type 2는 요청 게시글에 의해 공유 받은 예약 정보" +
-                    "\n\t type 1는 공유 게시글 의해 공유 받은 예약정보")
+            notes = "type 1는 요청 게시글에 의해 공유 받은 예약 정보" +
+                    "\n\t type 2는 공유 게시글 의해 공유 받은 예약정보")
     public ResponseEntity<?> getMyAppointmentShare(@PathVariable int userId){
         HttpVO http = new HttpVO();
         List<Object> data = new ArrayList<>();
@@ -236,7 +236,7 @@ public class AppointmentController {
                     "\n\t 글의 제목(title) 정보 부탁합니다." +
                     "\n\t 현재 날짜(date) 부탁합니다" +
                     "\n\t 요청글에 대한 type인지 share에 의한 type인지도 부탁합니다" +
-                    "\n\t 요청은 type = 2, 공유는 type = 1")
+                    "\n\t 요청은 type = 1, 공유는 type = 2")
     public ResponseEntity<?> createAppointment(@RequestBody AppointmentDto appointmentDto){
         HttpVO http = new HttpVO();
 

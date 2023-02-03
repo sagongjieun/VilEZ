@@ -96,15 +96,15 @@ public class AppointmentServiceImpl implements AppointmentService {
     ///////////////////////////////예약 관련 내용////////////////////////////////
     @Override
     public List<TotalListVO> getGiveList(int userId) throws Exception {
-        List<MyAppointListDto> list = appointmentMapper.getGiveListShare(userId);
-        for(MyAppointListDto myAppointListDto : list){
-            myAppointListDto.setType(1);
-        }
-
         List<MyAppointListDto> listAsk = appointmentMapper.getGiveListAsk(userId);
         for(MyAppointListDto myAppointListDto : listAsk){
+            myAppointListDto.setType(1);
+        }
+        List<MyAppointListDto> list = appointmentMapper.getGiveListShare(userId);
+        for(MyAppointListDto myAppointListDto : list){
             myAppointListDto.setType(2);
         }
+
 
         list.addAll(listAsk);
 
@@ -131,16 +131,16 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<AppointmentDto> getMyAppointmentCalendarList(int userId) throws Exception {
-
-            List<AppointmentDto> list = appointmentMapper.getMyAppointmentCalendarListShare(userId);
-            for(AppointmentDto appointmentDto : list){
+            List<AppointmentDto> listAsk = appointmentMapper.getMyAppointmentCalendarListAsk(userId);
+            for(AppointmentDto appointmentDto : listAsk){
                 appointmentDto.setType(1);
             }
 
-            List<AppointmentDto> listAsk = appointmentMapper.getMyAppointmentCalendarListAsk(userId);
-            for(AppointmentDto appointmentDto : listAsk){
+            List<AppointmentDto> list = appointmentMapper.getMyAppointmentCalendarListShare(userId);
+            for(AppointmentDto appointmentDto : list){
                 appointmentDto.setType(2);
             }
+
 
             list.addAll(listAsk);
 
@@ -149,15 +149,15 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<TotalListVO> getMyAppointmentList(int userId) throws Exception {
-        List<MyAppointListDto> list = appointmentMapper.getMyAppointmentListShare(userId);
-        for(MyAppointListDto myAppointListDto : list){
-            myAppointListDto.setType(1);
-        }
-
         List<MyAppointListDto> listAsk = appointmentMapper.getMyAppointmentListAsk(userId);
         for(MyAppointListDto myAppointListDto : listAsk){
+            myAppointListDto.setType(1);
+        }
+        List<MyAppointListDto> list = appointmentMapper.getMyAppointmentListShare(userId);
+        for(MyAppointListDto myAppointListDto : list){
             myAppointListDto.setType(2);
         }
+
 
         list.addAll(listAsk);
 
