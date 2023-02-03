@@ -21,7 +21,6 @@ class RoomAdapter(val itemList: ArrayList<RoomlistData>) : RecyclerView.Adapter<
 
     override fun onBindViewHolder(holder: RoomViewHolder, position: Int) {
         holder.nick_name.text = itemList[position].nickName
-        holder.area.text = itemList[position].area
         holder.content.text = itemList[position].content
         if(itemList[position].noReadCnt == 0)
             holder.noRead.visibility = View.GONE
@@ -59,7 +58,6 @@ class RoomAdapter(val itemList: ArrayList<RoomlistData>) : RecyclerView.Adapter<
 
     inner class RoomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nick_name = itemView.findViewById<TextView>(R.id.chat_nick_name)
-        val area = itemView.findViewById<TextView>(R.id.chat_area)
         val content = itemView.findViewById<TextView>(R.id.chat_content)
         val noRead = itemView.findViewById<ImageView>(R.id.no_read)
         val profile = itemView.findViewById<ImageView>(R.id.profile)

@@ -60,6 +60,11 @@ class ChatlistFragment : Fragment() {
         data = 0;
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        topic.dispose()
+    }
+
     @SuppressLint("CheckResult")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -90,7 +95,7 @@ class ChatlistFragment : Fragment() {
             }
         })
         roomAdapter.notifyDataSetChanged()
-        StompClient2.stompClient.join("/sendlist/" + ApplicationClass.prefs.getId())
+        topic = StompClient2.stompClient.join("/sendlist/" + ApplicationClass.prefs.getId())
             .subscribe { topicMessage ->
                 run {
                     CoroutineScope(Dispatchers.Main).launch {
