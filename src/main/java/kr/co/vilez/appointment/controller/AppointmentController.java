@@ -29,11 +29,9 @@ import java.util.List;
 @Slf4j
 @Api("약속 관련 API 목록")
 public class AppointmentController {
-
     private final AppointmentService appointmentService;
     private final UserService userService;
     private final SimpMessageSendingOperations sendingOperations;
-
     @GetMapping("/my/point")
     @ApiOperation(value = "나의 포인트 목록을 보여주는 정보를 출력하는 API",
             notes = "\n\t type = 1 정상적인 포인트 추가/삭감" +
