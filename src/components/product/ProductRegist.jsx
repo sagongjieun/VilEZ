@@ -155,7 +155,7 @@ const ProductRegist = () => {
         <h3>
           카테고리 <b>*</b>
         </h3>
-        <ProductCategory isMain={true} sendCategory={receiveCategory} />
+        <ProductCategory path={""} isMain={true} sendCategory={receiveCategory} />
       </div>
       <div css={contentWrapper}>
         <h3>
