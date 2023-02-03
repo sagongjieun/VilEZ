@@ -56,6 +56,10 @@ class ChatRoomActivity : AppCompatActivity() {
         var bundle = Bundle(2)
         bundle.putInt("roomId", roomId)
         bundle.putInt("otherUserId", otherUserId)
+        val data = JSONObject()
+        data.put("roomId", roomId)
+        data.put("userId", ApplicationClass.prefs.getId())
+        StompClient2.stompClient.send("/room_enter", data.toString()).subscribe()
         CoroutineScope(Dispatchers.Main).launch {
             println(roomId)
             val result = ApplicationClass.retrofitChatService.getRoomData(roomId).awaitResponse().body()
@@ -108,7 +112,7 @@ class ChatRoomActivity : AppCompatActivity() {
                 if(txt_edit.text.length <= 0)
                     return@OnClickListener
                 println(txt_edit.text.length)
-                val data = JSONObject()
+                var data = JSONObject()
                 data.put("roomId", roomId)
                 data.put("fromUserId", ApplicationClass.prefs.getId())
                 data.put("toUserId", otherUserId)
@@ -117,6 +121,10 @@ class ChatRoomActivity : AppCompatActivity() {
                 itemList.add(ChatlistData(data.getString("content"), 2,""))
                 roomAdapter.notifyDataSetChanged()
                 StompClient2.stompClient.send("/recvchat", data.toString()).subscribe()
+                data = JSONObject()
+                data.put("roomId", roomId)
+                data.put("userId", ApplicationClass.prefs.getId())
+                StompClient2.stompClient.send("/room_enter", data.toString()).subscribe()
                 txt_edit.setText("")
                 rv_chat.scrollToPosition(itemList.size - 1)
             }

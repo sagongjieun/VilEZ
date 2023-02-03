@@ -33,13 +33,7 @@
                     android:paddingRight="10dp"
                     android:text="닉네임"
                     android:textStyle="bold" />
-                <TextView
-                    android:id="@+id/chat_area"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingRight="20dp"
-                    android:textSize="10dp"
-                    android:text="구미 진평동" />
+
                 <TextView
                     android:id="@+id/chat_time"
                     android:layout_width="wrap_content"
