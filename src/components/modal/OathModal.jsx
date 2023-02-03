@@ -30,14 +30,13 @@ function OathMoal({ close, openLastConfirm }) {
       boardId: shareData.boardId,
       userId: shareData.shareUserId,
       notUserId: shareData.notShareUserId,
-      shareSign: canvas,
       notShareSign: canvas,
     };
 
     postCanvas(information)
       .then((res) => {
         if (res) {
-          console.log("서명이 완료되었습니다.");
+          alert("서명이 완료되었습니다.");
           setIsCanvasAccept(true);
         }
       })
@@ -58,12 +57,15 @@ function OathMoal({ close, openLastConfirm }) {
   useEffect(() => {
     // 서명이 서버로 전송되고 나면 약속 확정
     if (isCanvasAccept) {
+      console.log("@@@@@@@@@@@@", shareData);
+
       postAppointment({
         boardId: shareData.boardId,
         appointmentStart: shareData.appointmentStart,
         appointmentEnd: shareData.appointmentEnd,
         shareUserId: shareData.shareUserId,
-        notShareUserId: shareData.notShareUserId,
+        notShareUserId: parseInt(shareData.notShareUserId),
+        boardType: shareData.boardType,
       }).then((res) => {
         if (res) {
           close(false);

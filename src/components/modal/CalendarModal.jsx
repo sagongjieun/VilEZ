@@ -7,13 +7,13 @@ import MiddleWideButton from "../button/MiddleWideButton";
 import { GrClose } from "react-icons/gr";
 import { ko } from "date-fns/locale";
 import { getAppointmentsByBoardId } from "../../api/chat";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { shareDataState } from "../../recoil/atom";
 import DateFormat from "../common/DateFormat";
-import { postShareDate, deleteShareDate } from "../../api/appointment";
+import { putShareDate } from "../../api/appointment";
 
 const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
-  const shareData = useRecoilValue(shareDataState);
+  const [shareData, setShareData] = useRecoilState(shareDataState);
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -37,41 +37,42 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
     if (startDate && endDate) {
       const body = {
         boardId: boardId,
-        startDay: startDate,
-        endDay: endDate,
+        startDay: DateFormat(new Date(startDate)),
+        endDay: DateFormat(new Date(endDate)),
         notShareUserId: shareData.notShareUserId,
         shareUserId: shareData.shareUserId,
         type: shareData.boardType,
       };
 
-      postShareDate(body).then((res) => {
+      putShareDate(body).then((res) => {
         if (res) {
           alert("공유 기간을 설정하였습니다. 😀");
         }
       });
+
       setCalendarModalOpen(false);
     } else {
       alert("기간을 설정해주세요. 😀");
     }
   }
 
-  function onClickResetMeetDate() {
-    /** reset할 때는 startDay, endDay를 줄 필요가 없지 않은지 */
-    const body = {
-      boardId: boardId,
-      startDay: startDate,
-      endDay: endDate,
-      notShareUserId: shareData.notShareUserId,
-      shareUserId: shareData.shareUserId,
-      type: shareData.boardType,
-    };
+  // function onClickResetMeetDate() {
+  //   /** reset할 때는 startDay, endDay를 줄 필요가 없지 않은지 */
+  //   const body = {
+  //     boardId: boardId,
+  //     startDay: startDate,
+  //     endDay: endDate,
+  //     notShareUserId: shareData.notShareUserId,
+  //     shareUserId: shareData.shareUserId,
+  //     type: shareData.boardType,
+  //   };
 
-    deleteShareDate(body).then((res) => {
-      if (res) {
-        alert("공유 기간을 초기화하였습니다. 😀");
-      }
-    });
-  }
+  //   putShareDate(body).then((res) => {
+  //     if (res) {
+  //       alert("공유 기간을 초기화하였습니다. 😀");
+  //     }
+  //   });
+  // }
 
   useEffect(() => {
     getAppointmentsByBoardId(boardId).then((res) => {
@@ -114,6 +115,15 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
         setStartDate(null);
         setEndDate(null);
       }
+
+      // recoil에 현재 예약하려는 데이터 담기
+      setShareData((prev) => {
+        return {
+          ...prev,
+          appointmentStart: DateFormat(new Date(startDate)),
+          appointmentEnd: DateFormat(new Date(endDate)),
+        };
+      });
     }
   }, [startDate, endDate]);
 
@@ -141,7 +151,7 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
           <small>* 이미 공유중이거나 예약 완료된 기간 외로 설정해주세요.</small>
         )}
         <div css={buttonWrapper}>
-          <MiddleWideButton text={"초기화"} onclick={onClickResetMeetDate} cancel={true} />
+          {/* <MiddleWideButton text={"초기화"} onclick={onClickResetMeetDate} cancel={true} /> */}
           <MiddleWideButton text={"기간 확정"} onclick={onClickMakeMeetDate} />
         </div>
       </div>
