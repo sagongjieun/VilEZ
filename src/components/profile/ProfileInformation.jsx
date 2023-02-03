@@ -8,7 +8,7 @@ import ProfilePoint from "./ProfilePoint";
 import { getUserDetail } from "../../api/profile";
 // import { set } from "date-fns";
 
-const ProfileInformation = () => {
+const ProfileInformation = ({ setIsQrCodeOpen }) => {
   const id = localStorage.getItem("id");
   // const id = 28;
   const [area, setArea] = useState("동네를 설정해주세요.");
@@ -34,7 +34,7 @@ const ProfileInformation = () => {
     <div css={profileWrapper}>
       <ProfileEditButton text="프로필 수정하기" />
       <ProfileSummary profileImage={profileImage} manner={manner} nickName={nickName} />
-      <ProfileLocation area={area} />
+      <ProfileLocation area={area} setIsQrCodeOpen={setIsQrCodeOpen} />
       <div
         css={css`
           width: 44%;
