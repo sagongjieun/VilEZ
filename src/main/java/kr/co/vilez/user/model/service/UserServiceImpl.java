@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +27,7 @@ public class UserServiceImpl implements UserService {
     final JwtProviderImpl jwtProvider;
     final ResourceLoader resourceLoader;
     final OSUpload osUpload;
+    final SimpMessageSendingOperations sendingOperations;
 
     final String bucketName = "vilez";
     HttpVO http = null;
@@ -37,6 +39,9 @@ public class UserServiceImpl implements UserService {
         userId = aes256.decryptAES256(userId);
 
         locationDto.setCode(userId);
+        Map<String,Object> map = new HashMap<>();
+        map.put("flag","success");
+        sendingOperations.convertAndSend("/sendloc/"+userId,map);
 
         userMapper.saveLocation(locationDto);
     }
