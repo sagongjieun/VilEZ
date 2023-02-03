@@ -30,6 +30,7 @@ async function getShareDate(boardId, notShareUserId, shareUserId, type) {
     const { data } = await jsonAxios.get(
       `/appointments/set/check?boardId=${boardId}&notShareUserId=${notShareUserId}&shareUserId=${shareUserId}&type=${type}`
     );
+    console.log("data", data);
 
     if (data.flag === "success") return data.data;
     else console.log(data);
@@ -51,11 +52,11 @@ async function postShareDate(body) {
   }
 }
 
-// DELETE
+// PUT
 
-async function deleteShareDate(body) {
+async function putShareDate(body) {
   try {
-    const { data } = await jsonAxios.delete(`/appointments/set/period`, body);
+    const { data } = await jsonAxios.put(`/appointments/set/period`, body);
 
     if (data.flag === "success") return true;
     else return false;
@@ -64,4 +65,4 @@ async function deleteShareDate(body) {
   }
 }
 
-export { getAppointmentsByUserId, getPointListByUserId, getShareDate, postShareDate, deleteShareDate };
+export { getAppointmentsByUserId, getPointListByUserId, getShareDate, postShareDate, putShareDate };
