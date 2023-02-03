@@ -5,7 +5,7 @@ import ProductInfo from "./ProductInfo";
 import MiddleWideButton from "../button/MiddleWideButton";
 import StompRealTime from "../StompRealTime";
 import MeetConfirmModal from "../modal/MeetConfirmModal";
-import QuitChattingReal from "../modal/QuitChattingReal";
+import QuitChattingModal from "../modal/QuitChattingModal";
 import OathMoal from "../modal/OathModal";
 import ShareCompleteModal from "../modal/ShareCompleteModal";
 import { useParams } from "react-router-dom";
@@ -219,7 +219,7 @@ const ProductChatting = () => {
           />
         ) : null}
       </div>
-      <div>{isQuit ? <QuitChattingReal close={setIsQuit} /> : null}</div>
+      <div>{isQuit ? <QuitChattingModal close={setIsQuit} /> : null}</div>
       <div>{isOath ? <OathMoal close={setIsOath} openLastConfirm={setIsComplete} /> : null} </div>
       <div>{isComplete ? <ShareCompleteModal /> : null}</div>
     </div>

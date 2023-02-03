@@ -135,7 +135,6 @@ const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickn
       client.connect({}, () => {
         // 다른 유저의 채팅을 구독
         client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
-          console.log("다른 유저의 메시지 받기 : ", JSON.parse(data.body));
           setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
         });
 
