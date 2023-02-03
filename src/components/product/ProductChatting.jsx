@@ -16,6 +16,7 @@ import { getUserDetail } from "../../api/profile";
 import { useSetRecoilState } from "recoil";
 import { shareDataState } from "../../recoil/atom";
 import { getShareDate } from "../../api/appointment";
+import DateFormat from "../common/DateFormat";
 
 const ProductChatting = () => {
   const { roomId } = useParams();
@@ -53,20 +54,21 @@ const ProductChatting = () => {
   function onClickConfirm() {
     getShareDate(boardId, notShareUserId, shareUserId, boardType).then((res) => {
       res = res[0];
+
       // 공유자가 기간을 확정했다면
       if (res) {
-        /** res에서 받은 확정 시작날, 종료날을 밑의 API요청에 담고, MeetConfirmModal컴포넌트에도 쏴줘야함  */
-        setConfirmedStartDate(res.startDate); // 임시 데이터
-        setConfirmedEndDate(res.endDate); // 임시 데이터
+        res.startDay = DateFormat(new Date(res.startDay));
+        res.endDay = DateFormat(new Date(res.endDay));
+        setConfirmedStartDate(res.startDay);
+        setConfirmedEndDate(res.endDay);
 
         // recoil에 현재 예약하려는 데이터 담기
-        setShareData({
-          boardId: boardId,
-          boardType: boardType,
-          appointmentStart: confirmedStartDate,
-          appointmentEnd: confirmedEndDate,
-          shareUserId: shareUserId,
-          notShareUserId: notShareUserId,
+        setShareData((prev) => {
+          return {
+            ...prev,
+            appointmentStart: res.startDay,
+            appointmentEnd: res.endDay,
+          };
         });
 
         setIsConfirm(!isConfirm);
@@ -163,6 +165,21 @@ const ProductChatting = () => {
             });
     }
   }, [boardId, boardType]);
+
+  useEffect(() => {
+    if (boardId && boardType && shareUserId && notShareUserId) {
+      // recoil에 현재 예약하려는 데이터 담기
+      setShareData((prev) => {
+        return {
+          ...prev,
+          boardId: boardId,
+          boardType: boardType,
+          shareUserId: shareUserId,
+          notShareUserId: notShareUserId,
+        };
+      });
+    }
+  }, [boardId, boardType, shareUserId, notShareUserId]);
 
   return (
     <div css={wrapper}>

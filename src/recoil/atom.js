@@ -16,8 +16,8 @@ const shareDataState = atom({
   default: {
     boardId: null,
     boardType: null,
-    appointmentStart: null,
-    appointmentEnd: null,
+    appointmentStart: "",
+    appointmentEnd: "",
     shareUserId: null,
     notShareUserId: null,
   },

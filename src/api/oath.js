@@ -13,4 +13,5 @@ async function postCanvas(information) {
     console.log(error);
   }
 }
+
 export { postCanvas };
