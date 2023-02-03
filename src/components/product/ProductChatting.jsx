@@ -91,13 +91,13 @@ const ProductChatting = () => {
         if (loginUserId == res.shareUserId) {
           setOtherUserId(res.notShareUserId);
           setShareUserId(loginUserId);
-          setNotShareUserId(res.notShareUserId);
+          setNotShareUserId(parseInt(res.notShareUserId));
         }
         // 로그인유저가 피공유자면
         else {
           setOtherUserId(res.shareUserId);
           setShareUserId(res.shareUserId);
-          setNotShareUserId(loginUserId);
+          setNotShareUserId(parseInt(loginUserId));
         }
       })
       .catch((error) => {

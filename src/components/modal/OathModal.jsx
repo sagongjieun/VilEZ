@@ -28,8 +28,8 @@ function OathMoal({ close, openLastConfirm }) {
     /** sign 담는 데이터 변경돼야 함 */
     const information = {
       boardId: shareData.boardId,
-      userId: shareData.shareUserId,
-      notUserId: shareData.notShareUserId,
+      shareUserId: shareData.shareUserId,
+      notShareUserId: shareData.notShareUserId,
       notShareSign: canvas,
     };
 
@@ -64,8 +64,8 @@ function OathMoal({ close, openLastConfirm }) {
         appointmentStart: shareData.appointmentStart,
         appointmentEnd: shareData.appointmentEnd,
         shareUserId: shareData.shareUserId,
-        notShareUserId: parseInt(shareData.notShareUserId),
-        boardType: shareData.boardType,
+        notShareUserId: shareData.notShareUserId,
+        type: shareData.boardType,
       }).then((res) => {
         if (res) {
           close(false);
