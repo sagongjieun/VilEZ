@@ -1,15 +1,9 @@
 import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useRecoilValue } from "recoil";
-import { shareDataState } from "../../recoil/atom";
 import MiddleWideButton from "./../button/MiddleWideButton";
 
-function MeetConfirmModal({ close, openOath, otherUserNickname }) {
-  const shareData = useRecoilValue(shareDataState);
-  const startdate = shareData.appointmentStart;
-  const enddate = shareData.appointmentEnd;
-
+function MeetConfirmModal({ close, openOath, otherUserNickname, confirmedStartDate, confirmedEndDate }) {
   function closeModal() {
     close(false);
   }
@@ -29,7 +23,7 @@ function MeetConfirmModal({ close, openOath, otherUserNickname }) {
             </span>
             <span>
               <strong>
-                {startdate} ~ {enddate}
+                {confirmedStartDate} ~ {confirmedEndDate}
               </strong>
             </span>
             <span>기간동안</span>

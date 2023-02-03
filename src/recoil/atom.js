@@ -11,14 +11,6 @@ const loginUserState = atom({
   },
 });
 
-const shareDateState = atom({
-  key: "shareDateState",
-  default: {
-    startDate: null,
-    endDate: null,
-  },
-});
-
 const shareDataState = atom({
   key: "shareDataState",
   default: {
@@ -36,4 +28,18 @@ const modalOpenState = atom({
   default: false,
 });
 
-export { loginUserState, shareDateState, shareDataState, modalOpenState };
+src/recoil/atom.js
+const locationState = atom({
+  key: "locationState",
+  default: { areaLat: 0, areaLng: 0 },
+});
+
+export { loginUserState, shareDateState, shareDataState, modalOpenState, locationState };
+
+const enterChatRoomState = atom({
+  key: "enterChatRoomState",
+  default: null,
+});
+
+export { loginUserState, shareDataState, modalOpenState, enterChatRoomState };
+

@@ -15,50 +15,72 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { getAskArticleList } from "../../api/ask";
 
 const ProductList = () => {
+  const [isAll, setIsAll] = useState(true);
   const [category, setCategory] = useState("");
-  const [isClick, setIsClick] = useState(false);
   const [search, setSearch] = useState("");
   const [getArticle, setArticles] = useState([]);
+  const [originalArticle, setOriginalArticle] = useState([]);
 
   const pathname = useLocation().pathname;
   const navigate = useNavigate();
+  const urlId = pathname.includes("share") ? 2 : 1;
   const [list, setList] = useState("");
+
   useEffect(() => {
+    console.log(category);
     const type = pathname.includes("share") ? 2 : 1;
 
     type === 1
-      ? getAskArticleList(category, 0, 200, 0, "").then((res) => {
+      ? // 요청
+        getAskArticleList("", "", category, 0, 200, 0, 1, "").then((res) => {
           const data = res;
-          setArticles(data);
-          console.log(data);
+          setOriginalArticle(data[0]);
+          setArticles(data[0]);
+          // console.log(data[0]);
           setList("물품 요청 목록");
         })
-      : getShareArticleList(category, 0, 200, 0, "").then((res) => {
+      : // 공유
+        getShareArticleList("", "", category, 0, 200, 0, 1, "").then((res) => {
           const data = res;
-          // console.log(data);
+          // console.log(res);
+          setOriginalArticle(data);
           setArticles(data);
           setList("물품 공유 목록");
-          // console.log(data[0].shareListDto.list[0].path);
+          // console.log(data[0].askDto.list[0]);
         });
   }, [category]);
+  // 공유가능 목록 보기위해 작성한 useEffect 0일때 공유가능, 1일때 공유 중
+  useEffect(() => {
+    if (isAll) {
+      setArticles(originalArticle);
+      console.log(getArticle);
+    } else {
+      if (urlId === 2) {
+        const tempShareArticle = getArticle.filter((article) => article.shareListDto.state === 0);
+        setArticles(tempShareArticle);
+      } else {
+        const tempShareArticle = getArticle.filter((article) => article.askDto.state === 0);
+        setArticles(tempShareArticle);
+      }
+    }
+  }, [isAll]);
   // props에서 받아온 값이 newCategory에 들어감
   // setCategory에 넘어온 값을 입력
   function receiveCategory(newCategory) {
     setCategory(newCategory);
   }
   function onClickSeePossible() {
-    setIsClick(!isClick);
+    setIsAll(!isAll);
   }
-  function onChangeSearch(e) {
-    setSearch(e.target.value);
-    console.log(search);
+  useEffect(() => {}, [search]);
+  function onChangeSearch(event) {
+    setSearch(event);
   }
-
-  // function onKeyDownSearch(e) {
-  //   if (e.key === "Enter") {
-  //     console.log("드가자");
-  //   }
-  // }
+  const sharefiltersearch =
+    urlId === 2
+      ? getArticle.filter((article) => article.shareListDto.title.toLowerCase().includes(search))
+      : getArticle.filter((article) => article.askDto.title.toLowerCase().includes(search));
+  // const askfiltersearch = getArticle.filter((article) => article.askDto.title.toLowerCase().includes(search));
   return (
     <div css={topWrap}>
       <div css={contentWrap}>
@@ -71,8 +93,8 @@ const ProductList = () => {
             <div css={searchWrap}>
               <InputBox
                 useMainList={true}
-                onChangeValue={(e) => onChangeSearch(e)}
-                // value={search}
+                onChangeValue={onChangeSearch}
+                value={search}
                 // type="text"
                 placeholder="필요한 물품을 검색해보세요."
                 // onKeyDown={onKeyDownSearch}
@@ -80,7 +102,7 @@ const ProductList = () => {
               <img src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
               <button>검색</button>
             </div>
-            <div onClick={onClickSeePossible} css={isClick ? possibleWrap : unPossibleWrap}>
+            <div onClick={onClickSeePossible} css={isAll ? unPossibleWrap : possibleWrap}>
               공유가능한 물품만 보기
             </div>
           </div>
@@ -91,35 +113,63 @@ const ProductList = () => {
           <button css={buttonWrap}>물품 등록</button>
         </div>
 
-        <div css={relatedProductWrapper}>
-          {getArticle.map((article, idx) => (
-            <div key={idx} onClick={() => navigate(`/product/detail/share/${article.shareListDto.id}`)}>
-              <div css={thumbnailWrapper}>
-                <img src={article.shareListDto?.list[0]?.path} />
-              </div>
-              <div css={infoWrapper}>
-                <div>
-                  <span>{article.shareListDto.title}</span>
-                  <small>1시간 전</small>
+        {urlId === 2 ? (
+          <div css={relatedProductWrapper}>
+            {sharefiltersearch.map((article, idx) => (
+              <div key={idx} onClick={() => navigate(`/product/detail/share/${article.shareListDto.id}`)}>
+                <div css={thumbnailWrapper}>
+                  <img src={article.shareListDto?.list[0]?.path} />
                 </div>
-                <div>
-                  <small>
-                    <HiLocationMarker />
-                    {article.shareListDto.area}
-                  </small>
-                  <small>
-                    <HiCalendar />
-                    {article.shareListDto.startDay} ~ {article.shareListDto.endDay}
-                  </small>
-                  <small>
-                    <HiHeart />
-                    {article.listCnt}
-                  </small>
+                <div css={infoWrapper}>
+                  <div>
+                    <span>{article.shareListDto.title}</span>
+                    <small>1시간 전</small>
+                  </div>
+                  <div>
+                    <small>
+                      <HiLocationMarker />
+                      {article.shareListDto.area}
+                    </small>
+                    <small>
+                      <HiCalendar />
+                      {article.shareListDto.startDay} ~ {article.shareListDto.endDay}
+                    </small>
+                    <small>
+                      <HiHeart />
+                      {article.listCnt}
+                    </small>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div css={relatedProductWrapper}>
+            {sharefiltersearch.map((article, idx) => (
+              <div key={idx} onClick={() => navigate(`/product/detail/ask/${article.askDto.id}`)}>
+                <div css={thumbnailWrapper}>
+                  <img src={article.askDto?.list[0]?.path} />
+                </div>
+                <div css={infoWrapper}>
+                  <div>
+                    <span>{article.askDto.title}</span>
+                    <small>1시간 전</small>
+                  </div>
+                  <div>
+                    <small>
+                      <HiLocationMarker />
+                      {article.askDto.area}
+                    </small>
+                    <small>
+                      <HiCalendar />
+                      {article.askDto.startDay} ~ {article.askDto.endDay}
+                    </small>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       <div css={NoProductWrap}>
         <NoProductList />
@@ -158,12 +208,13 @@ const filterRighWrap = css`
 
 const searchWrap = css`
   width: 50%;
+  padding: 1px;
   position: relative;
   & > img {
     position: absolute;
-    width: 15px;
-    top: 11px;
-    left: 3px;
+    width: 14px;
+    top: 12px;
+    left: 6px;
   }
   & > button {
     position: absolute;

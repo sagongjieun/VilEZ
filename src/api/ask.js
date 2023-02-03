@@ -5,10 +5,10 @@ const formdataAxios = formdataInstance();
 
 // GET
 
-async function getAskArticleList(category, cnt, high, low, word) {
+async function getAskArticleList(areaLat, areaLng, category, cnt, high, low, userId, word) {
   try {
     const { data } = await jsonAxios.get(
-      `/askboard?category=${category}&cnt=${cnt}&high=${high}&low=${low}&word=${word}`
+      `/askboard?areaLat=${areaLat}&areaLng=${areaLng}&category=${category}&cnt=${cnt}&high=${high}&low=${low}&userId=${userId}&word=${word}`
     );
 
     if (data.flag === "success") return data.data;

@@ -25,6 +25,7 @@ function OathMoal({ close, openLastConfirm }) {
 
   function onClickCanvas() {
     const canvas = canvasRef.current.getTrimmedCanvas().toDataURL("image/png");
+    /** sign 담는 데이터 변경돼야 함 */
     const information = {
       boardId: shareData.boardId,
       userId: shareData.shareUserId,
@@ -80,12 +81,12 @@ function OathMoal({ close, openLastConfirm }) {
         {giver && receiver ? (
           <div css={oathContentWrap}>
             <span>
-              공유자 <strong>{giver}</strong>는 피공유자 <strong>{receiver}</strong>에게 물품을
+              피공유자 <strong>{receiver}</strong>는 공유자 <strong>{giver}</strong>에게 물품을
             </span>
-            <span>공유하며 {receiver}는 분실, 도난 기타 등의 이유로</span>
+            <span>빌리며, {receiver}는 분실, 도난 기타 등의 이유로</span>
             <span>물품의 원래 형태로 복구가 불가능할 경우</span>
             <span>
-              <b>민사, 형사상의 책임을 질 수 있음</b>을 확인합니다.{" "}
+              <b>민사, 형사상의 책임을 질 수 있음</b>을 확인합니다.
             </span>
           </div>
         ) : (
