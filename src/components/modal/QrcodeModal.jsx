@@ -7,11 +7,16 @@ import MiddleWideButton from "../button/MiddleWideButton";
 import DefaultQrcode from "../../assets/images/default_qrcode.png";
 import { ImSpinner11 } from "react-icons/im";
 import { IoCloseSharp } from "react-icons/io5";
+import SockJS from "sockjs-client";
+import { Stomp } from "@stomp/stompjs";
+
+let client;
 
 function Qrcode({ setIsQrCodeOpen }) {
   const userId = localStorage.getItem("id");
   const [qrCode, setQrCode] = useState("");
   const [isTimeOut, setIsTimeOut] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
   function onClickClose() {
     setIsQrCodeOpen(false);
   }
@@ -26,6 +31,18 @@ function Qrcode({ setIsQrCodeOpen }) {
       setQrCode(response[0].path);
       console.log(response[0].path);
     });
+
+    const sockJS = new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
+    client = Stomp.over(sockJS); // 웹소켓 클라이언트 생성
+
+    // 웹소켓과 연결됐을 때 동작하는 콜백함수들
+    client.connect({}, () => {
+      client.subscribe(`/sendloc/${userId}`, (data) => {
+        // 상대방이 메시지 보낼 때만 새로운 메시지 알림
+        console.log(data);
+        setIsVerified(true);
+      });
+    });
   }, []);
   useEffect(() => {
     if (isTimeOut) {
@@ -37,7 +54,7 @@ function Qrcode({ setIsQrCodeOpen }) {
       <h3>동네 인증하기</h3>
       <div>
         휴대폰으로 QR코드를 찍어 <br />
-        동네를 인증을 진행해주세요.
+        동네 인증을 진행해주세요.
       </div>
       <div>
         {isTimeOut ? <img src={DefaultQrcode} alt="Default QR Code" /> : <img src={qrCode} alt="QR Code" />}
@@ -51,7 +68,9 @@ function Qrcode({ setIsQrCodeOpen }) {
           </div>
         ) : null}
       </div>
-      {isTimeOut ? (
+      {isVerified ? (
+        <div css={verifiedWrapper}>인증이 완료되었습니다.</div>
+      ) : isTimeOut ? (
         <div css={timeOutWrapper}>
           인증 시간이 초과되었습니다.
           <br />
@@ -64,7 +83,7 @@ function Qrcode({ setIsQrCodeOpen }) {
       <button type="button" onClick={onClickClose}>
         <IoCloseSharp size={20} />
       </button>
-      <MiddleWideButton text={"인증 완료"} />
+      <MiddleWideButton text={"인증 완료"} isActive={!isVerified} />
     </div>
   );
 }
@@ -156,5 +175,8 @@ const qrWrap = css`
 `;
 const timeOutWrapper = css`
   color: #fc0101;
+`;
+const verifiedWrapper = css`
+  color: #66dd9c;
 `;
 export default Qrcode;

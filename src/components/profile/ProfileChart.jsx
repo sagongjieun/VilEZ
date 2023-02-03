@@ -3,7 +3,7 @@ import React from "react";
 // import { css } from "@emotion/react";
 
 const ProfileChart = () => {
-  return <div id="chartdiv">gd</div>;
+  return <div id="chartdiv"></div>;
 };
 
 export default ProfileChart;

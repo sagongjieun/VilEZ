@@ -8,7 +8,7 @@ const InputBox = ({ useMainList, placeholder, onChangeValue, value }) => {
       css={useMainList ? MainInputBox : inputBox}
       value={value}
       placeholder={placeholder}
-      onChange={(e) => onChangeValue(e.target.value)}
+      onChange={(e) => onChangeValue(e.target.value.toLowerCase())}
     />
   );
 };

@@ -55,13 +55,15 @@ const ProductImageSelect = ({ sendImageList, userProfileImage }) => {
         }}
       />
       <div onClick={onClickFileUpload}>
-        <img src={imageUrl} alt="프로필 사진" />
+        <div>
+          <img src={imageUrl} alt="프로필 사진" />
+        </div>
         <div>
           <img src={editIcon} alt="프로필 수정" />
         </div>
       </div>
       <div>
-        <SmallWideButton text="사진 초기화" onclick={onClickDeleteImage} type={"button"} />
+        <SmallWideButton text="사진 초기화" onclick={onClickDeleteImage} type={"button"} path={"EditProfile"} />
       </div>
     </div>
   );
@@ -71,12 +73,14 @@ const imageWrapper = css`
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  width: 250px;
+  width: 220px;
+  margin-top: 10px;
   & > input {
     display: none;
   }
 
   & > div:nth-of-type(1) {
+    // 프사 이미지 wrapper
     position: relative;
     cursor: pointer;
     width: 100px;
@@ -84,11 +88,24 @@ const imageWrapper = css`
     display: flex;
     justify-content: center;
     align-items: center;
-    & > img:nth-of-type(1) {
-      width: 100%;
+    & img {
       object-fit: cover;
     }
-    & > div {
+    & > div:nth-of-type(1) {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      overflow: hidden;
+      & > img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+      }
+    }
+    & > div:nth-of-type(2) {
       position: absolute;
       display: flex;
       justify-content: center;
@@ -108,7 +125,7 @@ const imageWrapper = css`
   }
 
   & > div:nth-of-type(2) > button {
-    width: 130px;
+    width: 100px;
     background: #fc0101;
   }
 `;

@@ -3,9 +3,13 @@ import React from "react";
 import { css } from "@emotion/react";
 
 // props로 outline(boolean) 전달해주면 true일 때 outline 있는 버튼으로 스타일 변경
-const SmallWideButton = ({ text, outline, onclick, type }) => {
+const SmallWideButton = ({ text, outline, onclick, type, path }) => {
   return (
-    <button css={[outline ? outlinedButton : basicButton]} onClick={onclick} type={type}>
+    <button
+      css={([outline ? outlinedButton : basicButton], [path === "EditProfile" ? closeButton : null])}
+      onClick={onclick}
+      type={type}
+    >
       {text}
     </button>
   );
@@ -37,6 +41,19 @@ const outlinedButton = css`
   margin-top: 14px;
   padding: 0 20px;
   color: #66dd9c;
+`;
+
+const closeButton = css`
+  cursor: pointer;
+  display: block;
+  height: 35px;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  margin-top: 14px;
+  padding: 0 10px;
+  color: #fff;
 `;
 
 export default SmallWideButton;
