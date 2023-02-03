@@ -170,6 +170,7 @@ const ProductChatting = () => {
             boardType={boardType}
             otherUserId={otherUserId}
             otherUserNickname={boardDetail.otherUserNickname}
+            shareUserId={shareUserId}
           />
         )}
       </div>

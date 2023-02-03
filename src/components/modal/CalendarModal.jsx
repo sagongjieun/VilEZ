@@ -10,6 +10,7 @@ import { getAppointmentsByBoardId } from "../../api/chat";
 import { useSetRecoilState } from "recoil";
 import { shareDateState } from "../../recoil/atom";
 import DateFormat from "../common/DateFormat";
+// import { postShareDate } from "../../api/appointment";
 
 const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
   const setShareDate = useSetRecoilState(shareDateState);
@@ -32,6 +33,8 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
     setCalendarModalOpen(false);
   }
 
+  function onClickResetMeetDate() {}
+
   function onClickMakeMeetDate() {
     if (startDate && endDate) {
       // recoil에 공유확정날짜 저장 -> MeetConfirmModal.jsx 에서 사용
@@ -48,7 +51,7 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
   useEffect(() => {
     getAppointmentsByBoardId(boardId).then((res) => {
       // 해당 boardId에 이미 약속 정보가 있다면
-      if (res[0].length > 0) {
+      if (res[0].length > 1) {
         for (let appointment of res) {
           let start = appointment.appointmentStart.split("-").map(Number);
           let end = appointment.appointmentEnd.split("-").map(Number);
@@ -112,8 +115,9 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
         ) : (
           <small>* 이미 공유중이거나 예약 완료된 기간 외로 설정해주세요.</small>
         )}
-        <div>
-          <MiddleWideButton text={"물건 공유 기간 확정"} onclick={onClickMakeMeetDate} />
+        <div css={buttonWrapper}>
+          <MiddleWideButton text={"초기화"} onclick={onClickResetMeetDate} cancel={true} />
+          <MiddleWideButton text={"기간 확정"} onclick={onClickMakeMeetDate} />
         </div>
       </div>
     </div>
@@ -207,10 +211,17 @@ const calendarModalWrapper = css`
       background-color: #66dd9c;
     }
   }
+`;
 
-  & > div:nth-of-type(2) {
-    width: 200px;
-    margin-top: 20px;
+const buttonWrapper = css`
+  width: 320px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 20px;
+
+  & > button {
+    width: 150px;
   }
 `;
 

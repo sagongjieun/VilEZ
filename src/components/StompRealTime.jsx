@@ -13,7 +13,7 @@ import CalendarModal from "./modal/CalendarModal";
 
 let client;
 
-const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickname }) => {
+const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickname, shareUserId }) => {
   const scrollRef = useRef();
   const myUserId = localStorage.getItem("id");
   const chatRoomId = roomId;
@@ -85,7 +85,9 @@ const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickn
   }
 
   function onClickOpenCalendarModal() {
-    setCalendarModalOpen(true);
+    // 공유자만 클릭 가능
+    if (myUserId == shareUserId) setCalendarModalOpen(true);
+    else alert("공유자만이 공유 기간 확정을 할 수 있어요 😀");
   }
 
   function onClickOpenRTC() {

@@ -3,6 +3,8 @@ import { jsonInstance } from "./instance";
 const jsonAxios = jsonInstance();
 // const formdataAxios = formdataInstance();
 
+// GET
+
 async function getAppointmentsByUserId(userId) {
   try {
     const { data } = await jsonAxios.get(`/appointments/my/appointlist/${userId}`);
@@ -13,4 +15,17 @@ async function getAppointmentsByUserId(userId) {
   }
 }
 
-export { getAppointmentsByUserId };
+// POST
+
+async function postShareDate(body) {
+  try {
+    const { data } = await jsonAxios.post(`/appointments/set/period`, body);
+
+    if (data.flag === "success") return true;
+    else return true;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export { getAppointmentsByUserId, postShareDate };
