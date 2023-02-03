@@ -36,4 +36,9 @@ const modalOpenState = atom({
   default: false,
 });
 
-export { loginUserState, shareDateState, shareDataState, modalOpenState };
+const enterChatRoomState = atom({
+  key: "enterChatRoomState",
+  default: null,
+});
+
+export { loginUserState, shareDateState, shareDataState, modalOpenState, enterChatRoomState };

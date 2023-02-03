@@ -1,23 +1,22 @@
-import React, { useEffect } from "react";
+import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import elapsedTime from "./../product/ProductElapsedTime";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { modalOpenState } from "../../recoil/atom";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { modalOpenState, enterChatRoomState } from "../../recoil/atom";
 
 const ChattingModalItem = ({ chat }) => {
   const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useRecoilState(modalOpenState);
+  const setEnterChatRoom = useSetRecoilState(enterChatRoomState);
 
   function onClickMoveChatRoom(roomId) {
+    // 방에 들어갔다는 알림을 주기위한 recoil 데이터 저장
+    setEnterChatRoom(roomId);
     setModalOpen(!modalOpen);
     navigate(`/product/chat/${roomId}`);
   }
-
-  useEffect(() => {
-    console.log(chat.chatData.roomId, " : ", chat.noReadCount);
-  }, [chat]);
 
   return (
     <div css={ChatListWrap} onClick={() => onClickMoveChatRoom(chat.chatData.roomId)}>

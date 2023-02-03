@@ -3,7 +3,7 @@ import { BsChatSquare } from "react-icons/bs";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import ChattingModal from "../components/modal/ChattingModal";
-import { modalOpenState } from "../recoil/atom";
+import { modalOpenState, enterChatRoomState } from "../recoil/atom";
 import { useRecoilState } from "recoil";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
@@ -14,6 +14,7 @@ function ChatOpenIcon() {
   const loginUserId = localStorage.getItem("id");
   const [modalOpen, setModalOpen] = useRecoilState(modalOpenState);
   const [isNewMessage, setIsNewMessage] = useState(false);
+  const [enterChatRoom, setEnterChatRoom] = useRecoilState(enterChatRoomState);
 
   const onClickOpenChat = () => {
     if (!modalOpen) setIsNewMessage(false); // 새로운메시지를 확인했다면 알림 지우기
@@ -44,6 +45,14 @@ function ChatOpenIcon() {
       });
     }
   });
+
+  useEffect(() => {
+    if (enterChatRoom) {
+      // 해당 방으로 들어갔다는 의미이므로 소켓 send
+      client.send("/room_enter", {}, JSON.stringify({ roomId: enterChatRoom, userId: loginUserId }));
+      setEnterChatRoom(null);
+    }
+  }, [enterChatRoom]);
 
   return (
     <>
