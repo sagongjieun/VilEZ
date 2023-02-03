@@ -37,12 +37,12 @@ public class BackController {
                     "\n\t state 가 0 현재 예약중" +
                     "\n\t -1 예약전" +
                     "\n\t -2 예약완료")
-    public ResponseEntity<?> isState( AppointmentStateDto appointmentStateDto){
+    public ResponseEntity<?> isState(@RequestParam int roomId){
         HttpVO http = new HttpVO();
         ArrayList<Object> data = new ArrayList<>();
 
         try{
-            int num = backService.isState(appointmentStateDto);
+            int num = backService.isState(roomId);
             Map<String, Integer> map = new HashMap<>();
             map.put("state", num);
             data.add(map);

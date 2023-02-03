@@ -7,5 +7,5 @@ import java.sql.SQLException;
 
 @Mapper
 public interface BackMapper {
-    Integer getAppointmentState(AppointmentStateDto appointmentStateDto) throws SQLException;
+    Integer getAppointmentState(int roomId) throws SQLException;
 }
