@@ -17,6 +17,8 @@
         <result column="access_token" property="accessToken"/>
         <result column="refresh_token" property="refreshToken"/>
         <result column="state" property="state"/>
+        <result column="area_lng" property="areaLng"/>
+        <result column="area_lat" property="areaLat"/>
     </resultMap>
 
     <resultMap type="locationDto" id="location">

@@ -207,6 +207,7 @@ public class ShareServiceImpl implements ShareService{
         pageNavigator.setLow(tmp);
 
         UserDto userDto = userMapper.detail(pageNavigator.getUserId());
+        System.out.println("userDto = " + userDto);
 
         pageNavigator.setAreaLat(userDto.getAreaLat());
         pageNavigator.setAreaLng(userDto.getAreaLng());

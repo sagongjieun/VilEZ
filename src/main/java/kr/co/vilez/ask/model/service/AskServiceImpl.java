@@ -18,6 +18,8 @@ import kr.co.vilez.ask.model.mapper.AskMapper;
 import kr.co.vilez.configuration.NaverObjectStorageConfig;
 import kr.co.vilez.share.model.dto.PageNavigator;
 import kr.co.vilez.tool.OSUpload;
+import kr.co.vilez.user.model.dto.UserDto;
+import kr.co.vilez.user.model.mapper.UserMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -43,6 +45,7 @@ public class AskServiceImpl implements AskService{
     final AskDao askDao;
     final OSUpload osUpload;
     final String bucketName = "vilez";
+    final UserMapper userMapper;
 
     @Override
     public ArrayList<AskList> loadAskList(PageNavigator pageNavigator) throws Exception{
@@ -58,8 +61,11 @@ public class AskServiceImpl implements AskService{
 
         ArrayList<AskList> list = new ArrayList<>();
 
-        askDtoList = askMapper.loadAskList(pageNavigator);
+        UserDto userDto = userMapper.detail(pageNavigator.getUserId());
 
+        pageNavigator.setAreaLng(userDto.getAreaLng());
+        pageNavigator.setAreaLat(userDto.getAreaLat());
+        askDtoList = askMapper.loadAskList(pageNavigator);
 
         for(AskDto askDto : askDtoList) {
             AskList askList = new AskList();
