@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,20 +38,22 @@ public class UserController {
         ArrayList<Object> data = new ArrayList<>();
 
 //        System.out.println(locationDto.getCode());
+        Map<String, String> map = new HashMap<String, String>();
 
         try{
 
             userService.saveLocation(locationDto);
 
-            Map<String, String> map = new HashMap<String, String>();
             map.put("url", "https://i8d111.p.ssafy.io/check");
             data.add(map);
             http.setData(data);
             http.setFlag("success");
+
         } catch(Exception e){
             e.printStackTrace();
         }
-
+        map.clear();
+        map.put("flag","success");
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
 
