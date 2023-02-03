@@ -36,4 +36,9 @@ const modalOpenState = atom({
   default: false,
 });
 
-export { loginUserState, shareDateState, shareDataState, modalOpenState };
+const locationState = atom({
+  key: "locationState",
+  default: { areaLat: 0, areaLng: 0 },
+});
+
+export { loginUserState, shareDateState, shareDataState, modalOpenState, locationState };

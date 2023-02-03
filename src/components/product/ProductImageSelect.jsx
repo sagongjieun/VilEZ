@@ -9,7 +9,8 @@ import { getShareArticleByBoardId } from "../../api/share";
 const ProductImageSelect = ({ sendImageList }) => {
   const pathname = useLocation().pathname;
   const boardId = parseInt(useParams().boardId);
-  const type = pathname.includes("share") ? 2 : 1;
+  const type = pathname.includes("share") ? 2 : pathname.includes("regist") ? null : 1;
+  // console.log(type);
   const [imageList, setImageList] = useState([]);
 
   function onClickFileUpload() {
@@ -42,10 +43,10 @@ const ProductImageSelect = ({ sendImageList }) => {
     type === 2
       ? getShareArticleByBoardId(boardId).then((res) => {
           const data = res[0].list;
-          // console.log(data);
-          const tempimage = data.map((d) => d);
-          const filename = tempimage.map((obj) => obj.fileName);
-          setImageList(filename);
+          // console.log("@@@@@@", data);
+          // const tempimage = data.map((d) => d);
+          // const filename = tempimage.map((obj) => obj.fileName);
+          setImageList(data);
         })
       : null;
   }, []);
@@ -59,7 +60,8 @@ const ProductImageSelect = ({ sendImageList }) => {
       <div>
         {imageList.map((image, index) => (
           <small key={index}>
-            {image.name}
+            {type ? image.fileName : image.name}
+
             <AiOutlineClose onClick={() => onClickDeleteImage(image)} />
           </small>
         ))}
