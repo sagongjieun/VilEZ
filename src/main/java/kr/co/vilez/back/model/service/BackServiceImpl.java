@@ -17,8 +17,8 @@ public class BackServiceImpl implements BackService{
     final BackMapper backMapper;
 
     @Override
-    public int isState(AppointmentStateDto appointmentStateDto) throws Exception {
-        Integer state = backMapper.getAppointmentState(appointmentStateDto);
+    public int isState(int roomId) throws Exception {
+        Integer state = backMapper.getAppointmentState(roomId);
 
         if (state == null){
             return -1;

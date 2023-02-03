@@ -4,9 +4,10 @@
 <mapper namespace="kr.co.vilez.back.model.mapper.BackMapper">
 
     <select id="getAppointmentState" parameterType="appointmentStateDto" resultType="int">
-        select state
-        from appointment
-        where board_id = #{boardId} and share_user_id = #{shareUserId}
-          and not_share_user_id = #{notShareUserId} and type = #{type}
+        select a.state
+        from appointment as a
+        left join room as r
+        on a.board_id = r.board_id and a.share_user_id = r.share_user_id and a.not_share_user_id = r.not_share_user_id
+        where r.state >= 0;
     </select>
 </mapper>
