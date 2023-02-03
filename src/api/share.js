@@ -27,10 +27,10 @@ async function getBookmarkStateByUserId(boardId, userId) {
   }
 }
 
-async function getShareArticleList(category, cnt, high, low, word) {
+async function getShareArticleList(areaLat, areaLng, category, cnt, high, low, userId, word) {
   try {
     const { data } = await jsonAxios.get(
-      `/shareboard?category=${category}&cnt=${cnt}&high=${high}&low=${low}&word=${word}`
+      `/shareboard?areaLat=${areaLat}&areaLng=${areaLng}&category=${category}&cnt=${cnt}&high=${high}&low=${low}&userId=${userId}&word=${word}`
     );
     if (data.flag === "success") return data.data;
     else return false;
