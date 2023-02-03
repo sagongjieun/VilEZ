@@ -9,6 +9,9 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
       jQuery(document).ready(function () {
+        setTimeout(() => {
+          this.location.assign("https://i8d111.p.ssafy.io/check");
+        }, 2000);
         var URLSearch = new URLSearchParams(location.search);
         var code = URLSearch.get("code");
         code = code.replaceAll(" ", "+");
@@ -35,10 +38,10 @@
                 .then((result) => {
                   // alert(JSON.stringify(result.data.data[0].url));
                   alert("VilEZ에서 사용자의 현재 위치 정보를 수집합니다.");
-                  const imgUrl = "qr/43/43";
+                  // const imgUrl = "qr/43/43";
                   // const imgUrl = document.location.href;
                   // alert(imgUrl);
-                  this.location.assign(`https://i8d111.p.ssafy.io/check`);
+                  this.location.assign("https://i8d111.p.ssafy.io/check");
                 })
                 .catch(function (error) {
                   // 오류발생시 실행
