@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { AiOutlineEyeInvisible, AiOutlineEye, AiOutlineExclamationCircle } from "react-icons/ai";
 import { BsCheck2Circle } from "react-icons/bs";
 import { IoIosCloseCircle } from "react-icons/io";
-import bazzie from "../../assets/images/bazzie.jfif";
+import bazzie from "../../assets/images/bazzi.jpg";
 import ProfileImageSelect from "../profile/ProfileImageSelect";
 import { checkNickName } from "../../api/signup";
 import { getUserDetail } from "../../api/user";
