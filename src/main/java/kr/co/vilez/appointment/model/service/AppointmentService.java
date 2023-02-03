@@ -10,9 +10,9 @@ import kr.co.vilez.appointment.model.vo.MapVO;
 import java.util.List;
 
 public interface AppointmentService {
-    void deletePeriod(SetPeriodDto setPeriodDto) throws Exception;
+    void updatePeriod(SetPeriodDto setPeriodDto) throws Exception;
     void deleteCheck(AppointmentDto appointmentDto) throws Exception;
-    boolean check(int boardId, int shareUserId, int notShareUserId, int type) throws Exception;
+    SetPeriodDto check(int boardId, int shareUserId, int notShareUserId, int type) throws Exception;
     void setPeriod(SetPeriodDto setPeriodDto) throws Exception;
 
 

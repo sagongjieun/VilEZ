@@ -46,8 +46,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void deletePeriod(SetPeriodDto setPeriodDto) throws Exception {
+    public void updatePeriod(SetPeriodDto setPeriodDto) throws Exception {
         appointmentDao.deleteCheck(setPeriodDto);
+        appointmentDao.setPeriod(setPeriodDto);
     }
 
     @Override
@@ -56,12 +57,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public boolean check(int boardId, int shareUserId, int notShareUserId, int type) throws Exception {
-        if(appointmentDao.loadCheck(boardId, shareUserId, notShareUserId, type) == null){
-            return false;
-        }else{
-            return true;
-        }
+    public SetPeriodDto check(int boardId, int shareUserId, int notShareUserId, int type) throws Exception {
+        return appointmentDao.loadCheck(boardId, shareUserId, notShareUserId, type);
     }
 
     @Override
