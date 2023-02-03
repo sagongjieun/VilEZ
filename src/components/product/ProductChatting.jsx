@@ -3,20 +3,25 @@ import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import ProductInfo from "./ProductInfo";
 import MiddleWideButton from "../button/MiddleWideButton";
-import MapAndChatting from "../Chatting";
-import MeetConfirm from "../modal/MeetConfirm";
+import StompRealTime from "../StompRealTime";
+import MeetConfirmModal from "../modal/MeetConfirmModal";
 import QuitChattingReal from "../modal/QuitChattingReal";
-import Oath from "../modal/Oath";
-import ShareComplete from "../modal/ShareComplete";
+import OathMoal from "../modal/OathModal";
+import ShareCompleteModal from "../modal/ShareCompleteModal";
 import { useParams } from "react-router-dom";
 import { getBoardIdByRoomId } from "../../api/chat";
 import { getAskArticleDetailByBoardId } from "../../api/ask";
 import { getShareArticleByBoardId } from "../../api/share";
 import { getUserDetail } from "../../api/profile";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { shareDateState, shareDataState } from "../../recoil/atom";
 
 const ProductChatting = () => {
   const { roomId } = useParams();
   const loginUserId = localStorage.getItem("id");
+
+  const shareDate = useRecoilValue(shareDateState);
+  const setShareData = useSetRecoilState(shareDataState);
 
   const [isConfirm, setIsConfirm] = useState(false);
   const [isOath, setIsOath] = useState(false);
@@ -24,10 +29,12 @@ const ProductChatting = () => {
   const [isComplete, setIsComplete] = useState(false);
 
   const [otherUserId, setOtherUserId] = useState(null);
+  const [shareUserId, setShareUserId] = useState(null);
+  const [notShareUserId, setNotShareUserId] = useState(null);
   const [boardId, setBoardId] = useState(null);
   const [boardType, setBoardType] = useState(null);
   const [boardDetail, setBoardDetail] = useState({
-    writerNickname: "",
+    otherUserNickname: "",
     thumbnailImage: "",
     boardId: boardId,
     title: "",
@@ -42,6 +49,22 @@ const ProductChatting = () => {
   }
 
   function onClickConfirm() {
+    // 유효성 검사
+    if (!shareDate.startDate || !shareDate.endDate) {
+      alert("공유 기간을 확정해주세요 ✅");
+      return;
+    }
+
+    // recoil에 현재 예약하려는 데이터 담기
+    setShareData({
+      boardId: boardId,
+      boardType: boardType,
+      appointmentStart: shareDate.startDate,
+      appointmentEnd: shareDate.endDate,
+      shareUserId: shareUserId,
+      notShareUserId: notShareUserId,
+    });
+
     setIsConfirm(!isConfirm);
   }
 
@@ -54,9 +77,18 @@ const ProductChatting = () => {
         setBoardId(res.boardId);
         setBoardType(res.type);
 
+        // 로그인유저가 공유자면
         if (loginUserId == res.shareUserId) {
           setOtherUserId(res.notShareUserId);
-        } else setOtherUserId(res.shareUserId);
+          setShareUserId(loginUserId);
+          setNotShareUserId(res.notShareUserId);
+        }
+        // 로그인유저가 피공유자면
+        else {
+          setOtherUserId(res.shareUserId);
+          setShareUserId(res.shareUserId);
+          setNotShareUserId(loginUserId);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -70,7 +102,7 @@ const ProductChatting = () => {
         setBoardDetail((prev) => {
           return {
             ...prev,
-            writerNickname: res.nickName,
+            otherUserNickname: res.nickName,
           };
         });
       });
@@ -126,33 +158,37 @@ const ProductChatting = () => {
 
   return (
     <div css={wrapper}>
-      {/* div만든 이유 ? 가리개 만들기 위함 */}
-      {/* <div css={modalWrap({ isConfirm })}>{isConfirm ? <MeetConfirm /> : null}</div> */}
-
       <div css={articleInfoWrapper}>
-        <h2>{boardDetail.writerNickname} 님과의 대화</h2>
+        <h2>{boardDetail.otherUserNickname} 님과의 대화</h2>
         <ProductInfo infos={boardDetail} boardId={boardId} boardType={boardType} />
       </div>
       <div css={mapAndChatWrapper}>
-        {boardId && boardType && otherUserId && boardDetail.writerNickname && (
-          <MapAndChatting
+        {boardId && boardType && otherUserId && boardDetail.otherUserNickname && (
+          <StompRealTime
             roomId={roomId}
             boardId={boardId}
             boardType={boardType}
             otherUserId={otherUserId}
-            otherUserNickname={boardDetail.writerNickname}
+            otherUserNickname={boardDetail.otherUserNickname}
           />
         )}
       </div>
       <div css={buttonWrapper}>
         <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
-        <MiddleWideButton text={"만남 확정하기"} css={meetconfirmWrap} onclick={onClickConfirm} />
+        <MiddleWideButton text={"만남 확정하기"} onclick={onClickConfirm} />
       </div>
-      <div>{isConfirm ? <MeetConfirm close={setIsConfirm} openOath={setIsOath} /> : null}</div>
-      {/* Props 받는 방법 마스터하기 */}
+      <div>
+        {isConfirm ? (
+          <MeetConfirmModal
+            close={setIsConfirm}
+            openOath={setIsOath}
+            otherUserNickname={boardDetail.otherUserNickname}
+          />
+        ) : null}
+      </div>
       <div>{isQuit ? <QuitChattingReal close={setIsQuit} /> : null}</div>
-      <div>{isOath ? <Oath close={setIsOath} openLastConfirm={setIsComplete} /> : null} </div>
-      <div>{isComplete ? <ShareComplete /> : null}</div>
+      <div>{isOath ? <OathMoal close={setIsOath} openLastConfirm={setIsComplete} /> : null} </div>
+      <div>{isComplete ? <ShareCompleteModal /> : null}</div>
     </div>
   );
 };
@@ -163,17 +199,6 @@ const wrapper = css`
   flex-direction: column;
   position: relative;
 `;
-
-// const modalWrap = (props) => css`
-//   position: absolute;
-//   width: 100%;
-//   height: 100%;
-//   /* background-color: gray; */
-//   left: 0px;
-//   top: 0px;
-//   backdrop-filter: ${props.isConfirm ? "null" : "blur(4px"};
-//   z-index: 1000;
-// `;
 
 const articleInfoWrapper = css`
   display: flex;
@@ -212,5 +237,5 @@ const buttonWrapper = css`
     background-color: #c82333;
   }
 `;
-const meetconfirmWrap = css``;
+
 export default ProductChatting;

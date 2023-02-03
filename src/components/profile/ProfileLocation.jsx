@@ -6,7 +6,9 @@ import location_icon from "../../assets/images/location_icon.png";
 // import { useEffect } from "react";
 
 const ProfileLocation = (props) => {
-  const modalQrcode = () => {};
+  function modalQrcode() {
+    props.setIsQrCodeOpen(true);
+  }
   return (
     <div css={locationWrapper}>
       <div>

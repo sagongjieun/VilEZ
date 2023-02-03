@@ -13,7 +13,9 @@ const Product = () => {
         <Route path="/detail/share/:boardId" element={<ProductDetail />} />
         <Route path="/detail/ask/:boardId" element={<ProductDetail />} />
         <Route path="/chat/:roomId" element={<ProductChatting />} />
-        <Route path="/list" element={<ProductList />} />
+        <Route path="/list/share" element={<ProductList />} />
+        <Route path="/list/ask" element={<ProductList />} />
+        {/* useEffect로, pathname에 share, ask포함되어있으면 요청글 */}
       </Routes>
     </div>
   );

@@ -234,8 +234,9 @@ function EditProfile() {
 const EditProfileBox = css`
   padding: 30px 40px;
   width: 440px;
-  border: 1px solid gray;
+  border: 1px solid #d8d8d8;
   border-radius: 10px;
+  background-color: #fff;
   box-shadow: 1px 1px 2px;
   & > h3 {
     text-align: center;
@@ -339,10 +340,10 @@ const commitButtonWrapper = css`
     border-radius: 5px;
     margin: 0 10px;
   }
-  & > button:nth-child(1) {
+  & > button:nth-of-type(1) {
     background-color: #d7d9dc;
   }
-  & > button:nth-child(2) {
+  & > button:nth-of-type(2) {
     background-color: #66dd9c;
   }
 `;

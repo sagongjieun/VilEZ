@@ -6,9 +6,9 @@ const jsonAxios = jsonInstance();
 
 async function getQrCode(userId) {
   try {
-    const { data } = await jsonAxios.post(`/qrcodes`, userId);
+    const { data } = await jsonAxios.post(`/qrcodes?userId=${userId}`);
     if (data.flag === "success") return data.data;
-    else alert("QR CODE 생성에 실패했습니다. 다시 시도해주세요.");
+    else console.log(data.flag);
   } catch (error) {
     console.log(error);
   }
