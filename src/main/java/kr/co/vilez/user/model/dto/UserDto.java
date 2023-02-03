@@ -23,5 +23,7 @@ public class UserDto {
     private String accessToken;
     private String refreshToken;
     private int state;
+    private String areaLng;
+    private String areaLat;
 
 }

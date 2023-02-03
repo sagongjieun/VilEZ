@@ -13,6 +13,7 @@ public class PageNavigator {
     int cnt;
     int low;
     int high;
+    int userId;
     String areaLng;
     String areaLat;
 }
