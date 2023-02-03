@@ -28,8 +28,8 @@ public class AskController {
     public ResponseEntity<?> loadMyAskList(@PathVariable("userid") int userId) {
         HttpVO http = new HttpVO();
         List<AskDto> askDtoList = askService.loadMyAskList(userId);
-        http.setFlag("success");
 
+        http.setFlag("success");
         http.setData(askDtoList);
 
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
@@ -40,10 +40,15 @@ public class AskController {
                  notes = "List로 전체 AskDto가 출력된다.")
     public ResponseEntity<?> loadAskList(PageNavigator pageNavigator) {
         HttpVO http = new HttpVO();
-        List<AskDto> askDtoList = askService.loadAskList(pageNavigator);
-        http.setFlag("success");
+        ArrayList<Object> data = new ArrayList<>();
 
-        http.setData(askDtoList);
+        try {
+            data.add(askService.loadAskList(pageNavigator));
+            http.setFlag("success");
+            http.setData(data);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
