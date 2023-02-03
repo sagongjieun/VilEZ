@@ -60,8 +60,10 @@ public class AskServiceImpl implements AskService{
 
         askDtoList = askMapper.loadAskList(pageNavigator);
 
+
         for(AskDto askDto : askDtoList) {
             AskList askList = new AskList();
+            askDto.setList(askDao.list(askDto.getId()));
             askList.setAskDto(askDto);
             list.add(askList);
         }
