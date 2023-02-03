@@ -37,13 +37,13 @@
         )as a
         on b.id = a.board_id
         <where>
-            OR (CAST(hope_area_lat as Double) >= (#{areaLat} - 0.03) and (#{areaLat} + 0.03) >= CAST(hope_area_lat as Double))
+            AND (CAST(hope_area_lat as Double) >= (#{areaLat} - 0.03) and (#{areaLat} + 0.03) >= CAST(hope_area_lat as Double))
             and (CAST(hope_area_lng as Double) >= (#{areaLng} - 0.03) and (#{areaLng} + 0.03) >= CAST(hope_area_lng as Double))
             <if test ="word != null and word != ''">
-                OR title like #{word}
+                AND title like #{word}
             </if>
             <if test ="word != null and word != ''">
-                OR content like #{word}
+                AND content like #{word}
             </if>
             <if test="category != null and category != ''">
                 AND category = #{category}
