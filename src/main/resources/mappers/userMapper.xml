@@ -55,7 +55,9 @@
     </select>
 
     <select id="detail" parameterType="int" resultMap="user">
-        SELECT nickname,area,point,manner,profile_img, area_lat, area_lng from user where id = #{id} and state >= 0
+        SELECT nickname,area,point,manner,profile_img, area_lat, area_lng
+        from user
+        where id = #{id} and state >= 0;
     </select>
 
     <update id="modifyUserInfo" parameterType="map">
@@ -85,7 +87,7 @@
     </insert>
 
     <select id="login" parameterType="UserDto" resultMap="user">
-        SELECT id, email, password, nickname
+        SELECT id, email, password, nickname, area_lat, area_lng
         FROM user
         WHERE email = #{email} and password = #{password};
     </select>
