@@ -204,6 +204,8 @@ public class UserServiceImpl implements UserService {
         map.put("manner",user.getManner());
         map.put("point",user.getPoint());
         map.put("profile_img", user.getProfileImg());
+        map.put("areaLng", user.getAreaLng());
+        map.put("areaLat", user.getAreaLat());
 
         data.add(map);
         http.setData(data);
