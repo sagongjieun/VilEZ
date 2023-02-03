@@ -8,13 +8,11 @@ import kr.co.vilez.share.model.dto.ShareDto;
 import kr.co.vilez.share.model.service.ShareService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.List;
 
 @RequestMapping("/shareboard")
@@ -22,10 +20,22 @@ import java.util.List;
 @RequiredArgsConstructor
 @Log4j2
 public class ShareController {
-
     HttpVO httpVO = null;
-
     final ShareService shareService;
+
+    @GetMapping
+    @ApiOperation(value = "북마크 수와 카테고리에 따른 베스트 게시글 3개의 정보를 주는 API")
+    public ResponseEntity<?> bestBoardList(){
+        httpVO = new HttpVO();
+
+        try{
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
+    }
 
     @GetMapping
     @ApiOperation(value = "전체 글 리스트를 보내준다" ,
@@ -57,7 +67,7 @@ public class ShareController {
                     "\n \t hopeAreaLng : String," +
                     "\n \t startDay : String," +
                     "\n \t endDay : String" +
-                    "\n \t }")
+                    "\n \t address : String}")
     public ResponseEntity<?> insert(@RequestPart(value ="board") ShareDto shareDto,
                                     @RequestPart(value="image") List<MultipartFile> files){
         httpVO = new HttpVO();
@@ -135,7 +145,6 @@ public class ShareController {
     }
 
     //bookmark
-
     @GetMapping("/bookmark/{boardId}")
     @ApiOperation(value = "글번호의 북마크 리스트를 불러온다.", notes = "Path로 boardId를 넣어준다." +
             "\n 북마크 정보들을 List로 리턴한다.")
