@@ -23,13 +23,15 @@ public class ShareController {
     HttpVO httpVO = null;
     final ShareService shareService;
 
-    @GetMapping("/asjasdjkgn")
+    @GetMapping("/best")
     @ApiOperation(value = "북마크 수와 카테고리에 따른 베스트 게시글 3개의 정보를 주는 API")
-    public ResponseEntity<?> bestBoardList(){
+    public ResponseEntity<?> bestBoardList(@PathVariable String category,
+                                           @PathVariable int userId,
+                                           @PathVariable int boardId){
         httpVO = new HttpVO();
 
         try{
-
+            shareService.getBestList(category, userId, boardId);
         } catch (Exception e){
             e.printStackTrace();
         }
