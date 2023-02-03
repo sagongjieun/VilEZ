@@ -37,6 +37,8 @@
         )as a
         on b.id = a.board_id
         <where>
+            OR (CAST(hope_area_lat as Double) >= (#{areaLat} - 0.03) and (#{areaLat} + 0.03) >= CAST(hope_area_lat as Double))
+            and (CAST(hope_area_lng as Double) >= (#{areaLng} - 0.03) and (#{areaLng} + 0.03) >= CAST(hope_area_lng as Double))
             <if test ="word != null and word != ''">
                 OR title like #{word}
             </if>
