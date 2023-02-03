@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface ShareService {
+    HttpVO getBestList(String category, int userId, int boardId) throws Exception;
     HttpVO loadMyShareList(int boardId) throws Exception;
     HttpVO loadShareList(PageNavigator pageNavigator) throws Exception;
     HttpVO delete(int boardId) throws Exception;

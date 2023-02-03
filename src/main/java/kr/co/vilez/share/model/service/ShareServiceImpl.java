@@ -23,7 +23,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +38,42 @@ public class ShareServiceImpl implements ShareService{
     final OSUpload osUpload;
     final UserMapper userMapper;
     final String bucketName = "vilez";
+
+    @Override
+    public HttpVO getBestList(String category, int uesrId, int boardId) throws Exception {
+        httpVO = new HttpVO();
+        List<TotalListShare> data = new ArrayList<>();
+
+        UserDto userDto = userMapper.detail(uesrId);
+        System.out.println("userDto = " + userDto);
+
+        PageNavigator pageNavigator = new PageNavigator();
+        pageNavigator.setAreaLat(userDto.getAreaLat());
+        pageNavigator.setAreaLng(userDto.getAreaLng());
+        pageNavigator.setCategory(category);
+        pageNavigator.setBoardId(boardId);
+        List<ShareListDto> list = shareMapper.loadShareList(pageNavigator);
+
+        for(ShareListDto shareListDto : list){
+            TotalListShare totalListShare = new TotalListShare();
+
+            List<ImgPath> imgPaths = shareDao.list(shareListDto.getId());
+            shareListDto.setList(imgPaths);
+            List<BookmarkDto> bookmarkList = shareDao.selectBookmarkList(shareListDto.getId());
+
+            totalListShare.setShareListDto(shareListDto);
+            totalListShare.setListCnt(bookmarkList.size());
+
+            if(boardId == totalListShare.getShareListDto().getId()) continue;
+            data.add(totalListShare);
+        }
+
+        Collections.sort(data);
+
+        httpVO.setData(data.subList(0, 3));
+        return httpVO;
+    }
+
     @Override
     public HttpVO bookmarkList(int boardId) throws Exception {
         httpVO = new HttpVO();
