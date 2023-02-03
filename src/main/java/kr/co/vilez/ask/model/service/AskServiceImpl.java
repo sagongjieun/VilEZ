@@ -12,6 +12,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import kr.co.vilez.ask.model.dao.AskDao;
 import kr.co.vilez.ask.model.dto.AskDto;
+import kr.co.vilez.ask.model.dto.AskList;
 import kr.co.vilez.ask.model.dto.ImgPath2;
 import kr.co.vilez.ask.model.mapper.AskMapper;
 import kr.co.vilez.configuration.NaverObjectStorageConfig;
@@ -44,7 +45,7 @@ public class AskServiceImpl implements AskService{
     final String bucketName = "vilez";
 
     @Override
-    public List<AskDto> loadAskList(PageNavigator pageNavigator){
+    public ArrayList<AskList> loadAskList(PageNavigator pageNavigator) throws Exception{
         List<AskDto> askDtoList = new ArrayList<>();
 
         if(pageNavigator.getWord() != null && pageNavigator.getWord() != ""){
@@ -55,16 +56,17 @@ public class AskServiceImpl implements AskService{
         pageNavigator.setHigh(pageNavigator.getHigh() * pageNavigator.getCnt());
         pageNavigator.setLow(tmp);
 
-        try {
-            askDtoList = askMapper.loadAskList(pageNavigator);
-            for(AskDto askDto : askDtoList){
-                askDto.setList(askDao.list(askDto.getId()));
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        ArrayList<AskList> list = new ArrayList<>();
+
+        askDtoList = askMapper.loadAskList(pageNavigator);
+
+        for(AskDto askDto : askDtoList) {
+            AskList askList = new AskList();
+            askList.setAskDto(askDto);
+            list.add(askList);
         }
 
-        return askDtoList;
+        return list;
     }
 
     @Override
