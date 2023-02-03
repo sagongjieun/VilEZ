@@ -54,21 +54,19 @@ public class AppointmentController {
     }
 
     // 공유자가 만남(예약)을 초기화 하고 싶을 때, 기존 설정한 날짜를 삭제해주는 API
-    @DeleteMapping("/set/period")
+    @PutMapping("/set/period")
     @ApiOperation(value = "공유자가 만남(예약) 중 희망 공유 기간을 잘못 설정해 삭제하고 싶을때, 사용하는 API",
             notes ="-- 필요한 데이터 --" +
                     "\n\t boardId, 현재 채팅을 진행하는 게시글 방 번호" +
                     "\n\t shareUserId, 공유자의 Id" +
                     "\n\t notShareUserId, 피공유자의 Id" +
-                    "\n\t startDay, 시작일" +
-                    "\n\t endDay, 종료일" +
                     "\n\t type, 공유글에 의한 기간설정인지, 요청글에 의한 기간설정인지" +
                     "1 = 요청글 , 2 = 공유글")
-    public ResponseEntity<?> deletePeriod(@RequestBody SetPeriodDto setPeriodDto){
+    public ResponseEntity<?> updatePeriod(@RequestBody SetPeriodDto setPeriodDto){
         HttpVO http = new HttpVO();
 
         try{
-            appointmentService.deletePeriod(setPeriodDto);
+            appointmentService.updatePeriod(setPeriodDto);
             http.setFlag("success");
         } catch (Exception e){
             e.printStackTrace();
@@ -80,15 +78,14 @@ public class AppointmentController {
     // 공유자가 만남(예약)의 기간을 설정했는지에 대한 여부를 알려주는 API
     @GetMapping("/set/check")
     @ApiOperation(value = "공유자가 만남(예약) 중 희망 공유 기간 설정할 때 사용하는 API",
-            notes = "true면 공유자가 희망 공유기간 설정을 마친 후" +
-                    "false면 공유자가 아직 공유기간을 설정하지 않은 것")
+            notes = "값이 존재 하면 공유자가 희망 공유기간 설정을 마친 후" +
+                    "null면 공유자가 아직 공유기간을 설정하지 않은 것")
     public ResponseEntity<?> checkSet(@RequestParam int boardId,
                                       @RequestParam int shareUserId,
                                       @RequestParam int notShareUserId,
                                       @RequestParam int type){
         HttpVO http = new HttpVO();
         ArrayList<Object> data = new ArrayList<>();
-
         try{
             data.add(appointmentService.check(boardId, shareUserId, notShareUserId, type));
             http.setData(data);
