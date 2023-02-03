@@ -28,18 +28,14 @@ const modalOpenState = atom({
   default: false,
 });
 
-src/recoil/atom.js
 const locationState = atom({
   key: "locationState",
   default: { areaLat: 0, areaLng: 0 },
 });
-
-export { loginUserState, shareDateState, shareDataState, modalOpenState, locationState };
 
 const enterChatRoomState = atom({
   key: "enterChatRoomState",
   default: null,
 });
 
-export { loginUserState, shareDataState, modalOpenState, enterChatRoomState };
-
+export { loginUserState, shareDataState, modalOpenState, locationState, enterChatRoomState };
