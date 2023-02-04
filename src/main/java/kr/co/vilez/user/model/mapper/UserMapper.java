@@ -13,6 +13,7 @@ import java.util.List;
 public interface UserMapper {
     void setManner(int userId, int degree) throws Exception;
     void saveLocation(LocationDto locationDto) throws Exception;
+    void saveLocationMobile(UserDto userDto) throws Exception;
     UserDto checkEmail(String email) throws SQLException;
     UserDto check(String nickname) throws SQLException;
     void modifyUserInfo(HashMap<String,?> user) throws SQLException;

@@ -31,6 +31,12 @@ public class UserServiceImpl implements UserService {
     HttpVO http = null;
     List<Object> data = null;
 
+
+    @Override
+    public void saveLocationMobile(UserDto userDto) throws Exception {
+        userMapper.saveLocationMobile(userDto);
+    }
+
     @Override
     public void setManner(int userId, int degree) throws Exception {
         int temperature = 0;
