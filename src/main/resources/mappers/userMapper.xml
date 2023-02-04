@@ -41,7 +41,7 @@
 
     <select id="saveLocationMobile" parameterType="userDto">
         UPDATE user
-        SET area_lng = #{area_lng}, area_lat=#{area_lat}
+        SET area_lng = #{areaLng}, area_lat=#{areaLat}
         WHERE id = #{id}
     </select>
 
