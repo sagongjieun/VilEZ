@@ -8,20 +8,52 @@
             name="fragment"
             type="kr.co.vilez.ui.HomeFragment" />
         <variable
-            name="title"
-            type="String" />
-
-
+            name="userLocationValid"
+            type="boolean" />
+        <import type="android.view.View"/>
     </data>
-    <LinearLayout
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/tv_warn_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="동네인증을 해야 서비스 이용이 가능해요."
+            app:layout_constraintBottom_toTopOf="@+id/btn_warn_location"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            android:visibility="@{userLocationValid ? View.GONE : View.VISIBLE}"/>
+
+        <Button
+            android:id="@+id/btn_warn_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{fragment.moveToUserLocationSetting}"
+            android:text="동네 인증 하러가기"
+            android:layout_marginTop="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_warn_location"
+            android:visibility="@{userLocationValid ? View.GONE : View.VISIBLE}"/>
+
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
@@ -35,7 +67,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@{title}"
+                    android:text="우리동네 공유글"
                     android:textSize="20sp" />
             </com.google.android.material.appbar.MaterialToolbar>
 
@@ -45,17 +77,19 @@
             android:id="@+id/tv_no_article_msg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/home_no_article_message"
             android:gravity="center"
+            android:text="@string/home_no_article_message"
             android:textSize="16sp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-
-
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appbar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="@{userLocationValid ? View.VISIBLE : View.GONE}">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_share_list"
@@ -73,15 +107,15 @@
                 android:layout_gravity="bottom|right"
                 android:layout_margin="16dp"
                 android:backgroundTint="@color/main_1"
-                app:borderWidth="0dp"
-                android:src="@drawable/ic_floating_edit"
-                app:tint="@color/white"
                 android:contentDescription="WRITE"
-                android:onClick="@{fragment.moveToShareWriteActivity}"/>
+                android:onClick="@{fragment.moveToShareWriteActivity}"
+                android:src="@drawable/ic_floating_edit"
+                app:borderWidth="0dp"
+                app:tint="@color/white" />
         </FrameLayout>
 
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </layout>

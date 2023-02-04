@@ -103,6 +103,7 @@ class HopePlaceFragment : Fragment(), MapView.MapViewEventListener,
 
         mapView.setShowCurrentLocationMarker(true)
 
+
         val locationFinePermission = ContextCompat.checkSelfPermission(
             activity,
             Manifest.permission.ACCESS_FINE_LOCATION

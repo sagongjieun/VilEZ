@@ -11,7 +11,7 @@ data class User(
     var oauth: String,
     val password: String,
     val point: Int,
-    var profileImg: String,
+    val profileImg: String,
     val refreshToken: String,
     val state: Int,
     val areaLat: String,
@@ -22,8 +22,11 @@ data class User(
     constructor(id: Int):this(
         "","","","",id,0,"","","",0,"","",0,"0.0","0.0"
     )
-    constructor(id:Int, password:String, nickName: String):this(
-        "","","","",id,0,nickName,"",password,0,"","",0,"0.0","0.0"
+    constructor(id:Int, areaLat: String="0.0", areaLng: String="0.0"):this(
+        "", "", "", "", 0, 0, "", "", "", 0, "", "", 0, "", "",
+    )
+    constructor(id:Int, password:String, nickName: String="", areaLat: String="0.0", areaLng: String="0.0"):this(
+        "","","","",id,0,nickName,"",password,0,"","",0,areaLat,areaLng
     )
     constructor(email: String, password:String, nickName: String="", oauth: String=""):this(
         "","","",email,0,0,nickName,oauth,password,0,"","",0,"0.0","0.0"

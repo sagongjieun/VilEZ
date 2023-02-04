@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.provider.MediaStore
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,8 +18,8 @@ import androidx.core.content.ContextCompat
 import kr.co.vilez.ui.user.RegisterActivity
 
 class PermissionUtil {
-    private val REQ_GALLERY = 1
-    private val REQ_LOCATION = 1
+    val REQ_GALLERY = 1
+    val REQ_LOCATION = 2
 
     /**
      * @param multiple : 이미지를 여러장 요청하는가
@@ -50,7 +51,7 @@ class PermissionUtil {
         }
     }
 
-    fun locationPermission(context: Context, locationResult: ActivityResultLauncher<Intent>) {
+    fun locationPermission(context: Context):Boolean {
         val locationFinePermission = ContextCompat.checkSelfPermission(
             context,
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -66,8 +67,9 @@ class PermissionUtil {
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ), REQ_LOCATION
             )
+            return false
         } else {
-            locationResult.launch(Intent())
+            return true
         }
     }
 

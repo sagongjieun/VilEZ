@@ -250,8 +250,7 @@ class ShareWriteActivity : AppCompatActivity() {
         } else if ((lat == null) or (lng == null)) {
             Snackbar.make(view, "희망 공유 장소를 선택해주세요.", Snackbar.LENGTH_SHORT).show()
         } else {
-            Snackbar.make(view, "이제 글 POST/PUT 요청 시작하기", Snackbar.LENGTH_SHORT).show()
-
+            Log.d(TAG, "savePost: 이제 글 POST/PUT 요청 시작하기")
 
             // 이미지 리스트 multipart list에 넣기
             makeMultiPartList()

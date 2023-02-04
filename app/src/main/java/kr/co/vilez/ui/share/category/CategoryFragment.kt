@@ -21,6 +21,7 @@ class CategoryFragment : Fragment() {
     private lateinit var activity: MenuCategoryActivity
 
     companion object {
+
         private val categoryList = mutableListOf<Category>(
             Category("화장품/미용", R.drawable.user_default),
             Category("생활/건강", R.drawable.user_default),
@@ -31,9 +32,13 @@ class CategoryFragment : Fragment() {
             Category("패션의류", R.drawable.user_default),
             Category("여가/생활편의", R.drawable.user_default),
             Category("도서", R.drawable.user_default),
+            Category("디지털/가전", R.drawable.user_default),
+            Category("기타", R.drawable.user_default),
         )
 
     }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity = context as MenuCategoryActivity

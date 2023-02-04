@@ -35,8 +35,4 @@
         <item>기타</item>
     </string-array>
 
-    <string-array name="search_filter">
-        <item>최신순</item>
-        <item>오래된순</item>
-    </string-array>
 </resources>
