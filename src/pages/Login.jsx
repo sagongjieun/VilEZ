@@ -5,7 +5,6 @@ import { Link, useNavigate } from "react-router-dom";
 import DivideLine from "../components/common/DivideLine";
 import OAuthLoginButton from "../components/login/OAuthLoginButton";
 import LoginForm from "../components/login/LoginForm";
-import Google from "../assets/images/social_google.png";
 import Kakao from "../assets/images/social_kakao.png";
 import Naver from "../assets/images/social_naver.png";
 
@@ -40,7 +39,6 @@ const Login = () => {
           <DivideLine width="300px" />
         </div>
         <div css={loginFormContainer}>
-          <OAuthLoginButton text="Sign in with Google" src={Google} alt="구글" backgroundColor="#FFF" color="#000" />
           <a href={KAKAO_AUTH_URL}>
             <OAuthLoginButton
               text="카카오로 로그인"

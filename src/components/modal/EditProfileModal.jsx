@@ -53,7 +53,7 @@ function EditProfile({ setIsEditProfileOpen }) {
     setIsPasswordOpen(true);
   }
   function onClickNickNameCheck() {
-    if (!nickNameError && nickName) {
+    if ((!nickNameError || nickNameError === "중복 확인을 진행해주세요.") && nickName) {
       checkNickName(nickName).then((response) => {
         setNickNameError("");
         setNickNameCheck(response.text);

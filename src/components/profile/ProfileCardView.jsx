@@ -1,35 +1,43 @@
 import React from "react";
+import { Link } from "react-router-dom";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { HiCalendar, HiHeart } from "react-icons/hi";
 // import image from "../../assets/images/product_thumbnail.png";
 import elapsedTime from "../product/ProductElapsedTime";
 
-const ProfileCardView = ({ title, endDay, startDay, date, thumbnail }) => {
-  const endDayDotted = endDay.slice(0, 4) + endDay.slice(5, 7) + endDay.slice(8, 10);
-  const startDayDotted = startDay.slice(0, 4) + startDay.slice(5, 7) + startDay.slice(8, 10);
+const ProfileCardView = ({ title, endDay, startDay, date, thumbnail, boardType, boardId }) => {
+  const endDayDotted = endDay.slice(0, 4) + "." + endDay.slice(5, 7) + "." + endDay.slice(8, 10);
+  const startDayDotted = startDay.slice(0, 4) + "." + startDay.slice(5, 7) + "." + startDay.slice(8, 10);
   return (
-    <div css={relatedProductWrapper}>
-      <div css={thumbnailWrapper}>
-        <img src={thumbnail} />
-      </div>
-      <div css={infoWrapper}>
-        <div>
-          <span>{title}</span>
-          <small css={timeWrapper}>{elapsedTime(date)}</small>
+    <Link
+      to={`/product/detail/${boardType}/${boardId}`}
+      css={css`
+        color: black;
+      `}
+    >
+      <div css={relatedProductWrapper}>
+        <div css={thumbnailWrapper}>
+          <img src={thumbnail} />
         </div>
-        <div>
-          <small>
-            <HiCalendar />
-            {startDayDotted} ~ {endDayDotted}
-          </small>
-          <small>
-            <HiHeart />
-            25
-          </small>
+        <div css={infoWrapper}>
+          <div>
+            <span>{title}</span>
+            <small css={timeWrapper}>{elapsedTime(date)}</small>
+          </div>
+          <div>
+            <small>
+              <HiCalendar />
+              {startDayDotted} ~ {endDayDotted}
+            </small>
+            <small>
+              <HiHeart />
+              25
+            </small>
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
@@ -43,6 +51,12 @@ const relatedProductWrapper = css`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  transition: all 0.3s;
+  :hover {
+    transform: scale(1.02) translateY(-4px);
+    transition: all 0.3s;
+    box-shadow: 0px 10px 4px rgba(0, 0, 0, 0.25);
+  }
 `;
 
 const thumbnailWrapper = css`

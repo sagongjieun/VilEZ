@@ -60,6 +60,28 @@ async function getShareReturnState(roomId) {
   }
 }
 
+async function getShareListByUserId(userId) {
+  try {
+    const { data } = await jsonAxios.get(`/appointments/my/give/${userId}`);
+
+    if (data.flag === "success") return data.data[0].state;
+    else console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getNotShareListByUserId(userId) {
+  try {
+    const { data } = await jsonAxios.get(`/appointments/my/${userId}`);
+
+    if (data.flag === "success") return data.data[0].state;
+    else console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // POST
 
 async function postShareDate(body) {
@@ -114,6 +136,8 @@ export {
   getShareDate,
   getShareState,
   getShareReturnState,
+  getShareListByUserId,
+  getNotShareListByUserId,
   postShareDate,
   postShareReturnState,
   postShareEnd,
