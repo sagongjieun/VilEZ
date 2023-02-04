@@ -83,7 +83,7 @@ const gaugeBar = css`
   overflow: hidden;
 `;
 const bar = (props) => css`
-  width: ${props.manner}%;
+  width: ${(props.manner % 10) * 10}%;
   height: 10px;
   background-color: #66dd9c;
 `;

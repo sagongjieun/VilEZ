@@ -73,7 +73,7 @@ const FindPassword = () => {
   function onSubmitEmailCode() {
     if (SHA256(emailCode) === hashedCode) {
       setIsCodeConfirmed(true);
-      setEmailConfirmText("이메일 인증이 완료되었습니다. 회원가입을 계속 진행해주세요.");
+      setEmailConfirmText("이메일 인증이 완료되었습니다.");
     } else {
       setEmailConfirmText("인증 코드가 일치하지 않습니다. 이메일을 다시 확인해주세요.");
     }
@@ -108,157 +108,51 @@ const FindPassword = () => {
         비밀번호 재설정
       </h2>
       <br />
-      <form
-        onSubmit={(event) => {
-          handleSubmit(event);
-          // errorsInitialize();
-        }}
-      >
-        <div css={inputContainer}>
-          <label css={loginLabelFont} htmlFor="email">
-            이메일
-          </label>
-          <div>
-            <div css={inputButtonWrapper}>
-              <div
-                css={css`
-                  width: calc(100% - 130px);
-                `}
-              >
-                <SignupInputBox
-                  name="email"
-                  type="text"
-                  placeholder="vilez@villypeople.com"
-                  disabled={isCodeConfirmed}
-                  onChange={(event) => {
-                    handleChange(event);
-                    onChangeEmail(event);
-                  }}
-                />
-              </div>
-              <div
-                css={css`
-                  width: 120px;
-                `}
-              >
-                <ConfirmButton
-                  outline={true}
-                  text="이메일 인증"
-                  onClick={() => {
-                    onSubmitEmail();
-                  }}
-                />
-              </div>
-            </div>
-            {errors.email ? (
-              <small css={alertWrapper}>
-                <small css={alert}>
-                  <AiOutlineExclamationCircle size="14" />
-                </small>
-                <small
+      <div css={formContainer}>
+        <form
+          onSubmit={(event) => {
+            handleSubmit(event);
+          }}
+          css={isCodeConfirmed ? moveLeft : null}
+        >
+          <div css={inputContainer}>
+            <label css={loginLabelFont} htmlFor="email">
+              이메일 인증
+            </label>
+            <small css={caption}>비밀번호 재설정을 위해 이메일 인증을 완료해주세요.</small>
+            <div>
+              <div css={inputButtonWrapper}>
+                <div
                   css={css`
-                    line-height: 22px;
+                    width: calc(100% - 130px);
                   `}
                 >
-                  {errors.email}
-                </small>
-              </small>
-            ) : null}
-          </div>
-          {/* email 인증 보내기 */}
-          {isEmailCodeVisible ? (
-            <div css={emailCodeWrapper}>
-              <div
-                css={css`
-                  display: flex;
-                  justify-content: space-between;
-                `}
-              >
-                <div css={codeAndTimer}>
                   <SignupInputBox
-                    name="emailCode"
+                    name="email"
                     type="text"
-                    placeholder="인증 코드를 입력해주세요."
+                    placeholder="vilez@villypeople.com"
+                    disabled={isCodeConfirmed}
                     onChange={(event) => {
                       handleChange(event);
-                      onChangeEmailCode(event);
+                      onChangeEmail(event);
                     }}
-                    disabled={isCodeConfirmed}
                   />
-                  {!isCodeConfirmed ? (
-                    <EmailCodeTimer
-                      setIsTimeOut={setIsTimeOut}
-                      setEmailConfirmText={() => {
-                        setEmailConfirmText();
-                      }}
-                      setHashedCode={() => {
-                        setHashedCode();
-                      }}
-                    />
-                  ) : null}
                 </div>
                 <div
                   css={css`
-                    width: 80px;
+                    width: 120px;
                   `}
                 >
-                  <ConfirmButton text="확인" onClick={() => onSubmitEmailCode()} />
-                </div>
-              </div>
-              {emailConfirmText && !isTimeOut ? (
-                <small css={isCodeConfirmed ? confirmedWrapper : alertWrapper}>{emailConfirmText}</small>
-              ) : null}
-              {isTimeOut ? (
-                <small css={alertWrapper}>인증 시간이 초과되었습니다. 이메일 인증을 다시 해주세요.</small>
-              ) : null}
-              {isCodeConfirmed ? null : (
-                <small css={redirectText}>
-                  이메일을 받지 못했나요?
-                  <button
+                  <ConfirmButton
+                    outline={true}
+                    text="이메일 인증"
                     onClick={() => {
                       onSubmitEmail();
                     }}
-                  >
-                    인증코드 재요청
-                  </button>
-                </small>
-              )}
-            </div>
-          ) : null}
-          {/* email 인증 확인하기 */}
-        </div>
-        {/* email */}
-
-        {isCodeConfirmed ? (
-          <div css={inputContainer}>
-            <label css={loginLabelFont} htmlFor="password">
-              비밀번호
-            </label>
-            <div
-              css={css`
-                position: relative;
-                padding-bottom: 6px;
-              `}
-            >
-              <SignupInputBox
-                name="password"
-                type={isVisible ? "text" : "password"}
-                placeholder="비밀번호를 입력해주세요."
-                onChange={(event) => {
-                  handleChange(event);
-                  onChangePassword(event);
-                }}
-              />
-              {errors.password ? null : (
-                <small
-                  css={css`
-                    color: #8a8a8a;
-                  `}
-                >
-                  영어 소문자, 숫자 조합 8~16자리로 입력해주세요.
-                </small>
-              )}
-              {errors.password ? (
+                  />
+                </div>
+              </div>
+              {errors.email ? (
                 <small css={alertWrapper}>
                   <small css={alert}>
                     <AiOutlineExclamationCircle size="14" />
@@ -268,72 +162,204 @@ const FindPassword = () => {
                       line-height: 22px;
                     `}
                   >
-                    {errors.password}
+                    {errors.email}
                   </small>
                 </small>
               ) : null}
             </div>
-            <div
-              css={css`
-                position: relative;
-              `}
-            >
-              <SignupInputBox
-                name="password2"
-                type={isVisible ? "text" : "password"}
-                placeholder="비밀번호를 다시 한 번 입력해주세요."
-                onChange={(event) => {
-                  handleChange(event);
-                  onChangePassword2(event);
-                }}
-              />
-              <span onClick={onClickVisible} css={isVisibleButton}>
-                {isVisible ? (
-                  <AiOutlineEye size="28" color="#66dd9c" />
-                ) : (
-                  <AiOutlineEyeInvisible size="28" color="#66dd9c" />
-                )}
-              </span>
-            </div>
-            {errors.password2 || (password !== password2 && password2) ? (
-              <small css={alertWrapper}>
-                <small css={alert}>
-                  <AiOutlineExclamationCircle size="14" />
-                </small>
-                <small
+            {/* email 인증 보내기 */}
+            {isEmailCodeVisible ? (
+              <div css={emailCodeWrapper}>
+                <div
                   css={css`
-                    line-height: 22px;
+                    display: flex;
+                    justify-content: space-between;
                   `}
                 >
-                  {password !== password2 && password2
-                    ? "비밀번호가 일치하지 않습니다. 다시 입력해주세요."
-                    : errors.password2}
-                </small>
-                <br />
-                <LargeWideButton text="비밀번호 재설정 완료" />
-              </small>
+                  <div css={codeAndTimer}>
+                    <SignupInputBox
+                      name="emailCode"
+                      type="text"
+                      placeholder="인증 코드를 입력해주세요."
+                      onChange={(event) => {
+                        handleChange(event);
+                        onChangeEmailCode(event);
+                      }}
+                      disabled={isCodeConfirmed}
+                    />
+                    {!isCodeConfirmed ? (
+                      <EmailCodeTimer
+                        setIsTimeOut={setIsTimeOut}
+                        setEmailConfirmText={() => {
+                          setEmailConfirmText();
+                        }}
+                        setHashedCode={() => {
+                          setHashedCode();
+                        }}
+                      />
+                    ) : null}
+                  </div>
+                  <div
+                    css={css`
+                      width: 80px;
+                    `}
+                  >
+                    <ConfirmButton text="확인" onClick={() => onSubmitEmailCode()} />
+                  </div>
+                </div>
+                {emailConfirmText && !isTimeOut ? (
+                  <small css={isCodeConfirmed ? confirmedWrapper : alertWrapper}>{emailConfirmText}</small>
+                ) : null}
+                {isTimeOut ? (
+                  <small css={alertWrapper}>인증 시간이 초과되었습니다. 이메일 인증을 다시 해주세요.</small>
+                ) : null}
+                {isCodeConfirmed ? null : (
+                  <small css={redirectText}>
+                    이메일을 받지 못했나요?
+                    <button
+                      onClick={() => {
+                        onSubmitEmail();
+                      }}
+                    >
+                      인증코드 재요청
+                    </button>
+                  </small>
+                )}
+              </div>
             ) : null}
+            {/* email 인증 확인하기 */}
           </div>
-        ) : null}
-        {/* password */}
+          {/* email */}
+
+          {isCodeConfirmed ? (
+            <div css={inputContainer}>
+              <label css={loginLabelFont} htmlFor="password">
+                비밀번호 재설정
+              </label>
+              <div
+                css={css`
+                  position: relative;
+                  padding-bottom: 6px;
+                `}
+              >
+                <SignupInputBox
+                  name="password"
+                  type={isVisible ? "text" : "password"}
+                  placeholder="비밀번호를 입력해주세요."
+                  onChange={(event) => {
+                    handleChange(event);
+                    onChangePassword(event);
+                  }}
+                />
+                {errors.password ? null : (
+                  <small
+                    css={css`
+                      color: #8a8a8a;
+                    `}
+                  >
+                    영어 소문자, 숫자 조합 8~16자리로 입력해주세요.
+                  </small>
+                )}
+                {errors.password ? (
+                  <small css={alertWrapper}>
+                    <small css={alert}>
+                      <AiOutlineExclamationCircle size="14" />
+                    </small>
+                    <small
+                      css={css`
+                        line-height: 22px;
+                      `}
+                    >
+                      {errors.password}
+                    </small>
+                  </small>
+                ) : null}
+              </div>
+              <div
+                css={css`
+                  position: relative;
+                `}
+              >
+                <SignupInputBox
+                  name="password2"
+                  type={isVisible ? "text" : "password"}
+                  placeholder="비밀번호를 다시 한 번 입력해주세요."
+                  onChange={(event) => {
+                    handleChange(event);
+                    onChangePassword2(event);
+                  }}
+                />
+                <span onClick={onClickVisible} css={isVisibleButton}>
+                  {isVisible ? (
+                    <AiOutlineEye size="28" color="#66dd9c" />
+                  ) : (
+                    <AiOutlineEyeInvisible size="28" color="#66dd9c" />
+                  )}
+                </span>
+              </div>
+              {errors.password2 || (password !== password2 && password2) ? (
+                <small css={alertWrapper}>
+                  <small css={alert}>
+                    <AiOutlineExclamationCircle size="14" />
+                  </small>
+                  <small
+                    css={css`
+                      line-height: 22px;
+                    `}
+                  >
+                    {password !== password2 && password2
+                      ? "비밀번호가 일치하지 않습니다. 다시 입력해주세요."
+                      : errors.password2}
+                  </small>
+                  <br />
+                </small>
+              ) : null}
+              <div
+                css={css`
+                  padding-top: 20px;
+                `}
+              >
+                <LargeWideButton text="비밀번호 재설정 완료" />
+              </div>
+            </div>
+          ) : null}
+          {/* password */}
+        </form>
         <div css={linkWrapper}>
           <Link to={"/login"} css={linkTag}>
             <p>돌아가기</p>
           </Link>
         </div>
-      </form>
+      </div>
     </div>
   );
 };
-
+const formContainer = css`
+  overflow: hidden;
+  & > form {
+    display: flex;
+    width: 200%;
+  }
+`;
+const moveLeft = css`
+  transition: all 0.3s;
+  transition-delay: 1s;
+  transform: translateX(-50%);
+`;
 const loginLabelFont = css`
   display: block;
   font-size: 18px;
   font-weight: Bold;
   margin-bottom: 10px;
 `;
+const caption = css`
+  display: block;
+  color: #c4c4c4;
+  padding-bottom: 10px;
+`;
 const inputContainer = css`
   padding-top: 20px;
+  width: 50%;
 `;
 const inputButtonWrapper = css`
   display: flex;
