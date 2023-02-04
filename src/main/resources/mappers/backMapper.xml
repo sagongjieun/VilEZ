@@ -3,6 +3,29 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.vilez.back.model.mapper.BackMapper">
 
+    <resultMap id="appointment" type="kr.co.vilez.back.model.vo.AppointmentVO">
+        <result column="appointment_id" property="appointmentId"/>
+        <result column="board_id" property="boardId"/>
+        <result column="share_user_id" property="shareUserId"/>
+        <result column="not_share_user_id" property="notShareUserId"/>
+    </resultMap>
+
+    <update id="setAppointment" parameterType="int">
+        update appointment
+        set state = -1
+        where appointment_id = #{appointmentId}
+    </update>
+
+    <select id="getAppointmentId" parameterType="int" resultMap="appointment">
+        select appointment_id, a.share_user_id, a.not_share_user_id, a.board_id
+        from appointment as a
+        left join room as r
+        on a.board_id = r.board_id and a.share_user_id = r.share_user_id and a.not_share_user_id = r.not_share_user_id
+        where r.state >= 0
+        order by appointment_start desc
+        limit 1;
+    </select>
+
     <select id="getAppointmentState" parameterType="appointmentStateDto" resultType="int">
         select a.state
         from appointment as a

@@ -32,6 +32,26 @@ public class UserServiceImpl implements UserService {
     List<Object> data = null;
 
     @Override
+    public void setManner(int userId, int degree) throws Exception {
+        int temperature = 0;
+
+        if(degree == 0){
+            temperature = -3;
+        } else if(degree == 1){
+            temperature = -1;
+        } else if(degree == 2){
+            temperature = 0;
+        } else if(degree == 3){
+            temperature = 1;
+        } else{
+            temperature = 3;
+        }
+
+        userMapper.setManner(userId, temperature);
+
+    }
+
+    @Override
     public void saveLocation(LocationDto locationDto) throws Exception {
         String userId = locationDto.getCode();
         userId = aes256.decryptAES256(userId);
