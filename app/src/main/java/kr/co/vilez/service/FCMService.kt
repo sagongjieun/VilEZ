@@ -14,13 +14,14 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import kr.co.vilez.R
 import kr.co.vilez.data.model.RESTResult
+import kr.co.vilez.ui.SplashActivity
+import kr.co.vilez.ui.chat.ChatRoomActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.FCMTokenUtil
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-private const val TAG = "빌리지_FCMService"
 class FCMService : FirebaseMessagingService() {
 
 
@@ -50,24 +51,100 @@ class FCMService : FirebaseMessagingService() {
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: ${remoteMessage.from}")
+        if(ApplicationClass.isAppRunning) {
+            Log.d(TAG, "onMessageReceived: 현재 앱 켜져있음")
+        } else {
+            Log.d(TAG, "onMessageReceived: 현재 앱 꺼져있음")
+        }
 
-        val messageTitle = remoteMessage.notification!!.title
-        val messageContent = remoteMessage.notification!!.body
+        /*if (remoteMessage.data.isNotEmpty() && remoteMessage.data["roomId"] != null && !ApplicationClass.isAppRunning) {
+            // 채팅 왔을때는 백그라운드에서만 FCM 수신
+            var data = remoteMessage.data
+            Log.d(TAG, "data.message: ${data}")
+            Log.d(TAG, "data.message: ${data["title"]}")
+            Log.d(TAG, "data.message: ${data["body"]}")
+            Log.d(TAG, "data.message roomId: ${data["roomId"]}")
+            Log.d(TAG, "data.message otherUserId: ${data["otherUserId"]}")
 
-        // Check if message contains a data payload.
-        if (remoteMessage.data.isNotEmpty()) {
-            Log.d(TAG, "Message data payload: ${remoteMessage.data}")
-            val mainIntent = Intent(this, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            }
-            val mainPendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, mainIntent, PendingIntent.FLAG_IMMUTABLE)
+            val messageTitle = data["title"].toString()
+            val messageContent = data["body"].toString()
+            val chatRoomId = data["roomId"].toString().toInt()
+            val otherUserId = data["otherUserId"].toString().toInt()
+            //알림의 탭 작업 설정 -----------------------------------------------------------------------
+           val tapResultIntent = Intent(this, ChatRoomActivity::class.java).apply {
+               putExtra("roomId", chatRoomId)
+               putExtra("otherUserId", otherUserId)
+               // TODO : 닉네임 ,프로필은 수정 필요
+               putExtra("nickName", "알수없음")
+               putExtra("profile", "https://kr.object.ncloudstorage.com/vilez/basicProfile.png")
 
+               //현재 액티비티에서 새로운 액티비티를 실행한다면 현재 액티비티를 새로운 액티비티로 교체하는 플래그
+               //flags = Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT
+               //이전에 실행된 액티비티들을 모두 없엔 후 새로운 액티비티 실행 플래그
+               flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+           }
+           val pendingIntent: PendingIntent = PendingIntent.getActivity(
+               this,
+               0,
+               tapResultIntent,
+               PendingIntent.FLAG_IMMUTABLE
+           )
             val builder1 = NotificationCompat.Builder(this, FCMTokenUtil().CHANNEL_ID)
                 .setSmallIcon(R.drawable.img_default_profile)
                 .setContentTitle(messageTitle)
                 .setContentText(messageContent)
-                .setAutoCancel(true)
-                .setContentIntent(mainPendingIntent)
+                .setAutoCancel(true) // 사용자가 클릭시 자동으로 메시지 삭제
+                .setContentIntent(pendingIntent)
+
+            NotificationManagerCompat.from(this).apply {
+                notify(101, builder1.build())
+            }
+        }*/
+
+        // Check if message contains a data payload.
+        if (remoteMessage.data.isNotEmpty() && !ApplicationClass.isAppRunning) { // 백그라운드에서만 FCM 수신
+            var data = remoteMessage.data
+            Log.d(TAG, "data.message: ${data}")
+            Log.d(TAG, "data.message: ${data["title"]}")
+            Log.d(TAG, "data.message: ${data["body"]}")
+            Log.d(TAG, "data.message roomId: ${data["roomId"]}")
+
+            val messageTitle = data["title"].toString()
+            val messageContent = data["body"].toString()
+            var chatRoomId:Int? = null
+            if(data["roomId"] != null) {
+                chatRoomId = data["roomId"].toString().toInt()
+                Log.d(TAG, "onMessageReceived: 채팅메시지임 룸Id: $chatRoomId")
+            }
+
+            Log.d(TAG, "Message data payload: ${remoteMessage.data}")
+
+            /*//알림의 탭 작업 설정 -----------------------------------------------------------------------
+            val tapResultIntent = Intent(this, ChatRoomActivity::class.java).apply {
+                //현재 액티비티에서 새로운 액티비티를 실행한다면 현재 액티비티를 새로운 액티비티로 교체하는 플래그
+                //flags = Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT
+                //이전에 실행된 액티비티들을 모두 없엔 후 새로운 액티비티 실행 플래그
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            val pendingIntent: PendingIntent = PendingIntent.getActivity(
+                this,
+                0,
+                tapResultIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )*/
+
+            val splashIntent = Intent(this, SplashActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            // requestCode가 다르면 별개의 메시지로 처리
+            val splashPendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, splashIntent, PendingIntent.FLAG_IMMUTABLE)
+
+            val builder1 = NotificationCompat.Builder(this, FCMTokenUtil().CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_launcher_vilez_round)
+                .setContentTitle(messageTitle)
+                .setContentText(messageContent)
+                .setAutoCancel(true) // 사용자가 클릭시 자동으로 메시지 삭제
+                .setContentIntent(splashPendingIntent)
 
             NotificationManagerCompat.from(this).apply {
                 notify(101, builder1.build())
@@ -79,6 +156,8 @@ class FCMService : FirebaseMessagingService() {
 //                // Handle message within 10 seconds
 //                //handleNow()
 //            }
+
+        } else if (remoteMessage.data.isNotEmpty()) { // 포그라운드에서도 수신
 
         }
 
@@ -141,7 +220,7 @@ class FCMService : FirebaseMessagingService() {
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
     }
     companion object {
-        private const val TAG = "MyFirebaseMsgService"
+        private const val TAG = "빌리지_FCMService"
     }
 
 
