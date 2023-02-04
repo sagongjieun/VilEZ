@@ -10,7 +10,7 @@ import { getUserDetail } from "../../api/profile";
 import { postAppointment } from "../../api/chat";
 
 // https://stackblitz.com/edit/react-signature-canvas-demo?file=index.js
-function OathMoal({ close, openLastConfirm }) {
+function OathRegistModal({ close, openLastConfirm }) {
   const canvasRef = useRef(null);
   const shareData = useRecoilValue(shareDataState);
 
@@ -25,7 +25,7 @@ function OathMoal({ close, openLastConfirm }) {
 
   function onClickCanvas() {
     const canvas = canvasRef.current.getTrimmedCanvas().toDataURL("image/png");
-    /** sign 담는 데이터 변경돼야 함 */
+
     const information = {
       boardId: shareData.boardId,
       shareUserId: shareData.shareUserId,
@@ -91,7 +91,6 @@ function OathMoal({ close, openLastConfirm }) {
         ) : (
           <></>
         )}
-
         <div css={signWrap}>
           {!isSign && <div css={signContentWrap}>여기에 서명을 해주세요</div>}
           <div>
@@ -213,4 +212,4 @@ const buttonWrap = css`
   }
 `;
 
-export default OathMoal;
+export default OathRegistModal;

@@ -6,7 +6,7 @@ import MiddleWideButton from "../button/MiddleWideButton";
 import StompRealTime from "../StompRealTime";
 import MeetConfirmModal from "../modal/MeetConfirmModal";
 import QuitChattingModal from "../modal/QuitChattingModal";
-import OathMoal from "../modal/OathModal";
+import OathRegistModal from "../modal/OathRegistModal";
 import AppointmentCompleteModal from "../modal/AppointmentCompleteModal";
 import { useParams } from "react-router-dom";
 import { getBoardIdByRoomId } from "../../api/chat";
@@ -235,6 +235,7 @@ const ProductChatting = () => {
             otherUserId={otherUserId}
             otherUserNickname={boardDetail.otherUserNickname}
             shareUserId={shareUserId}
+            notShareUserId={notShareUserId}
             shareState={shareState}
           />
         )}
@@ -272,30 +273,27 @@ const ProductChatting = () => {
           </>
         )}
       </div>
-      <div>
-        {isConfirm ? (
-          <MeetConfirmModal
-            close={setIsConfirm}
-            openOath={setIsOath}
-            otherUserNickname={boardDetail.otherUserNickname}
-            confirmedStartDate={confirmedStartDate}
-            confirmedEndDate={confirmedEndDate}
-          />
-        ) : null}
-      </div>
-      <div>{isQuit ? <QuitChattingModal close={setIsQuit} /> : null}</div>
-      <div>{isOath ? <OathMoal close={setIsOath} openLastConfirm={setIsAppointmentComplete} /> : null} </div>
-      <div>{isAppointmentComplete ? <AppointmentCompleteModal /> : null}</div>
-      <div>
-        {isProductReturn ? (
-          <ProductReturnModal
-            close={setIsProductReturn}
-            otherUserNickname={boardDetail.otherUserNickname}
-            otherUserId={otherUserId}
-            roomId={roomId}
-          />
-        ) : null}
-      </div>
+
+      {isConfirm ? (
+        <MeetConfirmModal
+          close={setIsConfirm}
+          openOath={setIsOath}
+          otherUserNickname={boardDetail.otherUserNickname}
+          confirmedStartDate={confirmedStartDate}
+          confirmedEndDate={confirmedEndDate}
+        />
+      ) : null}
+      {isQuit ? <QuitChattingModal close={setIsQuit} /> : null}
+      {isOath ? <OathRegistModal close={setIsOath} openLastConfirm={setIsAppointmentComplete} /> : null}
+      {isAppointmentComplete ? <AppointmentCompleteModal /> : null}
+      {isProductReturn ? (
+        <ProductReturnModal
+          close={setIsProductReturn}
+          otherUserNickname={boardDetail.otherUserNickname}
+          otherUserId={otherUserId}
+          roomId={roomId}
+        />
+      ) : null}
       {isShareComplete ? <ShareCompleteModal otherUserNickname={boardDetail.otherUserNickname} /> : null}
     </div>
   );

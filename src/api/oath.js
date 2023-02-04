@@ -1,7 +1,23 @@
 import { jsonInstance } from "./instance";
 
+const jsonAxios = jsonInstance();
+
+// GET
+
+async function getOath(boardId, notShareUserId, shareUserId) {
+  try {
+    const { data } = await jsonAxios.get(
+      `/signs?boardId=${boardId}&notShareUserId=${notShareUserId}&shareUserId=${shareUserId}`
+    );
+
+    if (data.flag === "success") return data.data;
+    else return false;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 //POST
-const jsonAxios = jsonInstance(); //eslint-disable-line no-unused-vars
 
 async function postCanvas(information) {
   try {
@@ -14,4 +30,4 @@ async function postCanvas(information) {
   }
 }
 
-export { postCanvas };
+export { getOath, postCanvas };
