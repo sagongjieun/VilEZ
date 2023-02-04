@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.model.Bookmark
 import kr.co.vilez.data.model.Chatroom
+import kr.co.vilez.data.model.RoomlistData
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.ActivityShareDetailBinding
 import kr.co.vilez.ui.chat.ChatRoomActivity
@@ -31,6 +32,7 @@ import kr.co.vilez.ui.dialog.ConfirmDialogInterface
 import kr.co.vilez.ui.share.write.ShareWriteActivity
 import kr.co.vilez.ui.user.ProfileMenuActivity
 import kr.co.vilez.util.ApplicationClass
+import kr.co.vilez.util.DataState
 import me.relex.circleindicator.CircleIndicator3
 import retrofit2.awaitResponse
 
@@ -42,6 +44,7 @@ class ShareDetailActivity : AppCompatActivity(){
     private var pagerAdapter: FragmentStateAdapter? = null
     private var mIndicator: CircleIndicator3? = null
     private var boardId:Int? = 0
+    private var userId:Int? = 0
     private var otherUserId:Int? = 0
 
     private lateinit var mapLat:String
@@ -56,11 +59,15 @@ class ShareDetailActivity : AppCompatActivity(){
         binding = DataBindingUtil.setContentView(this, R.layout.activity_share_detail)
         binding.activity = this
         boardId = intent.getIntExtra("boardId", 0)
-        Log.d(TAG, "onCreate: boardId: $boardId")
+        userId = intent.getIntExtra("userId", 0)
+        Log.d(TAG, "onCreate: boardId: $boardId $userId")
         setContentView(binding.root)
         mContext = this@ShareDetailActivity
         initData()
         initToolBar()
+        if(userId == ApplicationClass.prefs.getId()) {
+            binding.btnChat.visibility = View.INVISIBLE
+        }
     }
 
     private fun initMap() {
@@ -68,7 +75,7 @@ class ShareDetailActivity : AppCompatActivity(){
             .replace(R.id.share_detail_map, BoardMapFragment.newInstance(mapLat.toDouble(), mapLng.toDouble()))
             .commit()
     }
-
+        //boardId
     fun clickBookmark(view: View) {
         if(binding.bookmark!!) {
             // 관심목록에서 삭제
@@ -123,24 +130,45 @@ class ShareDetailActivity : AppCompatActivity(){
                 Log.d(TAG, "onChatBtnClick: 채팅방 이미 존재")
                 Toast.makeText(this@ShareDetailActivity, "이미 채팅중인 게시글이어서\n기존 채팅방으로 이동합니다.", Toast.LENGTH_SHORT).show()
                 val fragment = supportFragmentManager.findFragmentById(R.id.share_detail_map)
-                supportFragmentManager.beginTransaction().remove(fragment!!).commitNow()
+                if(fragment != null)
+                    supportFragmentManager.beginTransaction().remove(fragment!!).commitNow()
 
                 val intent = Intent(this@ShareDetailActivity, ChatRoomActivity::class.java)
                 intent.putExtra("roomId", isExist.data[0].id)
-                intent.putExtra("otherUserId", otherUserId!!)
+                intent.putExtra("otherUserId", userId!!)
+                intent.putExtra("nickName", binding.writer!!.nickName)
+                intent.putExtra("profile", binding.writer!!.profile_img)
+
+                DataState.set.add(isExist.data[0].id)
                 startActivity(intent)
 
             } else if (isExist?.flag == "fail") { // 채팅방 없음 => 새로 만들기
                 Log.d(TAG, "onChatBtnClick: 새로운 채팅방 만들기")
-                val chatRoom = Chatroom(boardId!!, 0,  ApplicationClass.prefs.getId(), otherUserId!!,2)
+                val chatRoom = Chatroom(boardId!!, 0,  ApplicationClass.prefs.getId(), userId!!,2)
                 val result = ApplicationClass.retrofitChatService.createChatroom(chatRoom).awaitResponse().body()
                 if(result?.flag == "success") {
                     val fragment = supportFragmentManager.findFragmentById(R.id.share_detail_map)
-                    supportFragmentManager.beginTransaction().remove(fragment!!).commitNow()
+                    if(fragment != null)
+                        supportFragmentManager.beginTransaction().remove(fragment!!).commitNow()
 
                     val intent = Intent(this@ShareDetailActivity, ChatRoomActivity::class.java)
                     intent.putExtra("roomId", result.data[0].id)
-                    intent.putExtra("otherUserId", otherUserId!!)
+                    intent.putExtra("otherUserId", userId!!)
+                    intent.putExtra("nickName", binding.writer!!.nickName)
+                    intent.putExtra("profile", binding.writer!!.profile_img)
+                    DataState.set.add(result.data[0].id)
+
+                    DataState.itemList.add(
+                        0, RoomlistData(
+                            result.data[0].id,
+                            binding.writer!!.nickName,
+                            "",
+                            "",
+                            ApplicationClass.prefs.getId(),
+                            1,
+                            binding.writer!!.profile_img
+                        )
+                    )
                     startActivity(intent)
 
                 }

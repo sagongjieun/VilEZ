@@ -75,129 +75,129 @@ class ShareFragment : Fragment() {
 
     }
 
-    fun initView() {
-        // 데이터 가져오기
-        shareDatas = arrayListOf()
-
-        // 어댑터 생성
-        shareAdapter = FragmentShareAdapter(shareDatas)
-        shareAdapter.setItemClickListener(object : FragmentShareAdapter.OnItemClickListener {
-            // listview item 클릭시 실행할 메소드
-            override fun onClick(view: View, position: Int) {
-
-                Log.d(TAG, "onClick: ${shareDatas[position].tv_name} clicked!")
-            }
-        })
-
-        // 리사이클러뷰에 어댑터 등록
-        binding.rv.apply {
-            adapter = shareAdapter
-            layoutManager = LinearLayoutManager(mainActivity, LinearLayoutManager.VERTICAL, false)
-        }
-
-        var num = 0;
-        var max = 10;
-        CoroutineScope(Dispatchers.Main).launch {
-            val result =
-                ApplicationClass.retrofitShareService.boardList(num++, max).awaitResponse().body();
-
-            if(result?.flag == "success") {
-                Log.d(TAG, "initView: result : $result")
-                Log.d(TAG, "initView: data[0] ${result.data[0]}")
-                if(result.data.isEmpty()) {
-                    Log.d(TAG, "onViewCreated: 데이터 0개")
-                    binding.tvNoArticleMsg.visibility = View.VISIBLE
-                }
-                for(data in result.data){
-                    var shareData:ShareData
-                    if(data.shareListDto.list.size == 0){
-////////////////////////////////
-                        shareData = ShareData(
-                            data.shareListDto.id,
-                            "https://kr.object.ncloudstorage.com/vilez/basicProfile.png",
-                            data.shareListDto.title,
-                            elapsedTime(data.shareListDto.date),
-                            "구미",
-                            data.shareListDto.startDay+"~"
-                                    +data.shareListDto.endDay,
-                            Integer.toString(data.listCnt),
-                            data.shareListDto.state,
-                        );
-                    } else {
-                        shareData = ShareData(
-                            data.shareListDto.id,
-                            data.shareListDto.list[0].path,
-                            data.shareListDto.title,
-                            elapsedTime(data.shareListDto.date),
-                            "구미",
-                            data.shareListDto.startDay+"~"
-                                    +data.shareListDto.endDay,
-                            Integer.toString(data.listCnt),
-                            data.shareListDto.state,
-                        );
-                    }
-                        shareDatas.add(shareData)
-//                    Log.d(TAG, "initView: ${data.shareListDto.nickName}");
-//                    Log.d(TAG, "initView: ${data.shareListDto.list[0].path}");
-                }
-            }
-            shareAdapter.notifyItemInserted(index-1)
-        }
-
-        val items = resources.getStringArray(R.array.my_array)
-        //val myAdapter = ArrayAdapter<>(mContext, android.R.layout.simple_spinner_dropdown_item,items)
-        val arrayAdapter = ArrayAdapter<String>(
-            mContext,
-            android.R.layout.simple_spinner_dropdown_item,
-            items
-        )
-
-        binding.rv.setOnScrollChangeListener{ v, scollX, scrollY,
-                                                  oldScrollX, oldScrollY ->
-            if(!v.canScrollVertically(1)){
-                CoroutineScope(Dispatchers.Main).launch {
-                    val result =
-                        ApplicationClass.retrofitShareService.boardList(num++, max).awaitResponse()
-                            .body();
-                    Log.d(TAG, "initView: ${result?.data}")
-                    if (result?.data?.size != 0) {
-                        if (result?.flag == "success") {
-                            for (data in result.data) {
-                                var shareData:ShareData
-                                if(data.shareListDto.list.size == 0){
-                                    shareData = ShareData(
-                                        data.shareListDto.id,
-                                        "https://kr.object.ncloudstorage.com/vilez/basicProfile.png",
-                                        data.shareListDto.title,
-                                        elapsedTime(data.shareListDto.date),
-                                        "구미",
-                                        data.shareListDto.startDay+"~"
-                                                +data.shareListDto.endDay,
-                                        Integer.toString(data.listCnt),
-                                        data.shareListDto.state,
-                                    );
-                                } else {
-                                    shareData = ShareData(
-                                        data.shareListDto.id,
-                                        data.shareListDto.list[0].path,
-                                        data.shareListDto.title,
-                                        elapsedTime(data.shareListDto.date),
-                                        "구미",
-                                        data.shareListDto.startDay+"~"
-                                                +data.shareListDto.endDay,
-                                        Integer.toString(data.listCnt),
-                                        data.shareListDto.state,
-                                    );
-                                }
-                                shareDatas.add(shareData)
-                            }
-                        }
-                        shareAdapter.notifyItemInserted(index - 1)
-                    }
-                }
-            }
-
-        }
+//    fun initView() {
+//        // 데이터 가져오기
+//        shareDatas = arrayListOf()
+//
+//        // 어댑터 생성
+//        shareAdapter = FragmentShareAdapter(shareDatas)
+//        shareAdapter.setItemClickListener(object : FragmentShareAdapter.OnItemClickListener {
+//            // listview item 클릭시 실행할 메소드
+//            override fun onClick(view: View, position: Int) {
+//
+//                Log.d(TAG, "onClick: ${shareDatas[position].tv_name} clicked!")
+//            }
+//        })
+//
+//        // 리사이클러뷰에 어댑터 등록
+//        binding.rv.apply {
+//            adapter = shareAdapter
+//            layoutManager = LinearLayoutManager(mainActivity, LinearLayoutManager.VERTICAL, false)
+//        }
+//
+//        var num = 0;
+//        var max = 10;
+//        CoroutineScope(Dispatchers.Main).launch {
+//            val result =
+//                ApplicationClass.retrofitShareService.boardList(num++, max).awaitResponse().body();
+//
+//            if(result?.flag == "success") {
+//                Log.d(TAG, "initView: result : $result")
+//                Log.d(TAG, "initView: data[0] ${result.data[0]}")
+//                if(result.data.isEmpty()) {
+//                    Log.d(TAG, "onViewCreated: 데이터 0개")
+//                    binding.tvNoArticleMsg.visibility = View.VISIBLE
+//                }
+//                for(data in result.data){
+//                    var shareData:ShareData
+//                    if(data.shareListDto.list.size == 0){
+//////////////////////////////////
+//                        shareData = ShareData(
+//                            data.shareListDto.id,
+//                            "https://kr.object.ncloudstorage.com/vilez/basicProfile.png",
+//                            data.shareListDto.title,
+//                            elapsedTime(data.shareListDto.date),
+//                            "구미",
+//                            data.shareListDto.startDay+"~"
+//                                    +data.shareListDto.endDay,
+//                            Integer.toString(data.listCnt),
+//                            data.shareListDto.state,
+//                        );
+//                    } else {
+//                        shareData = ShareData(
+//                            data.shareListDto.id,
+//                            data.shareListDto.list[0].path,
+//                            data.shareListDto.title,
+//                            elapsedTime(data.shareListDto.date),
+//                            "구미",
+//                            data.shareListDto.startDay+"~"
+//                                    +data.shareListDto.endDay,
+//                            Integer.toString(data.listCnt),
+//                            data.shareListDto.state,
+//                        );
+//                    }
+//                        shareDatas.add(shareData)
+////                    Log.d(TAG, "initView: ${data.shareListDto.nickName}");
+////                    Log.d(TAG, "initView: ${data.shareListDto.list[0].path}");
+//                }
+//            }
+//            shareAdapter.notifyItemInserted(index-1)
+//        }
+//
+//        val items = resources.getStringArray(R.array.my_array)
+//        //val myAdapter = ArrayAdapter<>(mContext, android.R.layout.simple_spinner_dropdown_item,items)
+//        val arrayAdapter = ArrayAdapter<String>(
+//            mContext,
+//            android.R.layout.simple_spinner_dropdown_item,
+//            items
+//        )
+//
+//        binding.rv.setOnScrollChangeListener{ v, scollX, scrollY,
+//                                                  oldScrollX, oldScrollY ->
+//            if(!v.canScrollVertically(1)){
+//                CoroutineScope(Dispatchers.Main).launch {
+//                    val result =
+//                        ApplicationClass.retrofitShareService.boardList(num++, max).awaitResponse()
+//                            .body();
+//                    Log.d(TAG, "initView: ${result?.data}")
+//                    if (result?.data?.size != 0) {
+//                        if (result?.flag == "success") {
+//                            for (data in result.data) {
+//                                var shareData:ShareData
+//                                if(data.shareListDto.list.size == 0){
+//                                    shareData = ShareData(
+//                                        data.shareListDto.id,
+//                                        "https://kr.object.ncloudstorage.com/vilez/basicProfile.png",
+//                                        data.shareListDto.title,
+//                                        elapsedTime(data.shareListDto.date),
+//                                        "구미",
+//                                        data.shareListDto.startDay+"~"
+//                                                +data.shareListDto.endDay,
+//                                        Integer.toString(data.listCnt),
+//                                        data.shareListDto.state,
+//                                    );
+//                                } else {
+//                                    shareData = ShareData(
+//                                        data.shareListDto.id,
+//                                        data.shareListDto.list[0].path,
+//                                        data.shareListDto.title,
+//                                        elapsedTime(data.shareListDto.date),
+//                                        "구미",
+//                                        data.shareListDto.startDay+"~"
+//                                                +data.shareListDto.endDay,
+//                                        Integer.toString(data.listCnt),
+//                                        data.shareListDto.state,
+//                                    );
+//                                }
+//                                shareDatas.add(shareData)
+//                            }
+//                        }
+//                        shareAdapter.notifyItemInserted(index - 1)
+//                    }
+//                }
+//            }
+//
+//        }
 
 //        binding.btnAdd.setOnClickListener { // 방법1 : 버튼에 직접 클릭이벤트 리스너 달기 (이거 쓰려면 xml에 onClick 지워야함)
 //            Log.d(TAG, "initView: 클릭 ")
@@ -206,7 +206,7 @@ class ShareFragment : Fragment() {
 //            shareAdapter.notifyItemInserted(index-1) // 이게 아래코드보다 오버헤드 더 적음
 //            // shareAdapter.notifyDataSetChanged()
 //        }
-    }
+//    }
 
     fun moveToAskWrite(view: View) {
 

@@ -49,6 +49,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        packagingOptions {
+            exclude 'META-INF/DEPENDENCIES'
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -153,6 +156,9 @@ dependencies {
 
     // When using the BoM, don't specify versions in Firebase dependencies
     implementation 'com.google.firebase:firebase-analytics-ktx'
+
+    implementation 'org.slf4j:slf4j-api:1.7.26'
+    implementation 'io.openvidu:openvidu-java-client:2.15.0'
 }
 
 tasks.register("prepareKotlinBuildScriptModel"){}

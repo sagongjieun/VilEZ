@@ -29,6 +29,7 @@ RecyclerView.Adapter<ShareListAdapter.ShareHolder>(){
                 //itemClickListener.onClick(it, layoutPosition)
                 val intent = Intent(binding.root.context, ShareDetailActivity::class.java)
                 intent.putExtra("boardId", item.board_id)
+                intent.putExtra("userId", item.userId)
 
                 binding.root.context.startActivity(intent)
             }

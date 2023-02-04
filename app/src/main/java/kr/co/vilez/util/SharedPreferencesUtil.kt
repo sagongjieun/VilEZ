@@ -42,7 +42,9 @@ class SharedPreferencesUtil(context: Context) {
             point = prefs.getInt("point", 0),
             profileImg = prefs.getString("profileImg", Common.DEFAULT_PROFILE_IMG)!!,
             refreshToken = prefs.getString("refreshToken", "")!!,
-            state = prefs.getInt("state", 0)
+            state = prefs.getInt("state", 0),
+            areaLat = prefs.getString("areaLat","0.0")!!,
+            areaLng = prefs.getString("areaLng","0.0")!!
         )
     }
 
@@ -60,6 +62,8 @@ class SharedPreferencesUtil(context: Context) {
             putInt("manner", user.manner)
             putString("area", user.area)
             putInt("state", user.state)
+            putString("areaLat", user.areaLat)
+            putString("areaLng",user.areaLng)
         }
     }
 
@@ -98,6 +102,18 @@ class SharedPreferencesUtil(context: Context) {
         return prefs.getString("oauth", "")!!
     }
 
+    fun setLat(lat: String) {
+        prefs.edit().putString("areaLat",lat).apply()
+    }
+    fun setLng(lng: String) {
+        prefs.edit().putString("areaLng",lng).apply()
+    }
+    fun getLat():String {
+        return prefs.getString("areaLat","0.0")!!
+    }
+    fun getLng():String {
+        return prefs.getString("areaLng","0.0")!!
+    }
     fun setUserDetail(detail: UserDetail) {
         prefs.edit {
             putString("profileImg", detail.profile_img)
@@ -105,6 +121,8 @@ class SharedPreferencesUtil(context: Context) {
             putInt("point", detail.point)
             putInt("manner", detail.manner)
             putString("area", detail.area)
+            putString("areaLat",detail.areaLat)
+            putString("areaLng",detail.areaLng)
         }
     }
 
@@ -114,7 +132,9 @@ class SharedPreferencesUtil(context: Context) {
             prefs.getInt("manner", 0),
             prefs.getString("nickName", "")!!,
             prefs.getInt("point", 0),
-            prefs.getString("profileImg", Common.DEFAULT_PROFILE_IMG)!!
+            prefs.getString("profileImg", Common.DEFAULT_PROFILE_IMG)!!,
+            prefs.getString("areaLat","0.0")!!,
+            prefs.getString("areaLng","0.0")!!
         )
     }
 
@@ -163,6 +183,8 @@ class SharedPreferencesUtil(context: Context) {
             remove("profileImg")
             remove("refreshToken")
             remove("state")
+            remove("lat")
+            remove("lng")
         }
     }
 }
