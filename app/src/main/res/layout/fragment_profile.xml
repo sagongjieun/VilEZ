@@ -111,6 +111,7 @@
             android:layout_height="20dp"
             android:paddingStart="20dp"
             android:text="@{user.email}"
+            android:maxLength="30"
             app:layout_constraintEnd_toStartOf="@+id/iv_edit"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/iv_profile_img"
@@ -210,7 +211,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
-            android:text="나의 동네"
+            android:text="동네 인증"
             app:layout_constraintStart_toEndOf="@+id/imageView4"
             app:layout_constraintTop_toTopOf="@+id/imageView4" />
 
@@ -227,7 +228,7 @@
             android:id="@+id/tv_user_area"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{userDetail.area}"
+            android:text="@{userDetail.areaLat ==`0.0` ? `인증이 안된 사용자` : `인증 완료된 사용자`}"
             android:textColor="@color/main_1"
             app:layout_constraintStart_toStartOf="@+id/textView4"
             app:layout_constraintTop_toBottomOf="@+id/textView4" />
