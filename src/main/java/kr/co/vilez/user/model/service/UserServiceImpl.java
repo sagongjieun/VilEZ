@@ -8,8 +8,6 @@ import kr.co.vilez.user.model.dto.LocationDto;
 import kr.co.vilez.user.model.dto.UserDto;
 import kr.co.vilez.user.model.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
