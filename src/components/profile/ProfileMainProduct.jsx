@@ -2,25 +2,31 @@ import React, { useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import ProfileMyWriting from "./ProfileMyWriting";
-import ProfileMyProduct from "./ProfileMyProduct";
+import ProfileMyBookMark from "./ProfileMyBookMark";
 import { useEffect } from "react";
 
 // const id = localStorage.getItem("id");
 const ProfileMainProduct = () => {
   const [section, setSection] = useState("");
+  const [writingDefaultPages, setWritingDefaultPages] = useState(1);
+  const [bookMarkDefaultPages, setBookMarkDefaultPages] = useState(1);
   const [writingPages, setWritingPages] = useState(1);
-  const [productPages, setProductPages] = useState(1);
+  const [bookMarkPages, setBookMarkPages] = useState(1);
   function onClickWritingMore() {
     setWritingPages((prev) => prev + 1);
     setSection("writing");
   }
-  function onClickProductMore() {
-    setProductPages((prev) => prev + 1);
+  function onClickBookMarkMore() {
+    if (bookMarkDefaultPages > bookMarkPages) {
+      setBookMarkPages((prev) => prev + 1);
+    } else {
+      setBookMarkPages(1);
+    }
     setSection("product");
   }
   useEffect(() => {
     if (section === "writing") {
-      setProductPages(1);
+      setBookMarkPages(1);
     } else if (section === "product") {
       setWritingPages(1);
     }
@@ -29,17 +35,37 @@ const ProfileMainProduct = () => {
     <div>
       <div css={sectionWrapper}>
         <h3>나의 작성글</h3>
-        <ProfileMyWriting section={section} writingPages={writingPages} />
-        <button onClick={onClickWritingMore} css={moreWrapper}>
-          더보기 {writingPages} / 4
-        </button>
+        <ProfileMyWriting
+          section={section}
+          writingPages={writingPages}
+          setWritingDefaultPages={setWritingDefaultPages}
+        />
+        {writingDefaultPages === 1 ? null : writingPages === writingDefaultPages ? (
+          <button onClick={onClickBookMarkMore} css={moreWrapper}>
+            접기
+          </button>
+        ) : (
+          <button onClick={onClickWritingMore} css={moreWrapper}>
+            더보기 {writingPages} / {writingDefaultPages}
+          </button>
+        )}
       </div>
       <div css={sectionWrapper}>
-        <h3>나의 공유 물품</h3>
-        <ProfileMyProduct section={section} productPages={productPages} />
-        <button onClick={onClickProductMore} css={moreWrapper}>
-          더보기 {productPages} / 4
-        </button>
+        <h3>나의 관심글</h3>
+        <ProfileMyBookMark
+          section={section}
+          bookMarkPages={bookMarkPages}
+          setBookMarkDefaultPages={setBookMarkDefaultPages}
+        />
+        {bookMarkDefaultPages === 1 ? null : bookMarkPages === bookMarkDefaultPages ? (
+          <button onClick={onClickBookMarkMore} css={moreWrapper}>
+            접기
+          </button>
+        ) : (
+          <button onClick={onClickBookMarkMore} css={moreWrapper}>
+            더보기 {bookMarkPages} / {bookMarkDefaultPages}
+          </button>
+        )}
       </div>
     </div>
   );

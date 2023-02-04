@@ -50,11 +50,9 @@ function EditProfile() {
   }
   function onClickNickName() {
     setIsNickNameOpen(true);
-    console.log("클릭은 되나");
   }
   function onClickPassword() {
     setIsPasswordOpen(true);
-    console.log("클릭은 되나");
   }
   function onClickNickNameCheck() {
     checkNickName(nickName).then((response) => {
@@ -82,10 +80,21 @@ function EditProfile() {
   }
   function onSubmit() {
     if ((isNickNameAvailable || !isNickNameOpen) && !passwordError && !password2Error) {
+      // const userIdJson = {userId : }
       const formData = new FormData();
-      console.log("서브밋");
       formData.append("image", imageList[0]);
-      formData.append("userId", userId);
+      console.log(imageList[0], "******");
+      formData.append(
+        "userId",
+        new Blob(
+          [
+            JSON.stringify({
+              userId: userId,
+            }),
+          ],
+          { type: "application/json" }
+        )
+      );
       putUserProfileImage(formData);
       console.log(userId, nickName, password);
       putUserPasswordNickName(userId, nickName, password).then((response) => {
