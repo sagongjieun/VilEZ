@@ -29,7 +29,7 @@
 
     <update id="setManner" parameterType="int" >
         update user
-        set manner =  manner += #{temperature}
+        set manner =  manner + #{degree}
         where id = #{userId}
     </update>
 
