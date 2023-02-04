@@ -28,6 +28,8 @@ const ProductList = () => {
   const urlId = pathname.includes("share") ? 2 : 1;
   const [list, setList] = useState("");
   const categoryToUse = category === "전체" ? "" : category;
+
+  // 무한 스크롤 관련
   useEffect(() => {
     const handleScroll = () => {
       // get the scroll position and the height of the page
@@ -50,7 +52,30 @@ const ProductList = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [cnt, getArticle]);
+
+  // 카테고리 변경 후 스크롤을 내렸다가 ,다른 카테고리를 선택했을 때 이전 카테고리 데이터가 쌓여 나옴
   useEffect(() => {
+    // Update the isMounted variable to true to make sure the component is still mounted
+
+    urlId === 1
+      ? // 요청
+        getAskArticleList("", "", categoryToUse, cnt, 15, 0, 1, "").then((res) => {
+          const data = res;
+          setOriginalArticle(data[0]);
+          setArticles(data[0]);
+          setList("물품 요청 목록");
+        })
+      : // 공유
+        getShareArticleList("", "", categoryToUse, cnt, 15, 0, 1, "").then((res) => {
+          const data = res;
+          setOriginalArticle(data);
+          setArticles(data);
+          setList("물품 공유 목록");
+        });
+  }, [categoryToUse]);
+  useEffect(() => {
+    // Check if the component is still mounted before making the API call
+
     urlId === 1
       ? // 요청
         getAskArticleList("", "", categoryToUse, cnt, 15, 0, 1, "").then((res) => {
@@ -63,10 +88,10 @@ const ProductList = () => {
         getShareArticleList("", "", categoryToUse, cnt, 15, 0, 1, "").then((res) => {
           const data = res;
           setOriginalArticle([...originalArticle, ...data]);
-          setArticles([...getArticle, ...data]);
+          setArticles([...originalArticle, ...data]);
           setList("물품 공유 목록");
         });
-  }, [search, pathname, isAll, category, cnt]);
+  }, [search, pathname, isAll, cnt]);
 
   // 공유가능 목록 보기위해 작성한 useEffect 0일때 공유가능, 1일때 공유 중
   useEffect(() => {
@@ -84,12 +109,14 @@ const ProductList = () => {
         setArticles(tempShareArticle);
       }
     }
-  }, [pathname, isAll, category, cnt]);
+  }, [pathname, isAll, categoryToUse, cnt]);
 
   // props에서 받아온 값이 newCategory에 들어감
   // setCategory에 넘어온 값을 입력
   function receiveCategory(newCategory) {
     setCategory(newCategory);
+    setCnt(0);
+    setOriginalArticle([]);
   }
   function onClickSeePossible() {
     setIsAll(!isAll);
