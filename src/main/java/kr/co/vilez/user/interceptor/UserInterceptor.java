@@ -26,7 +26,15 @@ public class UserInterceptor implements HandlerInterceptor {
         if(HttpMethod.GET.matches(request.getMethod())){
             return true;
         }
-
+        if(HttpMethod.POST.matches(request.getMethod())){
+            return true;
+        }
+        if(HttpMethod.PUT.matches(request.getMethod())){
+            return true;
+        }
+        if(HttpMethod.DELETE.matches(request.getMethod())){
+            return true;
+        }
         if(HttpMethod.OPTIONS.matches(request.getMethod())){
             return true;
         }

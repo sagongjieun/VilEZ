@@ -23,9 +23,7 @@ import java.util.Map;
 @Slf4j
 @Api("반납 관련 API 목록")
 public class BackController {
-
     final BackService backService;
-
     @GetMapping()
     @ApiOperation(value = "게시글의 예약전, 중 상태를 나타내는 API",
             notes = "-- 매개변수 --" +
