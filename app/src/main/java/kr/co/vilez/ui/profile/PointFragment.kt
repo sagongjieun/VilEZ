@@ -1,40 +1,40 @@
 package kr.co.vilez.ui.profile
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import kr.co.vilez.R
-import kr.co.vilez.databinding.FragmentInterestBinding
+import kr.co.vilez.data.dto.PointDto
 import kr.co.vilez.databinding.FragmentPointBinding
 import kr.co.vilez.ui.user.ProfileMenuActivity
+import kr.co.vilez.util.ApplicationClass
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [PointFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+private const val TAG = "빌리지_PointFragment"
 class PointFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
     private lateinit var binding: FragmentPointBinding
-    private lateinit var profileMenuActivity: ProfileMenuActivity
+    private lateinit var activity: ProfileMenuActivity
+
+    private lateinit var pointAdapter: PointAdapter
+    private lateinit var pointList: ArrayList<PointDto>
+
+
+    private var pointPlusSum = 0
+    private var pointMinusSum = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-        profileMenuActivity = context as ProfileMenuActivity
+        activity = context as ProfileMenuActivity
         setHasOptionsMenu(true)
+
+        pointList = arrayListOf()
+
     }
 
     override fun onCreateView(
@@ -44,39 +44,60 @@ class PointFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_point, container, false)
 
         binding.fragment = this
-        binding.pointSum = 330
+
         initToolBar()
+        initData()
+        initView()
+
+        binding.pointSum = ApplicationClass.prefs.getPoint() // 현재 있는 포인트
+        binding.savePoint = pointPlusSum // 적립 포인트
+        binding.usedPoint = pointMinusSum // 차감 포인트
+        pointMinusSum = 120
+        Log.d(TAG, "onCreateView: 현재 포인트: ${ApplicationClass.prefs.getPoint()}")
+        Log.d(TAG, "onCreateView: minussum:$pointMinusSum")
+        val tmp = pointMinusSum.toDouble() / ApplicationClass.prefs.getPoint().toDouble()
+        Log.d(TAG, "onCreateView: tmp: ${tmp}")
+        val progress = 100 - (tmp*100)
+        binding.progressBar.progress = progress.toInt()
+        Log.d(TAG, "onCreateView: ${progress}")
 
         return binding.root
     }
 
+    fun initData() {
+        // test용 데이터
+        pointList.add(PointDto(7, 6, 4, "안녕하세요",
+            "2023-02-05", 1, true))
+        pointList.add(PointDto(7, 6, 4, "안녕하세요2",
+            "2023-02-05", 1, false))
+
+
+        // point 차감액, 적립액 구하기
+        for(i in 0 until pointList.size) {
+            if (pointList[i].isIncrease) pointPlusSum+=10
+            else pointMinusSum += 10
+        }
+    }
+
+    fun initView() {
+        // 어댑터 생성
+        pointAdapter = PointAdapter(pointList)
+        // 리사이클러뷰에 어댑터 등록
+        binding.rvPointRecord.apply {
+            adapter = pointAdapter
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            addItemDecoration(DividerItemDecoration(context, LinearLayout.VERTICAL))
+        }
+    }
+
     private fun initToolBar() {
-        profileMenuActivity.setSupportActionBar(binding.toolbar)
-        profileMenuActivity.supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
+        activity.setSupportActionBar(binding.toolbar)
+        activity.supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
         binding.title = "포인트 내역"
     }
 
     fun onBackPressed(view: View) {
-        profileMenuActivity.finish()
+        activity.finish()
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment PointFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            PointFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }
