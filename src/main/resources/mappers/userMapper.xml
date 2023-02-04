@@ -87,7 +87,7 @@
     </insert>
 
     <select id="login" parameterType="UserDto" resultMap="user">
-        SELECT id, email, password, nickname, area_lat, area_lng
+        SELECT id, email, password, nickname, area_lat, area_lng, oauth
         FROM user
         WHERE email = #{email} and password = #{password};
     </select>
