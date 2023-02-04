@@ -7,13 +7,24 @@ import baseProfile from "../assets/images/baseProfile.png";
 import Map from "./common/Map";
 import recommendLocationButton from "../assets/images/recommendLocationButton.png";
 import selectDateButton from "../assets/images/selectDateButton.png";
-import startWebRTCButton from "../assets/images/startWebRTCButton.png";
+import openOathButton from "../assets/images/openOathButton.png";
 import { getLatestMapLocation, getChatHistory } from "../api/chat";
 import CalendarModal from "./modal/CalendarModal";
+import { getOath } from "../api/oath";
+import OathGetModal from "./modal/OathGetModal";
 
 let client;
 
-const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickname, shareUserId, shareState }) => {
+const StompRealTime = ({
+  roomId,
+  boardId,
+  boardType,
+  otherUserId,
+  otherUserNickname,
+  shareUserId,
+  notShareUserId,
+  shareState,
+}) => {
   const scrollRef = useRef();
   const myUserId = localStorage.getItem("id");
   const chatRoomId = roomId;
@@ -26,6 +37,7 @@ const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickn
   const [movedZoomLevel, setMovedZoomLevel] = useState(0);
   const [movedMarker, setMovedMarker] = useState(false);
   const [calendarModalOpen, setCalendarModalOpen] = useState(false);
+  const [isOathGetModalOpen, setIsOathGetModalOpen] = useState(false);
 
   function onKeyDownSendMessage(e) {
     if (e.keyCode === 13) {
@@ -91,8 +103,15 @@ const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickn
     else alert("공유자만 공유 기간 확정을 할 수 있어요 😀");
   }
 
-  function onClickOpenRTC() {
-    alert("webRTC 열기");
+  function onClickOpenOath() {
+    getOath(boardId, notShareUserId, shareUserId).then((res) => {
+      if (res) {
+        // 모달로 oath 열어서 보여주기
+        setIsOathGetModalOpen(!isOathGetModalOpen);
+      } else {
+        alert("작성된 서약서가 없습니다.");
+      }
+    });
   }
 
   function onClickRecommendLocation() {
@@ -195,7 +214,7 @@ const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickn
         <div css={menusWrapper}>
           <img src={selectDateButton} onClick={onClickOpenCalendarModal} />
           {calendarModalOpen && <CalendarModal setCalendarModalOpen={setCalendarModalOpen} boardId={boardId} />}
-          <img src={startWebRTCButton} onClick={onClickOpenRTC} />
+          <img src={openOathButton} onClick={onClickOpenOath} />
           <img src={recommendLocationButton} onClick={onClickRecommendLocation} />
         </div>
         <div css={chatWrapper}>
@@ -234,6 +253,7 @@ const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickn
           </div>
         </div>
       </div>
+      {isOathGetModalOpen ? <OathGetModal close={setIsOathGetModalOpen} /> : null}
     </>
   );
 };
