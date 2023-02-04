@@ -39,6 +39,12 @@
         WHERE id = #{code};
     </select>
 
+    <select id="saveLocationMobile" parameterType="userDto">
+        UPDATE user
+        SET area_lng = #{lng}, area_lat=#{lat}
+        WHERE id = #{id}
+    </select>
+
     <select id="checkEmail" parameterType="string" resultMap="user">
         SELECT email
         FROM user

@@ -33,6 +33,11 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    public void saveLocationMobile(UserDto userDto) throws Exception {
+        userMapper.saveLocationMobile(userDto);
+    }
+
+    @Override
     public void setManner(int userId, int degree) throws Exception {
         int temperature = 0;
 
@@ -62,11 +67,6 @@ public class UserServiceImpl implements UserService {
         map.put("flag","success");
         sendingOperations.convertAndSend("/sendloc/"+userId,map);
 
-        userMapper.saveLocation(locationDto);
-    }
-
-    @Override
-    public void saveLocationMobile(LocationDto locationDto) throws Exception {
         userMapper.saveLocation(locationDto);
     }
 
