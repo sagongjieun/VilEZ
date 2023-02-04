@@ -2,29 +2,29 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilValue } from "recoil";
-import { shareDataState } from "../../recoil/atom";
 import MiddleWideButton from "../button/MiddleWideButton";
 
-function ShareCompleteModal({ otherUserNickname }) {
+function QuitChattingModal({ close }) {
   const navigate = useNavigate();
-  const shareData = useRecoilValue(shareDataState);
+  // const params = useParams();
+  // const boardId = params.boardId;
 
-  function onClickMovedetail() {
-    shareData.boardType == 1
-      ? navigate(`/product/detail/ask/${shareData.boardId}`)
-      : navigate(`/product/detail/share/${shareData.boardId}`);
+  function onClickCancel() {
+    close(false);
+  }
+
+  function onClickNavigate() {
+    // navigate(`/product/detail/${boardId}`, {});
+    navigate(`/product/detail/55`, {});
   }
 
   return (
     <div css={topWrap}>
-      <div css={completeWrap}>
-        <span>
-          <b>{otherUserNickname}</b>님과의
-        </span>
-        <span>공유가 종료되었습니다. 😀</span>
+      <div css={ModalWrap}>
+        <span>채팅을 완전히 종료하시겠어요?</span>
         <div>
-          <MiddleWideButton text={"확인"} onclick={onClickMovedetail} />
+          <MiddleWideButton text={"취소"} onclick={onClickCancel} cancel={true} />
+          <MiddleWideButton text={"네, 종료할래요"} onclick={onClickNavigate} />
         </div>
       </div>
     </div>
@@ -41,10 +41,10 @@ const topWrap = css`
   z-index: 1000;
 `;
 
-const completeWrap = css`
+const ModalWrap = css`
   background-color: white;
-  width: 400px;
-  height: 230px;
+  width: 380px;
+  height: 180px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -57,14 +57,17 @@ const completeWrap = css`
   border-radius: 10px;
   padding: 20px;
 
-  & > span {
-    font-size: 20px;
-    margin-bottom: 20px;
-  }
-
   & > div {
-    width: 105px;
+    margin-top: 30px;
+    width: 320px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    & > button {
+      width: 150px;
+    }
   }
 `;
 
-export default ShareCompleteModal;
+export default QuitChattingModal;

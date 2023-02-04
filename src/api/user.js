@@ -16,4 +16,17 @@ async function getUserDetail(userId) {
   }
 }
 
-export { getUserDetail };
+// POST
+
+async function postMannerPoint(body) {
+  try {
+    const { data } = await jsonAxios.post(`/users/manner`, body);
+
+    if (data.flag === "success") return true;
+    else return false;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export { getUserDetail, postMannerPoint };
