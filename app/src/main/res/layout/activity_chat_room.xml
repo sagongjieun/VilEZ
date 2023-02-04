@@ -192,8 +192,8 @@
 
                             android:layout_width="80dp"
                             android:layout_height="80dp"
-
-                            android:background="@drawable/btn_chat_sch" />
+                            android:id="@+id/btn_chat_accept"
+                            android:background="@drawable/btn_chat_accept" />
                         <View
                             android:layout_width="0dp"
                             android:layout_height="80dp"

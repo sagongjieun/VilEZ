@@ -249,7 +249,7 @@ class ShareDetailActivity : AppCompatActivity(){
                     pagerAdapter = MyAdapter(mContext, count, myData)
                     Log.d(TAG, "init: pagerAdapter: ${pagerAdapter}")
                     mPager.adapter = pagerAdapter
-//Indicator
+
                     mIndicator = binding.indicator
                     mIndicator!!.setViewPager(mPager)
                     mIndicator!!.createIndicators(count, 0);
