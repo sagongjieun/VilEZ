@@ -8,6 +8,7 @@ import kr.co.vilez.appointment.model.dto.SetPeriodDto;
 import kr.co.vilez.appointment.model.service.AppointmentService;
 import kr.co.vilez.appointment.model.vo.*;
 import kr.co.vilez.data.HttpVO;
+import kr.co.vilez.fcm.model.service.FCMDataService;
 import kr.co.vilez.user.model.dto.UserDto;
 import kr.co.vilez.user.model.service.UserService;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +31,9 @@ import java.util.List;
 @Slf4j
 @Api("약속 관련 API 목록")
 public class AppointmentController {
+
+    private final FCMDataService fcmDataService;
+
     private final AppointmentService appointmentService;
     private final UserService userService;
     private final SimpMessageSendingOperations sendingOperations;
@@ -348,10 +353,10 @@ public class AppointmentController {
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
 
-    ///////////////////////////////////////////////////////////
+    /////////////// ////////////////////////////////////////////
 
     @MessageMapping("/recvchat")
-    public ChatVO socketHandler(ChatVO chatVO) {
+    public ChatVO socketHandler(ChatVO chatVO) throws IOException {
         appointmentService.recvMsg(chatVO);
         HashMap<String, Object> map = new HashMap<>();
         UserDto user = null;
@@ -373,6 +378,10 @@ public class AppointmentController {
         sendingOperations.convertAndSend("/sendlist/"+chatVO.getFromUserId(),map);
 //        sendingOperations.convertAndSend("/sendmy/"+chatVO.getRoomId()+"/"+chatVO.getFromUserId(),chatVO);
         sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+chatVO.getToUserId(),chatVO);
+
+        // send FCM
+        fcmDataService.sendChatMessageTo(user2.getArea(), chatVO.getRoomId(), chatVO.getFromUserId(), user.getNickName(), chatVO.getContent());
+
         return chatVO;
     }
 
