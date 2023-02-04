@@ -51,7 +51,7 @@ class FCMService : FirebaseMessagingService() {
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: ${remoteMessage.from}")
-        if(ApplicationClass.isAppRunning) {
+        if(ApplicationClass.isForeground) {
             Log.d(TAG, "onMessageReceived: 현재 앱 켜져있음")
         } else {
             Log.d(TAG, "onMessageReceived: 현재 앱 꺼져있음")
@@ -102,7 +102,7 @@ class FCMService : FirebaseMessagingService() {
         }*/
 
         // Check if message contains a data payload.
-        if (remoteMessage.data.isNotEmpty() && !ApplicationClass.isAppRunning) { // 백그라운드에서만 FCM 수신
+        if (remoteMessage.data.isNotEmpty() && !ApplicationClass.isForeground) { // 백그라운드에서만 FCM 수신
             var data = remoteMessage.data
             Log.d(TAG, "data.message: ${data}")
             Log.d(TAG, "data.message: ${data["title"]}")
