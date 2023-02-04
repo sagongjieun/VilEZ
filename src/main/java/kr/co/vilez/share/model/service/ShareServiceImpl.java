@@ -285,7 +285,8 @@ public class ShareServiceImpl implements ShareService{
         pageNavigator.setAreaLat(userDto.getAreaLat());
         pageNavigator.setAreaLng(userDto.getAreaLng());
         List<ShareListDto> list = shareMapper.loadShareList(pageNavigator);
-
+        System.out.println("list = " + list);
+        
         for(ShareListDto shareListDto : list){
             TotalListShare totalListShare = new TotalListShare();
 
