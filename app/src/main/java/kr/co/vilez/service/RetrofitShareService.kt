@@ -1,7 +1,8 @@
-package kr.co.vilez.util
+package kr.co.vilez.service
 
 import kr.co.vilez.data.dto.WriteBoard
 import kr.co.vilez.data.model.*
+import kr.co.vilez.util.RESTBookmarkResult
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*

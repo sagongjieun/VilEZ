@@ -12,6 +12,14 @@ private const val TAG = "빌리지_SharedPreferencesUtil"
 class SharedPreferencesUtil(context: Context) {
     private val prefs: SharedPreferences = context.getSharedPreferences("userInfo", Application.MODE_PRIVATE)
 
+    fun setFCMToken(token: String) {
+        prefs.edit().putString("token", token).apply()
+    }
+
+    fun getFCMToken():String {
+        return prefs.getString("token", "none")!!
+    }
+
     fun getUserAccessToken(): String {
         return prefs.getString("accessToken", "")!!
     }

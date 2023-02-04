@@ -2,14 +2,19 @@ package kr.co.vilez.util
 
 import android.Manifest
 import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.provider.MediaStore
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.content.ContextCompat
+import kr.co.vilez.ui.user.RegisterActivity
 
 class PermissionUtil {
     private val REQ_GALLERY = 1
@@ -65,6 +70,8 @@ class PermissionUtil {
             locationResult.launch(Intent())
         }
     }
+
+
 
 
 }

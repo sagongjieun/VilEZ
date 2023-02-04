@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthLogin
@@ -80,6 +82,7 @@ class LoginFragment : Fragment() {
                 ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
             if (result?.flag == "success") {
                 Log.d(TAG, "로그인 성공, 받아온 user = ${result.data[0]}")
+
                 ApplicationClass.prefs.setUser(result.data[0])
                 ApplicationClass.prefs.setAutoLogin(user) // 로그인시 자동으로 자동로그인 넣기
 
@@ -120,6 +123,7 @@ class LoginFragment : Fragment() {
                 // 사용자 정보 요청 (기본)
                 UserApiClient.instance.me { user, error ->
                     if (user != null) {
+
                         Log.i(TAG, "사용자 정보 요청 성공" +
                                 "\n회원번호: ${user.id}" +
                                 "\n이메일: ${user.kakaoAccount?.email}" +
@@ -127,6 +131,7 @@ class LoginFragment : Fragment() {
                                 "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}")
                         val userId = user.id.toString()
                         CoroutineScope(Dispatchers.Main).launch {
+                            Log.d(TAG, "kakaoLogin: 이미 있는 유저인지 확인하기")
                             val result = ApplicationClass.retrofitUserService.isUsedEmail(userId).awaitResponse().body()
                             Log.d(TAG, "oauth register: $result")
                             if (result?.flag == "success") {
@@ -186,6 +191,8 @@ class LoginFragment : Fragment() {
             }
         })
     }
+
+
 
     val oauthLoginCallback = object : OAuthLoginCallback {
         override fun onSuccess() {
@@ -253,7 +260,6 @@ class LoginFragment : Fragment() {
             , getString(R.string.naver_client_name))
 
         NaverIdLoginSDK.authenticate(loginActivity, oauthLoginCallback)
-
     }
 
 
