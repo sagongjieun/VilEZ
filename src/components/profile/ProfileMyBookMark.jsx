@@ -5,15 +5,17 @@ import { getUserShare } from "../../api/profile";
 import ProductCardView from "../product/ProductCardView";
 
 // const id = localStorage.getItem("id");
-const ProfileMyProduct = (props) => {
+const userId = localStorage.getItem("id");
+const ProfileMyBookMark = (props) => {
   const [myShareBoard, setMyShareBoard] = useState([]);
   useEffect(() => {
-    getUserShare(28).then((response) => {
+    getUserShare(userId).then((response) => {
       setMyShareBoard(response);
+      props.setBookMarkDefaultPages(parseInt(response.length / 3) + 1);
     });
   }, []);
   return (
-    <div css={cardWrapper(props.productPages)}>
+    <div css={cardWrapper(props.bookMarkPages)}>
       {myShareBoard.map((share) => (
         <ProductCardView key={share.id} />
       ))}
@@ -24,22 +26,21 @@ const ProfileMyProduct = (props) => {
 const cardWrapper = (pages) => {
   const cards = pages * 3;
   return css`
-    overflow: hidden;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: 20px;
+    column-gap: 20px;
     height: calc(6px + ${pages}* 274px);
-    justify-content: space-between;
     transition: all 0.5s;
     & > div {
       display: none;
-      width: 32%;
       min-width: 300px;
     }
     & > div:nth-of-type(-n + ${cards}) {
       display: block;
+      overflow: hidden;
     }
   `;
 };
 
-export default ProfileMyProduct;
+export default ProfileMyBookMark;
