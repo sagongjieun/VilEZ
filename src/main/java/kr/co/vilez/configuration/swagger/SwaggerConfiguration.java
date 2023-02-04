@@ -171,6 +171,7 @@ public class SwaggerConfiguration {
                 .paths(PathSelectors.any()) // controller에서 swagger를 지정할 대상 path 설정
                 .build();  // Docket 객체 생성
     }
+
     @Bean
     public Docket AllApi() {
         final ApiInfo apiInfo = new ApiInfoBuilder().title("전체 API")

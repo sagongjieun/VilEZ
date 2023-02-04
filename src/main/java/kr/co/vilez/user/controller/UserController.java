@@ -30,6 +30,21 @@ public class UserController {
 
     final UserService userService;
 
+    @PostMapping("/manner")
+    @ApiOperation(value = "매너지수 증가 및 삭감 API"
+            , notes = "0 : 불만족, 1 : 조금 불친절, 2:보통, 3:친절, 4:마음이 뜨신 사람 ")
+    public ResponseEntity<?> setManner(@RequestBody int userId, @RequestBody int degree){
+        HttpVO http = new HttpVO();
+
+        try{
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
+
     @PutMapping("/location")
     @ApiOperation(value = "유저의 GPS 정보를 받아 주소를 인증해주는 API"
             , notes = "dto의 모든 변수를 채워넣어 전송하면 해당 정보를 토대로 내 동네가 인증된다.")

@@ -27,6 +27,12 @@
         <result column="lat" property="area_lat"/>
     </resultMap>
 
+    <update id="setManner" parameterType="int" >
+        update user
+        set manner =  manner += #{temperature}
+        where id = #{userId}
+    </update>
+
     <select id="saveLocation" parameterType="locationDto" resultMap="location">
         UPDATE user
         SET area_lng = #{lng}, area_lat=#{lat}
