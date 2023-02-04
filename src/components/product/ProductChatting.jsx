@@ -251,7 +251,7 @@ const ProductChatting = () => {
             )}
           </>
         )}
-        {shareState == -1 && (
+        {shareState == -3 && (
           <>
             <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
           </>
@@ -266,7 +266,7 @@ const ProductChatting = () => {
             )}
           </>
         )}
-        {shareState == -3 && (
+        {shareState == -1 && (
           <>
             <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
             {loginUserId == notShareUserId ? <MiddleWideButton text={"예약 확정"} onclick={onClickConfirm} /> : <></>}
