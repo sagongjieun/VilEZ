@@ -27,6 +27,12 @@
         <result column="lat" property="area_lat"/>
     </resultMap>
 
+    <update id="setPoint" parameterType="int">
+        update user
+        set point = point + #{point}
+        where id = #{userId}
+    </update>
+
     <update id="setManner" parameterType="int" >
         update user
         set manner =  manner + #{degree}

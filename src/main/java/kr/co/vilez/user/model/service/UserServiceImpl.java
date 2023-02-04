@@ -243,6 +243,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void setPoint(int userId, int point) {
+        userMapper.setPoint(userId,point);
+    }
+
+    @Override
     public HttpVO list() throws Exception{
         http = new HttpVO();
         http.setFlag("success");
