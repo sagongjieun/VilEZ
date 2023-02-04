@@ -1,10 +1,7 @@
-package kr.co.vilez.ui
+package kr.co.vilez.ui.search.category
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.*
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,87 +12,63 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
-import kr.co.vilez.databinding.FragmentHomeBinding
-import kr.co.vilez.ui.search.SearchActivity
-import kr.co.vilez.ui.share.*
-import kr.co.vilez.ui.search.category.MenuCategoryActivity
-import kr.co.vilez.ui.share.write.ShareWriteActivity
+import kr.co.vilez.databinding.FragmentCategorySearchBinding
+import kr.co.vilez.ui.dialog.AlertDialog
+import kr.co.vilez.ui.share.ShareData
+import kr.co.vilez.ui.share.ShareListAdapter
 import kr.co.vilez.util.ApplicationClass
-import kr.co.vilez.util.Common.Companion.elapsedTime
+import kr.co.vilez.util.Common
 import retrofit2.awaitResponse
-import kr.co.vilez.ui.share.ShareDetailActivity
-import kr.co.vilez.ui.user.ProfileMenuActivity
 
-private const val TAG = "빌리지_HomeFragment"
+private const val ARG_PARAM1 = "category"
 
-class HomeFragment : Fragment() {
-    private lateinit var binding: FragmentHomeBinding
-    private lateinit var mainActivity: MainActivity
+private const val TAG = "빌리지_CategorySearchFragment"
+class CategorySearchFragment : Fragment() {
+    private var category: String? = null
+    private lateinit var binding: FragmentCategorySearchBinding
+    private lateinit var activity: MenuCategoryActivity
 
     private lateinit var shareAdapter: ShareListAdapter
     private lateinit var shareDatas: ArrayList<ShareData>
     private var index = 0
-
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainActivity = context as MainActivity
-        setHasOptionsMenu(true)
+        arguments?.let {
+            category = it.getString(ARG_PARAM1)
+        }
+        activity = context as MenuCategoryActivity
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+        // Inflate the layout for this fragment
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_category_search, container, false)
         binding.fragment = this
 
-        if (ApplicationClass.prefs.getLng() != "0.0" && ApplicationClass.prefs.getLat() != "0.0") {
-            binding.userLocationValid = true
-            initData()
-        } else {
-            binding.userLocationValid = false
-        }
+        binding.userLocationValid = ApplicationClass.prefs.getLng() != "0.0" && ApplicationClass.prefs.getLat() != "0.0"
 
         initToolBar()
+        initFilterCheckBox()
+        initData() // default : 카테고리에 해당하는 게시글 모두 출력 (공유중 + 공유가능 모두)
 
         return binding.root
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.top_app_bar, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.option_menu_menu -> {
-                Log.d(TAG, "onContextItemSelected: ${item.title} clicked")
-                Toast.makeText(mainActivity, "${item.title} 클릭", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(mainActivity, MenuCategoryActivity::class.java))
-            }
-            R.id.option_menu_search -> {
-                val intent = Intent(mainActivity, SearchActivity::class.java)
-                startActivity(intent)
+    private fun initFilterCheckBox() {
+        binding.checkboxShare.isChecked = false // 디폴트 : 모두 보기
+        binding.checkboxShare.setOnCheckedChangeListener { button, b ->
+            if(b) { // 체크된 경우 => 공유가능만 보기
+                initData(true)
+            } else { // 체크 해제된 경우 => 전체보기
+                initData()
             }
         }
-        return super.onOptionsItemSelected(item)
     }
-
-
-    private fun initToolBar() {
-        mainActivity.setSupportActionBar(binding.toolbar)
-        mainActivity.supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
-    }
-
-
-    private fun initData() {
+    
+    private fun initData(filtered:Boolean = false) {
         // 데이터 가져오기
         shareDatas = arrayListOf()
 
@@ -104,15 +77,14 @@ class HomeFragment : Fragment() {
         shareAdapter.setItemClickListener(object : ShareListAdapter.OnItemClickListener {
             // listview item 클릭시 실행할 메소드
             override fun onClick(view: View, position: Int) {
-
                 Log.d(TAG, "onClick: ${shareDatas[position].tv_name} clicked!")
             }
         })
 
         // 리사이클러뷰에 어댑터 등록
-        binding.rvShareList.apply {
+        binding.rvShareSearch.apply {
             adapter = shareAdapter
-            layoutManager = LinearLayoutManager(mainActivity, LinearLayoutManager.VERTICAL, false)
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         }
 
         var num = 0;
@@ -122,28 +94,32 @@ class HomeFragment : Fragment() {
         Log.d(TAG, "$lat $lng")
         CoroutineScope(Dispatchers.Main).launch {
             val result =
-                ApplicationClass.retrofitShareService.boardList(
+                ApplicationClass.retrofitShareService.boardCategoryList(
                     num++,
                     0,
                     max,
-                    ApplicationClass.prefs.getId()
+                    ApplicationClass.prefs.getId(),
+                    category!!
                 ).awaitResponse().body();
-            Log.d(TAG, "onViewCreated: 데이터 불러오는중 result : $result")
+            Log.d(TAG, "onViewCreated: 공유 검색 데이터 불러오는중 result : $result")
             if (result?.flag == "success") {
+                Log.d(TAG, "initShareData: success!!!!!")
                 Log.d(TAG, "initList: result: $result")
                 if (result.data.isEmpty()) {
                     Log.d(TAG, "onViewCreated: 데이터 0개")
-                    binding.tvNoArticleMsg.visibility = View.VISIBLE
+                    binding.tvWarnNoResult.visibility = View.VISIBLE
+                } else {
+                    binding.tvWarnNoResult.visibility = View.GONE
                 }
                 for (data in result.data) {
                     var shareData: ShareData
-                    if (data.shareListDto.list.isEmpty()) {
-
+                    if(filtered && data.shareListDto.state == 1) continue // 공유가능만 보기인데 공유중인 글은 skip
+                    if (data.shareListDto.list.isEmpty() ) { // 이미지 없는거 테스트용
                         shareData = ShareData(
                             data.shareListDto.id,
                             "https://kr.object.ncloudstorage.com/vilez/basicProfile.png",
                             data.shareListDto.title,
-                            elapsedTime(data.shareListDto.date),
+                            Common.elapsedTime(data.shareListDto.date),
                             "구미",
                             data.shareListDto.startDay + "~"
                                     + data.shareListDto.endDay,
@@ -156,7 +132,7 @@ class HomeFragment : Fragment() {
                             data.shareListDto.id,
                             data.shareListDto.list[0].path,
                             data.shareListDto.title,
-                            elapsedTime(data.shareListDto.date),
+                            Common.elapsedTime(data.shareListDto.date),
                             "구미",
                             data.shareListDto.startDay + "~"
                                     + data.shareListDto.endDay,
@@ -173,29 +149,32 @@ class HomeFragment : Fragment() {
             shareAdapter.notifyItemInserted(index - 1)
         }
 
-        binding.rvShareList.setOnScrollChangeListener { v, scollX, scrollY,
-                                                        oldScrollX, oldScrollY ->
+        binding.rvShareSearch.setOnScrollChangeListener { v, scollX, scrollY,
+                                                          oldScrollX, oldScrollY ->
             if (!v.canScrollVertically(1)) {
                 CoroutineScope(Dispatchers.Main).launch {
                     val result =
-                        ApplicationClass.retrofitShareService.boardList(
+                        ApplicationClass.retrofitShareService.boardCategoryList(
                             num++,
                             0,
                             max,
-                            ApplicationClass.prefs.getId()
+                            ApplicationClass.prefs.getId(),
+                            category!!
                         ).awaitResponse()
                             .body();
                     Log.d(TAG, "initView: ${result?.data}")
                     if (result?.data?.size != 0) {
                         if (result?.flag == "success") {
+                            Log.d(TAG, "initShareData: success!!!!!")
                             for (data in result.data) {
+                                if(filtered && data.shareListDto.state == 1) continue // 공유가능만 보기인데 공유중인 글은 skip
                                 var shareData: ShareData
                                 if (data.shareListDto.list.size == 0) {
                                     shareData = ShareData(
                                         data.shareListDto.id,
                                         "https://kr.object.ncloudstorage.com/vilez/basicProfile.png",
                                         data.shareListDto.title,
-                                        elapsedTime(data.shareListDto.date),
+                                        Common.elapsedTime(data.shareListDto.date),
                                         "구미",
                                         data.shareListDto.startDay + "~"
                                                 + data.shareListDto.endDay,
@@ -208,7 +187,7 @@ class HomeFragment : Fragment() {
                                         data.shareListDto.id,
                                         data.shareListDto.list[0].path,
                                         data.shareListDto.title,
-                                        elapsedTime(data.shareListDto.date),
+                                        Common.elapsedTime(data.shareListDto.date),
                                         "구미",
                                         data.shareListDto.startDay + "~"
                                                 + data.shareListDto.endDay,
@@ -226,23 +205,26 @@ class HomeFragment : Fragment() {
             }
         }
     }
+    
+    
 
-
-    fun moveToShareActivity(view: View) {
-        val intent = Intent(mainActivity, ShareDetailActivity::class.java)
-        mainActivity.startActivity(intent)
+    private fun initToolBar() {
+        activity.setSupportActionBar(binding.toolbar)
+        activity.supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
+        binding.title = category
     }
 
-    fun moveToShareWriteActivity(view: View) {
-        val intent = Intent(mainActivity, ShareWriteActivity::class.java)
-        mainActivity.startActivity(intent)
+    fun onBackPressed(view: View) {
+        activity.supportFragmentManager.popBackStack()
     }
 
-    fun moveToUserLocationSetting(view: View) {
-        // 동네설정으로 넘어가는
-        val intent = Intent(mainActivity, ProfileMenuActivity::class.java)
-        intent.putExtra("fragment", "내 동네 설정")
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-        mainActivity.startActivity(intent)
+    companion object {
+        @JvmStatic
+        fun newInstance(category: String) =
+            CategorySearchFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_PARAM1, category)
+                }
+            }
     }
 }

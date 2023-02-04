@@ -1,4 +1,4 @@
-package kr.co.vilez.ui.share.category
+package kr.co.vilez.ui.search.category
 
 import android.content.Context
 import android.os.Bundle
