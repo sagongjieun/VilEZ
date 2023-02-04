@@ -1,4 +1,4 @@
-package kr.co.vilez.util
+package kr.co.vilez.service
 
 import kr.co.vilez.data.model.RESTResult
 import kr.co.vilez.data.model.Token

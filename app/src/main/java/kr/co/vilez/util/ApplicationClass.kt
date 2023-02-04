@@ -4,20 +4,16 @@ import android.app.Application
 import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Log
-import android.view.View
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.kakao.sdk.common.KakaoSdk
-import com.navercorp.nid.NaverIdLoginSDK
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.internal.synchronized
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.model.RESTResult
 import kr.co.vilez.data.model.Token
-import kr.co.vilez.ui.dialog.ConfirmDialog
-import kr.co.vilez.ui.dialog.ConfirmDialogInterface
+import kr.co.vilez.service.*
 import kr.co.vilez.ui.user.LoginActivity
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
@@ -33,7 +29,7 @@ private const val TAG = "빌리지_ApplicationClass"
 class ApplicationClass: Application() {
 
     val SERVER_URL = "http://i8d111.p.ssafy.io:8081"
-//    val SERVER_URL = "http://192.168.100.210:8086"
+//    val SERVER_URL = "http://192.168.0.28:8086" // 로컬
 
     companion object {
         // 전역변수 문법을 통해 Retrofit 인스턴스를 앱 실행 시 1번만 생성하여 사용 (싱글톤 객체)
@@ -42,6 +38,8 @@ class ApplicationClass: Application() {
         lateinit var retrofitEmailService: RetrofitEmailService
         lateinit var retrofitChatService: RetrofitChatService
         lateinit var retrofitShareService: RetrofitShareService
+
+        lateinit var retrofitFCMService: RetrofitFCMService
 
         // header에 accessTocken 넣는 레트로핏
         lateinit var hRetrofit : Retrofit
@@ -98,6 +96,7 @@ class ApplicationClass: Application() {
         retrofitEmailService = wRetrofit.create(RetrofitEmailService::class.java)
         retrofitChatService = wRetrofit.create(RetrofitChatService::class.java)
         retrofitShareService = wRetrofit.create(RetrofitShareService::class.java)
+        retrofitFCMService = wRetrofit.create(RetrofitFCMService::class.java)
 
         // 네트워크에 연결되어있는지 확인 후 없으면 앱 종료 시키기위해 네트워크 연결상태 감지 콜백 생성시켜두기
 //        val network: CheckNetwork = CheckNetwork(applicationContext)

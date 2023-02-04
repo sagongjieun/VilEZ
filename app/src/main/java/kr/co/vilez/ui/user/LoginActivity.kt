@@ -16,6 +16,7 @@ import kr.co.vilez.databinding.ActivityLoginBinding
 import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.ui.dialog.AlertDialog
 import kr.co.vilez.util.ApplicationClass
+import kr.co.vilez.util.FCMTokenUtil
 import retrofit2.awaitResponse
 
 private const val TAG = "빌리지_LoginActivity"
@@ -76,6 +77,12 @@ class LoginActivity : AppCompatActivity() {
         transaction.commit()
     }
 
+    // 로그인 완료해서 유저 정보 불러온 뒤 FCM 토큰 생성
+    private fun setFCM() {
+        Log.d(TAG, "setFCM: 로그인 성공 후 토큰 업데이트하기!!")
+        //Firebase.messaging.isAutoInitEnabled = true
+        FCMTokenUtil().createFcmToken(this@LoginActivity) // 로그인 완료시 새로운 토큰 생성해서 서버에 전송, shared preference 에 저장!
+    }
     fun login(user: User) {
         CoroutineScope(Dispatchers.Main).launch {
             val result =
@@ -91,6 +98,8 @@ class LoginActivity : AppCompatActivity() {
                     Log.d(TAG, "login: Detail조회도 로그인와 같이 성공~, result: ${resultDetail.data[0]}")
                     ApplicationClass.prefs.setUserDetail(resultDetail.data[0])
                 }
+                // 로그인 후 토큰 등록
+                setFCM()
 
                 val intent = Intent(this@LoginActivity, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)

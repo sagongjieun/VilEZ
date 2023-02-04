@@ -16,5 +16,27 @@
         <item>패션의류</item>
         <item>여가/생활편의</item>
         <item>도서</item>
+        <item>디지털/가전</item>
+        <item>기타</item>
+    </string-array>
+
+    <string-array name="search_category">
+        <item>전체</item>
+        <item>화장품/미용</item>
+        <item>생활/건강</item>
+        <item>식품</item>
+        <item>스포츠/레저</item>
+        <item>가구/인테리어</item>
+        <item>패션잡화</item>
+        <item>패션의류</item>
+        <item>여가/생활편의</item>
+        <item>도서</item>
+        <item>디지털/가전</item>
+        <item>기타</item>
+    </string-array>
+
+    <string-array name="search_filter">
+        <item>최신순</item>
+        <item>오래된순</item>
     </string-array>
 </resources>

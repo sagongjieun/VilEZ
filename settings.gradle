@@ -6,6 +6,12 @@ pluginManagement {
         maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/'}
     }
 }
+
+/*dependencies {
+    // Add the dependency for the Google services Gradle plugin
+    classpath 'com.google.gms:google-services:4.3.15'
+}*/
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -14,7 +20,10 @@ dependencyResolutionManagement {
         jcenter()
         maven { url "https://jitpack.io" }
         maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/'}
+
     }
+
+
 }
 rootProject.name = "vilez"
 include ':app'
