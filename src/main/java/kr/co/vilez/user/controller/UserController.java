@@ -33,10 +33,11 @@ public class UserController {
     @PostMapping("/manner")
     @ApiOperation(value = "매너지수 증가 및 삭감 API"
             , notes = "0 : 불만족, 1 : 조금 불친절, 2:보통, 3:친절, 4:마음이 뜨신 사람 ")
-    public ResponseEntity<?> setManner(@RequestBody int userId, @RequestBody int degree){
+    public ResponseEntity<?> setManner(@RequestBody HashMap<String,Integer> map){
         HttpVO http = new HttpVO();
-
+        http.setFlag("success");
         try{
+            userService.setManner(map.get("userId"),map.get("degree"));
 
         } catch (Exception e){
             e.printStackTrace();
