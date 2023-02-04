@@ -27,12 +27,11 @@ const ProductList = () => {
   const [list, setList] = useState("");
 
   useEffect(() => {
-    console.log(category);
-    const type = pathname.includes("share") ? 2 : 1;
+    const categoryToUse = category === "전체" ? "" : category;
 
-    type === 1
+    urlId === 1
       ? // 요청
-        getAskArticleList("", "", category, 0, 200, 0, 1, "").then((res) => {
+        getAskArticleList("", "", categoryToUse, 0, 200, 0, 1, search).then((res) => {
           const data = res;
           setOriginalArticle(data[0]);
           setArticles(data[0]);
@@ -40,7 +39,7 @@ const ProductList = () => {
           setList("물품 요청 목록");
         })
       : // 공유
-        getShareArticleList("", "", category, 0, 200, 0, 1, "").then((res) => {
+        getShareArticleList("", "", categoryToUse, 0, 200, 0, 1, search).then((res) => {
           const data = res;
           // console.log(res);
           setOriginalArticle(data);
@@ -48,22 +47,25 @@ const ProductList = () => {
           setList("물품 공유 목록");
           // console.log(data[0].askDto.list[0]);
         });
-  }, [category]);
+  }, [search, pathname, isAll, category]);
+
   // 공유가능 목록 보기위해 작성한 useEffect 0일때 공유가능, 1일때 공유 중
   useEffect(() => {
     if (isAll) {
       setArticles(originalArticle);
-      console.log(getArticle);
+      // console.log(getArticle);
     } else {
       if (urlId === 2) {
-        const tempShareArticle = getArticle.filter((article) => article.shareListDto.state === 0);
+        const tempShareArticle = getArticle.filter(
+          (article) => article.shareListDto && article.shareListDto.state === 0
+        );
         setArticles(tempShareArticle);
       } else {
-        const tempShareArticle = getArticle.filter((article) => article.askDto.state === 0);
+        const tempShareArticle = getArticle.filter((article) => article.askDto && article.askDto.state === 0);
         setArticles(tempShareArticle);
       }
     }
-  }, [isAll]);
+  }, [search, pathname, isAll, category]);
   // props에서 받아온 값이 newCategory에 들어감
   // setCategory에 넘어온 값을 입력
   function receiveCategory(newCategory) {
@@ -72,22 +74,27 @@ const ProductList = () => {
   function onClickSeePossible() {
     setIsAll(!isAll);
   }
-  useEffect(() => {}, [search]);
+
   function onChangeSearch(event) {
+    console.log(event);
+    getShareArticleList("", "", category, 0, 200, 0, 1, "갤럭시").then((res) => {
+      const data = res;
+      // console.log(res);
+      setOriginalArticle(data);
+      setArticles(data);
+      setList("물품 공유 목록");
+      // console.log(data[0].askDto.list[0]);
+    });
     setSearch(event);
   }
-  const sharefiltersearch =
-    urlId === 2
-      ? getArticle.filter((article) => article.shareListDto.title.toLowerCase().includes(search))
-      : getArticle.filter((article) => article.askDto.title.toLowerCase().includes(search));
-  // const askfiltersearch = getArticle.filter((article) => article.askDto.title.toLowerCase().includes(search));
+
   return (
     <div css={topWrap}>
       <div css={contentWrap}>
         <h2>{list}</h2>
         <div css={filterWrap}>
           <div css={filterLeftWrap}>
-            <ProductCategory isMain={false} sendCategory={receiveCategory} />
+            <ProductCategory isMain={false} sendCategory={receiveCategory} list={true} />
           </div>
           <div css={filterRighWrap}>
             <div css={searchWrap}>
@@ -115,28 +122,28 @@ const ProductList = () => {
 
         {urlId === 2 ? (
           <div css={relatedProductWrapper}>
-            {sharefiltersearch.map((article, idx) => (
+            {getArticle.map((article, idx) => (
               <div key={idx} onClick={() => navigate(`/product/detail/share/${article.shareListDto.id}`)}>
                 <div css={thumbnailWrapper}>
                   <img src={article.shareListDto?.list[0]?.path} />
                 </div>
                 <div css={infoWrapper}>
                   <div>
-                    <span>{article.shareListDto.title}</span>
+                    <span>{article.shareListDto?.title}</span>
                     <small>1시간 전</small>
                   </div>
                   <div>
                     <small>
                       <HiLocationMarker />
-                      {article.shareListDto.area}
+                      {article?.shareListDto?.area}
                     </small>
                     <small>
                       <HiCalendar />
-                      {article.shareListDto.startDay} ~ {article.shareListDto.endDay}
+                      {article?.shareListDto?.startDay} ~ {article?.shareListDto?.endDay}
                     </small>
                     <small>
                       <HiHeart />
-                      {article.listCnt}
+                      {article?.listCnt}
                     </small>
                   </div>
                 </div>
@@ -145,24 +152,24 @@ const ProductList = () => {
           </div>
         ) : (
           <div css={relatedProductWrapper}>
-            {sharefiltersearch.map((article, idx) => (
+            {getArticle.map((article, idx) => (
               <div key={idx} onClick={() => navigate(`/product/detail/ask/${article.askDto.id}`)}>
                 <div css={thumbnailWrapper}>
-                  <img src={article.askDto?.list[0]?.path} />
+                  <img src={article?.askDto?.list[0]?.path} />
                 </div>
                 <div css={infoWrapper}>
                   <div>
-                    <span>{article.askDto.title}</span>
+                    <span>{article?.askDto?.title}</span>
                     <small>1시간 전</small>
                   </div>
                   <div>
                     <small>
                       <HiLocationMarker />
-                      {article.askDto.area}
+                      {article?.askDto?.area}
                     </small>
                     <small>
                       <HiCalendar />
-                      {article.askDto.startDay} ~ {article.askDto.endDay}
+                      {article?.askDto?.startDay} ~ {article?.askDto?.endDay}
                     </small>
                   </div>
                 </div>
