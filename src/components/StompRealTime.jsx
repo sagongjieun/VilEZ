@@ -159,8 +159,9 @@ const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickn
   useEffect(() => {
     /* state : 0 예약 후, -1 반납 후, -2 예약 후(예약 취소 : 확장), -3 예약 전 */
     // test로 0, 원래는 -1
-    if (shareState === 0) {
+    if (shareState === -1) {
       // 소켓 끊기
+      // client.disconnect();
 
       // 채팅방 막기
       const messageInput = document.getElementById("messageInput");
@@ -186,6 +187,7 @@ const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickn
             movedLng={movedLng}
             movedZoomLevel={movedZoomLevel}
             movedMarker={movedMarker}
+            shareState={shareState}
           />
         </div>
       </div>

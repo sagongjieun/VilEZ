@@ -7,7 +7,7 @@ import StompRealTime from "../StompRealTime";
 import MeetConfirmModal from "../modal/MeetConfirmModal";
 import QuitChattingModal from "../modal/QuitChattingModal";
 import OathMoal from "../modal/OathModal";
-import ShareCompleteModal from "../modal/ShareCompleteModal";
+import AppointmentCompleteModal from "../modal/AppointmentCompleteModal";
 import { useParams } from "react-router-dom";
 import { getBoardIdByRoomId } from "../../api/chat";
 import { getAskArticleDetailByBoardId } from "../../api/ask";
@@ -17,6 +17,9 @@ import { useSetRecoilState } from "recoil";
 import { shareDataState } from "../../recoil/atom";
 import { getShareDate, getShareState } from "../../api/appointment";
 import DateFormat from "../common/DateFormat";
+import { getShareReturnState, postShareEnd } from "../../api/appointment";
+import ProductReturnModal from "../modal/ProductReturnModal";
+import ShareCompleteModal from "../modal/ShareCompleteModal";
 
 const ProductChatting = () => {
   const { roomId } = useParams();
@@ -26,8 +29,10 @@ const ProductChatting = () => {
 
   const [isConfirm, setIsConfirm] = useState(false);
   const [isOath, setIsOath] = useState(false);
-  const [isQuit, setIsQuit] = useState(false); // 채팅 나가기 관련
-  const [isComplete, setIsComplete] = useState(false);
+  const [isQuit, setIsQuit] = useState(false);
+  const [isAppointmentComplete, setIsAppointmentComplete] = useState(false);
+  const [isProductReturn, setIsProductReturn] = useState(false);
+  const [isShareComplete, setIsShareComplete] = useState(false);
 
   const [otherUserId, setOtherUserId] = useState(null);
   const [shareUserId, setShareUserId] = useState(null);
@@ -48,10 +53,12 @@ const ProductChatting = () => {
   const [confirmedEndDate, setConfirmedEndDate] = useState("");
   const [shareState, setShareState] = useState("");
 
+  // 채팅 나가기
   function onClickQuit() {
     setIsQuit(true);
   }
 
+  // 예약(약속) 확정
   function onClickConfirm() {
     getShareDate(boardId, notShareUserId, shareUserId, boardType).then((res) => {
       res = res[0];
@@ -75,6 +82,28 @@ const ProductChatting = () => {
         setIsConfirm(!isConfirm);
       } else {
         alert("공유자가 아직 기간을 확정하지 않았습니다. 😥");
+      }
+    });
+  }
+
+  // 반납 확인 (공유자에 의해)
+  function onClickCheckReturn() {
+    setIsProductReturn(!isProductReturn);
+  }
+
+  // 공유 종료 (피공유자에 의해)
+  function onClickEndShare() {
+    // 공유자가 반납 확인을 눌렀는지 확인
+    getShareReturnState(roomId).then((res) => {
+      if (res) {
+        postShareEnd(roomId).then((res) => {
+          if (res) {
+            // 모달로 공유가 끝났다는 것 알리기
+            setIsShareComplete(!isShareComplete);
+          }
+        });
+      } else {
+        alert("공유자가 물품에 대해 확인중입니다. 공유자에게 반납 확인 요청을 해주세요. 🙂");
       }
     });
   }
@@ -215,9 +244,9 @@ const ProductChatting = () => {
         {shareState == 0 && (
           <>
             {loginUserId == notShareUserId ? (
-              <MiddleWideButton text={"공유 종료"} />
+              <MiddleWideButton text={"공유 종료"} onclick={onClickEndShare} />
             ) : (
-              <MiddleWideButton text={"반납 확인"} />
+              <MiddleWideButton text={"반납 확인"} onclick={onClickCheckReturn} />
             )}
           </>
         )}
@@ -255,8 +284,19 @@ const ProductChatting = () => {
         ) : null}
       </div>
       <div>{isQuit ? <QuitChattingModal close={setIsQuit} /> : null}</div>
-      <div>{isOath ? <OathMoal close={setIsOath} openLastConfirm={setIsComplete} /> : null} </div>
-      <div>{isComplete ? <ShareCompleteModal /> : null}</div>
+      <div>{isOath ? <OathMoal close={setIsOath} openLastConfirm={setIsAppointmentComplete} /> : null} </div>
+      <div>{isAppointmentComplete ? <AppointmentCompleteModal /> : null}</div>
+      <div>
+        {isProductReturn ? (
+          <ProductReturnModal
+            close={setIsProductReturn}
+            otherUserNickname={boardDetail.otherUserNickname}
+            otherUserId={otherUserId}
+            roomId={roomId}
+          />
+        ) : null}
+      </div>
+      {isShareComplete ? <ShareCompleteModal otherUserNickname={boardDetail.otherUserNickname} /> : null}
     </div>
   );
 };

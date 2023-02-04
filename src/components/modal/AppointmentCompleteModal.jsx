@@ -6,7 +6,7 @@ import { useRecoilValue } from "recoil";
 import { shareDataState } from "../../recoil/atom";
 import MiddleWideButton from "../button/MiddleWideButton";
 
-function ShareCompleteModal({ otherUserNickname }) {
+function AppointmentCompleteModal() {
   const navigate = useNavigate();
   const shareData = useRecoilValue(shareDataState);
 
@@ -19,10 +19,7 @@ function ShareCompleteModal({ otherUserNickname }) {
   return (
     <div css={topWrap}>
       <div css={completeWrap}>
-        <span>
-          <b>{otherUserNickname}</b>님과의
-        </span>
-        <span>공유가 종료되었습니다. 😀</span>
+        <span>약속이 성사됐어요 😀</span>
         <div>
           <MiddleWideButton text={"확인"} onclick={onClickMovedetail} />
         </div>
@@ -43,8 +40,8 @@ const topWrap = css`
 
 const completeWrap = css`
   background-color: white;
-  width: 400px;
-  height: 230px;
+  width: 300px;
+  height: 180px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -59,12 +56,12 @@ const completeWrap = css`
 
   & > span {
     font-size: 20px;
-    margin-bottom: 20px;
   }
 
   & > div {
     width: 105px;
+    margin-top: 30px;
   }
 `;
 
-export default ShareCompleteModal;
+export default AppointmentCompleteModal;
