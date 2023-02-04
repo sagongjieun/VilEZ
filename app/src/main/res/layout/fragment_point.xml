@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -13,6 +14,12 @@
 
         <variable
             name="pointSum"
+            type="Integer" />
+        <variable
+            name="usedPoint"
+            type="Integer" />
+        <variable
+            name="savePoint"
             type="Integer" />
     </data>
 
@@ -70,19 +77,28 @@
                     android:textSize="20sp"
                     android:textStyle="bold"/>
 
-                <RelativeLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:gravity="center">
-                    <ProgressBar
+
+                    <com.dinuscxj.progressbar.CircleProgressBar
                         android:id="@+id/progressBar"
-                        style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="200dp"
                         android:layout_height="200dp"
-                        android:layout_marginTop="20dp"
-                        android:max="500"
-                        android:progress="800"
-                        android:progressDrawable="@drawable/circular_graph" />
+                        android:max="100"
+                        app:progress_style="solid_line"
+                        android:textSize="0sp"
+                        app:progress_text_color="@color/white"
+                        app:progress_stroke_width="12dp"
+                        app:progress_stroke_cap="round"
+                        app:progress_background_color="@color/bg_sub_2"
+                        app:progress_start_color="@color/main_1"
+                        app:progress_end_color="@color/main_1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tv_point_title"
@@ -92,39 +108,49 @@
                         android:layout_alignTop="@+id/progressBar"
                         android:layout_alignEnd="@+id/progressBar"
                         android:layout_alignBottom="@+id/progressBar"
-                        android:layout_marginStart="0dp"
-                        android:layout_marginTop="3dp"
-                        android:layout_marginEnd="0dp"
-                        android:layout_marginBottom="-3dp"
                         android:gravity="center"
                         android:paddingTop="-50dp"
                         android:text="보유 포인트"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:layout_marginBottom="4dp"
+                        app:layout_constraintBottom_toTopOf="@+id/textView15"
+                        app:layout_constraintEnd_toEndOf="@+id/progressBar"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="@+id/progressBar"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_chainStyle="packed" />
 
                     <TextView
+                        android:id="@+id/textView15"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignStart="@+id/progressBar"
                         android:layout_alignTop="@+id/progressBar"
                         android:layout_alignEnd="@+id/progressBar"
                         android:layout_alignBottom="@+id/progressBar"
-                        android:paddingTop="50dp"
                         android:gravity="center"
-                        android:text="300p"
+                        android:text="@{pointSum+`p`}"
+                        android:layout_marginTop="4dp"
                         android:textColor="@color/main_1"
-                        android:textSize="20sp" />
-<!--                    android:text="@{pointSum+`p`}"-->
-                </RelativeLayout>
+                        android:textSize="20sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/progressBar"
+                        app:layout_constraintEnd_toEndOf="@+id/progressBar"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="@+id/progressBar"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_point_title" />
+                    <!--                    android:text="@{pointSum+`p`}"-->
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:layout_marginTop="6dp">
                     <ImageView
                         android:layout_width="15dp"
                         android:layout_height="15dp"
-                        android:background="@drawable/main_circle"/>
+                        android:background="@drawable/circle_indicator"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -133,7 +159,7 @@
                         android:id="@+id/tv_have_sum"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="300p"
+                        android:text="@{pointSum+`p`}"
                         android:textColor="@color/main_1"/>
                 </LinearLayout>
                 <LinearLayout
@@ -141,10 +167,11 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center">
+
                     <ImageView
                         android:layout_width="15dp"
                         android:layout_height="15dp"
-                        android:background="@drawable/grey_circle"/>
+                        android:background="@drawable/circle_grey" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -153,7 +180,7 @@
                         android:id="@+id/tv_used_sum"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="150p"
+                        android:text="@{usedPoint+`p`}"
                         android:textColor="@color/main_1"/>
                 </LinearLayout>
 

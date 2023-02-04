@@ -81,6 +81,9 @@ class SharedPreferencesUtil(context: Context) {
     fun setPoint(point:Int) {
         prefs.edit().putInt("point", point).apply()
     }
+    fun getPoint():Int {
+        return prefs.getInt("point", 0)!!
+    }
     fun setManner(manner:Int) {
         prefs.edit().putInt("manner", manner).apply()
     }
