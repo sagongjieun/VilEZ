@@ -156,13 +156,15 @@ class SharedPreferencesUtil(context: Context) {
             putString("email", user.email)
             putString("password", user.password)
             putBoolean("autoLogin", true)
+            putString("oauth", user.oauth)
         }
     }
 
     fun getAutoLogin() :User {
         return User(
-            email = prefs.getString("email", "test@naver.com")!!,
-            password = prefs.getString("password", "12345")!!
+            email = prefs.getString("email", "")!!,
+            password = prefs.getString("password", "")!!,
+            oauth = prefs.getString("oauth", "")!!,
         )
     }
 
@@ -183,8 +185,8 @@ class SharedPreferencesUtil(context: Context) {
             remove("profileImg")
             remove("refreshToken")
             remove("state")
-            remove("lat")
-            remove("lng")
+            remove("areaLat")
+            remove("areaLng")
         }
     }
 }
