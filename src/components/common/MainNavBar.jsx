@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { Link } from "react-router-dom";
-import { FiSearch, FiBookmark } from "react-icons/fi";
+import { FiSearch } from "react-icons/fi";
+import { HiArchiveBox } from "react-icons/hi2";
 import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
@@ -29,8 +30,8 @@ function MainNavBar() {
     navigate("/login");
   }
 
-  function onClickMoveMyBookmark() {
-    // 내가 북마크하고 에약한 페이지로 이동
+  function onClickMoveMyBox() {
+    navigate("/mybox");
   }
 
   function onClickMoveMyPage() {
@@ -85,7 +86,7 @@ function MainNavBar() {
               <div>
                 <div css={midrightWrap}>
                   <FiSearch onClick={onClickMoveSearchPage} />
-                  <FiBookmark onClick={onClickMoveMyBookmark} />
+                  <HiArchiveBox onClick={onClickMoveMyBox} />
                   <CgProfile onClick={onClickMoveMyPage} />
                 </div>
                 <span onClick={onClickLogout}>로그아웃</span>

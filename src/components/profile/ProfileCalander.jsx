@@ -41,9 +41,9 @@ const Calendar = () => {
     //이전 달 보기 버튼
     if (selectedMonth === 1) {
       setSelectedMonth(12);
-      setSelectedYear(selectedYear - 1);
+      setSelectedYear((prev) => prev - 1);
     } else {
-      setSelectedMonth(selectedMonth - 1);
+      setSelectedMonth((prev) => prev - 1);
     }
   }, [selectedMonth]);
 

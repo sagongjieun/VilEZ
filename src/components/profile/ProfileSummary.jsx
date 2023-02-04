@@ -15,12 +15,8 @@ const ProfileSummary = (props) => {
   return (
     <div css={summaryWrapper}>
       <div css={summaryBox}>
-        <div
-          css={() => {
-            profilePicture(props.profileImage);
-          }}
-        >
-          <img src={props.profileImage} alt="하잉" />
+        <div css={profilePicture({ profileImage: props.profileImage })}>
+          {/* <img src={props.profileImage} alt="하잉" /> */}
         </div>
         <h3
           css={css`
@@ -56,17 +52,16 @@ const summaryBox = css`
   margin: 0 auto;
 `;
 
-const profilePicture = (profileImage) => {
+const profilePicture = (props) =>
   css`
     width: 120px;
     height: 120px;
     margin-bottom: 10px;
-    background-image: url(${profileImage});
+    background-image: url(${props.profileImage});
     background-size: cover;
     background-position: center center;
     border-radius: 50%;
   `;
-};
 const mannerWrapper = css`
   display: flex;
   justify-content: space-between;
@@ -92,4 +87,5 @@ const bar = (props) => css`
   height: 10px;
   background-color: #66dd9c;
 `;
+
 export default ProfileSummary;

@@ -23,7 +23,7 @@ const ProductImageSelect = ({ sendImageList, userProfileImage }) => {
   }
   function onClickDeleteImage() {
     setImageList(DefaultProfile);
-    // setImageUrl(DefaultProfile);
+    setImageUrl(DefaultProfile);
   }
   function readImage(event) {
     // 인풋 태그에 파일이 있는 경우

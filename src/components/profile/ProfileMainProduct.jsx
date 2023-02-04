@@ -8,12 +8,24 @@ import { useEffect } from "react";
 // const id = localStorage.getItem("id");
 const ProfileMainProduct = () => {
   const [section, setSection] = useState("");
+  const [myWritingType, setMyWritingType] = useState(1);
   const [writingDefaultPages, setWritingDefaultPages] = useState(1);
   const [bookMarkDefaultPages, setBookMarkDefaultPages] = useState(1);
   const [writingPages, setWritingPages] = useState(1);
   const [bookMarkPages, setBookMarkPages] = useState(1);
+  function onClickChangeType() {
+    if (myWritingType === 1) {
+      setMyWritingType(2);
+    } else {
+      setMyWritingType(1);
+    }
+  }
   function onClickWritingMore() {
-    setWritingPages((prev) => prev + 1);
+    if (writingDefaultPages > writingPages) {
+      setWritingPages((prev) => prev + 1);
+    } else {
+      setWritingPages(1);
+    }
     setSection("writing");
   }
   function onClickBookMarkMore() {
@@ -34,11 +46,22 @@ const ProfileMainProduct = () => {
   return (
     <div>
       <div css={sectionWrapper}>
-        <h3>나의 작성글</h3>
+        <div>
+          <h3>나의 작성글</h3>
+          <div>
+            <button css={myWritingType === 1 ? basic : bordered} onClick={onClickChangeType}>
+              나의 공유글
+            </button>
+            <button css={myWritingType === 2 ? basic : bordered} onClick={onClickChangeType}>
+              나의 요청글
+            </button>
+          </div>
+        </div>
         <ProfileMyWriting
           section={section}
           writingPages={writingPages}
           setWritingDefaultPages={setWritingDefaultPages}
+          myWritingType={myWritingType}
         />
         {writingDefaultPages === 1 ? null : writingPages === writingDefaultPages ? (
           <button onClick={onClickBookMarkMore} css={moreWrapper}>
@@ -51,7 +74,9 @@ const ProfileMainProduct = () => {
         )}
       </div>
       <div css={sectionWrapper}>
-        <h3>나의 관심글</h3>
+        <div>
+          <h3>나의 관심글</h3>
+        </div>
         <ProfileMyBookMark
           section={section}
           bookMarkPages={bookMarkPages}
@@ -73,8 +98,39 @@ const ProfileMainProduct = () => {
 
 const sectionWrapper = css`
   padding: 30px 0;
-  & > h3 {
-    height: 50px;
+  & > div:nth-of-type(1) {
+    height: 40px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    & > div {
+      width: 210px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      & > button {
+        cursor: pointer;
+        border: 1px solid #66dd9c;
+        border-radius: 15px;
+        width: 100px;
+        height: 30px;
+        font-size: 14px;
+        line-height: 30px;
+      }
+    }
+  }
+`;
+
+const basic = css`
+  background-color: #66dd9c;
+  color: #fff;
+`;
+const bordered = css`
+  background-color: #fff;
+  color: #66dd9c;
+  :hover {
+    background-color: #acf0cb32;
   }
 `;
 

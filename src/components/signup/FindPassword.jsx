@@ -10,9 +10,10 @@ import EmailCodeTimer from "./EmailCodeTimer";
 import Validation from "./SignupValidation";
 import useForm from "../../hooks/useForm";
 import { SHA256 } from "./EmailCodeHashFunction";
-import { confirmEmail, postUserInformation } from "../../api/signup";
+import { confirmEmailForPassword } from "../../api/signup";
+import { putUserPasswordNickName } from "../../api/profile";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const FindPassword = () => {
   const navigate = useNavigate();
@@ -22,8 +23,6 @@ const FindPassword = () => {
   const [hashedCode, setHashedCode] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
-  // const [nickNameCheck, setNickNameCheck] = useState("");
-  // const [isNickNameAvailable, setIsNickNameAvailable] = useState(false);
   const [isEmailCodeVisible, setIsEmailCodeVisible] = useState(false);
   const [isTimeOut, setIsTimeOut] = useState(true);
   const [isCodeConfirmed, setIsCodeConfirmed] = useState(false);
@@ -47,19 +46,20 @@ const FindPassword = () => {
     const userInformation = {
       email,
       password,
+      nickName: "",
     };
     if (isCodeConfirmed) {
-      postUserInformation(userInformation).then((response) => {
+      putUserPasswordNickName(userInformation).then((response) => {
         if (response) {
           navigate("/login");
         }
       });
     }
-    console.log("회원가입 고");
   }
   function onSubmitEmail() {
     setIsCodeConfirmed(false);
-    confirmEmail(email).then((response) => {
+    setEmailConfirmText("");
+    confirmEmailForPassword(email).then((response) => {
       if (response) {
         setHashedCode(response[0]);
         setIsEmailCodeVisible(false);
@@ -205,69 +205,97 @@ const FindPassword = () => {
                   <ConfirmButton text="확인" onClick={() => onSubmitEmailCode()} />
                 </div>
               </div>
-              {emailConfirmText && !isTimeOut ? <small css={alertWrapper}>{emailConfirmText}</small> : null}
+              {emailConfirmText && !isTimeOut ? (
+                <small css={isCodeConfirmed ? confirmedWrapper : alertWrapper}>{emailConfirmText}</small>
+              ) : null}
               {isTimeOut ? (
                 <small css={alertWrapper}>인증 시간이 초과되었습니다. 이메일 인증을 다시 해주세요.</small>
               ) : null}
-              <small>
-                이메일을 받지 못했나요?{" "}
-                <button
-                  onClick={() => {
-                    onSubmitEmail();
-                  }}
-                >
-                  인증코드 재요청
-                </button>
-              </small>
-              {/* {emailCode !== hashedCode ? (
-              <small css={alertWrapper}>
-                <small css={alert}>
-                  <AiOutlineExclamationCircle size="14" />
+              {isCodeConfirmed ? null : (
+                <small css={redirectText}>
+                  이메일을 받지 못했나요?
+                  <button
+                    onClick={() => {
+                      onSubmitEmail();
+                    }}
+                  >
+                    인증코드 재요청
+                  </button>
                 </small>
-                <small
-                  css={css`
-                    line-height: 22px;
-                  `}
-                >
-                  인증 코드가 일치하지 않습니다 .다시 확인해주세요.
-                </small>
-              </small>
-            ) : null} */}
+              )}
             </div>
           ) : null}
           {/* email 인증 확인하기 */}
         </div>
         {/* email */}
 
-        <div css={inputContainer}>
-          <label css={loginLabelFont} htmlFor="password">
-            비밀번호
-          </label>
-          <div
-            css={css`
-              position: relative;
-              padding-bottom: 6px;
-            `}
-          >
-            <SignupInputBox
-              name="password"
-              type={isVisible ? "text" : "password"}
-              placeholder="비밀번호를 입력해주세요."
-              onChange={(event) => {
-                handleChange(event);
-                onChangePassword(event);
-              }}
-            />
-            {errors.password ? null : (
-              <small
-                css={css`
-                  color: #8a8a8a;
-                `}
-              >
-                영어 소문자, 숫자 조합 8~16자리로 입력해주세요.
-              </small>
-            )}
-            {errors.password ? (
+        {isCodeConfirmed ? (
+          <div css={inputContainer}>
+            <label css={loginLabelFont} htmlFor="password">
+              비밀번호
+            </label>
+            <div
+              css={css`
+                position: relative;
+                padding-bottom: 6px;
+              `}
+            >
+              <SignupInputBox
+                name="password"
+                type={isVisible ? "text" : "password"}
+                placeholder="비밀번호를 입력해주세요."
+                onChange={(event) => {
+                  handleChange(event);
+                  onChangePassword(event);
+                }}
+              />
+              {errors.password ? null : (
+                <small
+                  css={css`
+                    color: #8a8a8a;
+                  `}
+                >
+                  영어 소문자, 숫자 조합 8~16자리로 입력해주세요.
+                </small>
+              )}
+              {errors.password ? (
+                <small css={alertWrapper}>
+                  <small css={alert}>
+                    <AiOutlineExclamationCircle size="14" />
+                  </small>
+                  <small
+                    css={css`
+                      line-height: 22px;
+                    `}
+                  >
+                    {errors.password}
+                  </small>
+                </small>
+              ) : null}
+            </div>
+            <div
+              css={css`
+                position: relative;
+              `}
+            >
+              <SignupInputBox
+                name="password2"
+                type={isVisible ? "text" : "password"}
+                placeholder="비밀번호를 다시 한 번 입력해주세요."
+                onChange={(event) => {
+                  handleChange(event);
+                  onChangePassword2(event);
+                }}
+              />
+              <span onClick={onClickVisible} css={isVisibleButton}>
+                {isVisible ? (
+                  <AiOutlineEye size="28" color="#66dd9c" />
+                ) : (
+                  <AiOutlineEyeInvisible size="28" color="#66dd9c" />
+                )}
+              </span>
+            </div>
+            {errors.password2 || (password !== password2 && password2) ? (
               <small css={alertWrapper}>
                 <small css={alert}>
                   <AiOutlineExclamationCircle size="14" />
@@ -277,54 +305,22 @@ const FindPassword = () => {
                     line-height: 22px;
                   `}
                 >
-                  {errors.password}
+                  {password !== password2 && password2
+                    ? "비밀번호가 일치하지 않습니다. 다시 입력해주세요."
+                    : errors.password2}
                 </small>
+                <br />
+                <LargeWideButton text="비밀번호 재설정 완료" />
               </small>
             ) : null}
           </div>
-          <div
-            css={css`
-              position: relative;
-            `}
-          >
-            <SignupInputBox
-              name="password2"
-              type={isVisible ? "text" : "password"}
-              placeholder="비밀번호를 다시 한 번 입력해주세요."
-              onChange={(event) => {
-                handleChange(event);
-                onChangePassword2(event);
-              }}
-            />
-            <span onClick={onClickVisible} css={isVisibleButton}>
-              {isVisible ? (
-                <AiOutlineEye size="28" color="#66dd9c" />
-              ) : (
-                <AiOutlineEyeInvisible size="28" color="#66dd9c" />
-              )}
-            </span>
-          </div>
-          {errors.password2 || (password !== password2 && password2) ? (
-            <small css={alertWrapper}>
-              <small css={alert}>
-                <AiOutlineExclamationCircle size="14" />
-              </small>
-              <small
-                css={css`
-                  line-height: 22px;
-                `}
-              >
-                {password !== password2 && password2
-                  ? "비밀번호가 일치하지 않습니다. 다시 입력해주세요."
-                  : errors.password2}
-              </small>
-            </small>
-          ) : null}
-        </div>
+        ) : null}
         {/* password */}
-
-        <br />
-        <LargeWideButton text="비밀번호 재설정 완료" />
+        <div css={linkWrapper}>
+          <Link to={"/login"} css={linkTag}>
+            <p>돌아가기</p>
+          </Link>
+        </div>
       </form>
     </div>
   );
@@ -364,12 +360,38 @@ const codeAndTimer = css`
     right: 14px;
   }
 `;
+const redirectText = css`
+  display: block;
+  padding-top: 4px;
+  & > button {
+    cursor: pointer;
+    border: none;
+    background-color: rgba(0, 0, 0, 0);
+    margin-left: 10px;
+    font-weight: bold;
+    :hover {
+      text-decoration: underline;
+    }
+  }
+`;
 const alertWrapper = css`
   color: red;
   display: flex;
   align-items: center;
   padding-top: 3px;
-  height: 21px;
+  height: 24px;
+`;
+
+const confirmedWrapper = css`
+  color: #000;
+  display: flex;
+  align-items: center;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 10px;
+  margin-top: 14px;
+  background-color: #fff;
+  border-radius: 5px;
 `;
 const alert = css`
   margin-right: 3px;
@@ -382,10 +404,21 @@ const emailCodeWrapper = css`
   margin-top: 16px;
   border-radius: 5px;
   background-color: #acf0cb;
-  padding: 20px;
+  padding: 20px 20px 14px;
   visibility: isVisible;
   opacity: 1;
   transition: all 0.5s;
 `;
-
+const linkWrapper = css`
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  :hover {
+    text-decoration: underline;
+  }
+`;
+const linkTag = css`
+  width: 140px;
+  text-align: center;
+`;
 export default FindPassword;
