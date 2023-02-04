@@ -46,9 +46,7 @@ public class ShareController {
                     "\n \t cnt에는 보고싶은 page 번호" +
                     "\n \t high에는 보고싶은 리스트의 총 갯수" +
                     "\n \t 그리고 검색하고자 하는 목록을 word를 통해 보내면 해당 키워드를 통해 검색이 가능하다" +
-                    "\n \t 그리고 검색하고자 하는 카테고리 목록을 category를 통해 보내면 해당 키워드를 통해 검색이 가능하다" +
-                    "\n \t 원하지 않은 검색은 그대로 null로 보내면 된다." +
-                    "\n \t 좌표 정보 꼭 보내주셔야합니다. 이제는 좌표 정보를 토대로 해당 범위 안에 있는 게시글만 보여줍니다.")
+                    "\n \t 그리고 검색하고자 하는 카테고리 목록을 category를 통해 보내면 해당 키워드를 통해 검색이 가능하다")
     public ResponseEntity<?> boardList(PageNavigator pageNavigator){
         httpVO = new HttpVO();
         try {
