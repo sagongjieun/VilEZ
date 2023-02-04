@@ -24,4 +24,6 @@ public interface UserService {
     HttpVO join(UserDto userDto) throws Exception;
     HttpVO list() throws Exception;
     UserDto detail2(int id) throws Exception;
+
+    void setPoint(int userId, int point);
 }

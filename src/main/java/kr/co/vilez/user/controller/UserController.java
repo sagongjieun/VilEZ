@@ -30,6 +30,20 @@ public class UserController {
 
     final UserService userService;
 
+    @PutMapping("/point")
+    public ResponseEntity<?> addManner(@RequestBody HashMap<String,Integer> map){
+        HttpVO http = new HttpVO();
+        http.setFlag("success");
+        try{
+            userService.setPoint(map.get("userId"),map.get("point"));
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
+
     @PostMapping("/manner")
     @ApiOperation(value = "매너지수 증가 및 삭감 API"
             , notes = "0 : 불만족, 1 : 조금 불친절, 2:보통, 3:친절, 4:마음이 뜨신 사람 ")

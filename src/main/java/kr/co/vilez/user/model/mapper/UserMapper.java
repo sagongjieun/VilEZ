@@ -27,5 +27,6 @@ public interface UserMapper {
     //DEBUG
     List<UserDto> list() throws SQLException;
 
+    void setPoint(int userId, int point);
 }
 
