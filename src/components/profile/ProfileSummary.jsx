@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import default_profile from "../../assets/images/default_profile.png";
+// import default_profile from "../../assets/images/default_profile.png";
 const ProfileSummary = (props) => {
   const [level, setLevel] = useState(0);
   useEffect(() => {
@@ -15,7 +15,13 @@ const ProfileSummary = (props) => {
   return (
     <div css={summaryWrapper}>
       <div css={summaryBox}>
-        <div css={profilePicture}></div>
+        <div
+          css={() => {
+            profilePicture(props.profileImage);
+          }}
+        >
+          <img src={props.profileImage} alt="하잉" />
+        </div>
         <h3
           css={css`
             height: 46px;
@@ -50,15 +56,17 @@ const summaryBox = css`
   margin: 0 auto;
 `;
 
-const profilePicture = css`
-  width: 120px;
-  height: 120px;
-  margin-bottom: 10px;
-  background-image: url(${default_profile});
-  background-size: cover;
-  background-position: center center;
-  border-radius: 50%;
-`;
+const profilePicture = (profileImage) => {
+  css`
+    width: 120px;
+    height: 120px;
+    margin-bottom: 10px;
+    background-image: url(${profileImage});
+    background-size: cover;
+    background-position: center center;
+    border-radius: 50%;
+  `;
+};
 const mannerWrapper = css`
   display: flex;
   justify-content: space-between;
