@@ -6,7 +6,7 @@ import { css } from "@emotion/react";
 const SmallWideButton = ({ text, outline, onclick, type, path }) => {
   return (
     <button
-      css={([outline ? outlinedButton : basicButton], [path === "EditProfile" ? closeButton : null])}
+      css={([outline ? outlinedButton : basicButton], [path === "EditProfile" ? closeButton : basicButton])}
       onClick={onclick}
       type={type}
     >
