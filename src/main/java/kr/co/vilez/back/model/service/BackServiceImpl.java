@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -17,7 +19,13 @@ public class BackServiceImpl implements BackService{
     final BackMapper backMapper;
 
     @Override
-    public int isState(int roomId) throws Exception {
-        return backMapper.getAppointmentState(roomId);
+    public Integer isState(int roomId) throws Exception {
+        List<Integer> list = backMapper.getAppointmentState(roomId);
+
+        if(list.size() == 0){
+            return -3;
+        } else {
+            return list.get(0);
+        }
     }
 }

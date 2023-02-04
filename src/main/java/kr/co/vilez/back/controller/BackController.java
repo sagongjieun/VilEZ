@@ -33,7 +33,8 @@ public class BackController {
                     "\n\t-- return --" +
                     "\n\t 0 : 예약 후" +
                     "\n\t -1 : 예약 전(반납 완료)" +
-                    "\n\t -2 : 에약 전(예약 취소)"
+                    "\n\t -2 : 에약 전(예약 취소)" +
+                    "\n\t -3 : 예약 전(한번도 공유를 신청한 적 없는 경우)"
                     )
     public ResponseEntity<?> isState(@RequestParam int roomId){
         HttpVO http = new HttpVO();
