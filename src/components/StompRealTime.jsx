@@ -13,7 +13,7 @@ import CalendarModal from "./modal/CalendarModal";
 
 let client;
 
-const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickname, shareUserId }) => {
+const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickname, shareUserId, shareState }) => {
   const scrollRef = useRef();
   const myUserId = localStorage.getItem("id");
   const chatRoomId = roomId;
@@ -135,7 +135,6 @@ const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickn
       client.connect({}, () => {
         // 다른 유저의 채팅을 구독
         client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
-          console.log("다른 유저의 메시지 받기 : ", JSON.parse(data.body));
           setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
         });
 
@@ -157,6 +156,25 @@ const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickn
     scrollToBottom();
   }, [showingMessage]);
 
+  useEffect(() => {
+    /* state : 0 예약 후, -1 반납 후, -2 예약 후(예약 취소 : 확장), -3 예약 전 */
+    // test로 0, 원래는 -1
+    if (shareState === -1) {
+      // 소켓 끊기
+      // client.disconnect();
+
+      // 채팅방 막기
+      const messageInput = document.getElementById("messageInput");
+      messageInput.disabled = true;
+      messageInput.placeholder = "채팅이 불가능합니다.";
+
+      const messageSendButton = document.getElementById("messageSendButton");
+      messageSendButton.hidden = true;
+
+      // 공유지도 막기
+    }
+  }, [shareState]);
+
   return (
     <>
       <div css={mapWrapper}>
@@ -169,6 +187,7 @@ const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickn
             movedLng={movedLng}
             movedZoomLevel={movedZoomLevel}
             movedMarker={movedMarker}
+            shareState={shareState}
           />
         </div>
       </div>
@@ -207,8 +226,11 @@ const StompRealTime = ({ roomId, boardId, boardType, otherUserId, otherUserNickn
               onChange={(e) => onChangeChatMessage(e.target.value)}
               onKeyDown={(e) => onKeyDownSendMessage(e)}
               value={chatMessage}
+              id="messageInput"
             />
-            <small onClick={onClickSendMessage}>전송</small>
+            <small onClick={onClickSendMessage} id="messageSendButton">
+              전송
+            </small>
           </div>
         </div>
       </div>
@@ -262,7 +284,7 @@ const chatWrapper = css`
     max-width: 100%;
     height: 40px;
     padding: 0 20px;
-    background: #ffffff;
+    background-color: #ffffff;
     border: 1px solid #e1e2e3;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 10px;
@@ -275,6 +297,10 @@ const chatWrapper = css`
       outline: none;
       border: none;
       width: 85%;
+
+      &:disabled {
+        background-color: #ffffff;
+      }
     }
 
     & > small {

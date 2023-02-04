@@ -30,9 +30,30 @@ async function getShareDate(boardId, notShareUserId, shareUserId, type) {
     const { data } = await jsonAxios.get(
       `/appointments/set/check?boardId=${boardId}&notShareUserId=${notShareUserId}&shareUserId=${shareUserId}&type=${type}`
     );
-    console.log("data", data);
 
     if (data.flag === "success") return data.data;
+    else console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getShareState(roomId) {
+  try {
+    const { data } = await jsonAxios.get(`/returns/state?roomId=${roomId}`);
+
+    if (data.flag === "success") return data.data[0];
+    else console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getShareReturnState(roomId) {
+  try {
+    const { data } = await jsonAxios.get(`/returns?roomId=${roomId}`);
+
+    if (data.flag === "success") return data.data[0].state;
     else console.log(data);
   } catch (error) {
     console.log(error);
@@ -46,7 +67,29 @@ async function postShareDate(body) {
     const { data } = await jsonAxios.post(`/appointments/set/period`, body);
 
     if (data.flag === "success") return true;
-    else return true;
+    else return false;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function postShareReturnState(roomId) {
+  try {
+    const { data } = await jsonAxios.post(`/returns`, { roomId });
+
+    if (data.flag === "success") return true;
+    else return false;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function postShareEnd(roomId) {
+  try {
+    const { data } = await jsonAxios.post(`/returns/confirmed/returns`, { roomId });
+
+    if (data.flag === "success") return true;
+    else return false;
   } catch (error) {
     console.log(error);
   }
@@ -65,4 +108,14 @@ async function putShareDate(body) {
   }
 }
 
-export { getAppointmentsByUserId, getPointListByUserId, getShareDate, postShareDate, putShareDate };
+export {
+  getAppointmentsByUserId,
+  getPointListByUserId,
+  getShareDate,
+  getShareState,
+  getShareReturnState,
+  postShareDate,
+  postShareReturnState,
+  postShareEnd,
+  putShareDate,
+};

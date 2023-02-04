@@ -5,9 +5,9 @@ import ProductInfo from "./ProductInfo";
 import MiddleWideButton from "../button/MiddleWideButton";
 import StompRealTime from "../StompRealTime";
 import MeetConfirmModal from "../modal/MeetConfirmModal";
-import QuitChattingReal from "../modal/QuitChattingReal";
+import QuitChattingModal from "../modal/QuitChattingModal";
 import OathMoal from "../modal/OathModal";
-import ShareCompleteModal from "../modal/ShareCompleteModal";
+import AppointmentCompleteModal from "../modal/AppointmentCompleteModal";
 import { useParams } from "react-router-dom";
 import { getBoardIdByRoomId } from "../../api/chat";
 import { getAskArticleDetailByBoardId } from "../../api/ask";
@@ -15,8 +15,11 @@ import { getShareArticleByBoardId } from "../../api/share";
 import { getUserDetail } from "../../api/profile";
 import { useSetRecoilState } from "recoil";
 import { shareDataState } from "../../recoil/atom";
-import { getShareDate } from "../../api/appointment";
+import { getShareDate, getShareState } from "../../api/appointment";
 import DateFormat from "../common/DateFormat";
+import { getShareReturnState, postShareEnd } from "../../api/appointment";
+import ProductReturnModal from "../modal/ProductReturnModal";
+import ShareCompleteModal from "../modal/ShareCompleteModal";
 
 const ProductChatting = () => {
   const { roomId } = useParams();
@@ -26,8 +29,10 @@ const ProductChatting = () => {
 
   const [isConfirm, setIsConfirm] = useState(false);
   const [isOath, setIsOath] = useState(false);
-  const [isQuit, setIsQuit] = useState(false); // 채팅 나가기 관련
-  const [isComplete, setIsComplete] = useState(false);
+  const [isQuit, setIsQuit] = useState(false);
+  const [isAppointmentComplete, setIsAppointmentComplete] = useState(false);
+  const [isProductReturn, setIsProductReturn] = useState(false);
+  const [isShareComplete, setIsShareComplete] = useState(false);
 
   const [otherUserId, setOtherUserId] = useState(null);
   const [shareUserId, setShareUserId] = useState(null);
@@ -46,11 +51,14 @@ const ProductChatting = () => {
   });
   const [confirmedStartDate, setConfirmedStartDate] = useState("");
   const [confirmedEndDate, setConfirmedEndDate] = useState("");
+  const [shareState, setShareState] = useState("");
 
+  // 채팅 나가기
   function onClickQuit() {
     setIsQuit(true);
   }
 
+  // 예약(약속) 확정
   function onClickConfirm() {
     getShareDate(boardId, notShareUserId, shareUserId, boardType).then((res) => {
       res = res[0];
@@ -78,6 +86,28 @@ const ProductChatting = () => {
     });
   }
 
+  // 반납 확인 (공유자에 의해)
+  function onClickCheckReturn() {
+    setIsProductReturn(!isProductReturn);
+  }
+
+  // 공유 종료 (피공유자에 의해)
+  function onClickEndShare() {
+    // 공유자가 반납 확인을 눌렀는지 확인
+    getShareReturnState(roomId).then((res) => {
+      if (res) {
+        postShareEnd(roomId).then((res) => {
+          if (res) {
+            // 모달로 공유가 끝났다는 것 알리기
+            setIsShareComplete(!isShareComplete);
+          }
+        });
+      } else {
+        alert("공유자가 물품에 대해 확인중입니다. 공유자에게 반납 확인 요청을 해주세요. 🙂");
+      }
+    });
+  }
+
   useEffect(() => {
     // boardId 얻기
     getBoardIdByRoomId(roomId)
@@ -91,14 +121,23 @@ const ProductChatting = () => {
         if (loginUserId == res.shareUserId) {
           setOtherUserId(res.notShareUserId);
           setShareUserId(loginUserId);
-          setNotShareUserId(res.notShareUserId);
+          setNotShareUserId(parseInt(res.notShareUserId));
         }
         // 로그인유저가 피공유자면
         else {
           setOtherUserId(res.shareUserId);
           setShareUserId(res.shareUserId);
-          setNotShareUserId(loginUserId);
+          setNotShareUserId(parseInt(loginUserId));
         }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    // 이 채팅방의 예약 상태 얻기
+    getShareState(parseInt(roomId))
+      .then((res) => {
+        setShareState(res.state);
       })
       .catch((error) => {
         console.log(error);
@@ -196,16 +235,41 @@ const ProductChatting = () => {
             otherUserId={otherUserId}
             otherUserNickname={boardDetail.otherUserNickname}
             shareUserId={shareUserId}
+            shareState={shareState}
           />
         )}
       </div>
       <div css={buttonWrapper}>
-        <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
-        {loginUserId == notShareUserId ? (
-          <MiddleWideButton text={"예약 확정"} onclick={onClickConfirm} />
-        ) : (
-          // 임시
-          <MiddleWideButton text={"공유자가 봐야할 버튼"} />
+        {/* state : 0 예약 후, -1 반납 후, -2 예약 후(예약 취소 : 확장), -3 예약 전 */}
+        {shareState == 0 && (
+          <>
+            {loginUserId == notShareUserId ? (
+              <MiddleWideButton text={"공유 종료"} onclick={onClickEndShare} />
+            ) : (
+              <MiddleWideButton text={"반납 확인"} onclick={onClickCheckReturn} />
+            )}
+          </>
+        )}
+        {shareState == -1 && (
+          <>
+            <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
+          </>
+        )}
+        {shareState == -2 && (
+          <>
+            <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
+            {loginUserId == notShareUserId ? (
+              <MiddleWideButton text={"예약 취소"} />
+            ) : (
+              <MiddleWideButton text={"예약 취소"} />
+            )}
+          </>
+        )}
+        {shareState == -3 && (
+          <>
+            <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
+            {loginUserId == notShareUserId ? <MiddleWideButton text={"예약 확정"} onclick={onClickConfirm} /> : <></>}
+          </>
         )}
       </div>
       <div>
@@ -219,9 +283,20 @@ const ProductChatting = () => {
           />
         ) : null}
       </div>
-      <div>{isQuit ? <QuitChattingReal close={setIsQuit} /> : null}</div>
-      <div>{isOath ? <OathMoal close={setIsOath} openLastConfirm={setIsComplete} /> : null} </div>
-      <div>{isComplete ? <ShareCompleteModal /> : null}</div>
+      <div>{isQuit ? <QuitChattingModal close={setIsQuit} /> : null}</div>
+      <div>{isOath ? <OathMoal close={setIsOath} openLastConfirm={setIsAppointmentComplete} /> : null} </div>
+      <div>{isAppointmentComplete ? <AppointmentCompleteModal /> : null}</div>
+      <div>
+        {isProductReturn ? (
+          <ProductReturnModal
+            close={setIsProductReturn}
+            otherUserNickname={boardDetail.otherUserNickname}
+            otherUserId={otherUserId}
+            roomId={roomId}
+          />
+        ) : null}
+      </div>
+      {isShareComplete ? <ShareCompleteModal otherUserNickname={boardDetail.otherUserNickname} /> : null}
     </div>
   );
 };
@@ -266,8 +341,11 @@ const buttonWrapper = css`
   }
 
   & > button:nth-of-type(1) {
-    margin-right: 40px;
     background-color: #c82333;
+  }
+
+  & > button:nth-of-type(2) {
+    margin-left: 40px;
   }
 `;
 
