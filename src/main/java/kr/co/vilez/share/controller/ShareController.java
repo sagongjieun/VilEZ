@@ -147,6 +147,19 @@ public class ShareController {
         return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
     }
 
+    @GetMapping("/bookmark/my/{userId}")
+    @ApiOperation(value = "글쓴이의 북마크 리스트를 불러온다.", notes = "Path로 userId를 넣어준다." +
+            "\n 북마크 정보들을 List로 리턴한다.")
+    public ResponseEntity<?> myBookmarkList(@PathVariable int userId){
+        httpVO = new HttpVO();
+        try {
+            System.out.println("ddd");
+            httpVO = shareService.myBookmarkList(userId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
+    }
     //bookmark
     @GetMapping("/bookmark/{boardId}")
     @ApiOperation(value = "글번호의 북마크 리스트를 불러온다.", notes = "Path로 boardId를 넣어준다." +
@@ -161,6 +174,7 @@ public class ShareController {
         }
         return new ResponseEntity<HttpVO>(httpVO, HttpStatus.OK);
     }
+
 
     @GetMapping("/bookmark/{boardId}/{userId}")
     @ApiOperation(value = "북마크를 눌렀는지 확인한다.", notes = "Path로 boardId를 넣어준다." +

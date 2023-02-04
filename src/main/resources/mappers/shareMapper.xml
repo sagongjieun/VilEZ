@@ -122,6 +122,35 @@
         select * from sharing_view where id = #{boardId};
     </select>
 
+    <select id = "getShareBoardList" resultMap="sharelist">
+        select id, user_id, category, title, content, date, hope_area_lat, hope_area_lng, start_day, end_day, nickname, area, manner,
+            (
+            CASE
+            WHEN now() >= a.appointment_start and a.appointment_end >= now() then 1
+            else 0
+            END
+            ) as state
+
+        from sharing_view as s
+
+            left join
+            (
+            select
+            ANY_VALUE(appointment_id) as  appointment_id,
+            ANY_VALUE(board_id) as  board_id,
+            ANY_VALUE(share_user_id) as  share_user_id,
+            ANY_VALUE(not_share_user_id) as  not_share_user_id,
+            ANY_VALUE(appointment_start) as  appointment_start,
+            ANY_VALUE(appointment_end) as  appointment_end,
+            ANY_VALUE(state) as  state
+            from appointment
+            WHERE now() >= appointment_start and appointment_end >= now()
+            group by board_id
+            )
+            as a
+        on s.id = a.board_id;
+    </select>
+
     <update id="delete" parameterType="int">
         UPDATE sharing_board SET state = -1 where id = #{boardId};
     </update>
