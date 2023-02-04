@@ -6,9 +6,8 @@ import InputBox from "../common/InputBox";
 import ProductCategory from "./ProductCategory";
 import { useState, useEffect } from "react";
 import NoProductList from "./NoProductList";
-// import image from "../../assets/images/mainBackgroundImage.png";
 import { getShareArticleList } from "../../api/share";
-import { HiLocationMarker } from "react-icons/hi";
+
 import { HiCalendar } from "react-icons/hi";
 import { HiHeart } from "react-icons/hi";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -21,33 +20,53 @@ const ProductList = () => {
   const [getArticle, setArticles] = useState([]);
   const [originalArticle, setOriginalArticle] = useState([]);
 
+  // 무한 스크롤 관련 변수
+  const [cnt, setCnt] = useState(0);
+
   const pathname = useLocation().pathname;
   const navigate = useNavigate();
   const urlId = pathname.includes("share") ? 2 : 1;
   const [list, setList] = useState("");
-
+  const categoryToUse = category === "전체" ? "" : category;
   useEffect(() => {
-    const categoryToUse = category === "전체" ? "" : category;
+    const handleScroll = () => {
+      // get the scroll position and the height of the page
+      const scrollTop = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
+      const clientHeight = document.documentElement.clientHeight || window.innerHeight;
+      const scrollHeight =
+        (document.documentElement && document.documentElement.scrollHeight) || document.body.scrollHeight;
 
+      // check if the scroll position is at the bottom of the page and there are more articles to load
+      if (scrollTop + clientHeight >= scrollHeight && getArticle.length) {
+        setCnt(cnt + 1);
+      }
+    };
+
+    // add the scroll event listener
+    window.addEventListener("scroll", handleScroll);
+
+    // remove the scroll event listener when unmounting the component
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [cnt, getArticle]);
+  useEffect(() => {
     urlId === 1
       ? // 요청
-        getAskArticleList("", "", categoryToUse, 0, 200, 0, 1, search).then((res) => {
+        getAskArticleList("", "", categoryToUse, cnt, 15, 0, 1, "").then((res) => {
           const data = res;
-          setOriginalArticle(data[0]);
-          setArticles(data[0]);
-          // console.log(data[0]);
+          setOriginalArticle([...originalArticle, ...data[0]]);
+          setArticles([...originalArticle, ...data[0]]);
           setList("물품 요청 목록");
         })
       : // 공유
-        getShareArticleList("", "", categoryToUse, 0, 200, 0, 1, search).then((res) => {
+        getShareArticleList("", "", categoryToUse, cnt, 15, 0, 1, "").then((res) => {
           const data = res;
-          // console.log(res);
-          setOriginalArticle(data);
-          setArticles(data);
+          setOriginalArticle([...originalArticle, ...data]);
+          setArticles([...getArticle, ...data]);
           setList("물품 공유 목록");
-          // console.log(data[0].askDto.list[0]);
         });
-  }, [search, pathname, isAll, category]);
+  }, [search, pathname, isAll, category, cnt]);
 
   // 공유가능 목록 보기위해 작성한 useEffect 0일때 공유가능, 1일때 공유 중
   useEffect(() => {
@@ -65,7 +84,8 @@ const ProductList = () => {
         setArticles(tempShareArticle);
       }
     }
-  }, [search, pathname, isAll, category]);
+  }, [pathname, isAll, category, cnt]);
+
   // props에서 받아온 값이 newCategory에 들어감
   // setCategory에 넘어온 값을 입력
   function receiveCategory(newCategory) {
@@ -74,20 +94,31 @@ const ProductList = () => {
   function onClickSeePossible() {
     setIsAll(!isAll);
   }
-
+  // 목록 검색창
+  function onSubmitSearch(event) {
+    event.preventDefault();
+    onChangeSearch(search);
+  }
   function onChangeSearch(event) {
     console.log(event);
-    getShareArticleList("", "", category, 0, 200, 0, 1, "갤럭시").then((res) => {
-      const data = res;
-      // console.log(res);
-      setOriginalArticle(data);
-      setArticles(data);
-      setList("물품 공유 목록");
-      // console.log(data[0].askDto.list[0]);
-    });
+    urlId === 2
+      ? getShareArticleList("", "", categoryToUse, cnt, 15, 0, 1, search).then((res) => {
+          const data = res;
+          setOriginalArticle(data);
+          setArticles(data);
+          setList("물품 공유 목록");
+        })
+      : getAskArticleList("", "", categoryToUse, cnt, 15, 0, 1, search).then((res) => {
+          const data = res;
+          setOriginalArticle(data);
+          setArticles(data);
+          setList("물품 공유 목록");
+        });
     setSearch(event);
   }
-
+  function onClicktoRegist() {
+    navigate("/product/regist");
+  }
   return (
     <div css={topWrap}>
       <div css={contentWrap}>
@@ -97,18 +128,17 @@ const ProductList = () => {
             <ProductCategory isMain={false} sendCategory={receiveCategory} list={true} />
           </div>
           <div css={filterRighWrap}>
-            <div css={searchWrap}>
+            <form css={searchWrap} onSubmit={onSubmitSearch}>
               <InputBox
                 useMainList={true}
                 onChangeValue={onChangeSearch}
                 value={search}
-                // type="text"
                 placeholder="필요한 물품을 검색해보세요."
-                // onKeyDown={onKeyDownSearch}
               />
               <img src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
-              <button>검색</button>
-            </div>
+              <button type="submit">검색</button>
+            </form>
+
             <div onClick={onClickSeePossible} css={isAll ? unPossibleWrap : possibleWrap}>
               공유가능한 물품만 보기
             </div>
@@ -117,7 +147,9 @@ const ProductList = () => {
         <DivideLine />
 
         <div css={buttonDiv}>
-          <button css={buttonWrap}>물품 등록</button>
+          <button css={buttonWrap} onClick={onClicktoRegist}>
+            물품 등록
+          </button>
         </div>
 
         {urlId === 2 ? (
@@ -133,10 +165,6 @@ const ProductList = () => {
                     <small>1시간 전</small>
                   </div>
                   <div>
-                    <small>
-                      <HiLocationMarker />
-                      {article?.shareListDto?.area}
-                    </small>
                     <small>
                       <HiCalendar />
                       {article?.shareListDto?.startDay} ~ {article?.shareListDto?.endDay}
@@ -163,10 +191,6 @@ const ProductList = () => {
                     <small>1시간 전</small>
                   </div>
                   <div>
-                    <small>
-                      <HiLocationMarker />
-                      {article?.askDto?.area}
-                    </small>
                     <small>
                       <HiCalendar />
                       {article?.askDto?.startDay} ~ {article?.askDto?.endDay}
@@ -231,6 +255,7 @@ const searchWrap = css`
     border: none;
     background-color: white;
     color: #66dd9c;
+    cursor: pointer;
   }
 `;
 
