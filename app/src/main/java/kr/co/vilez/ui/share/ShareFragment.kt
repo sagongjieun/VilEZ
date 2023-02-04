@@ -37,19 +37,6 @@ class ShareFragment : Fragment() {
 
     private lateinit var mContext: Context
 
-    val items = arrayListOf<String>(
-        "화장품/미용",
-        "생활/건강",
-        "식품",
-        "스포츠/레저",
-        "가구/인테리어",
-        "디지털/가전",
-        "출산/육아",
-        "패션잡화",
-        "여가/생활편의",
-        "패션의류",
-        "도서")
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mContext = context

@@ -15,9 +15,14 @@ data class RESTShareBoardDetail(
 
 interface RetrofitShareService {
 
-    // 모든 공유 게시글을 가져온다. 특정 동네에 대한것을 가져오는 기능은 현재 없다.
+    // 모든 공유 게시글을 가져온다. 유저 위치 기반해서 반경 2.5km 이내의 데이터를 가져온다.
     @GET("/vilez/shareboard")
     fun boardList(@Query(value = "cnt") cnt:Int, @Query(value = "low") low:Int,@Query(value = "high") high:Int, @Query(value =  "userId") id:Int): Call<RestShare>
+
+    // 검색 키워드를 포함하는 제목, 본문을 가진 게시글 리스트를 불러온다.
+    @GET("vilez/shareboard")
+    fun boardSearchList(@Query(value = "cnt") cnt:Int, @Query(value = "low") low:Int,@Query(value = "high") high:Int, @Query(value =  "userId") id:Int, @Query(value ="word")word:String): Call<RestShare>
+
 
     // 해당 게시글의 상세 정보를 가져온다.
     @GET("/vilez/shareboard/detail/{boardId}")
