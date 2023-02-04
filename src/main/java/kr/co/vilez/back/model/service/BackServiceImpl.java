@@ -18,14 +18,6 @@ public class BackServiceImpl implements BackService{
 
     @Override
     public int isState(int roomId) throws Exception {
-        Integer state = backMapper.getAppointmentState(roomId);
-
-        if (state == null){
-            return -1;
-        } else if (state == -1) {
-            return -2;
-        }
-
-        return 0;
+        return backMapper.getAppointmentState(roomId);
     }
 }

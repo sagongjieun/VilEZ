@@ -29,23 +29,23 @@ public class BackController {
     @GetMapping()
     @ApiOperation(value = "게시글의 예약전, 중 상태를 나타내는 API",
             notes = "-- 매개변수 --" +
-                    "\n\t boardId = 글 번호" +
-                    "shareUserId = 빌려주는 사람" +
-                    "notShareUserId = 빌리는 사람" +
-                    "type = 공유글인지 요청글인지(공유글 = 2, 요청글 = 1)" +
-                    "\n\t -- result --" +
-                    "\n\t state 가 0 현재 예약중" +
-                    "\n\t -1 예약전" +
-                    "\n\t -2 예약완료")
+                    "\n\t roomId : 채팅 방번호" +
+                    "\n\t-- return --" +
+                    "\n\t 0 : 예약 후" +
+                    "\n\t -1 : 예약 전(반납 완료)" +
+                    "\n\t -2 : 에약 전(예약 취소)"
+                    )
     public ResponseEntity<?> isState(@RequestParam int roomId){
         HttpVO http = new HttpVO();
         ArrayList<Object> data = new ArrayList<>();
 
         try{
             int num = backService.isState(roomId);
+
             Map<String, Integer> map = new HashMap<>();
             map.put("state", num);
             data.add(map);
+
             http.setData(data);
             http.setFlag("success");
         } catch (Exception e){
