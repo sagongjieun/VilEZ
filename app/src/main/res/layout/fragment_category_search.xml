@@ -61,7 +61,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="검색 결과가 존재하지 않습니다.\n다른 키워드로 검색해보세요."
+            android:textSize="16sp"
+            android:text="검색 결과가 존재하지 않습니다.\n\n다른 카테고리를 검색해보세요."
             android:visibility="gone"/>
 
         <LinearLayout

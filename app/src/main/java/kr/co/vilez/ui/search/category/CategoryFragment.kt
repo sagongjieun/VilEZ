@@ -23,17 +23,17 @@ class CategoryFragment : Fragment() {
     companion object {
 
         private val categoryList = mutableListOf<Category>(
-            Category("화장품/미용", R.drawable.user_default),
-            Category("생활/건강", R.drawable.user_default),
-            Category("식품", R.drawable.user_default),
-            Category("스포츠/레저", R.drawable.user_default),
-            Category("가구/인테리어", R.drawable.user_default),
-            Category("패션잡화", R.drawable.user_default),
-            Category("패션의류", R.drawable.user_default),
-            Category("여가/생활편의", R.drawable.user_default),
-            Category("도서", R.drawable.user_default),
-            Category("디지털/가전", R.drawable.user_default),
-            Category("기타", R.drawable.user_default),
+            Category("화장품/미용", R.drawable.ic_category_cosmetics),
+            Category("생활/건강", R.drawable.ic_category_comfort),
+            Category("식품", R.drawable.ic_category_food),
+            Category("스포츠/레저", R.drawable.ic_category_sports),
+            Category("가구/인테리어", R.drawable.ic_category_furniture),
+            Category("패션잡화", R.drawable.ic_category_fashion_stuff),
+            Category("패션의류", R.drawable.ic_category_clothing),
+            Category("여가/생활편의", R.drawable.ic_category_life),
+            Category("도서", R.drawable.ic_category_book),
+            Category("디지털/가전", R.drawable.ic_category_digital),
+            Category("기타", R.drawable.ic_category_etc),
         )
 
     }
