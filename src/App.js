@@ -9,6 +9,7 @@ import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
 import FindPassword from "./components/signup/FindPassword";
 import OAuthKakao from "./components/login/OAuthKakao";
+import MyBox from "./pages/MyBox";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/profile/*" element={<Profile />} />
         <Route path="/password" element={<FindPassword />} />
         <Route path="/oauth/kakao/callback" element={<OAuthKakao />} />
+        <Route path="/mybox" element={<MyBox />} />
         {/* <Route path="*" element={<NotFound />}></Route> */}
       </Routes>
     </BrowserRouter>

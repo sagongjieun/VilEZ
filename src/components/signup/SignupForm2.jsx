@@ -214,11 +214,13 @@ const SignupForm2 = () => {
                 <ConfirmButton text="확인" onClick={() => onSubmitEmailCode()} />
               </div>
             </div>
-            {emailConfirmText && !isTimeOut ? <small css={alertWrapper}>{emailConfirmText}</small> : null}
+            {emailConfirmText && !isTimeOut ? (
+              <small css={isCodeConfirmed ? confirmedWrapper : alertWrapper}>{emailConfirmText}</small>
+            ) : null}
             {isTimeOut ? (
               <small css={alertWrapper}>인증 시간이 초과되었습니다. 이메일 인증을 다시 해주세요.</small>
             ) : null}
-            <small>
+            <small css={redirectText}>
               이메일을 받지 못했나요?{" "}
               <button
                 onClick={() => {
@@ -416,12 +418,38 @@ const codeAndTimer = css`
     right: 14px;
   }
 `;
+const redirectText = css`
+  display: block;
+  padding-top: 4px;
+  & > button {
+    cursor: pointer;
+    border: none;
+    background-color: rgba(0, 0, 0, 0);
+    margin-left: 10px;
+    font-weight: bold;
+    :hover {
+      text-decoration: underline;
+    }
+  }
+`;
 const alertWrapper = css`
   color: red;
   display: flex;
   align-items: center;
   padding-top: 3px;
-  height: 21px;
+  height: 24px;
+`;
+
+const confirmedWrapper = css`
+  color: #000;
+  display: flex;
+  align-items: center;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 10px;
+  margin-top: 14px;
+  background-color: #fff;
+  border-radius: 5px;
 `;
 const alertNickNameWrapper = css`
   display: flex;
@@ -440,7 +468,7 @@ const emailCodeWrapper = css`
   margin-top: 16px;
   border-radius: 5px;
   background-color: #acf0cb;
-  padding: 20px;
+  padding: 20px 20px 14px;
   visibility: isVisible;
   opacity: 1;
   transition: all 0.5s;

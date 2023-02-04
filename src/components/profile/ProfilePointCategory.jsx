@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { HiChevronRight, HiChevronLeft } from "react-icons/hi2";
+import { HiChevronUp, HiChevronDown } from "react-icons/hi2";
 import { useLocation, useParams } from "react-router-dom";
 import { getShareArticleByBoardId } from "../../api/share";
 
-const ProfilePointCategory = ({ sendCategory }) => {
+const ProfilePointCategory = ({ sendCategory, category }) => {
   const categoryType = ["전체", "적립", "차감"];
   const pathname = useLocation().pathname;
   const boardId = parseInt(useParams().boardId);
   const type = pathname.includes("share") ? 2 : 1;
   const [openCategory, setOpenCategory] = useState(false);
-  const [category, setCategory] = useState("카테고리");
+  // const [category, setCategory] = useState("전체");
   function onClickOpenCategory() {
     if (openCategory) {
       setOpenCategory(false);
@@ -21,7 +21,7 @@ const ProfilePointCategory = ({ sendCategory }) => {
   }
 
   function onClickCategoryType(type) {
-    setCategory(type);
+    sendCategory(type);
     setOpenCategory(false);
   }
 
@@ -33,7 +33,7 @@ const ProfilePointCategory = ({ sendCategory }) => {
     type === 2
       ? getShareArticleByBoardId(boardId).then((res) => {
           const data = res[0];
-          setCategory(data.category);
+          sendCategory(data.category);
           // console.log(data);
         })
       : null;
@@ -43,7 +43,7 @@ const ProfilePointCategory = ({ sendCategory }) => {
     <div css={categoryWrapper}>
       <span>{category}</span>
       <button onClick={onClickOpenCategory}>
-        {openCategory ? <HiChevronLeft size="18" /> : <HiChevronRight size="18" />}
+        {openCategory ? <HiChevronUp size="18" /> : <HiChevronDown size="18" />}
       </button>
       {openCategory ? (
         <div css={categoryTypeWrapper}>
@@ -61,29 +61,33 @@ const ProfilePointCategory = ({ sendCategory }) => {
 };
 
 const categoryWrapper = css`
+  position: relative;
   display: flex;
   flex-direction: row;
   border: 1px solid #ededed;
   border-radius: 5px;
-  width: 200px;
-  height: 55px;
+  width: 100px;
+  height: 35px;
   align-items: center;
   justify-content: center;
   background: #ffffff;
   position: relative;
-
   & > span {
+    width: 100%;
+    padding-left: 20px;
+    position: absolute;
     font-weight: bold;
-    color: #66dd9c;
-    margin-right: 20px;
+    font-size: 14px;
   }
 
   & > button {
+    position: absolute;
+    right: 4px;
     width: 30px;
     height: 30px;
     border-radius: 100px;
     background: #ffffff;
-    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+    /* box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); */
     border: none;
     cursor: pointer;
     display: flex;
@@ -94,38 +98,22 @@ const categoryWrapper = css`
 
 const categoryTypeWrapper = css`
   position: absolute;
-  width: 158px;
-  height: 300px;
-  left: 210px;
-  top: 0px;
+  width: 100px;
+  /* height: 300px; */
+  left: 0px;
+  top: 35px;
   background: #ffffff;
   border: 1px solid #ededed;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 5px;
-  overflow-y: scroll;
-
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    height: 30%;
-    background: #c4c4c4;
-    border-radius: 10px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: none;
-  }
-
   & > span {
     display: block;
     width: 100%;
-    height: 50px;
-    line-height: 50px;
+    height: 35px;
+    line-height: 35px;
     cursor: pointer;
-    text-align: center;
-
+    padding-left: 10px;
+    font-size: 14px;
     &:hover {
       color: #66dd9c;
       font-weight: bold;
