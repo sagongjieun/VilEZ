@@ -4,6 +4,10 @@ import android.app.Application
 import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.kakao.sdk.common.KakaoSdk
@@ -26,12 +30,14 @@ import java.net.HttpURLConnection
 import java.util.concurrent.TimeUnit
 
 private const val TAG = "빌리지_ApplicationClass"
-class ApplicationClass: Application() {
+class ApplicationClass: Application(), LifecycleObserver {
 
     val SERVER_URL = "http://i8d111.p.ssafy.io:8081"
 //    val SERVER_URL = "http://192.168.0.28:8086" // 로컬
 
     companion object {
+        var isForeground = false // 앱이 현재 포그라운드인지 확인 (FCM에서 사용)
+
         // 전역변수 문법을 통해 Retrofit 인스턴스를 앱 실행 시 1번만 생성하여 사용 (싱글톤 객체)
         lateinit var wRetrofit : Retrofit
         lateinit var retrofitUserService: RetrofitUserService
@@ -59,7 +65,7 @@ class ApplicationClass: Application() {
 
     override fun onCreate() {
         super.onCreate()
-
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         prefs = SharedPreferencesUtil(applicationContext)
 
         // Naver OAuth 초기화
@@ -194,5 +200,24 @@ class ApplicationClass: Application() {
         }
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun onAppBackgrounded() { isForeground = false }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onAppForegrounded() { isForeground = true}
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    fun onAppCreated() {  }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onAppResumed() {}
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onAppDestroyed() { }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun onAppPaused() {  }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
+    fun onAppAny() {  }
 }
