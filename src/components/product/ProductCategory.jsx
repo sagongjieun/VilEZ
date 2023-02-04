@@ -5,8 +5,22 @@ import { HiChevronRight, HiChevronLeft } from "react-icons/hi2";
 import { useLocation, useParams } from "react-router-dom";
 import { getShareArticleByBoardId } from "../../api/share";
 
-const ProductCategory = ({ isMain, sendCategory }) => {
+const ProductCategory = ({ isMain, sendCategory, list }) => {
   const categoryType = [
+    "화장품/미용",
+    "생활/건강",
+    "식품",
+    "스포츠/레저",
+    "가구/인테리어",
+    "디지털/가전",
+    "출산/육아",
+    "패션잡화",
+    "여가/생활편의",
+    "패션의류",
+    "도서",
+  ];
+  const categoryTypeList = [
+    "전체",
     "화장품/미용",
     "생활/건강",
     "식품",
@@ -23,7 +37,7 @@ const ProductCategory = ({ isMain, sendCategory }) => {
   const boardId = parseInt(useParams().boardId);
   const type = pathname.includes("share") ? 2 : 1;
   const [openCategory, setOpenCategory] = useState(false);
-  const [category, setCategory] = useState("카테고리");
+  const [category, setCategory] = useState(list === true ? "전체" : "카테고리");
   function onClickOpenCategory() {
     if (openCategory) {
       setOpenCategory(false);
@@ -59,11 +73,17 @@ const ProductCategory = ({ isMain, sendCategory }) => {
       </button>
       {openCategory ? (
         <div css={isMain ? categoryTypeWrapper : categoryTypeModifyWrapper}>
-          {categoryType.map((category, index) => (
-            <span key={index} onClick={() => onClickCategoryType(category)}>
-              {category}
-            </span>
-          ))}
+          {list
+            ? categoryTypeList.map((category, index) => (
+                <span key={index} onClick={() => onClickCategoryType(category)}>
+                  {category}
+                </span>
+              ))
+            : categoryType.map((category, index) => (
+                <span key={index} onClick={() => onClickCategoryType(category)}>
+                  {category}
+                </span>
+              ))}
         </div>
       ) : (
         <></>
