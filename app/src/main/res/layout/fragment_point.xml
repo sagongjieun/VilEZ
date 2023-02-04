@@ -10,55 +10,166 @@
         <variable
             name="title"
             type="String" />
+
+        <variable
+            name="pointSum"
+            type="Integer" />
     </data>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/white">
-
-                <ImageButton
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="start"
-                    android:background="@drawable/icon_back"
-                    android:onClick="@{fragment.onBackPressed}"
-                    android:scaleType="fitXY" />
-
-                <TextView
-                    android:id="@+id/toolbar_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@{title}"
-                    android:textSize="20sp" />
-            </com.google.android.material.appbar.MaterialToolbar>
-
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <FrameLayout
+        android:layout_height="wrap_content">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
-            tools:context=".ui.profile.PointFragment">
+            android:orientation="vertical">
 
-            <!-- TODO: Update blank fragment layout -->
-            <TextView
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appbar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/hello_blank_fragment" />
+                android:layout_height="wrap_content">
 
-        </FrameLayout>
-    </LinearLayout>
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/white">
+
+                    <ImageButton
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="start"
+                        android:background="@drawable/icon_back"
+                        android:onClick="@{fragment.onBackPressed}"
+                        android:scaleType="fitXY" />
+
+                    <TextView
+                        android:id="@+id/toolbar_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@{title}"
+                        android:textSize="20sp" />
+                </com.google.android.material.appbar.MaterialToolbar>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="나의 포인트 요약"
+                    android:textColor="@color/text_black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+                    <ProgressBar
+                        android:id="@+id/progressBar"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:layout_marginTop="20dp"
+                        android:max="500"
+                        android:progress="800"
+                        android:progressDrawable="@drawable/circular_graph" />
+
+                    <TextView
+                        android:id="@+id/tv_point_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignStart="@+id/progressBar"
+                        android:layout_alignTop="@+id/progressBar"
+                        android:layout_alignEnd="@+id/progressBar"
+                        android:layout_alignBottom="@+id/progressBar"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="3dp"
+                        android:layout_marginEnd="0dp"
+                        android:layout_marginBottom="-3dp"
+                        android:gravity="center"
+                        android:paddingTop="-50dp"
+                        android:text="보유 포인트"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignStart="@+id/progressBar"
+                        android:layout_alignTop="@+id/progressBar"
+                        android:layout_alignEnd="@+id/progressBar"
+                        android:layout_alignBottom="@+id/progressBar"
+                        android:paddingTop="50dp"
+                        android:gravity="center"
+                        android:text="300p"
+                        android:textColor="@color/main_1"
+                        android:textSize="20sp" />
+<!--                    android:text="@{pointSum+`p`}"-->
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:background="@drawable/main_circle"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="   보유 포인트   "/>
+                    <TextView
+                        android:id="@+id/tv_have_sum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="300p"
+                        android:textColor="@color/main_1"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:background="@drawable/grey_circle"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="   사용 포인트   "/>
+                    <TextView
+                        android:id="@+id/tv_used_sum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="150p"
+                        android:textColor="@color/main_1"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="공유 영수증"
+                android:textColor="@color/text_black"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_point_record"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </ScrollView>
+
 </layout>

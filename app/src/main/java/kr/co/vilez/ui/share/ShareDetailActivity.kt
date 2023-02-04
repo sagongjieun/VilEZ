@@ -64,9 +64,9 @@ class ShareDetailActivity : AppCompatActivity(){
     }
 
     private fun initMap() {
-        /*supportFragmentManager.beginTransaction()
+        supportFragmentManager.beginTransaction()
             .replace(R.id.share_detail_map, BoardMapFragment.newInstance(mapLat.toDouble(), mapLng.toDouble()))
-            .commit()*/
+            .commit()
     }
 
     fun clickBookmark(view: View) {
@@ -196,7 +196,7 @@ class ShareDetailActivity : AppCompatActivity(){
 
                 // 해당 글을 작성한 작성자 데이터 가져오기
                 val userResult = ApplicationClass.retrofitUserService.getUserDetail(result.data[0].userId).awaitResponse().body()
-                Log.d(TAG, "initData: @@@@@@@@공유글 작성자: ${result.data[0].userId}")
+                Log.d(TAG, "initData: @@@@@@@@공유글 작성자: ${result.data[0].userId}, ${result.data[0]}")
                 otherUserId = result.data[0].userId
                 checkWriter() // 작성자 유무 확인하기
                 if(userResult?.flag == "success") {

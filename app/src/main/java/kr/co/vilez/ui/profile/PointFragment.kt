@@ -41,11 +41,10 @@ class PointFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_point, container, false)
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_point, container, false)
 
         binding.fragment = this
+        binding.pointSum = 330
         initToolBar()
 
         return binding.root

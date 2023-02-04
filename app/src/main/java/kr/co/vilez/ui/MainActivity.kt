@@ -1,9 +1,16 @@
 package kr.co.vilez.ui
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,6 +21,7 @@ import kr.co.vilez.ui.chat.ChatlistFragment
 import kr.co.vilez.data.model.RoomlistData
 import kr.co.vilez.ui.share.ShareFragment
 import kr.co.vilez.ui.user.ProfileFragment
+import kr.co.vilez.ui.user.RegisterActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.DataState
 import kr.co.vilez.util.StompClient2
@@ -27,6 +35,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
+        checkPermissions()
 
         supportActionBar?.hide() // 액션바 숨김
         val target = intent.getStringExtra("target")
@@ -70,6 +80,22 @@ class MainActivity : AppCompatActivity() {
 
         StompClient2.stompClient.send("/room_list", data.toString()).subscribe()
     }
+
+    fun checkPermissions() {
+
+    }
+
+    // Declare the launcher at the top of your Activity/Fragment:
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // FCM SDK (and your app) can post notifications.
+        } else {
+            // TODO: Inform user that that your app will not show notifications.
+        }
+    }
+
 
     private fun changeFragment(name: String) {
         when(name) {

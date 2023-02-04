@@ -24,15 +24,12 @@ import kr.co.vilez.ui.share.ShareDetailActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.ChangeMultipartUtil
 import kr.co.vilez.util.PermissionUtil
-import kr.co.vilez.util.RESTShareBoardDetail
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.awaitResponse
 import java.io.File
 import java.text.SimpleDateFormat
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import java.util.*
 
 private const val TAG = "빌리지_ShareWriteActivity"
@@ -82,6 +79,7 @@ class ShareWriteActivity : AppCompatActivity() {
                 category = detail.category
                 lat = detail.hopeAreaLat
                 lng = detail.hopeAreaLng
+                place = detail.address
 
                 binding.etTitle.setText(detail.title)
                 binding.etContent.setText(detail.content)
@@ -254,29 +252,41 @@ class ShareWriteActivity : AppCompatActivity() {
         } else {
             Snackbar.make(view, "이제 글 POST/PUT 요청 시작하기", Snackbar.LENGTH_SHORT).show()
 
-            try {
-                // 이미지 리스트 multipart list에 넣기
-                makeMultiPartList()
 
-                val writeBoard = WriteBoard(category= category!!, startDay = sDay!!, endDay = eDay!!,
-                    hopeAreaLat = lat!!, hopeAreaLng = lng!!, title = binding.etTitle.text.toString(),
-                    content = binding.etContent.text.toString(), userId = ApplicationClass.prefs.getId())
-                /*val writeBoard = WriteBoard(category= category!!, startDay = sDay!!, endDay = eDay!!,
-                    hopeAreaLat = lat!!, hopeAreaLng = lng!!, title = binding.etTitle.text.toString(),
-                    content = binding.etContent.text.toString(), userId = ApplicationClass.prefs.getId(),
-                    address = place!!)*/
+            // 이미지 리스트 multipart list에 넣기
+            makeMultiPartList()
 
-                CoroutineScope(Dispatchers.Main).launch {
+            val writeBoard = WriteBoard(category= category!!, startDay = sDay!!, endDay = eDay!!,
+                hopeAreaLat = lat!!, hopeAreaLng = lng!!, title = binding.etTitle.text.toString(),
+                content = binding.etContent.text.toString(), userId = ApplicationClass.prefs.getId(),
+                address = place!!)
 
-                    val result = if(editBoardId != 0) { // 변경된 게시글 수정
-                        ApplicationClass.retrofitShareService.putShareBoard(writeBoard, imgMultiPart).awaitResponse().body()!!
-                    } else {// 새로운 게시글 추가
-                        ApplicationClass.retrofitShareService.postShareBoard(writeBoard, imgMultiPart).awaitResponse().body()!!
-                    }
+            CoroutineScope(Dispatchers.Main).launch {
+                if(editBoardId != 0) {
+                    Log.d(TAG, "savePost: 수정 시작합니닷 editBoardId: $editBoardId , 수정한 보드 정보 : $writeBoard")
+                    val result = ApplicationClass.retrofitShareService.putShareBoard(writeBoard, imgMultiPart).awaitResponse().body()
 
-                    Log.d(TAG, "savePost: 게시글 추가/수정 결과 : $result")
+                    Log.d(TAG, "savePost: 게시글 수정 결과 : $result")
                     if(result?.flag == "success") {
-                        Log.d(TAG, "savePost: 게시글 추가/수정 성공!")
+                        Log.d(TAG, "savePost: 게시글 수정 성공!")
+                        Toast.makeText(this@ShareWriteActivity, "게시글 수정을 완료했습니다.", Toast.LENGTH_SHORT).show()
+                        val boardId = result.data[0].id
+                        Log.d(TAG, "savePost: 새로 작성된 게시글 id: $boardId")
+
+                        // 게시글 상세보기로 이동
+                        val intent = Intent(this@ShareWriteActivity, ShareDetailActivity::class.java)
+                        intent.putExtra("boardId", boardId)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        Toast.makeText(this@ShareWriteActivity, "게시글 수정을 실패했습니다", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    val result = ApplicationClass.retrofitShareService.postShareBoard(writeBoard, imgMultiPart).awaitResponse().body()!!
+
+                    Log.d(TAG, "savePost: 게시글 추가 결과 : $result")
+                    if(result?.flag == "success") {
+                        Log.d(TAG, "savePost: 게시글 추가 성공!")
                         Toast.makeText(this@ShareWriteActivity, "게시글 작성을 완료했습니다.", Toast.LENGTH_SHORT).show()
                         val boardId = result.data[0].id
                         Log.d(TAG, "savePost: 새로 작성된 게시글 id: $boardId")
@@ -289,11 +299,11 @@ class ShareWriteActivity : AppCompatActivity() {
                     } else {
                         Toast.makeText(this@ShareWriteActivity, "게시글 작성을 실패했습니다", Toast.LENGTH_SHORT).show()
                     }
+
                 }
 
-            } catch (e: Exception) {
-                Toast.makeText(this@ShareWriteActivity, "게시글 작성을 실패했습니다", Toast.LENGTH_SHORT).show()
             }
+
         }
         view.isClickable = true
         view.isEnabled = true

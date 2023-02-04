@@ -9,5 +9,5 @@ data class WriteBoard(
     val startDay: String,
     val title: String,
     val userId: Int,
-//    val address: String,
+    val address: String,
 )

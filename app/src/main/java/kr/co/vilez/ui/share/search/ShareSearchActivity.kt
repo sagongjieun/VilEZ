@@ -18,4 +18,8 @@ class ShareSearchActivity : AppCompatActivity() {
     fun onBackPressed(view: View) {
         finish()
     }
+
+    fun search(view: View) {
+
+    }
 }

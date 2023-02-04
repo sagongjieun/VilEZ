@@ -53,10 +53,10 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
         var bundle = arguments as Bundle
         roomId = bundle.getInt("roomId")
         otherUserId = bundle.getInt("otherUserId")
-//        val mapView = MapView(context)
-//        binding.mapView.addView(mapView)
-//        subMap(mapView)
-//        mapView.setMapViewEventListener(this)
+        val mapView = MapView(context)
+        binding.mapView.addView(mapView)
+        subMap(mapView)
+        mapView.setMapViewEventListener(this)
         // Inflate the layout for this fragment
         return binding.root
     }

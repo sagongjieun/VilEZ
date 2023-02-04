@@ -3,5 +3,6 @@
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">maps.daum-img.net</domain>
         <domain includeSubdomains="true">i8d111.p.ssafy.io</domain>
+        <domain includeSubdomains="true">192.168.100.211</domain>
     </domain-config>
 </network-security-config>

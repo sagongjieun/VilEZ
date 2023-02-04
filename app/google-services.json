@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "842170251340",
+    "project_id": "vilez-4beed",
+    "storage_bucket": "vilez-4beed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:842170251340:android:689fca8d199514e4a8dce9",
+        "android_client_info": {
+          "package_name": "kr.co.vilez"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "842170251340-pdgd7gchv2o0094aijonb95vphsrs9ht.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kr.co.vilez",
+            "certificate_hash": "cedf8de5ea9ddd9a4bf1b7576e0d49d733148af3"
+          }
+        },
+        {
+          "client_id": "842170251340-h4dmlt2lcr7i9vqnhm0hd1l2kkrri858.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB682v601GCpddQ-b7wfeFEnCpnhtqU5Yk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "842170251340-h4dmlt2lcr7i9vqnhm0hd1l2kkrri858.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
