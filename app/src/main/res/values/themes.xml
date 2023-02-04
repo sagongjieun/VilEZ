@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Vilez" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.Vilez" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/main_1</item>
         <item name="colorPrimaryVariant">@color/main_2</item>
@@ -22,7 +22,7 @@
 <!--        <item name="android:checkboxStyle">@style/customCheckboxFontStyle</item>-->
     </style>
 
-    <style name="Theme.Vilez.NoActionBar" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.Vilez.NoActionBar" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/main_1</item>
         <item name="colorPrimaryVariant">@color/main_2</item>
