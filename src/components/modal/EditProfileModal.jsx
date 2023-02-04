@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useState, useEffect } from "react";
@@ -11,10 +11,8 @@ import ProfileImageSelect from "../profile/ProfileImageSelect";
 import { checkNickName } from "../../api/signup";
 import { getUserDetail } from "../../api/user";
 import { putUserPasswordNickName, putUserProfileImage } from "../../api/profile";
-// import DefaultProfile from "../../assets/default_profile.png"
 
-function EditProfile() {
-  const navigate = useNavigate();
+function EditProfile({ setIsEditProfileOpen }) {
   const userId = localStorage.getItem("id");
   const [userNickName, setUserNickName] = useState("");
   const [userProfileImage, setUserProfileImage] = useState("");
@@ -40,7 +38,7 @@ function EditProfile() {
   function onChangeNickName(event) {
     setNickName(event.target.value);
     setIsNickNameAvailable(false);
-    setIsNickNameAvailable(false);
+    setNickNameCheck("");
   }
   function onChangePassword(event) {
     setPassword(event.target.value);
@@ -55,16 +53,20 @@ function EditProfile() {
     setIsPasswordOpen(true);
   }
   function onClickNickNameCheck() {
-    checkNickName(nickName).then((response) => {
-      setNickNameCheck(response.text);
-      setIsNickNameAvailable(response.isNickNameAvailable);
-    });
+    if (!nickNameError && nickName) {
+      checkNickName(nickName).then((response) => {
+        setNickNameError("");
+        setNickNameCheck(response.text);
+        setIsNickNameAvailable(response.isNickNameAvailable);
+      });
+    }
   }
   function onClickVisible() {
     setIsVisible((prev) => !prev);
   }
   function onClickDeleteNickName() {
     setNickName("");
+    setNickNameCheck("");
     setIsNickNameOpen(false);
     console.log("here");
   }
@@ -78,29 +80,25 @@ function EditProfile() {
   function receiveImageList(imageList) {
     setImageList(imageList);
   }
+  function onClickCancle() {
+    setIsEditProfileOpen(false);
+  }
   function onSubmit() {
     if ((isNickNameAvailable || !isNickNameOpen) && !passwordError && !password2Error) {
       // const userIdJson = {userId : }
       const formData = new FormData();
       formData.append("image", imageList[0]);
       console.log(imageList[0], "******");
-      formData.append(
-        "userId",
-        new Blob(
-          [
-            JSON.stringify({
-              userId: userId,
-            }),
-          ],
-          { type: "application/json" }
-        )
-      );
+      formData.append("userId", new Blob([JSON.stringify(userId)], { type: "application/json" }));
       putUserProfileImage(formData);
       console.log(userId, nickName, password);
       putUserPasswordNickName(userId, nickName, password).then((response) => {
         console.log(response);
-        navigate("/profile/product");
+
+        setIsEditProfileOpen(false);
       });
+    } else if (!isNickNameAvailable) {
+      setNickNameError("중복 확인을 진행해주세요.");
     }
   }
   useEffect(() => {
@@ -276,7 +274,9 @@ function EditProfile() {
       </div>
       {/* 취소 / 완료 버튼 */}
       <div css={commitButtonWrapper}>
-        <button type="button">취소</button>
+        <button type="button" onClick={onClickCancle}>
+          취소
+        </button>
         <button type="button" onClick={onSubmit}>
           완료
         </button>

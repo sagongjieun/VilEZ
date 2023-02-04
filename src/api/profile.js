@@ -35,6 +35,16 @@ async function getUserShare(id) {
   }
 }
 
+async function getUserBookMark(userId) {
+  try {
+    const { data } = await jsonAxios.get(`/shareboard/bookmark/my/${userId}`);
+    if (data.flag === "success") return data.data;
+    else console.log("일치하는 북마크 정보가 없습니다.");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // PUT
 
 async function putUserPasswordNickName(id, nickName, password) {
@@ -57,4 +67,4 @@ async function putUserProfileImage(formData) {
   }
 }
 
-export { getUserDetail, getUserAsk, getUserShare, putUserPasswordNickName, putUserProfileImage };
+export { getUserDetail, getUserAsk, getUserShare, getUserBookMark, putUserPasswordNickName, putUserProfileImage };

@@ -1,24 +1,39 @@
 import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { getUserShare } from "../../api/profile";
-import ProductCardView from "../product/ProductCardView";
+import { getUserBookMark } from "../../api/profile";
+import ProfileCardView from "./ProfileCardView";
 
 // const id = localStorage.getItem("id");
 const userId = localStorage.getItem("id");
 const ProfileMyBookMark = (props) => {
   const [myShareBoard, setMyShareBoard] = useState([]);
   useEffect(() => {
-    getUserShare(userId).then((response) => {
+    getUserBookMark(userId).then((response) => {
       setMyShareBoard(response);
       props.setBookMarkDefaultPages(parseInt(response.length / 3) + 1);
     });
   }, []);
+  useEffect(() => {
+    props.setBookMarkDefaultPages(parseInt(myShareBoard.length / 3) + 1);
+  }, [myShareBoard]);
   return (
     <div css={cardWrapper(props.bookMarkPages)}>
-      {myShareBoard.map((share) => (
-        <ProductCardView key={share.id} />
-      ))}
+      {myShareBoard?.map((shareData) => {
+        const share = shareData.shareListDto;
+
+        return (
+          <div key={share.id}>
+            <ProfileCardView
+              title={share.title}
+              endDay={share.endDay}
+              startDay={share.startDay}
+              date={share.date}
+              thumbnail={share.list[0].path}
+            />
+          </div>
+        );
+      })}
     </div>
   );
 };

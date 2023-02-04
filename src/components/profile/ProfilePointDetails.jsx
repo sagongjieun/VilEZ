@@ -11,13 +11,33 @@ const ProfilePointDetails = () => {
   const [pointList, setPointList] = useState([]);
   const [filteredPointList, setFilteredPointList] = useState([]);
   const [category, setCategory] = useState("전체");
-  console.log(pointList, category);
+  // console.log(pointList, category);
   useEffect(() => {
     getPointListByUserId(userId).then((response) => {
-      setPointList(response[0]);
-      setFilteredPointList(response[0]);
+      setPointList([...response[0], { type: 1, increase: true, date: "2023-02-04", title: "가입 축하 포인트" }]);
+      setFilteredPointList([
+        ...response[0],
+        { type: 1, increase: true, date: "2023-02-04", title: "가입 축하 포인트" },
+      ]);
     });
   }, []);
+  useEffect(() => {
+    if (category === "전체") {
+      setFilteredPointList(pointList);
+    } else if (category === "적립") {
+      setFilteredPointList(
+        pointList.filter((data) => {
+          data.increase === true;
+        })
+      );
+    } else {
+      setFilteredPointList(
+        pointList.filter((data) => {
+          data.increase === false;
+        })
+      );
+    }
+  }, [category]);
 
   return (
     <div css={pointDetailsWrapper}>
@@ -27,7 +47,7 @@ const ProfilePointDetails = () => {
           <div>VilEZ</div>공유 영수증
         </h3>
         <div css={dropDownWrapper}>
-          <ProfilePointCategory sendCategory={setCategory} />
+          <ProfilePointCategory sendCategory={setCategory} category={category} />
         </div>
         <div css={pointListWrapper}>
           {filteredPointList.map((data, index) => (
@@ -53,7 +73,12 @@ const ProfilePointDetails = () => {
     </div>
   );
 };
-const dropDownWrapper = css``;
+const dropDownWrapper = css`
+  display: flex;
+  width: calc(100% - 40px);
+  justify-content: flex-end;
+  margin-top: 10px;
+`;
 const pointDetailsWrapper = css`
   width: 100%;
   margin-top: 50px;
@@ -87,12 +112,6 @@ const pointListWrapper = css`
   width: calc(100% - 80px);
   margin: 20px auto 0;
   overflow-y: scroll;
-  & ::-webkit-scrollbar-thumb {
-    height: 30%; /* 스크롤바의 길이 */
-    background: #217af4; /* 스크롤바의 색상 */
-
-    border-radius: 10px;
-  }
 `;
 const pointItem = css`
   height: 120px;

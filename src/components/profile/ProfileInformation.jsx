@@ -8,7 +8,7 @@ import ProfilePoint from "./ProfilePoint";
 import { getUserDetail } from "../../api/profile";
 // import { set } from "date-fns";
 
-const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen }) => {
+const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpen, isEditProfileOpen }) => {
   const id = localStorage.getItem("id");
   // const id = 28;
   const [area, setArea] = useState("동네를 설정해주세요.");
@@ -28,7 +28,7 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen }) => {
       setManner(response.manner);
       setPoint(response.point);
     });
-  }, []);
+  }, [isQrCodeOpen, isEditProfileOpen]);
   useEffect(() => {
     if (!area) {
       setArea("동네를 설정해주세요.");
