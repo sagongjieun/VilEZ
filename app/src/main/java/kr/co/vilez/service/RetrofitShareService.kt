@@ -23,6 +23,10 @@ interface RetrofitShareService {
     @GET("vilez/shareboard")
     fun boardSearchList(@Query(value = "cnt") cnt:Int, @Query(value = "low") low:Int,@Query(value = "high") high:Int, @Query(value =  "userId") id:Int, @Query(value ="word")word:String): Call<RestShare>
 
+    // 카테고리에 해당하는 게시글 리스트를 불러온다.
+    @GET("vilez/shareboard")
+    fun boardCategoryList(@Query(value = "cnt") cnt:Int, @Query(value = "low") low:Int,@Query(value = "high") high:Int, @Query(value =  "userId") id:Int, @Query(value ="category")category:String): Call<RestShare>
+
 
     // 해당 게시글의 상세 정보를 가져온다.
     @GET("/vilez/shareboard/detail/{boardId}")

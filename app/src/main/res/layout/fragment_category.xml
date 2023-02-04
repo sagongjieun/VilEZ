@@ -3,7 +3,7 @@
     <data>
         <variable
             name="fragment"
-            type="kr.co.vilez.ui.share.category.CategoryFragment" />
+            type="kr.co.vilez.ui.search.category.CategoryFragment" />
 
         <variable
             name="title"

@@ -1,4 +1,4 @@
-package kr.co.vilez.ui.share.category
+package kr.co.vilez.ui.search.category
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,7 +11,6 @@ class MenuCategoryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_menu_category)
-
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.frame_layout_menu_category, CategoryFragment())
