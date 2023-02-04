@@ -10,7 +10,7 @@ import { getUserDetail } from "../../api/profile";
 import { postAppointment } from "../../api/chat";
 
 // https://stackblitz.com/edit/react-signature-canvas-demo?file=index.js
-function OathMoal({ close, openLastConfirm }) {
+function OathRegistModal({ close, openLastConfirm }) {
   const canvasRef = useRef(null);
   const shareData = useRecoilValue(shareDataState);
 
@@ -25,18 +25,17 @@ function OathMoal({ close, openLastConfirm }) {
 
   function onClickCanvas() {
     const canvas = canvasRef.current.getTrimmedCanvas().toDataURL("image/png");
-    /** sign 담는 데이터 변경돼야 함 */
+
     const information = {
       boardId: shareData.boardId,
-      userId: shareData.shareUserId,
-      notUserId: shareData.notShareUserId,
+      shareUserId: shareData.shareUserId,
+      notShareUserId: shareData.notShareUserId,
       notShareSign: canvas,
     };
 
     postCanvas(information)
       .then((res) => {
         if (res) {
-          alert("서명이 완료되었습니다.");
           setIsCanvasAccept(true);
         }
       })
@@ -57,15 +56,13 @@ function OathMoal({ close, openLastConfirm }) {
   useEffect(() => {
     // 서명이 서버로 전송되고 나면 약속 확정
     if (isCanvasAccept) {
-      console.log("@@@@@@@@@@@@", shareData);
-
       postAppointment({
         boardId: shareData.boardId,
         appointmentStart: shareData.appointmentStart,
         appointmentEnd: shareData.appointmentEnd,
         shareUserId: shareData.shareUserId,
-        notShareUserId: parseInt(shareData.notShareUserId),
-        boardType: shareData.boardType,
+        notShareUserId: shareData.notShareUserId,
+        type: shareData.boardType,
       }).then((res) => {
         if (res) {
           close(false);
@@ -94,7 +91,6 @@ function OathMoal({ close, openLastConfirm }) {
         ) : (
           <></>
         )}
-
         <div css={signWrap}>
           {!isSign && <div css={signContentWrap}>여기에 서명을 해주세요</div>}
           <div>
@@ -145,7 +141,7 @@ const oathWrap = css`
   align-items: center;
   position: fixed;
   width: 500px;
-  height: 600px;
+  height: 625px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -216,4 +212,4 @@ const buttonWrap = css`
   }
 `;
 
-export default OathMoal;
+export default OathRegistModal;
