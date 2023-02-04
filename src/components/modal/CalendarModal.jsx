@@ -56,24 +56,6 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
     }
   }
 
-  // function onClickResetMeetDate() {
-  //   /** reset할 때는 startDay, endDay를 줄 필요가 없지 않은지 */
-  //   const body = {
-  //     boardId: boardId,
-  //     startDay: startDate,
-  //     endDay: endDate,
-  //     notShareUserId: shareData.notShareUserId,
-  //     shareUserId: shareData.shareUserId,
-  //     type: shareData.boardType,
-  //   };
-
-  //   putShareDate(body).then((res) => {
-  //     if (res) {
-  //       alert("공유 기간을 초기화하였습니다. 😀");
-  //     }
-  //   });
-  // }
-
   useEffect(() => {
     getAppointmentsByBoardId(boardId).then((res) => {
       // 해당 boardId에 이미 약속 정보가 있다면
@@ -151,7 +133,6 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
           <small>* 이미 공유중이거나 예약 완료된 기간 외로 설정해주세요.</small>
         )}
         <div css={buttonWrapper}>
-          {/* <MiddleWideButton text={"초기화"} onclick={onClickResetMeetDate} cancel={true} /> */}
           <MiddleWideButton text={"기간 확정"} onclick={onClickMakeMeetDate} />
         </div>
       </div>
@@ -252,7 +233,7 @@ const buttonWrapper = css`
   width: 320px;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   margin-top: 20px;
 
   & > button {

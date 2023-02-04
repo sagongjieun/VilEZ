@@ -30,9 +30,19 @@ async function getShareDate(boardId, notShareUserId, shareUserId, type) {
     const { data } = await jsonAxios.get(
       `/appointments/set/check?boardId=${boardId}&notShareUserId=${notShareUserId}&shareUserId=${shareUserId}&type=${type}`
     );
-    console.log("data", data);
 
     if (data.flag === "success") return data.data;
+    else console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getShareState(roomId) {
+  try {
+    const { data } = await jsonAxios.get(`/returns?roomId=${roomId}`);
+
+    if (data.flag === "success") return data.data[0];
     else console.log(data);
   } catch (error) {
     console.log(error);
@@ -65,4 +75,4 @@ async function putShareDate(body) {
   }
 }
 
-export { getAppointmentsByUserId, getPointListByUserId, getShareDate, postShareDate, putShareDate };
+export { getAppointmentsByUserId, getPointListByUserId, getShareDate, getShareState, postShareDate, putShareDate };

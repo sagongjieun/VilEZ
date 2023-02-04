@@ -15,7 +15,7 @@ import { getShareArticleByBoardId } from "../../api/share";
 import { getUserDetail } from "../../api/profile";
 import { useSetRecoilState } from "recoil";
 import { shareDataState } from "../../recoil/atom";
-import { getShareDate } from "../../api/appointment";
+import { getShareDate, getShareState } from "../../api/appointment";
 import DateFormat from "../common/DateFormat";
 
 const ProductChatting = () => {
@@ -46,6 +46,7 @@ const ProductChatting = () => {
   });
   const [confirmedStartDate, setConfirmedStartDate] = useState("");
   const [confirmedEndDate, setConfirmedEndDate] = useState("");
+  const [shareState, setShareState] = useState("");
 
   function onClickQuit() {
     setIsQuit(true);
@@ -99,6 +100,15 @@ const ProductChatting = () => {
           setShareUserId(res.shareUserId);
           setNotShareUserId(parseInt(loginUserId));
         }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    // 이 채팅방의 예약 상태 얻기
+    getShareState(parseInt(roomId))
+      .then((res) => {
+        setShareState(res.state);
       })
       .catch((error) => {
         console.log(error);
@@ -196,16 +206,41 @@ const ProductChatting = () => {
             otherUserId={otherUserId}
             otherUserNickname={boardDetail.otherUserNickname}
             shareUserId={shareUserId}
+            shareState={shareState}
           />
         )}
       </div>
       <div css={buttonWrapper}>
-        <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
-        {loginUserId == notShareUserId ? (
-          <MiddleWideButton text={"예약 확정"} onclick={onClickConfirm} />
-        ) : (
-          // 임시
-          <MiddleWideButton text={"공유자가 봐야할 버튼"} />
+        {/* state : 0 예약 후, -1 반납 후, -2 예약 후(예약 취소 : 확장), -3 예약 전 */}
+        {shareState == 0 && (
+          <>
+            {loginUserId == notShareUserId ? (
+              <MiddleWideButton text={"공유 종료"} />
+            ) : (
+              <MiddleWideButton text={"반납 확인"} />
+            )}
+          </>
+        )}
+        {shareState == -1 && (
+          <>
+            <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
+          </>
+        )}
+        {shareState == -2 && (
+          <>
+            <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
+            {loginUserId == notShareUserId ? (
+              <MiddleWideButton text={"예약 취소"} />
+            ) : (
+              <MiddleWideButton text={"예약 취소"} />
+            )}
+          </>
+        )}
+        {shareState == -3 && (
+          <>
+            <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
+            {loginUserId == notShareUserId ? <MiddleWideButton text={"예약 확정"} onclick={onClickConfirm} /> : <></>}
+          </>
         )}
       </div>
       <div>
@@ -266,8 +301,11 @@ const buttonWrapper = css`
   }
 
   & > button:nth-of-type(1) {
-    margin-right: 40px;
     background-color: #c82333;
+  }
+
+  & > button:nth-of-type(2) {
+    margin-left: 40px;
   }
 `;
 
