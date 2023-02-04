@@ -72,6 +72,21 @@ public class UserController {
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
 
+    @PutMapping("/locationMobile")
+    @ApiOperation(value = "유저의 주소를 update한다."
+            , notes = "code에 userId를 string으로 변환해서 넣기")
+    public ResponseEntity<?> saveLocationMobile(@RequestBody LocationDto locationDto){
+        http = new HttpVO();
+        try{
+            userService.saveLocationMobile(locationDto);
+            http.setFlag("success");
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
+
     @GetMapping("/check/{email}")
     @ApiOperation(value = "이메일을 이용한 사용자 회원가입 여부 확인 API"
     , notes = "email을 보내면 해당 email로 회원가입한 정보가 있으면 해당 email이 리턴 아니면 null이 리턴된다.")
