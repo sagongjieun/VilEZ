@@ -48,6 +48,14 @@ public class ShareDao  {
         return bookmarkDtos;
     }
 
+    public  List<BookmarkDto> userBookmarkList(int userId) {
+        List<BookmarkDto> bookmarkDtos = mongoTemplate.find(
+                Query.query(Criteria.where("userId").is(userId)),
+                BookmarkDto.class
+        );
+        return bookmarkDtos;
+    }
+
     public void insertBookmark(int boardId, int userId){
         BookmarkDto bookmarkDto = new BookmarkDto(boardId, userId);
         mongoTemplate.insert(bookmarkDto);

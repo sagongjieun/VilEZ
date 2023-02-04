@@ -18,5 +18,7 @@ public interface ShareMapper {
     void update(ShareDto shareDto) throws SQLException;
     ShareDto detailArticle(int boardId) throws SQLException;
     int insert(ShareDto shareDto) throws SQLException;
+
+    List<ShareListDto> getShareBoardList() throws SQLException;
 //    List<ShareListDto> getList() throws SQLException;
 }
