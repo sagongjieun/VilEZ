@@ -26,6 +26,9 @@ interface RetrofitUserService {
     @GET("/vilez/users/detail/{id}")
     fun getUserDetail(@Path("id") id:Int) : Call<RESTUserDetailResult>
 
+    @PUT("/vilez/users/locationMobile")
+    fun updateUserLocation(@Body user:User) : Call <RESTResult>
+
     // 헤더 직접 넣는 방법 이제 쓰지말기~
     /*@PUT("/vilez/users/modify")
     fun modifyUser(@Header("access_token")token:String?, @Body user:User) : Call<RESTResult>*/

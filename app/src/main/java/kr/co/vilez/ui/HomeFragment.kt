@@ -24,10 +24,12 @@ import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common.Companion.elapsedTime
 import retrofit2.awaitResponse
 import kr.co.vilez.ui.share.ShareDetailActivity
+import kr.co.vilez.ui.user.ProfileMenuActivity
 
 private const val TAG = "빌리지_HomeFragment"
+
 class HomeFragment : Fragment() {
-    private lateinit var binding:FragmentHomeBinding
+    private lateinit var binding: FragmentHomeBinding
     private lateinit var mainActivity: MainActivity
 
     private lateinit var shareAdapter: ShareListAdapter
@@ -48,8 +50,14 @@ class HomeFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         binding.fragment = this
 
+        if (ApplicationClass.prefs.getLng() != "0.0" && ApplicationClass.prefs.getLat() != "0.0") {
+            binding.userLocationValid = true
+            initData()
+        } else {
+            binding.userLocationValid = false
+        }
+
         initToolBar()
-        initData()
 
         return binding.root
     }
@@ -57,11 +65,13 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
     }
+
     @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.top_app_bar, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
+
     @Deprecated("Deprecated in Java")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -82,7 +92,6 @@ class HomeFragment : Fragment() {
     private fun initToolBar() {
         mainActivity.setSupportActionBar(binding.toolbar)
         mainActivity.supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
-        binding.title = "진평동"
     }
 
 
@@ -110,20 +119,25 @@ class HomeFragment : Fragment() {
         var max = 10;
         val lat = ApplicationClass.prefs.getLat();
         val lng = ApplicationClass.prefs.getLng();
-        Log.d(TAG,"$lat $lng")
+        Log.d(TAG, "$lat $lng")
         CoroutineScope(Dispatchers.Main).launch {
             val result =
-                ApplicationClass.retrofitShareService.boardList(num++, 0,max, ApplicationClass.prefs.getId()).awaitResponse().body();
+                ApplicationClass.retrofitShareService.boardList(
+                    num++,
+                    0,
+                    max,
+                    ApplicationClass.prefs.getId()
+                ).awaitResponse().body();
             Log.d(TAG, "onViewCreated: 데이터 불러오는중 result : $result")
-            if(result?.flag == "success") {
+            if (result?.flag == "success") {
                 Log.d(TAG, "initList: result: $result")
-                if(result.data.isEmpty()) {
+                if (result.data.isEmpty()) {
                     Log.d(TAG, "onViewCreated: 데이터 0개")
                     binding.tvNoArticleMsg.visibility = View.VISIBLE
                 }
-                for(data in result.data){
-                    var shareData:ShareData
-                    if(data.shareListDto.list.isEmpty()){
+                for (data in result.data) {
+                    var shareData: ShareData
+                    if (data.shareListDto.list.isEmpty()) {
 
                         shareData = ShareData(
                             data.shareListDto.id,
@@ -131,8 +145,8 @@ class HomeFragment : Fragment() {
                             data.shareListDto.title,
                             elapsedTime(data.shareListDto.date),
                             "구미",
-                            data.shareListDto.startDay+"~"
-                                    +data.shareListDto.endDay,
+                            data.shareListDto.startDay + "~"
+                                    + data.shareListDto.endDay,
                             Integer.toString(data.listCnt),
                             data.shareListDto.state,
                             data.shareListDto.userId
@@ -144,8 +158,8 @@ class HomeFragment : Fragment() {
                             data.shareListDto.title,
                             elapsedTime(data.shareListDto.date),
                             "구미",
-                            data.shareListDto.startDay+"~"
-                                    +data.shareListDto.endDay,
+                            data.shareListDto.startDay + "~"
+                                    + data.shareListDto.endDay,
                             Integer.toString(data.listCnt),
                             data.shareListDto.state,
                             data.shareListDto.userId
@@ -156,30 +170,35 @@ class HomeFragment : Fragment() {
 //                    Log.d(TAG, "initView: ${data.shareListDto.list[0].path}");
                 }
             }
-            shareAdapter.notifyItemInserted(index-1)
+            shareAdapter.notifyItemInserted(index - 1)
         }
 
-        binding.rvShareList.setOnScrollChangeListener{ v, scollX, scrollY,
-                                              oldScrollX, oldScrollY ->
-            if(!v.canScrollVertically(1)){
+        binding.rvShareList.setOnScrollChangeListener { v, scollX, scrollY,
+                                                        oldScrollX, oldScrollY ->
+            if (!v.canScrollVertically(1)) {
                 CoroutineScope(Dispatchers.Main).launch {
                     val result =
-                        ApplicationClass.retrofitShareService.boardList(num++, 0,max, ApplicationClass.prefs.getId()).awaitResponse()
+                        ApplicationClass.retrofitShareService.boardList(
+                            num++,
+                            0,
+                            max,
+                            ApplicationClass.prefs.getId()
+                        ).awaitResponse()
                             .body();
                     Log.d(TAG, "initView: ${result?.data}")
                     if (result?.data?.size != 0) {
                         if (result?.flag == "success") {
                             for (data in result.data) {
-                                var shareData:ShareData
-                                if(data.shareListDto.list.size == 0){
+                                var shareData: ShareData
+                                if (data.shareListDto.list.size == 0) {
                                     shareData = ShareData(
                                         data.shareListDto.id,
                                         "https://kr.object.ncloudstorage.com/vilez/basicProfile.png",
                                         data.shareListDto.title,
                                         elapsedTime(data.shareListDto.date),
                                         "구미",
-                                        data.shareListDto.startDay+"~"
-                                                +data.shareListDto.endDay,
+                                        data.shareListDto.startDay + "~"
+                                                + data.shareListDto.endDay,
                                         Integer.toString(data.listCnt),
                                         data.shareListDto.state,
                                         data.shareListDto.userId,
@@ -191,8 +210,8 @@ class HomeFragment : Fragment() {
                                         data.shareListDto.title,
                                         elapsedTime(data.shareListDto.date),
                                         "구미",
-                                        data.shareListDto.startDay+"~"
-                                                +data.shareListDto.endDay,
+                                        data.shareListDto.startDay + "~"
+                                                + data.shareListDto.endDay,
                                         Integer.toString(data.listCnt),
                                         data.shareListDto.state,
                                         data.shareListDto.userId,
@@ -216,6 +235,14 @@ class HomeFragment : Fragment() {
 
     fun moveToShareWriteActivity(view: View) {
         val intent = Intent(mainActivity, ShareWriteActivity::class.java)
+        mainActivity.startActivity(intent)
+    }
+
+    fun moveToUserLocationSetting(view: View) {
+        // 동네설정으로 넘어가는
+        val intent = Intent(mainActivity, ProfileMenuActivity::class.java)
+        intent.putExtra("fragment", "내 동네 설정")
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
         mainActivity.startActivity(intent)
     }
 }

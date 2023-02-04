@@ -15,15 +15,15 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kr.co.vilez.R
 import kr.co.vilez.data.model.Bookmark
 import kr.co.vilez.data.model.Chatroom
 import kr.co.vilez.data.model.RoomlistData
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.ActivityShareDetailBinding
+import kr.co.vilez.ui.IntroActivity
+import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.ui.chat.ChatRoomActivity
 import kr.co.vilez.ui.dialog.AlertDialogInterface
 import kr.co.vilez.ui.dialog.AlertDialogWithCallback
@@ -52,6 +52,8 @@ class ShareDetailActivity : AppCompatActivity(){
 
 
     private lateinit var mContext:FragmentActivity
+
+    private var isReady = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -226,7 +228,6 @@ class ShareDetailActivity : AppCompatActivity(){
                 val userResult = ApplicationClass.retrofitUserService.getUserDetail(result.data[0].userId).awaitResponse().body()
                 Log.d(TAG, "initData: @@@@@@@@공유글 작성자: ${result.data[0].userId}, ${result.data[0]}")
                 otherUserId = result.data[0].userId
-                checkWriter() // 작성자 유무 확인하기
                 if(userResult?.flag == "success") {
                     binding.writer = userResult.data[0]
                 } else {
@@ -242,7 +243,6 @@ class ShareDetailActivity : AppCompatActivity(){
 
                 } else {
                     binding.llPhoto.visibility = View.VISIBLE
-
 
                     mPager = binding.viewpager
                     //Adapter
@@ -290,10 +290,19 @@ class ShareDetailActivity : AppCompatActivity(){
                 finish()
             }
         }
-    }
+        isReady = true // 데이터 모두 준비된경우
+    } // end of initData()
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.board_top_app_menu, menu)
+        // 게시글 작성자가 나인지 확인한다
+        // 나인경우 수정하기, 삭제하기 버튼이 보여야 하고 채팅하기 버튼 비활성화
+        if(ApplicationClass.prefs.getId() != otherUserId) { // 내가 작성자가 아니면 수정/삭제 메뉴 없애기
+            Log.d(TAG, "checkWriter: 내가 작성자 아님/")
+            this@ShareDetailActivity.invalidateOptionsMenu()
+        } else {
+            Log.d(TAG, "checkWriter: 내가작성자")
+            menuInflater.inflate(R.menu.board_top_app_menu, menu)
+        }
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -327,18 +336,14 @@ class ShareDetailActivity : AppCompatActivity(){
         return super.onOptionsItemSelected(item)
     }
 
-
-    // 게시글 작성자가 나인지 확인한다
-    // 나인경우 수정하기, 삭제하기 버튼이 보여야 하고 채팅하기 버튼 비활성화
-    fun checkWriter() {
-        if(ApplicationClass.prefs.getId() != otherUserId) { // 내가 작성자가 아니면 수정/삭제 메뉴 없애기
-            Log.d(TAG, "checkWriter: 내가 작성자 아님/")
-            binding.toolbar.invalidateMenu()
-            binding.toolbar.menu.removeItem(R.id.board_edit)
-            binding.toolbar.menu.removeItem(R.id.board_remove)
-        } else {
-            Log.d(TAG, "checkWriter: 내가작성자")
+    override fun onStart() {
+        super.onStart()
+        GlobalScope.launch() {
+            while(!isReady) {
+                delay(500)
+            }
+            Log.d(TAG, "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@onStart: isReady = true")
+            binding.contentContainer.visibility = View.VISIBLE
         }
     }
-
 }
