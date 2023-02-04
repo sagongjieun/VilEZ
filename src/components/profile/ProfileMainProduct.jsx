@@ -60,6 +60,7 @@ const ProfileMainProduct = () => {
         <ProfileMyWriting
           section={section}
           writingPages={writingPages}
+          setWritingPages={setWritingPages}
           setWritingDefaultPages={setWritingDefaultPages}
           myWritingType={myWritingType}
         />

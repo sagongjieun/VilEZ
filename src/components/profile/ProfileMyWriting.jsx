@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, keyframes } from "@emotion/react";
 import { getUserShare, getUserAsk } from "../../api/profile";
 import ProfileCardView from "./ProfileCardView";
 
@@ -20,36 +20,53 @@ const ProfileMyWriting = (props) => {
     });
   }, []);
   useEffect(() => {
+    props.setWritingPages(1);
     if (props.myWritingType === 1) {
       setMyBoard(myShareBoard);
     } else {
       setMyBoard(myAskBoard);
-      console.log(myAskBoard);
     }
   }, [props.myWritingType]);
   useEffect(() => {
-    props.setWritingDefaultPages(parseInt(myBoard.length / 3) + 1);
+    props.setWritingDefaultPages(parseInt(myBoard?.length / 3) + 1);
   }, [myBoard]);
   return (
     <div css={cardWrapper(props.writingPages)}>
-      {myBoard?.map((share) => (
-        <div key={share.id}>
-          <ProfileCardView
-            title={share.title}
-            endDay={share.endDay}
-            startDay={share.startDay}
-            date={share.date}
-            thumbnail={share.list[0].path}
-          />
-        </div>
-      ))}
+      {myBoard?.length > 1 ? (
+        myBoard?.map((share) => (
+          <div key={share.id}>
+            <ProfileCardView
+              title={share.title}
+              endDay={share.endDay}
+              startDay={share.startDay}
+              date={share.date}
+              thumbnail={share.list[0].path}
+              boardType={props.myWritingType === 1 ? "share" : props.myWritingType === 2 ? "ask" : null}
+              boardId={share.id}
+            />
+          </div>
+        ))
+      ) : (
+        <div css={noCards}>작성한 글이 없습니다.</div>
+      )}
     </div>
   );
 };
 
+const appear = keyframes`
+  0% {
+    display: none;
+    opacity: 0;
+  }
+  100% {
+    display: block;
+    opacity: 1;
+  }
+`;
 const cardWrapper = (pages) => {
   const cards = pages * 3;
   return css`
+    position: relative;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     row-gap: 20px;
@@ -58,13 +75,25 @@ const cardWrapper = (pages) => {
     transition: all 0.5s;
     & > div {
       display: none;
+      opacity: 1;
       min-width: 300px;
+      transition: all 0.3s;
     }
     & > div:nth-of-type(-n + ${cards}) {
       display: block;
-      overflow: hidden;
+      animation-name: ${appear};
+      animation-duration: 0.3s;
+      transition: all 0.3s;
     }
   `;
 };
+
+const noCards = css`
+  position: absolute;
+  line-height: 200px;
+  height: 200px;
+  width: 100%;
+  text-align: center;
+`;
 
 export default ProfileMyWriting;

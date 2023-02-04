@@ -120,11 +120,15 @@ const Calendar = () => {
             <div key={i + 1}>
               <div css={date}>{i + 1}</div>
               <div css={toDo}>
-                {nowStartAppointments?.map((appoint) => (
-                  // const startDate = appoint.appointmentStart.slice(8, 10);
-                  // startDate == String(date) ? <div key={appoint.appointmentId}>{appoint.title}</div> : null;
-                  <div key={appoint.id}>{appoint.id}</div>
-                ))}
+                <div>하잉</div>
+                {nowStartAppointments?.map((appoint) => {
+                  console.log(appoint);
+                  return (
+                    // const startDate = appoint.appointmentStart.slice(8, 10);
+                    // startDate == String(date) ? <div key={appoint.appointmentId}>{appoint.title}</div> : null;
+                    <div key={appoint.id}>{appoint.id}</div>
+                  );
+                })}
               </div>
             </div>
           );

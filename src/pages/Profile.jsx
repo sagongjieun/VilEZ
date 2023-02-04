@@ -13,6 +13,7 @@ import Qrcode from "../components/modal/QrcodeModal";
 const Profile = () => {
   const [isQrCodeOpen, setIsQrCodeOpen] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [move, setMove] = useState("calc(50% - 55px)");
   return (
     <div css={ProfileWrapper}>
       <ProfileInformation
@@ -21,10 +22,31 @@ const Profile = () => {
         isQrCodeOpen={isQrCodeOpen}
         isEditProfileOpen={isEditProfileOpen}
       />
-      <div css={linkWrapper}>
-        <Link to={"/profile/calander"}>공유 캘린더</Link>
-        <Link to={"/profile/product"}>공유 목록</Link>
-        <Link to={"/profile/point"}>포인트 내역</Link>
+      <div css={linkWrapper(move)}>
+        <Link
+          to={"/profile/calander"}
+          onClick={() => {
+            setMove("-12px");
+          }}
+        >
+          공유 캘린더
+        </Link>
+        <Link
+          to={"/profile/product"}
+          onClick={() => {
+            setMove("calc(50% - 55px)");
+          }}
+        >
+          공유 목록
+        </Link>
+        <Link
+          to={"/profile/point"}
+          onClick={() => {
+            setMove("calc(100% - 98px)");
+          }}
+        >
+          포인트 내역
+        </Link>
       </div>
 
       <Routes>
@@ -55,13 +77,26 @@ const Profile = () => {
 const ProfileWrapper = css`
   margin: 60px 200px;
 `;
-const linkWrapper = css`
+const linkWrapper = (props) => css`
+  position: relative;
   display: flex;
   justify-content: space-between;
   width: calc(50%);
   min-width: 300px;
   margin: 30px auto;
   font-size: 18px;
+  ::after {
+    position: absolute;
+    bottom: -10px;
+    border-radius: 10px;
+    left: ${props};
+    display: block;
+    width: 110px;
+    height: 6px;
+    background-color: #66dd9c;
+    content: "";
+    transition: all 0.3s;
+  }
   & > a {
     color: #000;
   }

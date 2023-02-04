@@ -19,6 +19,7 @@ function Qrcode({ setIsQrCodeOpen }) {
   const [isVerified, setIsVerified] = useState(false);
   function onClickClose() {
     setIsQrCodeOpen(false);
+    deleteQrCode(qrCode.slice(42, qrCode.length));
   }
   function redirectQrCode() {
     getQrCode(userId).then((response) => {
@@ -57,7 +58,11 @@ function Qrcode({ setIsQrCodeOpen }) {
         동네 인증을 진행해주세요.
       </div>
       <div>
-        {isTimeOut ? <img src={DefaultQrcode} alt="Default QR Code" /> : <img src={qrCode} alt="QR Code" />}
+        {isTimeOut ? (
+          <img src={DefaultQrcode} alt="Default QR Code" />
+        ) : qrCode ? (
+          <img src={qrCode} alt="QR Code" />
+        ) : null}
         {isTimeOut ? (
           <div onClick={redirectQrCode}>
             <button type="button">
