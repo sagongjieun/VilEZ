@@ -8,6 +8,9 @@
         from appointment as a
         left join room as r
         on a.board_id = r.board_id and a.share_user_id = r.share_user_id and a.not_share_user_id = r.not_share_user_id
-        where r.state >= 0;
+        where r.id = #{roomId}
+        order by appointment_start desc
+        limit 1;
     </select>
+
 </mapper>
