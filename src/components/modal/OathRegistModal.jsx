@@ -8,6 +8,7 @@ import { useRecoilValue } from "recoil";
 import { shareDataState } from "../../recoil/atom";
 import { getUserDetail } from "../../api/profile";
 import { postAppointment } from "../../api/chat";
+import { putUserPoint } from "../../api/profile";
 
 // https://stackblitz.com/edit/react-signature-canvas-demo?file=index.js
 function OathRegistModal({ close, openLastConfirm }) {
@@ -67,6 +68,18 @@ function OathRegistModal({ close, openLastConfirm }) {
         if (res) {
           close(false);
           openLastConfirm(true);
+
+          // 공유자의 포인트 추가, 피공유자의 포인트 차감
+          putUserPoint({ userId: shareData.shareUserId, point: 30 }).then((res) => {
+            if (res) {
+              alert("공유를 통해 30포인트를 얻었어요 🙂");
+            }
+          });
+          putUserPoint({ userId: shareData.notShareUserId, point: -30 }).then((res) => {
+            if (res) {
+              alert("공유를 통해 30포인트가 차감됐어요.");
+            }
+          });
         }
       });
     }
@@ -93,11 +106,11 @@ function OathRegistModal({ close, openLastConfirm }) {
         )}
         <div css={signWrap}>
           {!isSign && <div css={signContentWrap}>여기에 서명을 해주세요</div>}
-          <div>
+          <div css={canvasWrapper}>
             <SignatureCanvas
               ref={canvasRef}
-              backgroundColor="#E8E8E8"
-              canvasProps={{ width: 200, height: 100 }}
+              backgroundColor="#ffffff"
+              canvasProps={{ width: 400, height: 200 }}
               onBegin={() => {
                 setIsSign(true);
               }}
@@ -141,7 +154,7 @@ const oathWrap = css`
   align-items: center;
   position: fixed;
   width: 500px;
-  height: 625px;
+  height: 720px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -149,6 +162,7 @@ const oathWrap = css`
   border-radius: 10px;
   padding: 20px;
   background-color: white;
+  overflow-y: scroll;
 
   & > h3 {
     margin-top: 30px;
@@ -182,6 +196,10 @@ const signWrap = css`
   justify-content: center;
   align-items: center;
   margin-bottom: 15px;
+`;
+
+const canvasWrapper = css`
+  border: 1px solid #e1e2e3;
 `;
 
 const signContentWrap = css`
