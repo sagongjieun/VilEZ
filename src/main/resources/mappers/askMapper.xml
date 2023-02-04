@@ -37,20 +37,18 @@
         )as a
         on b.id = a.board_id
         <where>
-            AND (CAST(hope_area_lat as Double) >= (#{areaLat} - 0.03) and (#{areaLat} + 0.03) >= CAST(hope_area_lat as Double))
-            and (CAST(hope_area_lng as Double) >= (#{areaLng} - 0.03) and (#{areaLng} + 0.03) >= CAST(hope_area_lng as Double))
+            (CAST(hope_area_lat as Double) >= ("36.1069806" - 0.03) and ("36.1069806" + 0.03) >= CAST(hope_area_lat as Double))
+            AND
+            (CAST(hope_area_lng as Double) >= ("128.4208005" - 0.03) and ("128.4208005" + 0.03) >= CAST(hope_area_lng as Double))
             <if test ="word != null and word != ''">
-                AND title like #{word}
-            </if>
-            <if test ="word != null and word != ''">
-                AND content like #{word}
+                AND (title like #{word} OR content like #{word})
             </if>
             <if test="category != null and category != ''">
                 AND category = #{category}
             </if>
         </where>
         LIMIT #{low}
-        OFFSET #{high}
+        OFFSET #{high};
     </select>
 
     <select id="loadMyAskList" parameterType="int" resultMap="ask">
