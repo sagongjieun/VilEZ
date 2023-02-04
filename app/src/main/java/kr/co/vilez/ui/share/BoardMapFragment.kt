@@ -83,7 +83,7 @@ class BoardMapFragment : Fragment(), MapView.MapViewEventListener, ReverseGeoCod
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initMap()
+        //initMap()
     }
 
     private fun initMap() {
@@ -116,21 +116,21 @@ class BoardMapFragment : Fragment(), MapView.MapViewEventListener, ReverseGeoCod
 
     override fun onResume() {
         super.onResume()
-        if(binding.flMap.contains(mapView)) {
-            try {
-                binding.flMap.removeView(mapView)
-                initMap()
-            } catch (e: java.lang.RuntimeException) {
-                Log.d(TAG, "onRestart: 맵뷰 초기화 에러 $e")
-            }
-        }
+//        if(binding.flMap.contains(mapView)) {
+//            try {
+//                binding.flMap.removeView(mapView)
+//                initMap()
+//            } catch (e: java.lang.RuntimeException) {
+//                Log.d(TAG, "onRestart: 맵뷰 초기화 에러 $e")
+//            }
+//        }
     }
 
     override fun onDetach() {
         Log.d(TAG, "onDetach: 맵 종료")
         super.onDetach()
-        if(binding.flMap.contains(mapView))
-            binding.flMap.removeView(mapView)
+//        if(binding.flMap.contains(mapView))
+//            binding.flMap.removeView(mapView)
     }
 
 

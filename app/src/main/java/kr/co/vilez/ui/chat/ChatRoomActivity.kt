@@ -65,6 +65,7 @@ class ChatRoomActivity : AppCompatActivity() {
             val result = ApplicationClass.retrofitChatService.getRoomData(roomId).awaitResponse().body()
             if (result?.flag == "success") {
                 room = result.data.get(0)
+                println(result.data.get(0))
                 CoroutineScope(Dispatchers.Main).launch {
                     val result = ApplicationClass.retrofitChatService.getAppointment(
                         room.boardId, room.notShareUserId,
@@ -79,7 +80,7 @@ class ChatRoomActivity : AppCompatActivity() {
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         initView()
-
+        initAcceptButton()
 //        kakaoMapFragment.arguments = bundle
 //
 //
@@ -144,6 +145,7 @@ class ChatRoomActivity : AppCompatActivity() {
                 now = 0
             }
         }
+
         chat_plus.setOnClickListener(View.OnClickListener {
             if(chat_plus.text == "X") {
                 chat_plus.text = "+"
@@ -223,6 +225,30 @@ class ChatRoomActivity : AppCompatActivity() {
             }
             // 선택된 날짜는 pickedDate 에 저장됨
         }
+    }
+    private fun initAcceptButton() {
+        binding.btnChatAccept.setOnClickListener {
+            CoroutineScope(Dispatchers.Main).launch {
+                val result = ApplicationClass.retrofitChatService.getAppointment(
+                    room.boardId, room.notShareUserId,
+                    room.shareUserId,room.type
+                ).awaitResponse().body()
+                if (result?.flag == "success") {
+                    setPeriodDto = result.data.get(0)
+                    if(setPeriodDto != null) {
+                        //todo
+                        println(setPeriodDto)
+                    } else {
+                        showDialog("공유자에게 날짜 설정을 요청하세요!!")
+                    }
+                }
+
+            }
+        }
+    }
+    fun showDialog(msg: String) {
+        var dialog = AlertDialog(this, msg)
+        dialog.show(this.supportFragmentManager, "Appoint")
     }
 
     fun onCalendarClick() { // 캘린더 버튼클릭
