@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -227,6 +228,39 @@ public class ShareServiceImpl implements ShareService{
         shareDao.deleteBookmark(boardId,userId);
         httpVO = new HttpVO();
         httpVO.setFlag("success");
+        return httpVO;
+    }
+
+    @Override
+    public HttpVO myBookmarkList(int userId) throws Exception{
+        httpVO = new HttpVO();
+        httpVO.setFlag("success");
+        List<TotalListShare> data = new ArrayList<>();
+
+        // 유저의 북마크 리스트를 불러온다.
+        // 전체 리스트에서 추출하는게 효율적이다 판단
+        // 몽고랑 join 할 방법은 없을까?
+
+        List<BookmarkDto> userBookmarkList = shareDao.userBookmarkList(userId);
+        HashSet<Integer> set = new HashSet<>();
+        for(BookmarkDto dto : userBookmarkList) {
+            set.add(dto.getBoardId());
+        }
+
+        List<ShareListDto> ShareListDtoList = shareMapper.getShareBoardList();
+        for(ShareListDto dto : ShareListDtoList) {
+            if(!set.contains(dto.getId())) continue;
+
+            TotalListShare totalListShare = new TotalListShare();
+
+            List<ImgPath> imgPaths = shareDao.list(dto.getId());
+            dto.setList(imgPaths);
+            totalListShare.setListCnt(shareDao.countBookMark(dto.getId()));
+            totalListShare.setShareListDto(dto);
+            data.add(totalListShare);
+        }
+        httpVO.setData(data);
+
         return httpVO;
     }
 

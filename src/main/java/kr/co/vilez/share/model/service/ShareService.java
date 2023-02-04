@@ -24,6 +24,8 @@ public interface ShareService {
 
     HttpVO deleteBookmark(int boardId, int userId);
 
+    HttpVO myBookmarkList(int userId) throws Exception;
+
 //    HttpVO boardList() throws Exception;
 
 }
