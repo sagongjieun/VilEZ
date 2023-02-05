@@ -76,7 +76,7 @@
         select id, user_id, category, title, content, date, hope_area_lat, hope_area_lng, start_day, end_day, nickname, area, manner,
         (
         CASE
-        WHEN now() >= a.appointment_start and a.appointment_end >= now() then 1
+        WHEN a.state >= 0 then 1
         else 0
         END
         ) as state

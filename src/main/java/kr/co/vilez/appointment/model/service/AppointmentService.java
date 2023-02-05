@@ -26,7 +26,7 @@ public interface AppointmentService {
     void cancelAppointment(int roomId, int reason) throws Exception;
 
     ////////////////////////포인트 관련 내용 //////////////////////////////////
-    List<PointVO> getPointList(int userId) throws Exception;
+    List<PointListVO> getPointList(int userId) throws Exception;
     void addPoint(AppointmentDto appointmentDto) throws Exception;
 
     //////////////////////// 예약관련 ////////////////////////////////////////
@@ -34,7 +34,7 @@ public interface AppointmentService {
     List<AppointmentDto> getMyAppointmentCalendarList(int userId) throws Exception;
     BoardStateVO getBoardState(int boardId, int type) throws Exception;
     List<TotalListVO> getMyAppointmentList(int userId) throws Exception;
-    List<AppointmentDto> getAppointmentList(int boardId) throws Exception;
+    List<AppointmentDto> getAppointmentList(int boardId, int type) throws Exception;
     void create(AppointmentDto appointmentDto) throws Exception;
     void deleteRoom(String roomId);
     void recvMsg(ChatVO chatVO);
