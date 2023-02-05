@@ -18,6 +18,7 @@ const ShareCancelAskModal = ({ close, otherUserNickname, roomId }) => {
     postShareCancelRequest({ roomId: roomId }).then((res) => {
       if (res) {
         setCheckShareCancelAsk(true); // stomp로 예약 취소 요청 메시지 전달
+        close(false);
       }
     });
   }

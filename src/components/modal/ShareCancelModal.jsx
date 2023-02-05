@@ -30,6 +30,8 @@ const ShareCancelModal = ({ close, otherUserNickname, roomId }) => {
               userId: loginUserId,
               point: -30,
             });
+
+            close(false); // 모달 닫기
           }
         });
       }
@@ -38,6 +40,7 @@ const ShareCancelModal = ({ close, otherUserNickname, roomId }) => {
         deleteAppointment(1, roomId).then((res) => {
           if (res) {
             setCheckShareCancel(true); // stomp로 전달하기
+            close(false); // 모달 닫기
           }
         });
       }
