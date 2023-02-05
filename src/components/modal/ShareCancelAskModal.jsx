@@ -2,8 +2,12 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import MiddleWideButton from "../button/MiddleWideButton";
+import { useSetRecoilState } from "recoil";
+import { checkShareCancelAskState } from "../../recoil/atom";
 
 const ShareCancelAskModal = ({ close, otherUserNickname }) => {
+  const setCheckShareCancelAsk = useSetRecoilState(checkShareCancelAskState);
+
   function onCloseModal() {
     close(false);
   }
@@ -12,6 +16,7 @@ const ShareCancelAskModal = ({ close, otherUserNickname }) => {
     // 예약 취소 요청 보내기
     // stomp로 전달하기
     // 포인트 -30 깎기
+    setCheckShareCancelAsk(true);
   }
 
   return (
