@@ -31,18 +31,41 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final ShareDao shareDao;
 
     @Override
-    public List<PointVO> getPointList(int userId) throws Exception {
-        List<PointVO> list = appointmentDao.getPointList(userId);
+    public void cancelAppointment(int roomId, int reason) throws Exception {
+        // roomId 를 통해 appointment 내역을 가져온다
+        RoomDto roomDto = appointmentMapper.getBoard(roomId);
 
-        for(PointVO pointVO : list){
-            if(pointVO.getShareUserId() == userId){
-                pointVO.setIncrease(true);
-            } else{
-                pointVO.setIncrease(false);
-            }
+        // 예약내역을 -2로 바꾼다.
+        AppointmentDto appointmentDto = new AppointmentDto();
+        appointmentDto.setBoardId(roomDto.getBoardId());
+        appointmentDto.setShareUserId(roomDto.getShareUserId());
+        appointmentDto.setNotShareUserId(roomDto.getNotShareUserId());
+        appointmentDto.setType(roomDto.getType());
+        appointmentMapper.cancelAppointment(appointmentDto);
+
+        // 공유자의 포인트를 삭감한다.
+        PointVO pointVO = new PointVO();
+        pointVO.setBoardId(appointmentDto.getBoardId());
+        pointVO.setUserId(appointmentDto.getShareUserId());
+        pointVO.setPoint(-10);
+        pointVO.setType(appointmentDto.getType());
+        pointVO.setDate(appointmentDto.getDate());
+        // 내역 저장
+        appointmentDao.savePoint(pointVO);
+        // 피공유자 포인트 변동
+        appointmentMapper.changePoint(pointVO);
+
+        // reason이 1번인 경우 공유자의 의해 예약이 취소되는 경우로 공유자 포인트 삭감
+        // 피공유자 포인트 되돌리기를 진행한다.
+        if(reason == 1){
+            pointVO.setUserId(appointmentDto.getNotShareUserId());
+            pointVO.setPoint(10);
+            // 내역 저장
+            appointmentDao.savePoint(pointVO);
+            // 피공유자 포인트 변동
+            appointmentMapper.changePoint(pointVO);
         }
 
-        return list;
     }
 
     @Override
@@ -68,26 +91,32 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     ///////////////////////////////포인트 관련 내용 ///////////////////////////////
     @Override
-    public void addPoint(AppointmentDto appointmentDto) throws Exception {
-        PointVO pointVO = new PointVO();
+    public List<PointVO> getPointList(int userId) throws Exception {
+        return appointmentDao.getPointList(userId);
+    }
 
-        pointVO.setShareUserId(appointmentDto.getShareUserId());
-        pointVO.setNotShareUserId(appointmentDto.getNotShareUserId());
+    @Override
+    public void addPoint(AppointmentDto appointmentDto) throws Exception {
+        // 공유자 포인트 내역을 저장하고 포인트를 바꾸는 로직
+        PointVO pointVO = new PointVO();
         pointVO.setBoardId(appointmentDto.getBoardId());
-        pointVO.setTitle(appointmentDto.getTitle());
+        pointVO.setUserId(appointmentDto.getShareUserId());
+        pointVO.setPoint(10);
+        pointVO.setType(appointmentDto.getType());
         pointVO.setDate(appointmentDto.getDate());
-        pointVO.setType(1);
-        // 1은 정상적인 예약에 의한 포인트 삭감
-        // 2는 반납 기한을 넘어선 벌금 포인트 삭감
-        
         // 내역 저장
         appointmentDao.savePoint(pointVO);
 
-        // 공유자 포인트 추가
-        appointmentMapper.increasePoint(pointVO);
+        // 공유자 포인트 변동
+        appointmentMapper.changePoint(pointVO);
 
-        // 피공유자 포인트 삭감
-        appointmentMapper.decreasePoint(pointVO);
+        // 공유자 포인트 내역을 저장하고 포인트를 바꾸는 로직
+        pointVO.setUserId(appointmentDto.getNotShareUserId());
+        pointVO.setPoint(-10);
+        // 내역 저장
+        appointmentDao.savePoint(pointVO);
+        // 피공유자 포인트 변동
+        appointmentMapper.changePoint(pointVO);
     }
 
     ///////////////////////////////예약 관련 내용////////////////////////////////

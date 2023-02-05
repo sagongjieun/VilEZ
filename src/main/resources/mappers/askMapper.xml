@@ -22,7 +22,7 @@
     </resultMap>
 
     <select id="loadAskList" resultMap="ask">
-        select b.id, b.category, b.hope_area_lng, b.hope_area_lat, b.title, b.address, b.start_day, b.end_day, b.date, b.state,
+        select b.user_id, b.nickname, b.id, b.category, b.hope_area_lng, b.hope_area_lat, b.title, b.address, b.start_day, b.end_day, b.date, b.state,
                (
                     case
                        when a.type = 1 then "요청완료"

@@ -15,10 +15,9 @@ public interface AppointmentService {
     SetPeriodDto check(int boardId, int shareUserId, int notShareUserId, int type) throws Exception;
     void setPeriod(SetPeriodDto setPeriodDto) throws Exception;
 
+    void cancelAppointment(int roomId, int reason) throws Exception;
 
     ////////////////////////포인트 관련 내용 //////////////////////////////////
-
-
     List<PointVO> getPointList(int userId) throws Exception;
     void addPoint(AppointmentDto appointmentDto) throws Exception;
 

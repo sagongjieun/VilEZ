@@ -12,10 +12,8 @@ import java.util.List;
 
 @Mapper
 public interface AppointmentMapper {
-
-    void decreasePoint(PointVO pointVO) throws Exception;
-
-    void increasePoint(PointVO pointVO) throws Exception;
+    void cancelAppointment(AppointmentDto appointmentDto) throws Exception;
+    void changePoint(PointVO pointVO) throws Exception;
 
     //////////////////////////////////////////////////////////
     List<MyAppointListDto> getGiveListShare(int userId) throws Exception;

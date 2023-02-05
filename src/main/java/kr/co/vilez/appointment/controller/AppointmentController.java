@@ -31,12 +31,32 @@ import java.util.List;
 @Slf4j
 @Api("약속 관련 API 목록")
 public class AppointmentController {
-
     private final FCMDataService fcmDataService;
-
     private final AppointmentService appointmentService;
     private final UserService userService;
     private final SimpMessageSendingOperations sendingOperations;
+
+    @DeleteMapping()
+    @ApiOperation(value = "예약을 취소하는 API",
+    notes = "-- arg --" +
+            "\n\t roomId" +
+            "\n\t type : ask(1) OR share(2)" +
+            "\n\t reason : by share User(1) OR by Not Share User(2)")
+    public ResponseEntity<?> cancelAppointment(@RequestParam int roomId,
+                                               @RequestParam int reason){
+        HttpVO http = new HttpVO();
+
+        try{
+            appointmentService.cancelAppointment(roomId,reason);
+            http.setFlag("success");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
+
+
     @GetMapping("/my/point")
     @ApiOperation(value = "나의 포인트 목록을 보여주는 정보를 출력하는 API",
             notes = "\n\t type = 1 정상적인 포인트 추가/삭감" +
@@ -249,8 +269,8 @@ public class AppointmentController {
             appointmentService.create(appointmentDto);
             System.out.println("create appointment success");
 
-//            appointmentService.addPoint(appointmentDto);
-//            System.out.println("point decrease/increase success");
+            appointmentService.addPoint(appointmentDto);
+            System.out.println("point decrease/increase success");
 
             http.setFlag("success");
         } catch (Exception e){
