@@ -14,7 +14,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { getAskArticleList } from "../../api/ask";
 
 const ProductList = () => {
-  const [isAll, setIsAll] = useState(true);
+  // isAll이 새로고침시마다 바껴있어야 공유가능 물품 조건 유지 가능
+  const [isAll, setIsAll] = useState(localStorage.getItem("isAll") === "false" ? false : true);
+  useEffect(() => {
+    localStorage.setItem("isAll", isAll);
+  }, [isAll]);
+
   const [category, setCategory] = useState("");
   const [search, setSearch] = useState("");
   const [getArticle, setArticles] = useState([]);
@@ -54,44 +59,26 @@ const ProductList = () => {
   }, [cnt, getArticle]);
 
   // 카테고리 변경 후 스크롤을 내렸다가 ,다른 카테고리를 선택했을 때 이전 카테고리 데이터가 쌓여 나옴
-  useEffect(() => {
-    // Update the isMounted variable to true to make sure the component is still mounted
 
-    urlId === 1
-      ? // 요청
-        getAskArticleList("", "", categoryToUse, cnt, 15, 0, 1, "").then((res) => {
-          const data = res;
-          setOriginalArticle(data[0]);
-          setArticles(data[0]);
-          setList("물품 요청 목록");
-        })
-      : // 공유
-        getShareArticleList("", "", categoryToUse, cnt, 15, 0, 1, "").then((res) => {
-          const data = res;
-          setOriginalArticle(data);
-          setArticles(data);
-          setList("물품 공유 목록");
-        });
-  }, [categoryToUse]);
   useEffect(() => {
     // Check if the component is still mounted before making the API call
 
     urlId === 1
       ? // 요청
-        getAskArticleList("", "", categoryToUse, cnt, 15, 0, 1, "").then((res) => {
+        getAskArticleList("", "", categoryToUse, cnt, 15, 0, 1, search).then((res) => {
           const data = res;
           setOriginalArticle([...originalArticle, ...data[0]]);
           setArticles([...originalArticle, ...data[0]]);
           setList("물품 요청 목록");
         })
       : // 공유
-        getShareArticleList("", "", categoryToUse, cnt, 15, 0, 1, "").then((res) => {
+        getShareArticleList("", "", categoryToUse, cnt, 15, 0, 1, search).then((res) => {
           const data = res;
           setOriginalArticle([...originalArticle, ...data]);
           setArticles([...originalArticle, ...data]);
           setList("물품 공유 목록");
         });
-  }, [search, pathname, isAll, cnt]);
+  }, [search, pathname, isAll, cnt, categoryToUse]);
 
   // 공유가능 목록 보기위해 작성한 useEffect 0일때 공유가능, 1일때 공유 중
   useEffect(() => {
@@ -109,7 +96,7 @@ const ProductList = () => {
         setArticles(tempShareArticle);
       }
     }
-  }, [pathname, isAll, categoryToUse, cnt]);
+  }, [pathname, isAll, categoryToUse, cnt, search]);
 
   // props에서 받아온 값이 newCategory에 들어감
   // setCategory에 넘어온 값을 입력
@@ -120,14 +107,26 @@ const ProductList = () => {
   }
   function onClickSeePossible() {
     setIsAll(!isAll);
+    setCnt(0);
+    setOriginalArticle([]);
   }
   // 목록 검색창
   function onSubmitSearch(event) {
     event.preventDefault();
+
     onChangeSearch(search);
+    setOriginalArticle([]);
+    setCnt(0);
   }
+
+  // 검색후, 지웠을 때 이전 검색이 리스트에 쌓이는 것을 방지
+  // 스크롤이 내려가서 cnt가 변했을 때, 검색을 하면 그 페이지를 기준으로 해서 문제를 해결함
   function onChangeSearch(event) {
     console.log(event);
+
+    setSearch(event);
+    setOriginalArticle([]);
+    setCnt(0);
     urlId === 2
       ? getShareArticleList("", "", categoryToUse, cnt, 15, 0, 1, search).then((res) => {
           const data = res;
@@ -141,7 +140,6 @@ const ProductList = () => {
           setArticles(data);
           setList("물품 공유 목록");
         });
-    setSearch(event);
   }
   function onClicktoRegist() {
     navigate("/product/regist");
