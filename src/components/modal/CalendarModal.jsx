@@ -7,13 +7,14 @@ import MiddleWideButton from "../button/MiddleWideButton";
 import { GrClose } from "react-icons/gr";
 import { ko } from "date-fns/locale";
 import { getAppointmentsByBoardId } from "../../api/chat";
-import { useRecoilState } from "recoil";
-import { shareDataState } from "../../recoil/atom";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { shareDataState, checkShareDateState } from "../../recoil/atom";
 import DateFormat from "../common/DateFormat";
 import { putShareDate } from "../../api/appointment";
 
 const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
   const [shareData, setShareData] = useRecoilState(shareDataState);
+  const setCheckShareDate = useSetRecoilState(checkShareDateState);
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -47,6 +48,8 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
       putShareDate(body).then((res) => {
         if (res) {
           alert("공유 기간을 설정하였습니다. 😀");
+          setCheckShareDate(true);
+          onClickCloseModal();
         }
       });
 

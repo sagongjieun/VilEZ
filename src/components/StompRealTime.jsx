@@ -12,22 +12,26 @@ import { getLatestMapLocation, getChatHistory } from "../api/chat";
 import CalendarModal from "./modal/CalendarModal";
 import { getOath } from "../api/oath";
 import OathModal from "./modal/OathModal";
+import { useRecoilState } from "recoil";
+import {
+  checkShareDateState,
+  checkAppointmentState,
+  checkShareCancelAskState,
+  checkShareCancelState,
+  checkShareReturnState,
+} from "../recoil/atom";
 
 let client;
 
-const StompRealTime = ({
-  roomId,
-  boardId,
-  boardType,
-  otherUserId,
-  otherUserNickname,
-  shareUserId,
-  // notShareUserId,
-  shareState,
-}) => {
+const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareUserId, shareState }) => {
   const scrollRef = useRef();
   const myUserId = localStorage.getItem("id");
   const chatRoomId = roomId;
+  const [checkShareDate, setCheckShareDate] = useRecoilState(checkShareDateState);
+  const [checkAppointment, setCheckAppointment] = useRecoilState(checkAppointmentState);
+  const [checkShareCancelAsk, setCheckShareCancelAsk] = useRecoilState(checkShareCancelAskState);
+  const [checkShareCancel, setCheckShareCancel] = useRecoilState(checkShareCancelState);
+  const [checkShareReturn, setCheckShareReturn] = useRecoilState(checkShareReturnState);
 
   const [chatMessage, setChatMessage] = useState(""); // 클라이언트가 입력하는 메시지
   const [showingMessage, setShowingMessage] = useState([]); // 서버로부터 받는 메시지
@@ -62,11 +66,10 @@ const StompRealTime = ({
 
     const sendMessage = {
       roomId: chatRoomId,
-      boardId: boardId,
-      type: boardType,
       fromUserId: myUserId,
       toUserId: otherUserId,
       content: chatMessage,
+      system: false,
       time: new Date().getTime(),
     };
 
@@ -122,6 +125,7 @@ const StompRealTime = ({
 
   useEffect(() => {
     if (chatRoomId) {
+      console.log(chatRoomId);
       /** 채팅방의 마지막 공유지도 장소 받기 */
       getLatestMapLocation(chatRoomId).then((res) => {
         // 마지막 장소가 있다면
@@ -144,7 +148,24 @@ const StompRealTime = ({
 
       /** 소켓에 연결되면 채팅 내역 보여주기 */
       getChatHistory(chatRoomId).then((res) => {
-        setShowingMessage(res);
+        if (res.length > 0) {
+          setShowingMessage(res);
+        }
+        // 처음 입장하면 시스템 메시지 보내기
+        else {
+          const sendMessage = {
+            roomId: chatRoomId,
+            fromUserId: myUserId,
+            toUserId: otherUserId,
+            content: "대화를 시작해보세요 😊",
+            system: true,
+            time: new Date().getTime(),
+          };
+
+          setShowingMessage([sendMessage]);
+
+          client.send("/recvchat", {}, JSON.stringify(sendMessage));
+        }
       });
 
       // const sockJS = new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
@@ -196,6 +217,101 @@ const StompRealTime = ({
     }
   }, [shareState]);
 
+  // 시스템 메시지
+  useEffect(() => {
+    // 공유 기간 설정
+    if (checkShareDate) {
+      const sendMessage = {
+        roomId: chatRoomId,
+        fromUserId: myUserId,
+        toUserId: otherUserId,
+        content: "공유자가 공유 기간을 설정했어요",
+        system: true,
+        time: new Date().getTime(),
+      };
+
+      setShowingMessage((prev) => [...prev, sendMessage]);
+
+      client.send("/recvchat", {}, JSON.stringify(sendMessage));
+
+      setCheckShareDate(false);
+    }
+
+    // 예약 확정
+    if (checkAppointment) {
+      const sendMessage = {
+        roomId: chatRoomId,
+        fromUserId: myUserId,
+        toUserId: otherUserId,
+        content: "예약이 확정됐어요 🙂",
+        system: true,
+        time: new Date().getTime(),
+      };
+
+      setShowingMessage((prev) => [...prev, sendMessage]);
+
+      client.send("/recvchat", {}, JSON.stringify(sendMessage));
+
+      setCheckAppointment(false);
+    }
+
+    // 예약 취소 요청
+    if (checkShareCancelAsk) {
+      const sendMessage = {
+        roomId: chatRoomId,
+        fromUserId: myUserId,
+        toUserId: otherUserId,
+        content: "피공유자가 예약 취소를 요청했어요",
+        system: true,
+        time: new Date().getTime(),
+      };
+
+      setShowingMessage((prev) => [...prev, sendMessage]);
+
+      client.send("/recvchat", {}, JSON.stringify(sendMessage));
+
+      setCheckShareCancelAsk(false);
+    }
+
+    // 예약 취소 -> 대화 종료
+    if (checkShareCancel) {
+      const sendMessage = {
+        roomId: chatRoomId,
+        fromUserId: myUserId,
+        toUserId: otherUserId,
+        content: "예약이 취소됐어요",
+        system: true,
+        time: new Date().getTime(),
+      };
+
+      setShowingMessage((prev) => [...prev, sendMessage]);
+
+      client.send("/recvchat", {}, JSON.stringify(sendMessage));
+
+      setCheckShareCancel(false);
+    }
+
+    // 반납 확인 -> 대화 종료
+    if (checkShareReturn) {
+      const sendMessage = {
+        roomId: chatRoomId,
+        fromUserId: myUserId,
+        toUserId: otherUserId,
+        content: "반납이 확인됐어요 🙂",
+        system: true,
+        time: new Date().getTime(),
+      };
+
+      setShowingMessage((prev) => [...prev, sendMessage]);
+
+      client.send("/recvchat", {}, JSON.stringify(sendMessage));
+
+      setCheckShareReturn(false);
+    }
+
+    // 상대방이 채팅방 나감 -> 대화 종료
+  }, [checkShareDate, checkAppointment, checkShareCancelAsk, checkShareCancel, checkShareReturn]);
+
   return (
     <>
       <div css={mapWrapper}>
@@ -222,22 +338,30 @@ const StompRealTime = ({
         <div css={chatWrapper}>
           <div ref={scrollRef}>
             {showingMessage.map((message, index) => {
-              if (message.fromUserId == myUserId) {
+              if (message.system) {
                 return (
-                  <div key={index} css={myMessageWrapper}>
+                  <div key={index} css={systemMessageWrapper}>
                     <span>{message.content}</span>
                   </div>
                 );
               } else {
-                return (
-                  <div key={index} css={yourMessageWrapper}>
-                    <img src={baseProfile} />
-                    <div>
-                      <small>{otherUserNickname}</small>
+                if (message.fromUserId == myUserId) {
+                  return (
+                    <div key={index} css={myMessageWrapper}>
                       <span>{message.content}</span>
                     </div>
-                  </div>
-                );
+                  );
+                } else {
+                  return (
+                    <div key={index} css={yourMessageWrapper}>
+                      <img src={baseProfile} />
+                      <div>
+                        <small>{otherUserNickname}</small>
+                        <span>{message.content}</span>
+                      </div>
+                    </div>
+                  );
+                }
               }
             })}
           </div>
@@ -331,6 +455,15 @@ const chatWrapper = css`
       color: #66dd9c;
       cursor: pointer;
     }
+  }
+`;
+
+const systemMessageWrapper = css`
+  text-align: center;
+  margin-bottom: 10px;
+
+  & > span {
+    font-size: 13px;
   }
 `;
 

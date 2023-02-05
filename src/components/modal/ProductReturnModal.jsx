@@ -4,8 +4,12 @@ import { css } from "@emotion/react";
 import MiddleWideButton from "../button/MiddleWideButton";
 import { postMannerPoint } from "../../api/user";
 import { postShareReturnState } from "../../api/appointment";
+import { useSetRecoilState } from "recoil";
+import { checkShareReturnState } from "../../recoil/atom";
 
 const ProductReturnModal = ({ close, otherUserNickname, otherUserId, roomId }) => {
+  const setCheckShareReturn = useSetRecoilState(checkShareReturnState);
+
   const [mannerPoint, setMannerPoint] = useState(2);
 
   function onClickCloseModal() {
@@ -51,6 +55,7 @@ const ProductReturnModal = ({ close, otherUserNickname, otherUserId, roomId }) =
             .then((res) => {
               if (res) {
                 alert("물품 반납이 정상적으로 접수되었습니다. 🙂");
+                setCheckShareReturn(true);
                 close(false);
               }
             })

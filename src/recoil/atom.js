@@ -38,4 +38,40 @@ const enterChatRoomState = atom({
   default: null,
 });
 
-export { loginUserState, shareDataState, modalOpenState, locationState, enterChatRoomState };
+const checkShareDateState = atom({
+  key: "checkShareDateState",
+  default: false,
+});
+
+const checkAppointmentState = atom({
+  key: "checkAppointmentState",
+  default: false,
+});
+
+const checkShareCancelAskState = atom({
+  key: "checkShareCancelAskState",
+  default: false,
+});
+
+const checkShareCancelState = atom({
+  key: "checkShareCancelState",
+  default: false,
+});
+
+const checkShareReturnState = atom({
+  key: "checkShareReturnState",
+  default: false,
+});
+
+export {
+  loginUserState,
+  shareDataState,
+  modalOpenState,
+  locationState,
+  enterChatRoomState,
+  checkShareDateState,
+  checkAppointmentState,
+  checkShareCancelAskState,
+  checkShareCancelState,
+  checkShareReturnState,
+};
