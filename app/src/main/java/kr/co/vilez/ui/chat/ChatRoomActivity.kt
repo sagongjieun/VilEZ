@@ -18,11 +18,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
+import kr.co.vilez.data.model.AppointDto
+import kr.co.vilez.data.model.AppointVO
 import kr.co.vilez.data.model.SetPeriodDto
 import kr.co.vilez.data.model.Room
 import kr.co.vilez.databinding.ActivityChatRoomBinding
 import kr.co.vilez.ui.chat.map.KakaoMapFragment
 import kr.co.vilez.ui.dialog.AlertDialog
+import kr.co.vilez.ui.dialog.AppointConfirmDialog
+import kr.co.vilez.ui.dialog.AppointConfirmDialogInterface
 import kr.co.vilez.ui.dialog.SignDialog
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.StompClient2
@@ -33,7 +37,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 private const val TAG = "빌리지_채팅_ChatRoomActivity"
-class ChatRoomActivity : AppCompatActivity() {
+class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
     private lateinit var binding: ActivityChatRoomBinding
     private var roomId = 0
     private var otherUserId = 0
@@ -43,8 +47,10 @@ class ChatRoomActivity : AppCompatActivity() {
     private var now : Int = 0
     private val itemList = ArrayList<ChatlistData>()
     private val kakaoMapFragment = KakaoMapFragment()
+    private var appointDto: AppointDto? = null
     private var setPeriodDto : SetPeriodDto? = null
     private var pickedDate : Pair<Long, Long>? = null // 약속 시간 저장하는 변수
+    lateinit var roomAdapter :ChatAdapter
     private lateinit var room: Room
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,16 +72,29 @@ class ChatRoomActivity : AppCompatActivity() {
             val result = ApplicationClass.retrofitChatService.getRoomData(roomId).awaitResponse().body()
             if (result?.flag == "success") {
                 room = result.data.get(0)
-                println(result.data.get(0))
-                CoroutineScope(Dispatchers.Main).launch {
-                    val result = ApplicationClass.retrofitChatService.getAppointment(
-                        room.boardId, room.notShareUserId,
-                        room.shareUserId,room.type
-                    ).awaitResponse().body()
-                    if (result?.flag == "success") {
-                        setPeriodDto = result.data.get(0)
+                // 룸 정보 가져왔고 그다음엔
+                // 약속 정보 가져오기
+                var result = ApplicationClass.retrofitChatService.getAppointMent(
+                    room.boardId, room.notShareUserId,
+                    room.shareUserId,room.type
+                ).awaitResponse().body()
+
+                if(result?.flag == "success") {
+                    appointDto = result.data.get(0)
+                    if(appointDto == null) {
+                        val result = ApplicationClass.retrofitChatService.getPeriodDto(
+                            room.boardId, room.notShareUserId,
+                            room.shareUserId,room.type
+                        ).awaitResponse().body()
+                        if (result?.flag == "success") {
+                            setPeriodDto = result.data.get(0)
+                            println(setPeriodDto)
+                        }
                     }
                 }
+                // 약속 정보 없으면
+
+
             }
         }
 
@@ -107,7 +126,7 @@ class ChatRoomActivity : AppCompatActivity() {
         val txt_send = binding.root.findViewById(R.id.sendText) as ImageView
         val btn_back = binding.root.findViewById(R.id.btn_back) as ImageButton
 
-        val roomAdapter = ChatAdapter(itemList)
+        roomAdapter = ChatAdapter(itemList)
         toolbar_title.text = nickName
         txt_send.setOnClickListener(
             View.OnClickListener {
@@ -120,6 +139,7 @@ class ChatRoomActivity : AppCompatActivity() {
                 data.put("toUserId", otherUserId)
                 data.put("content", txt_edit.text)
                 data.put("time", System.currentTimeMillis())
+                data.put("system",false)
                 itemList.add(ChatlistData(data.getString("content"), 2,""))
                 roomAdapter.notifyDataSetChanged()
                 StompClient2.stompClient.send("/recvchat", data.toString()).subscribe()
@@ -169,16 +189,21 @@ class ChatRoomActivity : AppCompatActivity() {
                 var prev_type = -1
                 for (i in 0 until result.data.size) {
                     var chat = result.data.get(i)
-                    if (chat.fromUserId == ApplicationClass.prefs.getId()) {
-                        itemList.add(ChatlistData(chat.content, 2,null))
-                        prev_type = 2
-                    }
-                    else {
-                        if(prev_type == 1)
-                            itemList.add(ChatlistData(chat.content, 1,null))
-                        else
-                            itemList.add(ChatlistData(chat.content, 1,profile))
-                        prev_type = 1
+                    if (chat.system) {
+                        itemList.add(ChatlistData(chat.content, 0,null))
+                        prev_type = 0;
+                    } else {
+                        if (chat.fromUserId == ApplicationClass.prefs.getId()) {
+                            itemList.add(ChatlistData(chat.content, 2,null))
+                            prev_type = 2
+                        }
+                        else {
+                            if(prev_type == 1)
+                                itemList.add(ChatlistData(chat.content, 1,null))
+                            else
+                                itemList.add(ChatlistData(chat.content, 1,profile))
+                            prev_type = 1
+                        }
                     }
                 }
                 roomAdapter.notifyDataSetChanged()
@@ -195,7 +220,11 @@ class ChatRoomActivity : AppCompatActivity() {
                 run {
                     CoroutineScope(Dispatchers.Main).launch {
                         val json = JSONObject(topicMessage)
-                        itemList.add(ChatlistData(json.getString("content"), 1,profile))
+                        println(json)
+                        if(json.getInt("toUserId") == 0)
+                            itemList.add(ChatlistData(json.getString("content"), 0,"none"))
+                        else
+                            itemList.add(ChatlistData(json.getString("content"), 1,profile))
                         roomAdapter.notifyDataSetChanged()
                         rv_chat.scrollToPosition(itemList.size - 1)
                         val data = JSONObject()
@@ -212,56 +241,95 @@ class ChatRoomActivity : AppCompatActivity() {
     }
 
     private fun initSignButton() {
-                //todo 서명이 있는지 없는지 확인
         binding.btnChatSign.setOnClickListener {
-            if(ApplicationClass.prefs.getId() == room.shareUserId) {
-                showDialog("피공유자에게 서명을 요청하세요!!")
-            } else {
-                // 서명이 없다면
-                showSignDialog("피공유자 ")
-            }
+            showSignDialog("피공유자 ")
+//            if(ApplicationClass.prefs.getId() == room.shareUserId) {
+//
+//                showDialog("피공유자에게 서명을 요청하세요!!")
+//            } else {
+//                // 서명이 없다면
+//
+//            }
         }
     }
 
     private fun initScheduleButton() {
         binding.btnChatCalendar.setOnClickListener {
-            if(ApplicationClass.prefs.getId() == room.shareUserId) {
-                onCalendarClick()
-            } else {
-                println("공유자만 가능한 페이집니다.")
-                if(setPeriodDto == null) {
-                    var dialog = AlertDialog(this, "설정된 예약일자가 없습니다.")
-                    dialog.show(this.supportFragmentManager, "Appoint")
+            CoroutineScope(Dispatchers.Main).launch {
+                if(ApplicationClass.prefs.getId() == room.shareUserId) {
+                    if(appointDto != null) {
+                        showDialog("예약 일자 : ${appointDto?.appointmentStart} \n~ ${appointDto?.appointmentEnd}")
+                    } else {
+                        onCalendarClick()
+                    }
                 } else {
-                    var dialog = AlertDialog(this, "예약 일자 : ${setPeriodDto?.startDay} \n~ ${setPeriodDto?.endDay}")
-                    dialog.show(this.supportFragmentManager, "Appoint")
+                    if(setPeriodDto == null) {
+                        showDialog("설정된 예약일자가 없습니다.")
+                    } else {
+                        if(appointDto != null) {
+                            showDialog("예약 일자 : ${appointDto?.appointmentStart} \n~ ${appointDto?.appointmentEnd}")
+                        } else {
+                            showDialog("예약 일자 : ${setPeriodDto?.startDay} \n~ ${setPeriodDto?.endDay}")
+                        }
+                    }
                 }
             }
-            // 선택된 날짜는 pickedDate 에 저장됨
+
         }
     }
     private fun initAcceptButton() {
+
         binding.btnChatAccept.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
-                val result = ApplicationClass.retrofitChatService.getAppointment(
+                val result = ApplicationClass.retrofitChatService.getAppointMent(
                     room.boardId, room.notShareUserId,
                     room.shareUserId,room.type
                 ).awaitResponse().body()
-                if (result?.flag == "success") {
-                    setPeriodDto = result.data.get(0)
-                    if(setPeriodDto != null) {
-                        //todo
-                        println(setPeriodDto)
+                if(result?.flag == "success") {
+                    if(ApplicationClass.prefs.getId() == room.shareUserId) {
+                        showDialog("만남 확정은 피공유자만 할 수 있습니다.")
+                        return@launch
+                    }
+                    appointDto = result.data.get(0)
+                    if(appointDto != null) {
+                        showDialog("이미 약속된 정보가 있습니다.")
+                        return@launch
                     } else {
-                        showDialog("공유자에게 날짜 설정을 요청하세요!!")
+                        val result = ApplicationClass.retrofitChatService.getPeriodDto(
+                            room.boardId, room.notShareUserId,
+                            room.shareUserId,room.type
+                        ).awaitResponse().body()
+                        if (result?.flag == "success") {
+                            setPeriodDto = result.data.get(0)
+                            if(setPeriodDto != null) {
+                                var resultSign = ApplicationClass.retrofitChatService.getSign(roomId).awaitResponse().body()
+                                if(resultSign?.flag == "success") {
+                                    var sign = resultSign.data.get(0)
+                                    if(sign == null) {
+                                        showDialog("서약서에 서명하세요!!")
+                                    } else {
+                                        //만남 확정하기 버튼 클릭
+                                        showAcceptDialog()
+                                    }
+                                }
+                            } else {
+                                showDialog("공유자에게 날짜 설정을 요청하세요!!")
+                            }
+                        }
                     }
                 }
+
 
             }
         }
     }
+    fun showAcceptDialog() {
+        var dialog = AppointConfirmDialog(this, room, nickName,setPeriodDto!!.startDay,setPeriodDto!!.endDay)
+        dialog.show(this.supportFragmentManager, "Appoint")
+    }
+
     fun showSignDialog(msg: String) {
-        var dialog = SignDialog(this, msg)
+        var dialog = SignDialog(this, room.id, room.notShareUserId, nickName)
         dialog.show(this.supportFragmentManager, "Appoint")
     }
 
@@ -317,9 +385,18 @@ class ChatRoomActivity : AppCompatActivity() {
             var end : String = SDF.format(Date(pickedDate!!.second))
             setPeriodDto  = SetPeriodDto(room.boardId,room.shareUserId,room.notShareUserId,start,end,room.type)
             CoroutineScope(Dispatchers.Main).launch {
-                val result = ApplicationClass.retrofitChatService.setAppointment(setPeriodDto!!).awaitResponse().body()
+                val result = ApplicationClass.retrofitChatService.setPeriodDto(setPeriodDto!!).awaitResponse().body()
                 if (result?.flag == "success") {
-                    println("success")
+                    var data = JSONObject()
+                    data.put("roomId", roomId)
+                    data.put("fromUserId", ApplicationClass.prefs.getId())
+                    data.put("toUserId", otherUserId)
+                    data.put("content", "공유자가 날짜 선택을 완료했어요")
+                    data.put("time", System.currentTimeMillis())
+                    data.put("system",true)
+                    StompClient2.stompClient.send("/recvchat", data.toString()).subscribe()
+                    itemList.add(ChatlistData(data.getString("content"), 0,"none"))
+                    roomAdapter.notifyDataSetChanged()
                 }
             }
 
@@ -327,6 +404,38 @@ class ChatRoomActivity : AppCompatActivity() {
         }
         datePicker.show(supportFragmentManager, "Date")
 
+    }
+
+    override fun onYesButtonClick() {
+        val SDF = SimpleDateFormat ("yyyy-MM-dd")
+
+        Log.d(TAG, "onCalendarClick: 캘린더 클릭")
+
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
+        SDF.timeZone = TimeZone.getTimeZone("Asia/Seoul")
+        SDF.calendar = calendar
+
+        var date = SDF.format(Date(System.currentTimeMillis()))
+
+        var appointVO = AppointVO(room.boardId,room.type,"asd",
+                                    room.shareUserId,room.notShareUserId,
+                                   setPeriodDto!!.startDay,setPeriodDto!!.endDay,
+                                             date)
+        CoroutineScope(Dispatchers.Main).launch {
+            val result = ApplicationClass.retrofitChatService.setAppointment(appointVO).awaitResponse().body()
+            if (result?.flag == "success") {
+                var data = JSONObject()
+                data.put("roomId", roomId)
+                data.put("fromUserId", ApplicationClass.prefs.getId())
+                data.put("toUserId", otherUserId)
+                data.put("content", "공유를 시작 했어요")
+                data.put("time", System.currentTimeMillis())
+                data.put("system",true)
+                StompClient2.stompClient.send("/recvchat", data.toString()).subscribe()
+                itemList.add(ChatlistData(data.getString("content"), 0,"none"))
+                roomAdapter.notifyDataSetChanged()
+            }
+        }
     }
 
 }
