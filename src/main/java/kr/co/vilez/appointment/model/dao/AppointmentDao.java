@@ -1,6 +1,7 @@
 package kr.co.vilez.appointment.model.dao;
 
 import kr.co.vilez.appointment.model.dto.AppointmentDto;
+import kr.co.vilez.appointment.model.dto.CancelAppointmentDto;
 import kr.co.vilez.appointment.model.dto.RoomDto;
 import kr.co.vilez.appointment.model.dto.SetPeriodDto;
 import kr.co.vilez.appointment.model.vo.*;
@@ -18,6 +19,21 @@ import java.util.*;
 public class AppointmentDao {
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    public void deleteRequest(int roomId){
+        mongoTemplate.remove(Query.query(Criteria.where("roomId").is(roomId)
+                ), CancelAppointmentDto.class);
+    }
+    public CancelAppointmentDto loadRequestCheck(int roomId) {
+        CancelAppointmentDto cancelAppointmentDto = mongoTemplate.findOne(
+                Query.query(Criteria.where("roomId").is(roomId)
+                ), CancelAppointmentDto.class);
+        return cancelAppointmentDto;
+    }
+    public void saveRequest(CancelAppointmentDto cancelAppointmentDto){
+        mongoTemplate.insert(cancelAppointmentDto);
+    }
+
     public List<PointVO> getPointList(int userId) {
         List<PointVO> list = mongoTemplate.find(
                 Query.query(Criteria.where("userId").is(userId)),
