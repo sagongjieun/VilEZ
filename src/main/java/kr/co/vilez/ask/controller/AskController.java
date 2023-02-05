@@ -92,6 +92,9 @@ public class AskController {
     public ResponseEntity<?> updateAskBoard(@RequestPart(value = "board",required = false) AskDto askDto,
                                             @RequestPart(value = "image", required = false) MultipartFile[] files) throws IOException {
         HttpVO http = new HttpVO();
+
+        System.out.println(askDto);
+
         askService.updateAskBoard(askDto, files);
         //글 작성 성공 : 0 , 실패 : -1
         List<AskDto> data = new ArrayList<AskDto>();
