@@ -192,15 +192,18 @@
 
                             android:layout_width="80dp"
                             android:layout_height="80dp"
-                            android:id="@+id/btn_chat_accept"
-                            android:background="@drawable/btn_chat_accept" />
+                            android:id="@+id/btn_chat_sign"
+                            android:background="@drawable/btn_chat_sign" />
                         <View
                             android:layout_width="0dp"
                             android:layout_height="80dp"
                             android:layout_weight="1"/>
-                        <View
+                        <ImageButton
+
                             android:layout_width="80dp"
-                            android:layout_height="80dp" />
+                            android:layout_height="80dp"
+                            android:id="@+id/btn_chat_accept"
+                            android:background="@drawable/btn_chat_accept" />
                         <View
                             android:layout_width="0dp"
                             android:layout_height="80dp"

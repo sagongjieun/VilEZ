@@ -23,6 +23,7 @@ import kr.co.vilez.data.model.Room
 import kr.co.vilez.databinding.ActivityChatRoomBinding
 import kr.co.vilez.ui.chat.map.KakaoMapFragment
 import kr.co.vilez.ui.dialog.AlertDialog
+import kr.co.vilez.ui.dialog.SignDialog
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.StompClient2
 import org.json.JSONObject
@@ -206,7 +207,20 @@ class ChatRoomActivity : AppCompatActivity() {
             }
 
 
-            initScheduleButton()
+        initScheduleButton()
+        initSignButton()
+    }
+
+    private fun initSignButton() {
+                //todo 서명이 있는지 없는지 확인
+        binding.btnChatSign.setOnClickListener {
+            if(ApplicationClass.prefs.getId() == room.shareUserId) {
+                showDialog("피공유자에게 서명을 요청하세요!!")
+            } else {
+                // 서명이 없다면
+                showSignDialog("피공유자 ")
+            }
+        }
     }
 
     private fun initScheduleButton() {
@@ -246,6 +260,11 @@ class ChatRoomActivity : AppCompatActivity() {
             }
         }
     }
+    fun showSignDialog(msg: String) {
+        var dialog = SignDialog(this, msg)
+        dialog.show(this.supportFragmentManager, "Appoint")
+    }
+
     fun showDialog(msg: String) {
         var dialog = AlertDialog(this, msg)
         dialog.show(this.supportFragmentManager, "Appoint")
