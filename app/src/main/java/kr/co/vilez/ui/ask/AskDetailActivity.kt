@@ -15,20 +15,19 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import kr.co.vilez.R
-import kr.co.vilez.data.model.Bookmark
 import kr.co.vilez.data.model.Chatroom
 import kr.co.vilez.data.model.RoomlistData
 import kr.co.vilez.databinding.ActivityAskDetailBinding
-import kr.co.vilez.ui.ask.write.AskWriteActivity
+import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.ui.board.BoardImagePagerAdapter
 import kr.co.vilez.ui.board.BoardMapFragment
 import kr.co.vilez.ui.chat.ChatRoomActivity
 import kr.co.vilez.ui.dialog.AlertDialog
 import kr.co.vilez.ui.dialog.ConfirmDialog
 import kr.co.vilez.ui.dialog.ConfirmDialogInterface
+import kr.co.vilez.ui.share.write.ShareWriteActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common.Companion.BOARD_TYPE_ASK
-import kr.co.vilez.util.Common.Companion.BOARD_TYPE_SHARE
 import kr.co.vilez.util.DataState
 import me.relex.circleindicator.CircleIndicator3
 import retrofit2.awaitResponse
@@ -40,7 +39,7 @@ class AskDetailActivity : AppCompatActivity() {
     private var pagerAdapter: FragmentStateAdapter? = null
     private var mIndicator: CircleIndicator3? = null
     private var boardId:Int? = 0
-    private var userId:Int? = 0
+    private var writerId:Int? = 0
     private var otherUserId:Int? = 0
 
     private lateinit var mapLat:String
@@ -54,14 +53,14 @@ class AskDetailActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_ask_detail)
         binding.activity = this
         boardId = intent.getIntExtra("boardId", 0) // 요청글 id
-        userId = intent.getIntExtra("userId", 0) // 요청글 작성자
-        Log.d(TAG, "onCreate: boardId: $boardId $userId")
+        writerId = intent.getIntExtra("userId", 0) // 요청글 작성자
+        Log.d(TAG, "onCreate: boardId: $boardId 작성한 userId: $writerId")
         setContentView(binding.root)
         
         mContext = this@AskDetailActivity
         initData()
         initToolBar()
-        if(userId == ApplicationClass.prefs.getId()) {
+        if(writerId == ApplicationClass.prefs.getId()) {
             binding.btnChat.visibility = View.INVISIBLE
         }
     }
@@ -88,7 +87,7 @@ class AskDetailActivity : AppCompatActivity() {
 
                     val intent = Intent(this@AskDetailActivity, ChatRoomActivity::class.java)
                     intent.putExtra("roomId", isExist.data[0].id)
-                    intent.putExtra("otherUserId", userId!!)
+                    intent.putExtra("otherUserId", writerId!!)
                     intent.putExtra("nickName", binding.writer!!.nickName)
                     intent.putExtra("profile", binding.writer!!.profile_img)
                     intent.putExtra("type", BOARD_TYPE_ASK)
@@ -99,7 +98,7 @@ class AskDetailActivity : AppCompatActivity() {
                 } else if (isExist?.flag == "fail") { // 채팅방 없음 => 새로 만들기
                     Log.d(TAG, "onChatBtnClick: 새로운 채팅방 만들기")
                     // 내가 빌려주는 사람 shareUserId:나, notShareUserId : 요청글 작성자 (=userId)
-                    val chatRoom = Chatroom(boardId!!, 0, userId!!, ApplicationClass.prefs.getId(),BOARD_TYPE_ASK)
+                    val chatRoom = Chatroom(boardId!!, 0, writerId!!, ApplicationClass.prefs.getId(),BOARD_TYPE_ASK)
                     Log.d(TAG, "onChatBtnClick: chatRoom: ${chatRoom.toString()}")
                     val result = ApplicationClass.retrofitChatService.createChatroom(chatRoom).awaitResponse().body()
                     Log.d(TAG, "onChatBtnClick: 새로운 채팅방 만들기 result: $result")
@@ -110,7 +109,7 @@ class AskDetailActivity : AppCompatActivity() {
 
                         val intent = Intent(this@AskDetailActivity, ChatRoomActivity::class.java)
                         intent.putExtra("roomId", result.data[0].id)
-                        intent.putExtra("otherUserId", userId!!)
+                        intent.putExtra("otherUserId", writerId!!)
                         intent.putExtra("nickName", binding.writer!!.nickName)
                         intent.putExtra("profile", binding.writer!!.profile_img)
                         intent.putExtra("type", BOARD_TYPE_ASK)
@@ -156,12 +155,6 @@ class AskDetailActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             val result = ApplicationClass.retrofitAskService.getBoardDetail(boardId!!).awaitResponse().body()
             if (result?.flag =="success") {
-                /*
-      *****************************************************************************************************
-      **************************************** 모바일 캐러셀(carousel) **************************************
-      ****************************************      pageNavigator    **************************************
-      *****************************************************************************************************
-       */
                 Log.d(TAG, "init: @@@공유 디테일 ${result.data[0]}")
                 binding.article = result.data[0]
 
@@ -222,12 +215,6 @@ class AskDetailActivity : AppCompatActivity() {
                             mIndicator!!.animatePageSelected(position % count)
                         }
                     })
-
-                    println("*******************************************************")
-                    println("*******************              **********************")
-                    println("${result?.data}")
-                    println("*******************              **********************")
-                    println("*******************************************************")
                 }
             } else {
                 Log.d(TAG, "init: fail, result:$result")
@@ -243,7 +230,7 @@ class AskDetailActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // 게시글 작성자가 나인지 확인한다
         // 나인경우 수정하기, 삭제하기 버튼이 보여야 하고 채팅하기 버튼 비활성화
-        if(ApplicationClass.prefs.getId() != otherUserId) { // 내가 작성자가 아니면 수정/삭제 메뉴 없애기
+        if(ApplicationClass.prefs.getId() != writerId) { // 내가 작성자가 아니면 수정/삭제 메뉴 없애기
             Log.d(TAG, "checkWriter: 내가 작성자 아님/")
             return super.onCreateOptionsMenu(menu)
         } else {
@@ -255,20 +242,26 @@ class AskDetailActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.board_edit -> { // 게시글 수정
-                val intent = Intent(this@AskDetailActivity, AskWriteActivity::class.java)
+            R.id.board_edit -> { // 게시글 수정하기 버튼 클릭
+                val intent = Intent(this@AskDetailActivity, ShareWriteActivity::class.java)
+                intent.putExtra("type", BOARD_TYPE_ASK)
                 intent.putExtra("boardId", boardId)
                 startActivity(intent)
                 finish()
             }
-            R.id.board_remove -> { // 게시글 삭제
+            R.id.board_remove -> { // 게시글 삭제하기 버튼 클릭
                 val dialog = ConfirmDialog(object : ConfirmDialogInterface {
                     override fun onYesButtonClick(id: String) {
                         CoroutineScope(Dispatchers.Main).launch {
-                            val result = ApplicationClass.retrofitShareService.deleteShareBoard(boardId!!).awaitResponse().body()
+                            val result = ApplicationClass.retrofitAskService.deleteBoard(boardId!!).awaitResponse().body()
                             if(result?.flag == "success") { // 삭제 성공
                                 // TODO : 채팅 목록 삭제시키기 (or 채팅종료)
                                 Toast.makeText(this@AskDetailActivity, "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                                val intent = Intent(this@AskDetailActivity, MainActivity::class.java)
+                                intent.putExtra("target", "공유 요청")
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                startActivity(intent)
                                 finish()
                             } else {
                                 Toast.makeText(this@AskDetailActivity, "게시글 삭제를 실패했습니다.", Toast.LENGTH_SHORT).show()

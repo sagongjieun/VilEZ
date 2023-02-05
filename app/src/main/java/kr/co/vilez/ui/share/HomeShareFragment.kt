@@ -27,6 +27,7 @@ import kr.co.vilez.util.Common.Companion.elapsedTime
 import retrofit2.awaitResponse
 import kr.co.vilez.ui.user.ProfileMenuActivity
 import kr.co.vilez.util.Common
+import kr.co.vilez.util.Common.Companion.BOARD_TYPE_SHARE
 
 private const val TAG = "빌리지_HomeFragment"
 
@@ -198,7 +199,7 @@ class HomeShareFragment : Fragment() {
 
     fun moveToShareWriteActivity(view: View) {
         val intent = Intent(mainActivity, ShareWriteActivity::class.java)
-        intent.putExtra("title", "공유 글쓰기")
+        intent.putExtra("type", BOARD_TYPE_SHARE)
         mainActivity.startActivity(intent)
     }
 
