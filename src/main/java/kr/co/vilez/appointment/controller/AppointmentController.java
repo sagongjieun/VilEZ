@@ -115,8 +115,9 @@ public class AppointmentController {
 
     @GetMapping("/my/point")
     @ApiOperation(value = "나의 포인트 목록을 보여주는 정보를 출력하는 API",
-            notes = "date가 없는 데이터는 취소에 의해 되돌려받은 포인트 내역" +
-                    "date가 있는 데이터는 예약에 의해 삭감/증가된 포인트 내역")
+            notes = "reason 데이터가 2이면, 패널티에 의해 되돌려받은 포인트 내역" +
+                    "\n\treason 데이터가 1이면, 취소에 의해 되돌려받은 포인트 내역" +
+                    "\n\treason 데이터가 0이면 예약에 의해 삭감/증가된 포인트 내역")
     public ResponseEntity<?> getPointList(@RequestParam int userId){
         HttpVO http = new HttpVO();
         ArrayList<Object> data = new ArrayList<>();
@@ -287,11 +288,12 @@ public class AppointmentController {
     @GetMapping("/{boardId}")
     @ApiOperation(value = "글 번호에 약속 정보들을 불러온다." ,
             notes = "List에 dto 담아서 리턴")
-    public ResponseEntity<?> getAppointmentList(@PathVariable int boardId){
+    public ResponseEntity<?> getAppointmentList(@PathVariable int boardId,
+                                                @PathVariable int type){
         HttpVO http = new HttpVO();
         List<Object> data = new ArrayList<>();
         try {
-            data.add(appointmentService.getAppointmentList(boardId));
+            data.add(appointmentService.getAppointmentList(boardId, type));
             http.setFlag("success");
             http.setData(data);
         } catch(Exception e){
@@ -309,7 +311,6 @@ public class AppointmentController {
             notes = "게시글 정보(boarId)" +
                     "\n\t 약속 기간(appointmentStart, End)" +
                     "\n\t 빌린사람, 빌려주는 사람(notShareUserId, shareUserId) " +
-                    "\n\t 글의 제목(title) 정보 부탁합니다." +
                     "\n\t 현재 날짜(date) 부탁합니다" +
                     "\n\t 요청글에 대한 type인지 share에 의한 type인지도 부탁합니다" +
                     "\n\t 요청은 type = 1, 공유는 type = 2")
