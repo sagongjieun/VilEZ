@@ -2,8 +2,12 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import MiddleWideButton from "../button/MiddleWideButton";
+import { useSetRecoilState } from "recoil";
+import { checkShareCancelState } from "../../recoil/atom";
 
 const ShareCancelModal = ({ close, otherUserNickname }) => {
+  const setCheckShareCancel = useSetRecoilState(checkShareCancelState);
+
   function onCloseModal() {
     close(false);
   }
@@ -14,6 +18,7 @@ const ShareCancelModal = ({ close, otherUserNickname }) => {
     // 피공유자가 예약 취소 요청을 했는지 확인하고
     // 안했다면 포인트 -? 점 깎고
     // 했다면 그냥 바로 예약 취소하기 진행
+    setCheckShareCancel(true);
   }
 
   return (
