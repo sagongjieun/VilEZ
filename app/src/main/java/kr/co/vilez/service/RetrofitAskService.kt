@@ -24,7 +24,8 @@ interface RetrofitAskService {
         @Query(value = "low") low: Int,
         @Query(value = "high") high: Int,
         @Query(value = "userId") id: Int,
-        @Query(value = "word") word: String
+        @Query(value = "word") word: String ?= null,
+        @Query(value ="category")category:String? = null
     ): Call<RESTAskResult>
 
     // 카테고리에 해당하는 게시글 리스트를 불러온다.

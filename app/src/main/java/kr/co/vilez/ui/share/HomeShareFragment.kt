@@ -66,10 +66,6 @@ class HomeShareFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
     @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.top_app_bar, menu)
@@ -82,10 +78,13 @@ class HomeShareFragment : Fragment() {
             R.id.option_menu_menu -> {
                 Log.d(TAG, "onContextItemSelected: ${item.title} clicked")
                 Toast.makeText(mainActivity, "${item.title} 클릭", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(mainActivity, MenuCategoryActivity::class.java))
+                val intent = Intent(mainActivity, MenuCategoryActivity::class.java)
+                intent.putExtra("type", BOARD_TYPE_SHARE)
+                startActivity(intent)
             }
             R.id.option_menu_search -> {
                 val intent = Intent(mainActivity, SearchActivity::class.java)
+                intent.putExtra("type", BOARD_TYPE_SHARE)
                 startActivity(intent)
             }
         }
