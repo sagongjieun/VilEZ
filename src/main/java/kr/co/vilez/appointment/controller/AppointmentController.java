@@ -386,13 +386,15 @@ public class AppointmentController {
     }
 
     @MessageMapping("/recvsystem")
-    public ChatVO cancelMsg(ChatVO chatVO) throws IOException {
+    public ChatVO systemMsg(ChatVO chatVO) throws IOException {
         UserDto user = null;
         UserDto user2 = null;
         HashMap<String, Object> map = new HashMap<>();
+        System.out.println(chatVO);
+        RoomDto roomDto = appointmentService.getBoard(chatVO.getRoomId());
         try {
-            user = userService.detail2(chatVO.getFromUserId());
-            user2 = userService.detail2(chatVO.getToUserId());
+            user = userService.detail2(roomDto.getShareUserId());
+            user2 = userService.detail2(roomDto.getNotShareUserId());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -400,15 +402,15 @@ public class AppointmentController {
         map.put("area", user.getArea());
         map.put("content", chatVO.getContent());
         map.put("roomId",chatVO.getRoomId());
-        map.put("fromUserId",chatVO.getFromUserId());
-        sendingOperations.convertAndSend("/sendlist/"+chatVO.getToUserId(),map);
+        map.put("fromUserId",0);
+        sendingOperations.convertAndSend("/sendlist/"+roomDto.getNotShareUserId(),map);
 
         map.put("nickName",user2.getNickName());
-        sendingOperations.convertAndSend("/sendlist/"+chatVO.getFromUserId(),map);
+        sendingOperations.convertAndSend("/sendlist/"+roomDto.getShareUserId(),map);
 
-        chatVO.setFromUserId(0);
-        chatVO.setToUserId(0);
         appointmentService.recvMsg(chatVO);
+
+        sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+user.getId(),chatVO);
         sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+user2.getId(),chatVO);
 
         fcmDataService.sendChatMessageTo(user.getArea(), chatVO.getRoomId(), user2.getId(), "시스템", chatVO.getContent());
