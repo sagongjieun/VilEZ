@@ -385,6 +385,37 @@ public class AppointmentController {
         return chatVO;
     }
 
+    @MessageMapping("/recvsystem")
+    public ChatVO cancelMsg(ChatVO chatVO) throws IOException {
+        UserDto user = null;
+        UserDto user2 = null;
+        HashMap<String, Object> map = new HashMap<>();
+        try {
+            user = userService.detail2(chatVO.getFromUserId());
+            user2 = userService.detail2(chatVO.getToUserId());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        map.put("nickName",user.getNickName());
+        map.put("area", user.getArea());
+        map.put("content", chatVO.getContent());
+        map.put("roomId",chatVO.getRoomId());
+        map.put("fromUserId",chatVO.getFromUserId());
+        sendingOperations.convertAndSend("/sendlist/"+chatVO.getToUserId(),map);
+
+        map.put("nickName",user2.getNickName());
+        sendingOperations.convertAndSend("/sendlist/"+chatVO.getFromUserId(),map);
+
+        chatVO.setFromUserId(0);
+        chatVO.setToUserId(0);
+        appointmentService.recvMsg(chatVO);
+        sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+user2.getId(),chatVO);
+
+        fcmDataService.sendChatMessageTo(user.getArea(), chatVO.getRoomId(), user2.getId(), "시스템", chatVO.getContent());
+        fcmDataService.sendChatMessageTo(user2.getArea(), chatVO.getRoomId(), user.getId(), "시스템", chatVO.getContent());
+        return chatVO;
+    }
+
 
     @MessageMapping("/room_enter")
     public void setEnterTimeMsg(HashMap<String, Integer> payload) {
