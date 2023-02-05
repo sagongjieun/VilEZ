@@ -21,7 +21,7 @@ public interface UserMapper {
     void join(UserDto user) throws SQLException;
     UserDto login(UserDto user) throws SQLException;
     UserDto refreshCheck(HashMap<String, String> map) throws SQLException;
-    void saveToken(HashMap<String, String> map) throws SQLException;
+    void saveToken(HashMap<String, Object> map) throws SQLException;
 
     UserDto detail(int id) throws SQLException;
     //DEBUG
