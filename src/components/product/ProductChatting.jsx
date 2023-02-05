@@ -6,7 +6,7 @@ import MiddleWideButton from "../button/MiddleWideButton";
 import StompRealTime from "../StompRealTime";
 import MeetConfirmModal from "../modal/MeetConfirmModal";
 import QuitChattingModal from "../modal/QuitChattingModal";
-import OathRegistModal from "../modal/OathRegistModal";
+import OathModal from "../modal/OathModal";
 import AppointmentCompleteModal from "../modal/AppointmentCompleteModal";
 import { useParams } from "react-router-dom";
 import { getBoardIdByRoomId } from "../../api/chat";
@@ -251,7 +251,7 @@ const ProductChatting = () => {
             )}
           </>
         )}
-        {shareState == -3 && (
+        {shareState == -1 && (
           <>
             <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
           </>
@@ -266,7 +266,7 @@ const ProductChatting = () => {
             )}
           </>
         )}
-        {shareState == -1 && (
+        {shareState == -3 && (
           <>
             <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
             {loginUserId == notShareUserId ? <MiddleWideButton text={"예약 확정"} onclick={onClickConfirm} /> : <></>}
@@ -284,7 +284,9 @@ const ProductChatting = () => {
         />
       ) : null}
       {isQuit ? <QuitChattingModal close={setIsQuit} /> : null}
-      {isOath ? <OathRegistModal close={setIsOath} openLastConfirm={setIsAppointmentComplete} /> : null}
+      {isOath ? (
+        <OathModal close={setIsOath} openLastConfirm={setIsAppointmentComplete} roomId={roomId} readOnly={false} />
+      ) : null}
       {isAppointmentComplete ? <AppointmentCompleteModal /> : null}
       {isProductReturn ? (
         <ProductReturnModal
