@@ -35,6 +35,7 @@ import kr.co.vilez.ui.share.write.ShareWriteActivity
 import kr.co.vilez.ui.user.ProfileMenuActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
+import kr.co.vilez.util.Common.Companion.BOARD_TYPE_SHARE
 import kr.co.vilez.util.DataState
 import me.relex.circleindicator.CircleIndicator3
 import retrofit2.awaitResponse
@@ -307,8 +308,9 @@ class ShareDetailActivity : AppCompatActivity(){
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.board_edit -> { // 게시글 수정
+            R.id.board_edit -> { // 게시글 수정하기 버튼 클릭
                 val intent = Intent(this@ShareDetailActivity, ShareWriteActivity::class.java)
+                intent.putExtra("type", BOARD_TYPE_SHARE)
                 intent.putExtra("boardId", boardId)
                 startActivity(intent)
                 finish()
@@ -320,7 +322,13 @@ class ShareDetailActivity : AppCompatActivity(){
                             val result = ApplicationClass.retrofitShareService.deleteShareBoard(boardId!!).awaitResponse().body()
                             if(result?.flag == "success") { // 삭제 성공
                                 // TODO : 채팅 목록 삭제시키기 (or 채팅종료)
+                                // TODO : 채팅 목록 삭제시키기 (or 채팅종료)
                                 Toast.makeText(this@ShareDetailActivity, "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                                val intent = Intent(this@ShareDetailActivity, MainActivity::class.java)
+                                intent.putExtra("target", "홈")
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                startActivity(intent)
                                 finish()
                             } else {
                                 Toast.makeText(this@ShareDetailActivity, "게시글 삭제를 실패했습니다.", Toast.LENGTH_SHORT).show()

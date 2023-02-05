@@ -24,6 +24,7 @@ import kr.co.vilez.ui.share.ShareListAdapter
 import kr.co.vilez.ui.share.write.ShareWriteActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
+import kr.co.vilez.util.Common.Companion.BOARD_TYPE_ASK
 import retrofit2.awaitResponse
 
 
@@ -174,12 +175,9 @@ class AskFragment : Fragment() {
     }
 
 
-
     fun moveToAskWrite(view: View) {
-        /*val intent = Intent(activity, AskWriteActivity::class.java)
-        activity.startActivity(intent)*/
         val intent = Intent(activity, ShareWriteActivity::class.java)
-        intent.putExtra("title", "요청 글쓰기")
+        intent.putExtra("type", BOARD_TYPE_ASK)
         activity.startActivity(intent)
     }
 
