@@ -20,14 +20,9 @@ public class AppointmentDao {
     private MongoTemplate mongoTemplate;
     public List<PointVO> getPointList(int userId) {
         List<PointVO> list = mongoTemplate.find(
-                Query.query(Criteria.where("shareUserId").is(userId)),
+                Query.query(Criteria.where("userId").is(userId)),
                 PointVO.class
         );
-
-        list.addAll(mongoTemplate.find(
-                Query.query(Criteria.where("notShareUserId").is(userId)),
-                PointVO.class
-        ));
 
         return list;
     }
