@@ -1,19 +1,15 @@
 import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useNavigate } from "react-router-dom";
-import { useRecoilValue } from "recoil";
-import { shareDataState } from "../../recoil/atom";
 import MiddleWideButton from "../button/MiddleWideButton";
+import { useLocation } from "react-router-dom";
 
-function AppointmentCompleteModal() {
-  const navigate = useNavigate();
-  const shareData = useRecoilValue(shareDataState);
+function AppointmentCompleteModal({ close }) {
+  const pathname = useLocation().pathname;
 
   function onClickMovedetail() {
-    shareData.boardType == 1
-      ? navigate(`/product/detail/ask/${shareData.boardId}`)
-      : navigate(`/product/detail/share/${shareData.boardId}`);
+    close(false);
+    window.location.replace(pathname);
   }
 
   return (

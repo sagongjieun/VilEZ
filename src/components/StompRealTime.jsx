@@ -20,6 +20,7 @@ import {
   checkShareCancelState,
   checkShareReturnState,
 } from "../recoil/atom";
+import { useLocation } from "react-router-dom";
 
 let client;
 
@@ -27,6 +28,8 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
   const scrollRef = useRef();
   const myUserId = localStorage.getItem("id");
   const chatRoomId = roomId;
+  const pathname = useLocation().pathname;
+
   const [checkShareDate, setCheckShareDate] = useRecoilState(checkShareDateState);
   const [checkAppointment, setCheckAppointment] = useRecoilState(checkAppointmentState);
   const [checkShareCancelAsk, setCheckShareCancelAsk] = useRecoilState(checkShareCancelAskState);
@@ -178,6 +181,10 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
         // 다른 유저의 채팅을 구독
         client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
           setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
+
+          if (JSON.parse(data.body).content === "예약이 확정됐어요 🙂") {
+            window.location.replace(pathname);
+          }
         });
 
         // 공유지도를 구독

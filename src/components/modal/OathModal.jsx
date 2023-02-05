@@ -70,12 +70,12 @@ function OathModal({ close, openLastConfirm, roomId, readOnly, oathSign }) {
           // 공유자의 포인트 추가, 피공유자의 포인트 차감
           putUserPoint({ userId: shareData.shareUserId, point: 30 }).then((res) => {
             if (res) {
-              alert("공유를 통해 30포인트를 얻었어요 🙂");
+              console.log("공유를 통해 30포인트를 얻었어요 🙂");
             }
           });
           putUserPoint({ userId: shareData.notShareUserId, point: -30 }).then((res) => {
             if (res) {
-              alert("공유를 통해 30포인트가 차감됐어요.");
+              console.log("공유를 통해 30포인트가 차감됐어요.");
             }
           });
         }
