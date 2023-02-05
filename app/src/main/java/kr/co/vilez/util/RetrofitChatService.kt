@@ -17,10 +17,19 @@ data class RESTChatroomResult(
     val `data`: List<Chatroom>,
     val flag: String
 )
-data class RESTAppointResult(
+data class RESTPeriodResult(
     val `data`: List<SetPeriodDto>,
     val flag: String
 )
+data class RESTAppointResult(
+    val `data`: List<AppointDto>,
+    val flag: String
+)
+data class RESTSignResult(
+    val `data`: List<Sign>,
+    val flag: String
+)
+
 interface RetrofitChatService {
     @GET("/vilez/appointments/map/{roomId}")
     fun loadLocationByRoomId(@Path("roomId") roomId : Int): Call<RESTKakaoResult>
@@ -43,11 +52,22 @@ interface RetrofitChatService {
     fun getRoomData(@Path("roomId") roomId: Int): Call<RESTRoomResult>
 
     @PUT("/vilez/appointments/set/period")
-    fun setAppointment(@Body setPeriodDto: SetPeriodDto): Call<RESTResult>
+    fun setPeriodDto(@Body setPeriodDto: SetPeriodDto): Call<RESTResult>
 
     @GET("/vilez/appointments/set/check")
-    fun getAppointment(@Query("boardId") boardId: Int, @Query("notShareUserId") notShareUserId : Int
-                    ,@Query("shareUserId") shareUserId: Int,@Query("type") type: Int): Call<RESTAppointResult>
+    fun getPeriodDto(@Query("boardId") boardId: Int, @Query("notShareUserId") notShareUserId : Int
+                    ,@Query("shareUserId") shareUserId: Int,@Query("type") type: Int): Call<RESTPeriodResult>
 
+    @GET("/vilez/appointments/date")
+    fun getAppointMent(@Query("boardId") boardId: Int, @Query("notShareUserId") notShareUserId : Int
+                     ,@Query("shareUserId") shareUserId: Int,@Query("type") type: Int): Call<RESTAppointResult>
 
+    @POST("/vilez/appointments/")
+    fun setAppointment(@Body appointDto: AppointVO): Call<RESTResult>
+
+    @GET("/vilez/signs/{roomId}")
+    fun getSign(@Path("roomId") roomId: Int): Call<RESTSignResult>
+
+    @POST("/vilez/signs")
+    fun addSign(@Body sign: Sign) : Call<RESTResult>
 }

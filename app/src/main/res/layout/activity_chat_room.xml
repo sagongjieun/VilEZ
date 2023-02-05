@@ -131,7 +131,7 @@
                     android:id="@+id/chat_menu"
                     android:layout_width="match_parent"
                     android:layout_height="260dp"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:background="@drawable/edge"
                     android:orientation="vertical"
                     >
@@ -159,10 +159,11 @@
                             android:layout_height="80dp"
                             android:layout_weight="1"/>
                         <ImageButton
+
                             android:layout_width="80dp"
                             android:layout_height="80dp"
-
-                            android:background="@drawable/btn_chat_rtc" />
+                            android:id="@+id/btn_chat_sign"
+                            android:background="@drawable/btn_chat_sign" />
                         <View
                             android:layout_width="0dp"
                             android:layout_height="80dp"
@@ -192,25 +193,29 @@
 
                             android:layout_width="80dp"
                             android:layout_height="80dp"
-                            android:id="@+id/btn_chat_sign"
-                            android:background="@drawable/btn_chat_sign" />
+                            android:id="@+id/btn_chat_accept"
+                            android:background="@drawable/btn_chat_accept" />
+
+
                         <View
                             android:layout_width="0dp"
                             android:layout_height="80dp"
                             android:layout_weight="1"/>
                         <ImageButton
-
                             android:layout_width="80dp"
                             android:layout_height="80dp"
-                            android:id="@+id/btn_chat_accept"
-                            android:background="@drawable/btn_chat_accept" />
+                            android:id="@+id/btn_chat_return"
+                            android:background="@drawable/btn_chat_return" />
+
                         <View
                             android:layout_width="0dp"
                             android:layout_height="80dp"
                             android:layout_weight="1"/>
-                        <View
+                        <ImageButton
                             android:layout_width="80dp"
-                            android:layout_height="80dp"/>
+                            android:layout_height="80dp"
+                            android:id="@+id/btn_chat_cancel"
+                            android:background="@drawable/btn_chat_cancel" />
                         <View
                             android:layout_width="0dp"
                             android:layout_height="80dp"

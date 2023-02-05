@@ -6,6 +6,9 @@
         <variable
             name="dialog"
             type="kr.co.vilez.ui.dialog.SignDialog" />
+        <variable
+            name="nick"
+            type="kr.co.vilez.ui.chat.NickData" />
     </data>
     <LinearLayout
         android:layout_width="match_parent"
@@ -49,7 +52,7 @@
                 <TextView
                     android:layout_width="95dp"
                     android:layout_height="wrap_content"
-                    android:text="여섯글자까지"
+                    android:text="@{nick.notShareUserNick}"
                     android:textStyle="bold"
                     android:textSize="16dp"
                     android:textAlignment="center"
@@ -76,7 +79,7 @@
                 <TextView
                     android:layout_width="95dp"
                     android:layout_height="wrap_content"
-                    android:text="여섯글자까지"
+                    android:text="@{nick.shareUserNick}"
                     android:textStyle="bold"
                     android:textSize="16dp"
                     android:textAlignment="center"
@@ -99,7 +102,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="여섯글자까지"
+                    android:text="@{nick.notShareUserNick}"
                     android:textColor="@color/bg_dark"/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -165,7 +168,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_report_no"
@@ -186,6 +190,14 @@
                 android:text="확정"
                 android:textSize="14sp"/>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_check_btn"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:text="확인"
+                android:textSize="14sp"/>
         </LinearLayout>
 
     </LinearLayout>

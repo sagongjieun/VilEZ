@@ -28,7 +28,7 @@
                     android:padding="10dp"
                     android:text="@{data.content}"
                     android:textColor="#000000"
-                    android:background="@drawable/ic_left_msg_test"
+                    android:background="@drawable/ic_msg_test"
                     android:textSize="15dp"/>
     </LinearLayout>
 </layout>

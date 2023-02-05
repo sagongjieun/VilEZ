@@ -6,6 +6,7 @@ data class ChatMsg(
     val fromUserId: Int,
     val content: String,
     val time: Long,
+    val system: Boolean
 ) {
 
 }
