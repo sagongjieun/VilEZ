@@ -109,7 +109,8 @@ const ProductChatting = () => {
   function onClickEndShare() {
     // 공유자가 반납 확인을 눌렀는지 확인
     getShareReturnState(roomId).then((res) => {
-      if (res) {
+      console.log("@@@@@@@@@@@", res);
+      if (res == "true") {
         postShareEnd(roomId).then((res) => {
           if (res) {
             // 모달로 공유가 끝났다는 것 알리기

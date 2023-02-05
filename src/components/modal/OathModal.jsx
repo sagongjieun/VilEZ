@@ -4,8 +4,8 @@ import { css } from "@emotion/react";
 import SignatureCanvas from "react-signature-canvas";
 import { postOath } from "../../api/oath";
 import MiddleWideButton from "../button/MiddleWideButton";
-import { useRecoilValue } from "recoil";
-import { shareDataState } from "../../recoil/atom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { shareDataState, checkAppointmentState } from "../../recoil/atom";
 import { getUserDetail } from "../../api/profile";
 import { postAppointment } from "../../api/chat";
 import { putUserPoint } from "../../api/profile";
@@ -14,6 +14,7 @@ import { putUserPoint } from "../../api/profile";
 function OathModal({ close, openLastConfirm, roomId, readOnly, oathSign }) {
   const canvasRef = useRef(null);
   const shareData = useRecoilValue(shareDataState);
+  const setCheckAppointment = useSetRecoilState(checkAppointmentState);
 
   const [giver, setGiver] = useState("");
   const [receiver, setReceiver] = useState("");
@@ -64,6 +65,7 @@ function OathModal({ close, openLastConfirm, roomId, readOnly, oathSign }) {
         if (res) {
           close(false);
           openLastConfirm(true);
+          setCheckAppointment(true);
 
           // 공유자의 포인트 추가, 피공유자의 포인트 차감
           putUserPoint({ userId: shareData.shareUserId, point: 30 }).then((res) => {
