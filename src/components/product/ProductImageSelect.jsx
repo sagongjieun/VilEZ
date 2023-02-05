@@ -5,11 +5,13 @@ import { AiOutlineClose } from "react-icons/ai";
 import MiddleWideButton from "../button/MiddleWideButton";
 import { useLocation, useParams } from "react-router-dom";
 import { getShareArticleByBoardId } from "../../api/share";
-
+import { getAskArticleDetailByBoardId } from "../../api/ask";
 const ProductImageSelect = ({ sendImageList }) => {
   const pathname = useLocation().pathname;
   const boardId = parseInt(useParams().boardId);
-  const type = pathname.includes("share") ? 2 : pathname.includes("regist") ? null : 1;
+  const type = pathname.includes("regist") ? 100 : pathname.includes("edit") ? 3 : 102;
+  const listType = pathname.includes("share") ? 2 : 1;
+  // console.log(type);
   // console.log(type);
   const [imageList, setImageList] = useState([]);
 
@@ -28,7 +30,6 @@ const ProductImageSelect = ({ sendImageList }) => {
       alert("사진은 최대 4개 등록 가능합니다.");
       return;
     }
-
     setImageList([...imageList, ...e.target.files]);
   }
 
@@ -40,15 +41,17 @@ const ProductImageSelect = ({ sendImageList }) => {
     sendImageList(imageList);
   }, [imageList]);
   useEffect(() => {
-    type === 2
+    listType === 2
       ? getShareArticleByBoardId(boardId).then((res) => {
           const data = res[0].list;
           // console.log("@@@@@@", data);
-          // const tempimage = data.map((d) => d);
-          // const filename = tempimage.map((obj) => obj.fileName);
           setImageList(data);
         })
-      : null;
+      : getAskArticleDetailByBoardId(boardId).then((res) => {
+          const data = res[0].list;
+          // console.log("@@@@@@", data);
+          setImageList(data);
+        });
   }, []);
 
   return (
@@ -60,7 +63,8 @@ const ProductImageSelect = ({ sendImageList }) => {
       <div>
         {imageList.map((image, index) => (
           <small key={index}>
-            {type ? image.fileName : image.name}
+            {/* 등록글 - name으로 // 수정글 - 이미 있는 리스트는 fileName 메서드 // 추후 코드리뷰 해야. */}
+            {type === 100 ? image.name : typeof image.fileName !== "undefined" ? image.fileName : image.name}
 
             <AiOutlineClose onClick={() => onClickDeleteImage(image)} />
           </small>
