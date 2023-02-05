@@ -12,31 +12,42 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
+import kr.co.vilez.data.dto.AskData
 import kr.co.vilez.databinding.FragmentCategorySearchBinding
 import kr.co.vilez.data.dto.ShareData
+import kr.co.vilez.ui.ask.AskListAdapter
 import kr.co.vilez.ui.share.ShareListAdapter
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
+import kr.co.vilez.util.Common.Companion.BOARD_TYPE_ASK
+import kr.co.vilez.util.Common.Companion.BOARD_TYPE_SHARE
 import retrofit2.awaitResponse
 
 private const val ARG_PARAM1 = "category"
+private const val ARG_TYPE = "type"
 
 private const val TAG = "빌리지_CategorySearchFragment"
 class CategorySearchFragment : Fragment() {
     private var category: String? = null
+    private var type:Int = 0
     private lateinit var binding: FragmentCategorySearchBinding
     private lateinit var activity: MenuCategoryActivity
 
     private lateinit var shareAdapter: ShareListAdapter
     private lateinit var shareDatas: ArrayList<ShareData>
+    private lateinit var askAdapter: AskListAdapter
+    private lateinit var askDatas: ArrayList<AskData>
+    
     private var index = 0
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             category = it.getString(ARG_PARAM1)
+            type = it.getInt(ARG_TYPE)
         }
         activity = context as MenuCategoryActivity
+
 
     }
 
@@ -51,23 +62,112 @@ class CategorySearchFragment : Fragment() {
         binding.userLocationValid = ApplicationClass.prefs.getLng() != "0.0" && ApplicationClass.prefs.getLat() != "0.0"
 
         initToolBar()
-        initFilterCheckBox()
-        initData() // default : 카테고리에 해당하는 게시글 모두 출력 (공유중 + 공유가능 모두)
+        if(type == BOARD_TYPE_SHARE) { 
+            initFilterCheckBox()
+            initShareData() // default : 카테고리에 해당하는 게시글 모두 출력 (공유중 + 공유가능 모두)
+        } else { // 요청글은 공유가능글만 보기 필터링 없음
+            binding.checkboxShare.visibility = View.GONE
+            initAskData()
+        }
 
         return binding.root
     }
     private fun initFilterCheckBox() {
+        binding.checkboxShare.visibility = View.VISIBLE
         binding.checkboxShare.isChecked = false // 디폴트 : 모두 보기
         binding.checkboxShare.setOnCheckedChangeListener { button, b ->
             if(b) { // 체크된 경우 => 공유가능만 보기
-                initData(true)
+                initShareData(true)
             } else { // 체크 해제된 경우 => 전체보기
-                initData()
+                initShareData()
             }
         }
     }
     
-    private fun initData(filtered:Boolean = false) {
+    private fun initAskData() {
+        // 데이터 가져오기
+        askDatas = arrayListOf()
+
+        askAdapter = AskListAdapter(askDatas)
+        askAdapter.setItemClickListener(object: AskListAdapter.OnItemClickListener{
+            override fun onClick(view: View, position: Int) {
+                Log.d(TAG, "onClick: ${askDatas[position]}클릭")
+            }
+
+        })
+        binding.rvShareSearch.apply {
+            adapter = askAdapter
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        }
+
+        var num = 0
+        var max = 10
+        CoroutineScope(Dispatchers.Main).launch {
+            val result = ApplicationClass.retrofitAskService.boardCategoryList(num++, 0, max, ApplicationClass.prefs.getId(), category!!).awaitResponse().body()
+            Log.d(TAG, "initData: result: $result")
+            if (result?.flag == "success") {
+                Log.d(TAG, "initList: result: $result")
+                if (result.data[0].isEmpty()) {
+                    Log.d(TAG, "onViewCreated: 데이터 0개")
+                    binding.tvWarnNoResult.visibility = View.VISIBLE
+                } else {
+                    binding.tvWarnNoResult.visibility = View.GONE
+                }
+                for (data in result.data[0]) {
+                    val askData = AskData(
+                        data.askDto.id,
+                        if (data.askDto.list.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.askDto.list[0].path,
+                        data.askDto.title,
+                        data.askDto.date,
+                        "", // 이거 안쓰기로함
+                        data.askDto.startDay+"~"+data.askDto.endDay,
+                        data.askDto.state,
+                        data.askDto.userId
+                    )
+                    Log.d(TAG, "추가?: $askData")
+                    askDatas.add(askData)
+                }
+            } else {
+                Log.d(TAG, "initData: 실패!!")
+            }
+            Log.d(TAG, "추가완료: askDatas: $askDatas")
+            askAdapter.notifyItemInserted(index - 1)
+        }
+
+        binding.rvShareSearch.setOnScrollChangeListener { v, _, _, _, _ ->
+            if (!v.canScrollVertically(1)) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    val result = ApplicationClass.retrofitAskService.boardCategoryList(num++, 0, max, ApplicationClass.prefs.getId(), category!!).awaitResponse().body()
+                    Log.d(TAG, "initData: result: $result")
+                    if (result?.flag == "success") {
+                        Log.d(TAG, "initList: result: $result")
+                        for (data in result.data[0]) {
+                            val askData = AskData(
+                                data.askDto.id,
+                                if (data.askDto.list.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.askDto.list[0].path,
+                                data.askDto.title,
+                                data.askDto.date,
+                                "", // 이거 안쓰기로함
+                                data.askDto.startDay+"~"+data.askDto.endDay,
+                                data.askDto.state,
+                                data.askDto.userId
+                            )
+                            Log.d(TAG, "추가?: $askData")
+                            askDatas.add(askData)
+                        }
+                    } else {
+                        Log.d(TAG, "initData: 실패!!")
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @param type : 글 종류 (SHARE, ASK)
+     * @param filtered : 공유 가능만 볼건지 (SHARE)만 해당
+     */
+    private fun initShareData(filtered:Boolean = false) {
         // 데이터 가져오기
         shareDatas = arrayListOf()
 
@@ -219,10 +319,11 @@ class CategorySearchFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(category: String) =
+        fun newInstance(type: Int, category: String) =
             CategorySearchFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, category)
+                    putInt(ARG_TYPE, type)
                 }
             }
     }

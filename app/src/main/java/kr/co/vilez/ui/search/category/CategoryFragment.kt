@@ -12,9 +12,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import kr.co.vilez.R
 import kr.co.vilez.databinding.FragmentCalendarBinding
 import kr.co.vilez.databinding.FragmentCategoryBinding
+import kr.co.vilez.util.Common.Companion.BOARD_TYPE_SHARE
 
+private const val ARG_TYPE = "type"
 
 class CategoryFragment : Fragment() {
+    private var type:Int ? = 0
+
     private lateinit var binding:FragmentCategoryBinding
     lateinit var gridAdapter: GridRecyclerViewAdapter
     private lateinit var mContext: Context
@@ -36,11 +40,22 @@ class CategoryFragment : Fragment() {
             Category("기타", R.drawable.ic_category_etc),
         )
 
+        @JvmStatic
+        fun newInstance(type: Int) =
+            CategoryFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(ARG_TYPE, type)
+                }
+            }
+
     }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments?.let {
+            type = it.getInt(ARG_TYPE)
+        }
         activity = context as MenuCategoryActivity
     }
 
@@ -59,7 +74,7 @@ class CategoryFragment : Fragment() {
         gridAdapter.onItemClickListener = object: GridRecyclerViewAdapter.OnItemClickListener {
             override fun onClick(view: View, position: Int) {
                 Toast.makeText(mContext, "클릭 ${categoryList[position].name}",Toast.LENGTH_SHORT).show()
-                activity.changeFragment(categoryList[position].name)
+                activity.changeFragment(type!!, categoryList[position].name)
             }
         }
         binding.gridRvCategory.apply {
@@ -74,11 +89,13 @@ class CategoryFragment : Fragment() {
     private fun initToolBar() {
         activity.setSupportActionBar(binding.toolbar)
         activity.supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
-        binding.title = "카테고리"
+        if(type == BOARD_TYPE_SHARE) binding.title = "공유 카테고리" else binding.title = "요청 카테고리"
     }
 
     fun onBackPressed(view: View) {
         activity.finish()
     }
+
+
 
 }
