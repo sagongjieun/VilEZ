@@ -7,10 +7,15 @@ import kr.co.vilez.appointment.model.vo.*;
 import kr.co.vilez.appointment.model.dto.AppointmentDto;
 import kr.co.vilez.appointment.model.vo.ChatVO;
 import kr.co.vilez.appointment.model.vo.MapVO;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
 public interface AppointmentService {
+    AppointmentDto getAppointmentDate(int boardId,
+                                      int shareUserId,
+                                      int notShareUserId,
+                                      int type) throws Exception;
     CancelAppointmentDto checkRequest(int roomId) throws Exception;
     void saveRequest(CancelAppointmentDto cancelAppointmentDto) throws Exception;
     void updatePeriod(SetPeriodDto setPeriodDto) throws Exception;
@@ -27,7 +32,7 @@ public interface AppointmentService {
     //////////////////////// 예약관련 ////////////////////////////////////////
     List<TotalListVO> getGiveList(int userId) throws Exception;
     List<AppointmentDto> getMyAppointmentCalendarList(int userId) throws Exception;
-    BoardStateVO getBoardState(int boardId) throws Exception;
+    BoardStateVO getBoardState(int boardId, int type) throws Exception;
     List<TotalListVO> getMyAppointmentList(int userId) throws Exception;
     List<AppointmentDto> getAppointmentList(int boardId) throws Exception;
     void create(AppointmentDto appointmentDto) throws Exception;
