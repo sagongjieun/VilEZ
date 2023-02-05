@@ -10,9 +10,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Document("sign")
 public class SignImg {
-    int boardId;
-    int shareUserId;
-    int notShareUserId;
-    String shareSign;
+    int roomId;
     String notShareSign;
 }
