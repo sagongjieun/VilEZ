@@ -11,7 +11,7 @@ import openOathButton from "../assets/images/openOathButton.png";
 import { getLatestMapLocation, getChatHistory } from "../api/chat";
 import CalendarModal from "./modal/CalendarModal";
 import { getOath } from "../api/oath";
-import OathGetModal from "./modal/OathGetModal";
+import OathModal from "./modal/OathModal";
 
 let client;
 
@@ -22,7 +22,7 @@ const StompRealTime = ({
   otherUserId,
   otherUserNickname,
   shareUserId,
-  notShareUserId,
+  // notShareUserId,
   shareState,
 }) => {
   const scrollRef = useRef();
@@ -37,7 +37,8 @@ const StompRealTime = ({
   const [movedZoomLevel, setMovedZoomLevel] = useState(0);
   const [movedMarker, setMovedMarker] = useState(false);
   const [calendarModalOpen, setCalendarModalOpen] = useState(false);
-  const [isOathGetModalOpen, setIsOathGetModalOpen] = useState(false);
+  const [isOathModalOpen, setIsOathModalOpen] = useState(false);
+  const [oathSign, setOathSign] = useState("");
 
   function onKeyDownSendMessage(e) {
     if (e.keyCode === 13) {
@@ -104,10 +105,11 @@ const StompRealTime = ({
   }
 
   function onClickOpenOath() {
-    getOath(boardId, notShareUserId, shareUserId).then((res) => {
+    getOath(roomId).then((res) => {
       if (res) {
         // 모달로 oath 열어서 보여주기
-        setIsOathGetModalOpen(!isOathGetModalOpen);
+        setOathSign(res.sign);
+        setIsOathModalOpen(!isOathModalOpen);
       } else {
         alert("작성된 서약서가 없습니다.");
       }
@@ -253,7 +255,9 @@ const StompRealTime = ({
           </div>
         </div>
       </div>
-      {isOathGetModalOpen ? <OathGetModal close={setIsOathGetModalOpen} /> : null}
+      {isOathModalOpen ? (
+        <OathModal close={setIsOathModalOpen} roomId={roomId} readOnly={true} oathSign={oathSign} />
+      ) : null}
     </>
   );
 };
