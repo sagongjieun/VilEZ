@@ -20,10 +20,15 @@ import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.dto.WriteBoard
 import kr.co.vilez.databinding.ActivityShareWriteBinding
+import kr.co.vilez.service.RESTShareBoardDetail
+import kr.co.vilez.ui.ask.AskDetailActivity
 import kr.co.vilez.ui.share.ShareDetailActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.ChangeMultipartUtil
+import kr.co.vilez.util.Common.Companion.BOARD_TYPE_ASK
+import kr.co.vilez.util.Common.Companion.BOARD_TYPE_SHARE
 import kr.co.vilez.util.PermissionUtil
+import kr.co.vilez.util.setOnSingleClickListener
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -36,7 +41,7 @@ private const val TAG = "빌리지_ShareWriteActivity"
 class ShareWriteActivity : AppCompatActivity() {
     private lateinit var binding:ActivityShareWriteBinding
     
-    private var boardType:Int = 0 // 1이면 공유글, 2면 요청글
+    private var boardType:Int = 0 // BOARD_TYPE_SHARE 이면 공유글, BOARD_TYPE_ASK 면 요청글
 
     private var imgMultiPart = mutableListOf<MultipartBody.Part>()
     private var sDay:String?= null
@@ -49,20 +54,41 @@ class ShareWriteActivity : AppCompatActivity() {
     private var editBoardId = 0
 
     val imgList = mutableListOf<Uri>()
+
     lateinit var imageAdapter: BoardWriteImageAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
          binding = DataBindingUtil.setContentView(this, R.layout.activity_share_write)
         binding.activity = this
 
-        binding.title = intent.getStringExtra("title") // toolbar title
-        if(binding.title=="공유 글쓰기") boardType = 1 else boardType = 2
-
-        editBoardId = intent.getIntExtra("boardId", 0)
+        initBoardType()
         initToolBar()
         initView()
-        if(editBoardId != 0) { // 게시글 수정인 경우 : 기존에 입력된 내용 가져오기
-            initEditView()
+    }
+
+    // 게시글 작성인지, 요청글 작성인지, 게시글 수정인지, 요청글 수정인지 구분
+    private fun initBoardType() {
+        binding.title = intent.getStringExtra("title") // toolbar title
+        editBoardId = intent.getIntExtra("boardId", 0)
+        boardType = intent.getIntExtra("type", 0)
+        when(boardType) {
+            0 -> {
+                Toast.makeText(this@ShareWriteActivity, "불러올 수 없습니다.", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            BOARD_TYPE_SHARE -> {
+                if(editBoardId != 0) {
+                    binding.title = "공유글 수정하기"
+                    initEditView(BOARD_TYPE_SHARE) // 게시글 수정인 경우 : 기존에 입력된 내용 가져오기
+                } else binding.title = "공유글 작성하기"
+            }
+            BOARD_TYPE_ASK -> {
+                if(editBoardId != 0) {
+                    binding.title = "요청글 수정하기"
+                    initEditView(BOARD_TYPE_ASK) // 게시글 수정인 경우 : 기존에 입력된 내용 가져오기
+                } else binding.title = "요청글 작성하기"
+            }
         }
     }
 
@@ -71,31 +97,62 @@ class ShareWriteActivity : AppCompatActivity() {
         this.supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
     }
 
-    fun initEditView() {
+    private fun initEditView(type: Int) {
         Log.d(TAG, "initEditView: 수정하기!!!!")
-        CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.retrofitShareService.getBoardDetail(editBoardId).awaitResponse().body()
-            if(result?.flag == "success") { // 기존 데이터 불러오기 성공
-                val detail = result.data[0]
-                Log.d(TAG, "initEditView: 기존 데이터 불러오기 성공 : result: $detail")
-                sDay = detail.startDay
-                eDay = detail.endDay
-                category = detail.category
-                lat = detail.hopeAreaLat
-                lng = detail.hopeAreaLng
-                place = detail.address
 
-                binding.etTitle.setText(detail.title)
-                binding.etContent.setText(detail.content)
-                binding.tvCategory.text = detail.category
-                binding.tvAddr.text = detail.address
-                binding.tvDate.text = "$sDay ~ $eDay"
+        when(type) {
+            BOARD_TYPE_SHARE -> {
+                CoroutineScope(Dispatchers.Main).launch {
+                    val result = ApplicationClass.retrofitShareService.getBoardDetail(editBoardId).awaitResponse().body()
+                    if(result?.flag == "success") { // 기존 데이터 불러오기 성공
+                        val detail = result.data[0]
+                        Log.d(TAG, "initEditView: 기존 데이터 불러오기 성공 : result: $detail")
+                        sDay = detail.startDay
+                        eDay = detail.endDay
+                        category = detail.category
+                        lat = detail.hopeAreaLat
+                        lng = detail.hopeAreaLng
+                        place = detail.address
 
-            } else {
-                Toast.makeText(this@ShareWriteActivity, "불러올 수 없는 게시글입니다.", Toast.LENGTH_SHORT).show()
-                finish()
+                        binding.etTitle.setText(detail.title)
+                        binding.etContent.setText(detail.content)
+                        binding.tvCategory.text = detail.category
+                        binding.tvAddr.text = detail.address
+                        binding.tvDate.text = "$sDay ~ $eDay"
+
+                    } else {
+                        Toast.makeText(this@ShareWriteActivity, "불러올 수 없는 게시글입니다.", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                }
+            }
+            BOARD_TYPE_ASK -> {
+                CoroutineScope(Dispatchers.Main).launch {
+                    val result = ApplicationClass.retrofitAskService.getBoardDetail(editBoardId).awaitResponse().body()
+                    if(result?.flag == "success") { // 기존 데이터 불러오기 성공
+                        val detail = result.data[0]
+                        Log.d(TAG, "initEditView: 기존 데이터 불러오기 성공 : result: $detail")
+                        sDay = detail.startDay
+                        eDay = detail.endDay
+                        category = detail.category
+                        lat = detail.hopeAreaLat
+                        lng = detail.hopeAreaLng
+                        place = detail.address
+
+                        binding.etTitle.setText(detail.title)
+                        binding.etContent.setText(detail.content)
+                        binding.tvCategory.text = detail.category
+                        binding.tvAddr.text = detail.address
+                        binding.tvDate.text = "$sDay ~ $eDay"
+                    } else {
+                        Toast.makeText(this@ShareWriteActivity, "불러올 수 없는 게시글입니다.", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                }
             }
         }
+
+
     }
 
 
@@ -110,6 +167,10 @@ class ShareWriteActivity : AppCompatActivity() {
         binding.horRecyclerViewImg.apply {
             adapter = imageAdapter
             layoutManager = LinearLayoutManager(this@ShareWriteActivity, LinearLayoutManager.HORIZONTAL, false)
+        }
+
+        binding.btnFinish.setOnSingleClickListener { // 3초 이내 재클릭 불가
+            savePost(it)
         }
     }
 
@@ -159,7 +220,6 @@ class ShareWriteActivity : AppCompatActivity() {
     fun onBackPressed(view: View) {
         finish()
     }
-
 
     fun onCategoryClick(view: View) {
         val categoryPicker = androidx.appcompat.app.AlertDialog.Builder(this)
@@ -238,7 +298,6 @@ class ShareWriteActivity : AppCompatActivity() {
     }
 
     fun savePost(view: View) {
-        // 여러번 클릭 못하게 하기
         view.isClickable = false
         view.isEnabled = false
         if (binding.etTitle.text.toString().isEmpty()) {
@@ -259,66 +318,90 @@ class ShareWriteActivity : AppCompatActivity() {
             // 이미지 리스트 multipart list에 넣기
             makeMultiPartList()
 
+            Log.d(TAG, "savePost: startDay : $sDay , endDay: $eDay")
+
             val writeBoard = WriteBoard(category= category!!, startDay = sDay!!, endDay = eDay!!,
                 hopeAreaLat = lat!!, hopeAreaLng = lng!!, title = binding.etTitle.text.toString(),
                 content = binding.etContent.text.toString(), userId = ApplicationClass.prefs.getId(),
                 address = place!!)
 
-            CoroutineScope(Dispatchers.Main).launch {
-                if(editBoardId != 0) {
-                    Log.d(TAG, "savePost: 수정 시작합니닷 editBoardId: $editBoardId , 수정한 보드 정보 : $writeBoard")
-                    val result = ApplicationClass.retrofitShareService.putShareBoard(writeBoard, imgMultiPart).awaitResponse().body()
+            when(boardType) { // 공유 글쓰기, 요청 글쓰기 구분
+                BOARD_TYPE_SHARE -> { // 공유 글쓰기인 경우
+                    CoroutineScope(Dispatchers.Main).launch {
+                        val result = if(editBoardId != 0) {
+                            Log.d(TAG, "savePost: 수정 시작합니닷 editBoardId: $editBoardId , 수정한 보드 정보 : $writeBoard")
+                            ApplicationClass.retrofitShareService.putShareBoard(writeBoard, imgMultiPart).awaitResponse().body()
+                        } else {
+                            ApplicationClass.retrofitShareService.postShareBoard(writeBoard, imgMultiPart).awaitResponse().body()
+                        }
+                        Log.d(TAG, "savePost: 게시글 작성/수정 결과 : $result")
 
-                    Log.d(TAG, "savePost: 게시글 수정 결과 : $result")
-                    if(result?.flag == "success") {
-                        Log.d(TAG, "savePost: 게시글 수정 성공!")
-                        Toast.makeText(this@ShareWriteActivity, "게시글 수정을 완료했습니다.", Toast.LENGTH_SHORT).show()
-                        val boardId = result.data[0].id
-                        Log.d(TAG, "savePost: 새로 작성된 게시글 id: $boardId")
-
-                        // 게시글 상세보기로 이동
-                        val intent = Intent(this@ShareWriteActivity, ShareDetailActivity::class.java)
-                        intent.putExtra("boardId", boardId)
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        Toast.makeText(this@ShareWriteActivity, "게시글 수정을 실패했습니다", Toast.LENGTH_SHORT).show()
+                        if(result?.flag == "success") {
+                            Toast.makeText(this@ShareWriteActivity, if(editBoardId!=0) "게시글 수정을 완료했습니다." else "게시글 작성을 완료했습니다.", Toast.LENGTH_SHORT).show()
+                            val boardId = if(editBoardId != 0) editBoardId else result.data[0].id
+                            Log.d(TAG, "savePost: 작성/수정 성공!!!! 새로 작성/수정된 게시글 id: ${boardId}")
+                            moveToDetailActivity(BOARD_TYPE_SHARE, boardId) // 게시글 상세보기로 이동
+                        } else {
+                            Toast.makeText(this@ShareWriteActivity, if(editBoardId!=0) "게시글 수정을 실패했습니다." else "게시글 작성을을 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                } else {
-                    val result = ApplicationClass.retrofitShareService.postShareBoard(writeBoard, imgMultiPart).awaitResponse().body()!!
-
-                    Log.d(TAG, "savePost: 게시글 추가 결과 : $result")
-                    if(result?.flag == "success") {
-                        Log.d(TAG, "savePost: 게시글 추가 성공!")
-                        Toast.makeText(this@ShareWriteActivity, "게시글 작성을 완료했습니다.", Toast.LENGTH_SHORT).show()
-                        val boardId = result.data[0].id
-                        Log.d(TAG, "savePost: 새로 작성된 게시글 id: $boardId")
-
-                        // 게시글 상세보기로 이동
-                        val intent = Intent(this@ShareWriteActivity, ShareDetailActivity::class.java)
-                        intent.putExtra("boardId", boardId)
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        Toast.makeText(this@ShareWriteActivity, "게시글 작성을 실패했습니다", Toast.LENGTH_SHORT).show()
-                    }
-
                 }
+                BOARD_TYPE_ASK -> { // 요청 글쓰기인 경우
+                    CoroutineScope(Dispatchers.Main).launch {
+                        val result = if(editBoardId != 0) {
+                            Log.d(TAG, "savePost: 수정 시작합니닷 editBoardId: $editBoardId , 수정한 보드 정보 : $writeBoard")
+                            ApplicationClass.retrofitAskService.putBoard(writeBoard, imgMultiPart).awaitResponse().body()
+                        } else {
+                            Log.d(TAG, "savePost: 게시글 작성 시작한닷")
+                            ApplicationClass.retrofitAskService.postBoard(writeBoard, imgMultiPart).awaitResponse().body()
+                        }
+                        Log.d(TAG, "savePost: 게시글 작성/수정 결과 : $result")
+                        Log.d(TAG, "@@@@savePost: 게시글 작성/수정 결과 header : ${ApplicationClass.retrofitAskService.putBoard(writeBoard, imgMultiPart).awaitResponse().headers()}")
+                        Log.d(TAG, "@@@@savePost: 게시글 작성/수정 결과 raw : ${ApplicationClass.retrofitAskService.putBoard(writeBoard, imgMultiPart).awaitResponse().raw()}")
 
+                        if(result?.flag == "success") {
+                            Toast.makeText(this@ShareWriteActivity, if(editBoardId!=0) "게시글 수정을 완료했습니다." else "게시글 작성을 완료했습니다.", Toast.LENGTH_SHORT).show()
+                            val boardId = if(editBoardId != 0) editBoardId else result.data[0].id
+                            Log.d(TAG, "savePost: 작성/수정 성공!!!! 새로 작성/수정된 게시글 id: ${boardId}")
+                            moveToDetailActivity(BOARD_TYPE_ASK, boardId) // 게시글 상세보기로 이동
+                        } else {
+                            Toast.makeText(this@ShareWriteActivity, if(editBoardId!=0) "게시글 수정을 실패했습니다." else "게시글 작성을을 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
             }
-
         }
         view.isClickable = true
         view.isEnabled = true
     }
 
+    /**
+     * @param type : 공유게시글(BOARD_TYPE_SHARE), 요청게시글(BOARD_TYPE_ASK)
+     * @param boardId : 작성한 게시글 id
+     */
+    fun moveToDetailActivity(type:Int, boardId: Int) {
+        // 게시글 상세보기로 이동
+        var intent: Intent? = null
+        when(type) {
+            BOARD_TYPE_SHARE -> {
+                intent = Intent(this@ShareWriteActivity, ShareDetailActivity::class.java)
+            }
+            BOARD_TYPE_ASK -> {
+                intent = Intent(this@ShareWriteActivity, AskDetailActivity::class.java)
+            }
+        }
+        intent?.putExtra("userId", ApplicationClass.prefs.getId())
+        intent?.putExtra("boardId", boardId)
+        startActivity(intent)
+        finish()
+    }
 
-    fun makeMultiPartList() {
+
+    private fun makeMultiPartList() {
         for (img in imgList) {
             val file = File(ChangeMultipartUtil().changeAbsolutelyPath(img, this@ShareWriteActivity))
             val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), file)
             val body = MultipartBody.Part.createFormData("image", file.name, requestFile)
-
             imgMultiPart.add(body)
         }
 
