@@ -43,7 +43,7 @@ const ProductDetail = () => {
   const [state, setState] = useState(0); // 0 : 일반, 1 : 공유중
   const [writerProfile, setWriterProfile] = useState("");
   const [writerNickname, setWriterNickname] = useState("");
-  const [writerArea, setWriterArea] = useState("");
+  // const [writerArea, setWriterArea] = useState("");
   const [writerManner, setWriterManner] = useState("");
   const [isBookmarked, setIsBookmarked] = useState(false);
 
@@ -144,7 +144,7 @@ const ProductDetail = () => {
 
           setWriterProfile(data.profile_img);
           setWriterNickname(data.nickName);
-          setWriterArea(data.area);
+          // setWriterArea(data.area);
           setWriterManner(MannerPoint(data.manner));
         })
         .catch((error) => console.log(error));
@@ -196,7 +196,7 @@ const ProductDetail = () => {
             <img src={writerProfile} alt="writerProfileImage" />
             <div>
               <span>{writerNickname}</span>
-              {writerArea ? <span>{writerArea}</span> : <span>동네 미인증</span>}
+              {/* {writerArea ? <span>{writerArea}</span> : <span>동네 미인증</span>} */}
             </div>
             <span>{writerManner}</span>
           </div>

@@ -29,6 +29,7 @@ const ProductList = () => {
   const [cnt, setCnt] = useState(0);
 
   const pathname = useLocation().pathname;
+
   const navigate = useNavigate();
   const urlId = pathname.includes("share") ? 2 : 1;
   const [list, setList] = useState("");
@@ -56,13 +57,12 @@ const ProductList = () => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [cnt, getArticle]);
+  }, [cnt, getArticle, search, pathname]);
 
   // 카테고리 변경 후 스크롤을 내렸다가 ,다른 카테고리를 선택했을 때 이전 카테고리 데이터가 쌓여 나옴
 
   useEffect(() => {
     // Check if the component is still mounted before making the API call
-
     urlId === 1
       ? // 요청
         getAskArticleList("", "", categoryToUse, cnt, 15, 0, 1, search).then((res) => {
@@ -161,7 +161,6 @@ const ProductList = () => {
                 placeholder="필요한 물품을 검색해보세요."
               />
               <img src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
-              <button type="submit">검색</button>
             </form>
 
             <div onClick={onClickSeePossible} css={isAll ? unPossibleWrap : possibleWrap}>
