@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import kr.co.vilez.data.dto.ShareData
 import kr.co.vilez.databinding.HomeBoardListItemBinding
 
-class ShareListAdapter(val list:MutableList<ShareData>):
+class ShareListAdapter(val list: MutableList<ShareData>):
 RecyclerView.Adapter<ShareListAdapter.ShareHolder>(){
 
     var pos = -1
@@ -28,7 +29,7 @@ RecyclerView.Adapter<ShareListAdapter.ShareHolder>(){
             binding.root.setOnClickListener {
                 //itemClickListener.onClick(it, layoutPosition)
                 val intent = Intent(binding.root.context, ShareDetailActivity::class.java)
-                intent.putExtra("boardId", item.board_id)
+                intent.putExtra("boardId", item.boardId)
                 intent.putExtra("userId", item.userId)
 
                 binding.root.context.startActivity(intent)

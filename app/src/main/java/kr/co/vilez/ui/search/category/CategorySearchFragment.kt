@@ -13,8 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.databinding.FragmentCategorySearchBinding
-import kr.co.vilez.ui.dialog.AlertDialog
-import kr.co.vilez.ui.share.ShareData
+import kr.co.vilez.data.dto.ShareData
 import kr.co.vilez.ui.share.ShareListAdapter
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
@@ -77,7 +76,7 @@ class CategorySearchFragment : Fragment() {
         shareAdapter.setItemClickListener(object : ShareListAdapter.OnItemClickListener {
             // listview item 클릭시 실행할 메소드
             override fun onClick(view: View, position: Int) {
-                Log.d(TAG, "onClick: ${shareDatas[position].tv_name} clicked!")
+                Log.d(TAG, "onClick: ${shareDatas[position].title} clicked!")
             }
         })
 

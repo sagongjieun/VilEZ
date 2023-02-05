@@ -1,5 +1,6 @@
-package kr.co.vilez.ui.share
+package kr.co.vilez.ui.board
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import kr.co.vilez.R
 import kr.co.vilez.databinding.FragmentBoardMapBinding
+import kr.co.vilez.ui.share.ShareDetailActivity
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapReverseGeoCoder
@@ -30,7 +32,7 @@ class BoardMapFragment : Fragment(), MapView.MapViewEventListener, ReverseGeoCod
     private var param2: Double? = null
 
     private lateinit var binding:FragmentBoardMapBinding
-    private lateinit var activity: ShareDetailActivity
+    private lateinit var mContext: Context
 
     private lateinit var mapView:MapView
     private var zoom: Boolean? = false
@@ -40,6 +42,11 @@ class BoardMapFragment : Fragment(), MapView.MapViewEventListener, ReverseGeoCod
     private lateinit var pos:MapPoint
     private lateinit var addr:String
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mContext = context
+    }
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -47,7 +54,6 @@ class BoardMapFragment : Fragment(), MapView.MapViewEventListener, ReverseGeoCod
                 it.getDouble(MAP_LAT)
             param2 = it.getDouble(MAP_LNG)
         }
-        activity = context as ShareDetailActivity
     }
 
     override fun onCreateView(
@@ -87,7 +93,7 @@ class BoardMapFragment : Fragment(), MapView.MapViewEventListener, ReverseGeoCod
     }
 
     private fun initMap() {
-        mapView = MapView(activity)
+        mapView = MapView(mContext)
         binding.flMap.addView(mapView)
         mapView.setMapViewEventListener(this)
         mapView.setShowCurrentLocationMarker(false)
@@ -99,7 +105,7 @@ class BoardMapFragment : Fragment(), MapView.MapViewEventListener, ReverseGeoCod
             getString(R.string.kakao_app_key),
             pos,
             this,
-            activity
+            requireActivity()
         )
         reverseGeoCoder.startFindingAddress()
 

@@ -44,6 +44,7 @@ class ApplicationClass: Application(), LifecycleObserver {
         lateinit var retrofitEmailService: RetrofitEmailService
         lateinit var retrofitChatService: RetrofitChatService
         lateinit var retrofitShareService: RetrofitShareService
+        lateinit var retrofitAskService: RetrofitAskService
 
         lateinit var retrofitFCMService: RetrofitFCMService
 
@@ -54,6 +55,7 @@ class ApplicationClass: Application(), LifecycleObserver {
         lateinit var hRetrofitEmailService: RetrofitEmailService
         lateinit var hRetrofitChatService: RetrofitChatService
         lateinit var hRetrofitShareService: RetrofitShareService
+        lateinit var hRetrofitAskService: RetrofitAskService
         private lateinit var interceptor: Interceptor
 
         // 정보를 담기 위한 sharedPreference
@@ -103,6 +105,7 @@ class ApplicationClass: Application(), LifecycleObserver {
         retrofitChatService = wRetrofit.create(RetrofitChatService::class.java)
         retrofitShareService = wRetrofit.create(RetrofitShareService::class.java)
         retrofitFCMService = wRetrofit.create(RetrofitFCMService::class.java)
+        retrofitAskService = wRetrofit.create(RetrofitAskService::class.java)
 
         // 네트워크에 연결되어있는지 확인 후 없으면 앱 종료 시키기위해 네트워크 연결상태 감지 콜백 생성시켜두기
 //        val network: CheckNetwork = CheckNetwork(applicationContext)
@@ -133,6 +136,7 @@ class ApplicationClass: Application(), LifecycleObserver {
         hRetrofitEmailService = hRetrofit.create(RetrofitEmailService::class.java)
         hRetrofitChatService = hRetrofit.create(RetrofitChatService::class.java)
         hRetrofitShareService = hRetrofit.create(RetrofitShareService::class.java)
+        hRetrofitAskService = hRetrofit.create(RetrofitAskService::class.java)
     }
 
     inner class AppInterceptor : Interceptor { // End of AppInterceptor inner class

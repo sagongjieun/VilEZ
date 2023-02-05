@@ -9,7 +9,7 @@
 
         <variable
             name="activity"
-            type="kr.co.vilez.ui.share.ShareDetailActivity" />
+            type="kr.co.vilez.ui.ask.AskDetailActivity" />
 
         <variable
             name="path"
@@ -17,7 +17,7 @@
 
         <variable
             name="article"
-            type="kr.co.vilez.data.model.ShareBoardDetail" />
+            type="kr.co.vilez.data.model.AskBoardDetail" />
 
         <variable
             name="writer"
@@ -73,7 +73,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="@{title}"
+                        android:text="요청 게시글 상세보기"
                         android:textSize="20sp" />
 
                 </com.google.android.material.appbar.MaterialToolbar>
@@ -217,18 +217,6 @@
                                     android:layout_height="0dp"
                                     android:layout_weight="1" />
 
-                                <ImageView
-                                    android:layout_width="15dp"
-                                    android:layout_height="12dp"
-                                    android:background="@drawable/icon_empty_heart" />
-
-                                <TextView
-                                    android:id="@+id/tv_bookmark"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="4dp"
-                                    android:text="@{Integer.toString(article.bookmarkCnt)}" />
-
                             </LinearLayout>
 
                             <TextView
@@ -302,6 +290,7 @@
                                 android:layout_height="0dp"
                                 android:layout_weight="1" />
                         </LinearLayout>
+
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="56dp"/>
@@ -316,14 +305,13 @@
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_gravity="start"
             app:itemIconTint="@navigation/bottom_nav_color"
             app:itemTextColor="@color/bg_dark"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -353,25 +341,19 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <ImageButton
-                            android:id="@+id/btn_interest"
-                            android:layout_width="65dp"
-                            android:layout_height="56dp"
-                            android:background="@{bookmark == true ? @drawable/ic_nav_fav_y : @drawable/ic_nav_fav_n}"
-                            android:onClick="@{activity.clickBookmark}" />
-
                         <View
                             android:layout_width="0dp"
                             android:layout_height="0dp"
-                            android:layout_weight="1" />
+                            android:layout_weight="1"/>
 
                         <Button
                             android:id="@+id/btn_chat"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+                            android:layout_gravity="end"
                             android:onClick="@{activity.onChatBtnClick}"
-                            android:text="@{article.state == 1 ? `예약하기` : `채팅하기`}" />
+                            android:text="채팅하기" />
                     </LinearLayout>
                 </LinearLayout>
 

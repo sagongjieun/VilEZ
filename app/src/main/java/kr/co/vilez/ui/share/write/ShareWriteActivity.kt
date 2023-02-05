@@ -35,6 +35,8 @@ import java.util.*
 private const val TAG = "빌리지_ShareWriteActivity"
 class ShareWriteActivity : AppCompatActivity() {
     private lateinit var binding:ActivityShareWriteBinding
+    
+    private var boardType:Int = 0 // 1이면 공유글, 2면 요청글
 
     private var imgMultiPart = mutableListOf<MultipartBody.Part>()
     private var sDay:String?= null
@@ -53,6 +55,9 @@ class ShareWriteActivity : AppCompatActivity() {
          binding = DataBindingUtil.setContentView(this, R.layout.activity_share_write)
         binding.activity = this
 
+        binding.title = intent.getStringExtra("title") // toolbar title
+        if(binding.title=="공유 글쓰기") boardType = 1 else boardType = 2
+
         editBoardId = intent.getIntExtra("boardId", 0)
         initToolBar()
         initView()
@@ -64,7 +69,6 @@ class ShareWriteActivity : AppCompatActivity() {
     private fun initToolBar() {
         this.setSupportActionBar(binding.toolbar)
         this.supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
-        binding.title = "공유 글쓰기"
     }
 
     fun initEditView() {
