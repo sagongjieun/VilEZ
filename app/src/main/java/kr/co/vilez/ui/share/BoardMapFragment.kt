@@ -83,7 +83,7 @@ class BoardMapFragment : Fragment(), MapView.MapViewEventListener, ReverseGeoCod
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initMap()
+//        initMap()
     }
 
     private fun initMap() {
@@ -129,8 +129,8 @@ class BoardMapFragment : Fragment(), MapView.MapViewEventListener, ReverseGeoCod
     override fun onDetach() {
         Log.d(TAG, "onDetach: 맵 종료")
         super.onDetach()
-        if(binding.flMap.contains(mapView))
-            binding.flMap.removeView(mapView)
+//        if(binding.flMap.contains(mapView))
+//            binding.flMap.removeView(mapView)
     }
 
 

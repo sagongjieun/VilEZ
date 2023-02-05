@@ -17,6 +17,9 @@ class ChatAdapter(val itemList: ArrayList<ChatlistData>) : RecyclerView.Adapter<
 
         if(viewType == 1){
             return LeftViewHolder(view);
+        } else if(viewType == 0) {
+            view = LayoutInflater.from(parent.context).inflate(R.layout.chat_center_item, parent, false)
+            return CenterViewHolder(view);
         }
         view = LayoutInflater.from(parent.context).inflate(R.layout.chat_right_item, parent, false)
 
@@ -35,6 +38,8 @@ class ChatAdapter(val itemList: ArrayList<ChatlistData>) : RecyclerView.Adapter<
             }
             holder.content.text = itemList[position].content
         } else if(holder is RightViewHolder){
+            holder.content.text = itemList[position].content
+        } else if(holder is CenterViewHolder){
             holder.content.text = itemList[position].content
         }
     }
@@ -58,4 +63,8 @@ class ChatAdapter(val itemList: ArrayList<ChatlistData>) : RecyclerView.Adapter<
 
     }
 
+    inner class CenterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val content = itemView.findViewById<TextView>(R.id.textv_msg)
+
+    }
 }
