@@ -10,11 +10,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Document("point")
 public class PointVO {
-    int shareUserId;
-    int notShareUserId;
     int boardId;
-    String title;
-    String date;
+    int userId;
     int type;
-    boolean isIncrease;
+    int point;
+    String date;
 }

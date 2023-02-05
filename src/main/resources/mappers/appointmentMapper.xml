@@ -34,17 +34,17 @@
         <result column="share_user_id" property="shareUserId"/>
         <result column="not_share_user_id" property="notShareUserId"/>
     </resultMap>
-
-    <update id="increasePoint" parameterType="kr.co.vilez.appointment.model.vo.PointVO" >
-        update user
-        set point = point + 10
-        where id = #{shareUserId};
+    <update id="cancelAppointment" parameterType="appointmentDto">
+        update appointment
+        set state = -2
+        where board_id = #{boardId} and share_user_id = #{shareUserId}
+          and not_share_user_id = #{notShareUserId} and state >= 0 and type = #{type};
     </update>
 
-    <update id="decreasePoint" parameterType="kr.co.vilez.appointment.model.vo.PointVO" >
+    <update id="changePoint" parameterType="kr.co.vilez.appointment.model.vo.PointVO" >
         update user
-        set point = point - 10
-        where id = #{notShareUserId};
+        set point = point + #{point}
+        where id = #{userId};
     </update>
 
     <select id="getMyAppointmentCalendarListShare" parameterType="int" resultMap="appointment">
