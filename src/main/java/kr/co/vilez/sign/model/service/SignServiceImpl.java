@@ -19,13 +19,13 @@ public class SignServiceImpl implements SignService {
     String bucketName = "vilez";
 
     @Override
-    public void deleteContract(SignImg signImg) throws Exception {
-        signDao.delete(signImg);
+    public void deleteContract(int roomId) throws Exception {
+        signDao.delete(roomId);
     }
 
     @Override
-    public SignImg getContract(SignImg signImg) throws Exception {
-        return signDao.loadContract(signImg);
+    public SignImg getContract(int roomId) throws Exception {
+        return signDao.loadContract(roomId);
     }
 
     @Override

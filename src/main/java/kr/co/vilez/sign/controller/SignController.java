@@ -18,17 +18,15 @@ public class SignController {
     final SignService signService;
 
     @ApiOperation(value = "서명에 대한 이미지 정보 API를 제공한다.",
-            notes = "피공유자 notShareUserId, 공유자 ShareUserId, 게시글 정보 boardId 정보를 주면" +
+            notes = "roomId를 주면" +
                     "\n\t 해당하는 정보를 제공해준다.")
-    @GetMapping
-    public ResponseEntity<?> getContract(SignImg signImg){
-        System.out.println("signImg = " + signImg);
-        
+    @GetMapping("/{roomId}")
+    public ResponseEntity<?> getContract(@PathVariable int roomId){
         HttpVO httpVO = new HttpVO();
         ArrayList<SignImg> data = new ArrayList<>();
 
         try{
-            data.add(signService.getContract(signImg));
+            data.add(signService.getContract(roomId));
             httpVO.setData(data);
             httpVO.setFlag("success");
         } catch (Exception e){
@@ -39,9 +37,8 @@ public class SignController {
     }
 
     @ApiOperation(value = "서명에 대한 이미지 저장 API를 제공한다.",
-            notes = "피공유자 notShareUserId, 공유자 ShareUserId, 게시글 정보 boardId 정보와" +
-                    "\n\t shareSign에는 공유자 이미지 인코딩 정보를 넣어준다" +
-                    "\n\t notShareSign에는 피공유자 이미지 인코딩 정보를 넣어준다.")
+            notes = "roomId 정보와" +
+                    "\n\t sign에는 피공유자 이미지 인코딩 정보를 넣어준다.")
     @PostMapping
     public ResponseEntity<?> signUpload(@RequestBody SignImg signImg){
         HttpVO httpVO = new HttpVO();
@@ -59,15 +56,15 @@ public class SignController {
     }
 
     @ApiOperation(value = "서명에 대한 이미지 삭제 API를 제공한다.",
-            notes = "피공유자 notShareUserId, 공유자 ShareUserId, 게시글 정보 boardId 정보를 주면" +
+            notes = "roomId 정보를 주면" +
                     "\n\t 해당하는 정보를 삭제해준다.")
-    @DeleteMapping
-    public ResponseEntity<?> deleteContract(SignImg signImg){
+    @DeleteMapping("/{roomId}")
+    public ResponseEntity<?> deleteContract(@PathVariable int roomId){
         HttpVO httpVO = new HttpVO();
         ArrayList<SignImg> data = new ArrayList<>();
 
         try{
-            signService.deleteContract(signImg);
+            signService.deleteContract(roomId);
             httpVO.setData(data);
             httpVO.setFlag("success");
         } catch (Exception e){
