@@ -1,4 +1,4 @@
-package kr.co.vilez.ui.share
+package kr.co.vilez.ui.ask
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

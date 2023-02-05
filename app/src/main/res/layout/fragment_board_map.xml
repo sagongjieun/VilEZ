@@ -3,7 +3,7 @@
     <data>
         <variable
             name="fragment"
-            type="kr.co.vilez.ui.share.BoardMapFragment" />
+            type="kr.co.vilez.ui.board.BoardMapFragment" />
     </data>
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"

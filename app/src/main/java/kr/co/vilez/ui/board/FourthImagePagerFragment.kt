@@ -1,4 +1,4 @@
-package kr.co.vilez.ui.share
+package kr.co.vilez.ui.board
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,12 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import kr.co.vilez.R
-import kr.co.vilez.databinding.FragmentFirstBinding
-import kr.co.vilez.databinding.FragmentForthBinding
+import kr.co.vilez.databinding.FragmentBoardImageFourthBinding
 
-private lateinit var binding: FragmentForthBinding
-class ForthFragment(var path:String) : Fragment() {
 
+class FourthImagePagerFragment(var path:String) : Fragment() {
+    private lateinit var binding: FragmentBoardImageFourthBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -22,7 +21,7 @@ class ForthFragment(var path:String) : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_forth, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_board_image_fourth, container, false)
         binding.fragment = this
 
         return binding.root

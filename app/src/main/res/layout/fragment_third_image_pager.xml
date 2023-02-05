@@ -3,7 +3,7 @@
     <data>
         <variable
             name="fragment"
-            type="kr.co.vilez.ui.share.FirstFragment" />
+            type="kr.co.vilez.ui.board.ThirdImagePagerFragment" />
         <variable
             name="src"
             type="String" />

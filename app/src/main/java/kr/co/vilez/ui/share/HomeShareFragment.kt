@@ -1,4 +1,4 @@
-package kr.co.vilez.ui
+package kr.co.vilez.ui.share
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,7 +15,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
-import kr.co.vilez.databinding.FragmentHomeBinding
+import kr.co.vilez.data.dto.ShareData
+import kr.co.vilez.databinding.FragmentHomeShareBinding
+import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.ui.search.SearchActivity
 import kr.co.vilez.ui.share.*
 import kr.co.vilez.ui.search.category.MenuCategoryActivity
@@ -23,13 +25,13 @@ import kr.co.vilez.ui.share.write.ShareWriteActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common.Companion.elapsedTime
 import retrofit2.awaitResponse
-import kr.co.vilez.ui.share.ShareDetailActivity
 import kr.co.vilez.ui.user.ProfileMenuActivity
+import kr.co.vilez.util.Common
 
 private const val TAG = "빌리지_HomeFragment"
 
-class HomeFragment : Fragment() {
-    private lateinit var binding: FragmentHomeBinding
+class HomeShareFragment : Fragment() {
+    private lateinit var binding: FragmentHomeShareBinding
     private lateinit var mainActivity: MainActivity
 
     private lateinit var shareAdapter: ShareListAdapter
@@ -47,7 +49,8 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home_share, container, false)
+        binding.activity = mainActivity
         binding.fragment = this
 
         if (ApplicationClass.prefs.getLng() != "0.0" && ApplicationClass.prefs.getLat() != "0.0") {
@@ -105,7 +108,7 @@ class HomeFragment : Fragment() {
             // listview item 클릭시 실행할 메소드
             override fun onClick(view: View, position: Int) {
 
-                Log.d(TAG, "onClick: ${shareDatas[position].tv_name} clicked!")
+                Log.d(TAG, "onClick: ${shareDatas[position].title} clicked!")
             }
         })
 
@@ -136,12 +139,9 @@ class HomeFragment : Fragment() {
                     binding.tvNoArticleMsg.visibility = View.VISIBLE
                 }
                 for (data in result.data) {
-                    var shareData: ShareData
-                    if (data.shareListDto.list.isEmpty()) {
-
-                        shareData = ShareData(
+                    var shareData = ShareData(
                             data.shareListDto.id,
-                            "https://kr.object.ncloudstorage.com/vilez/basicProfile.png",
+                            if(data.shareListDto.list.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.shareListDto.list[0].path,
                             data.shareListDto.title,
                             elapsedTime(data.shareListDto.date),
                             "구미",
@@ -151,23 +151,7 @@ class HomeFragment : Fragment() {
                             data.shareListDto.state,
                             data.shareListDto.userId
                         );
-                    } else {
-                        shareData = ShareData(
-                            data.shareListDto.id,
-                            data.shareListDto.list[0].path,
-                            data.shareListDto.title,
-                            elapsedTime(data.shareListDto.date),
-                            "구미",
-                            data.shareListDto.startDay + "~"
-                                    + data.shareListDto.endDay,
-                            Integer.toString(data.listCnt),
-                            data.shareListDto.state,
-                            data.shareListDto.userId
-                        );
-                    }
                     shareDatas.add(shareData)
-//                    Log.d(TAG, "initView: ${data.shareListDto.nickName}");
-//                    Log.d(TAG, "initView: ${data.shareListDto.list[0].path}");
                 }
             }
             shareAdapter.notifyItemInserted(index - 1)
@@ -189,34 +173,18 @@ class HomeFragment : Fragment() {
                     if (result?.data?.size != 0) {
                         if (result?.flag == "success") {
                             for (data in result.data) {
-                                var shareData: ShareData
-                                if (data.shareListDto.list.size == 0) {
-                                    shareData = ShareData(
-                                        data.shareListDto.id,
-                                        "https://kr.object.ncloudstorage.com/vilez/basicProfile.png",
-                                        data.shareListDto.title,
-                                        elapsedTime(data.shareListDto.date),
-                                        "구미",
-                                        data.shareListDto.startDay + "~"
-                                                + data.shareListDto.endDay,
-                                        Integer.toString(data.listCnt),
-                                        data.shareListDto.state,
-                                        data.shareListDto.userId,
-                                    );
-                                } else {
-                                    shareData = ShareData(
-                                        data.shareListDto.id,
-                                        data.shareListDto.list[0].path,
-                                        data.shareListDto.title,
-                                        elapsedTime(data.shareListDto.date),
-                                        "구미",
-                                        data.shareListDto.startDay + "~"
-                                                + data.shareListDto.endDay,
-                                        Integer.toString(data.listCnt),
-                                        data.shareListDto.state,
-                                        data.shareListDto.userId,
-                                    );
-                                }
+                                var shareData = ShareData(
+                                    data.shareListDto.id,
+                                    if(data.shareListDto.list.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.shareListDto.list[0].path,
+                                    data.shareListDto.title,
+                                    elapsedTime(data.shareListDto.date),
+                                    "구미",
+                                    data.shareListDto.startDay + "~"
+                                            + data.shareListDto.endDay,
+                                    Integer.toString(data.listCnt),
+                                    data.shareListDto.state,
+                                    data.shareListDto.userId
+                                );
                                 shareDatas.add(shareData)
                             }
                         }
@@ -228,21 +196,10 @@ class HomeFragment : Fragment() {
     }
 
 
-    fun moveToShareActivity(view: View) {
-        val intent = Intent(mainActivity, ShareDetailActivity::class.java)
-        mainActivity.startActivity(intent)
-    }
-
     fun moveToShareWriteActivity(view: View) {
         val intent = Intent(mainActivity, ShareWriteActivity::class.java)
+        intent.putExtra("title", "공유 글쓰기")
         mainActivity.startActivity(intent)
     }
 
-    fun moveToUserLocationSetting(view: View) {
-        // 동네설정으로 넘어가는
-        val intent = Intent(mainActivity, ProfileMenuActivity::class.java)
-        intent.putExtra("fragment", "내 동네 설정")
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-        mainActivity.startActivity(intent)
-    }
 }

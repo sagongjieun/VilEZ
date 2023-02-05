@@ -1,4 +1,4 @@
-package kr.co.vilez.ui.share
+package kr.co.vilez.ui.board
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,14 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import kr.co.vilez.R
-import kr.co.vilez.databinding.FragmentFirstBinding
-import kr.co.vilez.databinding.FragmentSecondBinding
+import kr.co.vilez.databinding.FragmentSecondImagePagerBinding
 
 
-private lateinit var binding: FragmentSecondBinding
-class SecondFragment(var path:String) : Fragment() {
-
-
+class SecondImagePagerFragment(var path:String) : Fragment() {
+    private lateinit var binding: FragmentSecondImagePagerBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -24,7 +21,7 @@ class SecondFragment(var path:String) : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_second, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_second_image_pager, container, false)
         binding.fragment = this
 
         return binding.root

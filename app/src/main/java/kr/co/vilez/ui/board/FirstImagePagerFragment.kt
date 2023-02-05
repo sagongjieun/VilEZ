@@ -1,4 +1,4 @@
-package kr.co.vilez.ui.share
+package kr.co.vilez.ui.board
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,14 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import kr.co.vilez.R
-import kr.co.vilez.databinding.FragmentFirstBinding
+import kr.co.vilez.databinding.FragmentFirstImagePagerBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private lateinit var binding: FragmentFirstBinding
-
-
-class FirstFragment(var path:String) : Fragment() {
+class FirstImagePagerFragment(var path:String) : Fragment() {
+    private lateinit var binding: FragmentFirstImagePagerBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -25,7 +21,7 @@ class FirstFragment(var path:String) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_first, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_first_image_pager, container, false)
         binding.fragment = this
 
         return binding.root

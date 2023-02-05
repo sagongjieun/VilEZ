@@ -1,16 +1,12 @@
 package kr.co.vilez.ui
 
-import android.Manifest
-import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,9 +15,10 @@ import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityMainBinding
 import kr.co.vilez.ui.chat.ChatlistFragment
 import kr.co.vilez.data.model.RoomlistData
-import kr.co.vilez.ui.share.ShareFragment
+import kr.co.vilez.ui.ask.AskFragment
+import kr.co.vilez.ui.share.HomeShareFragment
 import kr.co.vilez.ui.user.ProfileFragment
-import kr.co.vilez.ui.user.RegisterActivity
+import kr.co.vilez.ui.user.ProfileMenuActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.DataState
 import kr.co.vilez.util.StompClient2
@@ -101,7 +98,7 @@ class MainActivity : AppCompatActivity() {
         when(name) {
             "홈" -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.frame_layout_main, HomeFragment())
+                    .replace(R.id.frame_layout_main, HomeShareFragment())
                     .commit()
 
                 binding.bottomNavigation.menu.apply {
@@ -113,7 +110,7 @@ class MainActivity : AppCompatActivity() {
             }
             "공유 요청" -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.frame_layout_main, ShareFragment())
+                    .replace(R.id.frame_layout_main, AskFragment())
                     .commit()
 
                 binding.bottomNavigation.menu.apply {
@@ -162,7 +159,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 // Fragment 변경
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.frame_layout_main, HomeFragment())
+                    .replace(R.id.frame_layout_main, HomeShareFragment())
                     .commit()
                 return true
             }
@@ -177,7 +174,7 @@ class MainActivity : AppCompatActivity() {
 
                 // Fragment 변경
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.frame_layout_main, ShareFragment())
+                    .replace(R.id.frame_layout_main, AskFragment())
                     .commit()
                 return true
             }
@@ -246,6 +243,15 @@ class MainActivity : AppCompatActivity() {
         } else {
             finish() // 액티비티 종료
         }
+    }
+
+
+    fun moveToUserLocationSetting(view: View) {
+        // 동네설정으로 넘어가는
+        val intent = Intent(this@MainActivity, ProfileMenuActivity::class.java)
+        intent.putExtra("fragment", "내 동네 설정")
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+        startActivity(intent)
     }
 
 }

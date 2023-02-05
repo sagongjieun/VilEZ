@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
-            name="shareData"
-            type="kr.co.vilez.data.dto.ShareData" />
+            name="askData"
+            type="kr.co.vilez.data.dto.AskData" />
     </data>
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card"
@@ -30,14 +30,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="160dp"
                     android:scaleType="centerCrop"
-                    app:boardImageFromUrl="@{shareData.image}"/>
+                    app:boardImageFromUrl="@{askData.representImage}"/>
 
                 <ImageView
                     android:layout_width="57dp"
                     android:layout_height="22dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginStart="8dp"
-                    android:background="@{shareData.state == 1 ? @drawable/ic_unavailable : @drawable/ic_available}"
+                    android:background="@{askData.state == 1 ? @drawable/ic_unavailable : @drawable/ic_available}"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentStart="true"/>
 
@@ -58,7 +58,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
-                        android:text="@{shareData.title}"
+                        android:text="@{askData.title}"
                         android:textSize="16sp" />
                     <View
                         android:layout_width="0dp"
@@ -70,7 +70,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:gravity="center"
-                        android:text="@{shareData.date}"
+                        app:dateToElapsedTime="@{askData.date}"
                         />
                 </LinearLayout>
                 <LinearLayout
@@ -88,7 +88,7 @@
                         android:id="@+id/tv_local"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{shareData.hopeArea}" />
+                        android:text="@{askData.hopeArea}" />
                     <ImageView
                         android:layout_marginStart="8dp"
                         android:layout_width="15dp"
@@ -99,21 +99,13 @@
                         android:layout_marginStart="2dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{shareData.hopePeriod}"
+                        android:text="@{askData.hopePeriod}"
                         />
                     <ImageView
                         android:layout_width="15dp"
                         android:layout_height="12dp"
                         android:layout_marginStart="8dp"
                         android:background="@drawable/heart_icon"/>
-                    <TextView
-                        android:id="@+id/tv_bookmark"
-                        android:layout_marginStart="2dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@{shareData.bookmark}"
-                        />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

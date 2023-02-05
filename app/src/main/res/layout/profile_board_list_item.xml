@@ -3,7 +3,7 @@
     <data>
         <variable
             name="shareData"
-            type="kr.co.vilez.ui.share.ShareData" />
+            type="kr.co.vilez.data.dto.ShareData" />
     </data>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -27,7 +27,7 @@
                     android:layout_width="120dp"
                     android:layout_height="120dp"
                     android:contentDescription="board image"
-                    app:imageFromUrl="@{shareData.iv_profile}" />
+                    app:imageFromUrl="@{shareData.image}" />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
                             android:id="@+id/textView5"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{shareData.tv_name}" />
+                            android:text="@{shareData.title}" />
 
                         <View
                             android:layout_width="0dp"
@@ -71,7 +71,7 @@
                             android:id="@+id/textView6"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{shareData.tv_local}"
+                            android:text="@{shareData.hopeArea}"
                             android:textColor="@color/text_sub_1"/>
 
                         <TextView
@@ -85,7 +85,7 @@
                             android:id="@+id/textView8"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{shareData.tv_date}"
+                            android:text="@{shareData.date}"
                             android:textColor="@color/text_sub_1"/>
 
                         <View
@@ -109,7 +109,7 @@
                             android:id="@+id/textView9"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{shareData.tv_period}"
+                            android:text="@{shareData.hopePeriod}"
                             android:textColor="@color/text_sub_1"/>
                     </LinearLayout>
 
@@ -128,7 +128,7 @@
                             android:id="@+id/textView10"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{shareData.tv_bookmark}"
+                            android:text="@{shareData.bookmark}"
                             android:textColor="@color/text_sub_1"/>
 
                     </LinearLayout>
