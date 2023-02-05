@@ -1,13 +1,10 @@
 package kr.co.vilez.appointment.model.service;
 
 import kr.co.vilez.appointment.model.dao.AppointmentDao;
-import kr.co.vilez.appointment.model.dto.AppointmentDto;
-import kr.co.vilez.appointment.model.dto.MyAppointListDto;
-import kr.co.vilez.appointment.model.dto.SetPeriodDto;
+import kr.co.vilez.appointment.model.dto.*;
 import kr.co.vilez.appointment.model.mapper.AppointmentMapper;
 import kr.co.vilez.appointment.model.vo.ChatVO;
 import kr.co.vilez.appointment.model.vo.MapVO;
-import kr.co.vilez.appointment.model.dto.RoomDto;
 import kr.co.vilez.appointment.model.vo.*;
 import kr.co.vilez.share.model.dao.ShareDao;
 import kr.co.vilez.share.model.dto.BookmarkDto;
@@ -31,7 +28,20 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final ShareDao shareDao;
 
     @Override
+    public CancelAppointmentDto checkRequest(int roomId) throws Exception {
+        return appointmentDao.loadRequestCheck(roomId);
+    }
+
+    @Override
+    public void saveRequest(CancelAppointmentDto cancelAppointmentDto) throws Exception {
+        appointmentDao.saveRequest(cancelAppointmentDto);
+    }
+
+    @Override
     public void cancelAppointment(int roomId, int reason) throws Exception {
+        // 해당하는 roomId의 확인 요청 데이터를 삭제한다.
+        appointmentDao.deleteRequest(roomId);
+
         // roomId 를 통해 appointment 내역을 가져온다
         RoomDto roomDto = appointmentMapper.getBoard(roomId);
 

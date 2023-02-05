@@ -1,5 +1,6 @@
 package kr.co.vilez.appointment.model.service;
 
+import kr.co.vilez.appointment.model.dto.CancelAppointmentDto;
 import kr.co.vilez.appointment.model.dto.RoomDto;
 import kr.co.vilez.appointment.model.dto.SetPeriodDto;
 import kr.co.vilez.appointment.model.vo.*;
@@ -10,6 +11,8 @@ import kr.co.vilez.appointment.model.vo.MapVO;
 import java.util.List;
 
 public interface AppointmentService {
+    CancelAppointmentDto checkRequest(int roomId) throws Exception;
+    void saveRequest(CancelAppointmentDto cancelAppointmentDto) throws Exception;
     void updatePeriod(SetPeriodDto setPeriodDto) throws Exception;
     void deleteCheck(AppointmentDto appointmentDto) throws Exception;
     SetPeriodDto check(int boardId, int shareUserId, int notShareUserId, int type) throws Exception;
