@@ -11,5 +11,5 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("sign")
 public class SignImg {
     int roomId;
-    String notShareSign;
+    String sign;
 }

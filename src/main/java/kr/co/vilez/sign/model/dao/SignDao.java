@@ -16,20 +16,12 @@ public class SignDao {
     public void insert(SignImg img) {
         mongoTemplate.insert(img);
     }
-    public void delete(SignImg signImg) {
-        mongoTemplate.remove(Query.query(Criteria.where("boardId").is(signImg.getBoardId())
-                .and("shareUserId")
-                .is(signImg.getShareUserId())
-                .and("notShareUserId")
-                .is(signImg.getNotShareUserId())
+    public void delete(int roomId) {
+        mongoTemplate.remove(Query.query(Criteria.where("roomId").is(roomId)
         ), SignImg.class);
     }
-    public SignImg loadContract(SignImg signImg) {
-        SignImg msgs = mongoTemplate.findOne(Query.query(Criteria.where("boardId").is(signImg.getBoardId())
-                .and("shareUserId")
-                .is(signImg.getShareUserId())
-                .and("notUserId")
-                .is(signImg.getNotShareUserId())
+    public SignImg loadContract(int roomId) {
+        SignImg msgs = mongoTemplate.findOne(Query.query(Criteria.where("roomId").is(roomId)
         ), SignImg.class);
         return msgs;
     }
