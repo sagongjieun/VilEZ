@@ -314,10 +314,14 @@ const ProductChatting = () => {
       ) : null}
       {isShareComplete ? <ShareCompleteModal otherUserNickname={boardDetail.otherUserNickname} /> : null}
       {isShareCancel ? (
-        <ShareCancelModal close={setIsShareCancel} otherUserNickname={boardDetail.otherUserNickname} />
+        <ShareCancelModal close={setIsShareCancel} otherUserNickname={boardDetail.otherUserNickname} roomId={roomId} />
       ) : null}
       {isShareCancelAsk ? (
-        <ShareCancelAskModal close={setIsShareCancelAsk} otherUserNickname={boardDetail.otherUserNickname} />
+        <ShareCancelAskModal
+          close={setIsShareCancelAsk}
+          otherUserNickname={boardDetail.otherUserNickname}
+          roomId={roomId}
+        />
       ) : null}
     </div>
   );

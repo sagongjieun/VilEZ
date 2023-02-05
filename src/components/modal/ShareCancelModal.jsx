@@ -4,21 +4,44 @@ import { css } from "@emotion/react";
 import MiddleWideButton from "../button/MiddleWideButton";
 import { useSetRecoilState } from "recoil";
 import { checkShareCancelState } from "../../recoil/atom";
+import { getCheckShareCancelRequest, deleteAppointment } from "../../api/appointment";
+import { putUserPoint } from "../../api/profile";
 
-const ShareCancelModal = ({ close, otherUserNickname }) => {
+const ShareCancelModal = ({ close, otherUserNickname, roomId }) => {
   const setCheckShareCancel = useSetRecoilState(checkShareCancelState);
+  const loginUserId = localStorage.getItem("id");
 
   function onCloseModal() {
     close(false);
   }
 
   function onClickShareCancel() {
-    // 예약 취소하기
-    // stomp로 전달하기
-    // 피공유자가 예약 취소 요청을 했는지 확인하고
-    // 안했다면 포인트 -? 점 깎고
-    // 했다면 그냥 바로 예약 취소하기 진행
-    setCheckShareCancel(true);
+    // 피공유자가 예약 취소 요청을 했는지 확인
+    getCheckShareCancelRequest(roomId).then((res) => {
+      // 요청을 했다면 (= 피공유자가 먼저 취소하는 것)
+      if (res) {
+        // 예약 취소하기
+        deleteAppointment(2, roomId).then((res) => {
+          if (res) {
+            setCheckShareCancel(true); // stomp로 전달하기
+
+            // 피공유자의 포인트 -30 깎기
+            putUserPoint({
+              userId: loginUserId,
+              point: -30,
+            });
+          }
+        });
+      }
+      // 안했다면 (= 공유자가 먼저 취소하는 것)
+      else {
+        deleteAppointment(1, roomId).then((res) => {
+          if (res) {
+            setCheckShareCancel(true); // stomp로 전달하기
+          }
+        });
+      }
+    });
   }
 
   return (
