@@ -37,6 +37,26 @@ public class AppointmentController {
     private final UserService userService;
     private final SimpMessageSendingOperations sendingOperations;
 
+    @GetMapping("/date")
+    @ApiOperation(value = "채팅방 유저간의 약속된 시간을 불러오는 API")
+    public ResponseEntity<?> getAppointmentDate(@RequestParam int boardId,
+                                                @RequestParam int shareUserId,
+                                                @RequestParam int notShareUserId,
+                                                @RequestParam int type){
+        HttpVO http = new HttpVO();
+        ArrayList<Object> data = new ArrayList<>();
+
+        try{
+            data.add(appointmentService.getAppointmentDate(boardId, shareUserId, notShareUserId, type));
+            http.setData(data);
+            http.setFlag("success");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
+
     @PostMapping("/request/cancel")
     @ApiOperation(value = "피공유자가 예약 취소 요청을 보내는 API")
     public ResponseEntity<?> sendRequest(@RequestBody CancelAppointmentDto cancelAppointmentDto){
@@ -201,17 +221,17 @@ public class AppointmentController {
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
 
-    @GetMapping("/check/{boardId}")
+    @GetMapping("/check/{boardId}/{type}")
     @ApiOperation(value = "현재 공유 중인지 아닌지에 대한 정보를 요청하는 API",
     notes = "boardId에 boardDetail의 boardId 정보를 넣고 전송하면" +
             "\n\t 현재 날짜와 비교해서 예약중인 boardId면 해당 boardId 값이 return" +
             "\n\t 그렇지 않으면 null 값이 들어온다.")
-    public ResponseEntity<?> getBoardState(@PathVariable int boardId){
+    public ResponseEntity<?> getBoardState(@PathVariable int boardId, @PathVariable int type){
         HttpVO http = new HttpVO();
         List<Object> data = new ArrayList<>();
 
         try {
-            data.add(appointmentService.getBoardState(boardId));
+            data.add(appointmentService.getBoardState(boardId, type));
             http.setData(data);
             http.setFlag("success");
             http.setData(data);

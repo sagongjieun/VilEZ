@@ -28,6 +28,17 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final ShareDao shareDao;
 
     @Override
+    public AppointmentDto getAppointmentDate(int boardId, int shareUserId, int notShareUserId, int type) throws Exception {
+        AppointmentDto appointmentDto = new AppointmentDto();
+        appointmentDto.setBoardId(boardId);
+        appointmentDto.setShareUserId(shareUserId);
+        appointmentDto.setNotShareUserId(notShareUserId);
+        appointmentDto.setType(type);
+
+        return appointmentMapper.getAppointmentDate(appointmentDto);
+    }
+
+    @Override
     public CancelAppointmentDto checkRequest(int roomId) throws Exception {
         return appointmentDao.loadRequestCheck(roomId);
     }
@@ -161,7 +172,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public BoardStateVO getBoardState(int boardId) throws Exception {
+    public BoardStateVO getBoardState(int boardId, int type) throws Exception {
         return appointmentMapper.getBoardState(boardId);
     }
 
