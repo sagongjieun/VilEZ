@@ -47,6 +47,7 @@ class AskFragment : Fragment() {
         super.onCreate(savedInstanceState)
         // context가 필요할때는 이거 갖다쓰면 됨
         activity = context as MainActivity
+        setHasOptionsMenu(true)
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,9 +55,9 @@ class AskFragment : Fragment() {
     ): View? {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_ask, container, false)
         binding.activity = activity
-
+        binding.fragment = this
         //initViewModel()
-
+        initToolBar()
         initView()
         if (ApplicationClass.prefs.getLng() != "0.0" && ApplicationClass.prefs.getLat() != "0.0") {
             binding.userLocationValid = true
@@ -79,16 +80,22 @@ class AskFragment : Fragment() {
             R.id.option_menu_menu -> {
                 Log.d(TAG, "onContextItemSelected: ${item.title} clicked")
                 Toast.makeText(activity, "${item.title} 클릭", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(activity, MenuCategoryActivity::class.java))
+                val intent = Intent(activity, MenuCategoryActivity::class.java)
+                intent.putExtra("type", BOARD_TYPE_ASK)
+                startActivity(intent)
             }
             R.id.option_menu_search -> {
                 val intent = Intent(activity, SearchActivity::class.java)
+                intent.putExtra("type", BOARD_TYPE_ASK)
                 startActivity(intent)
             }
         }
         return super.onOptionsItemSelected(item)
     }
-
+    private fun initToolBar() {
+        activity.setSupportActionBar(binding.toolbar)
+        activity.supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
+    }
     private fun initView() {
         binding.lifecycleOwner = this
         binding.fragment = this
@@ -117,7 +124,6 @@ class AskFragment : Fragment() {
                 if(result.data.isEmpty()) {
                     Log.d(TAG, "onViewCreated: 데이터 0개")
                     binding.tvNoArticleMsg.visibility = View.VISIBLE
-                    return@launch
                 }
                 for (data in result.data[0]) {
                     val askData = AskData(
@@ -150,7 +156,6 @@ class AskFragment : Fragment() {
                         if(result.data.isEmpty()) {
                             Log.d(TAG, "onViewCreated: 데이터 0개")
                             binding.tvNoArticleMsg.visibility = View.VISIBLE
-                            return@launch
                         }
                         for (data in result.data[0]) {
                             val askData = AskData(
