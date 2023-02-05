@@ -20,6 +20,8 @@ import DateFormat from "../common/DateFormat";
 import { getShareReturnState, postShareEnd } from "../../api/appointment";
 import ProductReturnModal from "../modal/ProductReturnModal";
 import ShareCompleteModal from "../modal/ShareCompleteModal";
+import ShareCancelAskModal from "../modal/ShareCancelAskModal";
+import ShareCancelModal from "../modal/ShareCancelModal";
 
 const ProductChatting = () => {
   const { roomId } = useParams();
@@ -33,6 +35,8 @@ const ProductChatting = () => {
   const [isAppointmentComplete, setIsAppointmentComplete] = useState(false);
   const [isProductReturn, setIsProductReturn] = useState(false);
   const [isShareComplete, setIsShareComplete] = useState(false);
+  const [isShareCancel, setIsShareCancel] = useState(false);
+  const [isShareCancelAsk, setIsShareCancelAsk] = useState(false);
 
   const [otherUserId, setOtherUserId] = useState(null);
   const [shareUserId, setShareUserId] = useState(null);
@@ -84,6 +88,16 @@ const ProductChatting = () => {
         alert("공유자가 아직 기간을 확정하지 않았습니다. 😥");
       }
     });
+  }
+
+  // 예약취소 요청 (피공유자에 의해)
+  function onClickAskCancelShare() {
+    setIsShareCancelAsk(!isShareCancelAsk);
+  }
+
+  // 예약 취소 (공유자에 의해)
+  function onClickCancelShare() {
+    setIsShareCancel(!isShareCancel);
   }
 
   // 반납 확인 (공유자에 의해)
@@ -241,13 +255,19 @@ const ProductChatting = () => {
         )}
       </div>
       <div css={buttonWrapper}>
-        {/* state : 0 예약 후, -1 반납 후, -2 예약 후(예약 취소 : 확장), -3 예약 전 */}
+        {/* state : 0 예약 후, -1 반납 후, -2 예약 취소 후, -3 예약 전 */}
         {shareState == 0 && (
           <>
             {loginUserId == notShareUserId ? (
-              <MiddleWideButton text={"공유 종료"} onclick={onClickEndShare} />
+              <>
+                <MiddleWideButton text={"예약 취소"} onclick={onClickAskCancelShare} />
+                <MiddleWideButton text={"공유 종료"} onclick={onClickEndShare} />
+              </>
             ) : (
-              <MiddleWideButton text={"반납 확인"} onclick={onClickCheckReturn} />
+              <>
+                <MiddleWideButton text={"예약 취소"} onclick={onClickCancelShare} />
+                <MiddleWideButton text={"반납 확인"} onclick={onClickCheckReturn} />
+              </>
             )}
           </>
         )}
@@ -259,11 +279,6 @@ const ProductChatting = () => {
         {shareState == -2 && (
           <>
             <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
-            {loginUserId == notShareUserId ? (
-              <MiddleWideButton text={"예약 취소"} />
-            ) : (
-              <MiddleWideButton text={"예약 취소"} />
-            )}
           </>
         )}
         {shareState == -3 && (
@@ -297,6 +312,12 @@ const ProductChatting = () => {
         />
       ) : null}
       {isShareComplete ? <ShareCompleteModal otherUserNickname={boardDetail.otherUserNickname} /> : null}
+      {isShareCancel ? (
+        <ShareCancelModal close={setIsShareCancel} otherUserNickname={boardDetail.otherUserNickname} />
+      ) : null}
+      {isShareCancelAsk ? (
+        <ShareCancelAskModal close={setIsShareCancelAsk} otherUserNickname={boardDetail.otherUserNickname} />
+      ) : null}
     </div>
   );
 };
