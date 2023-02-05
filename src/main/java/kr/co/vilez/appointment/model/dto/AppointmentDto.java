@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 public class AppointmentDto {
     private int appointmentId;
     private int boardId;
-    private String title;
     private int shareUserId;
     private int notShareUserId;
     private String appointmentStart;

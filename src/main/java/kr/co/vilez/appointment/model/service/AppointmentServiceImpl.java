@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -69,6 +70,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         pointVO.setBoardId(appointmentDto.getBoardId());
         pointVO.setUserId(appointmentDto.getShareUserId());
         pointVO.setPoint(-10);
+        pointVO.setReason(1);
+        LocalDate now = LocalDate.now();
+        pointVO.setDate(now.toString());
         pointVO.setType(appointmentDto.getType());
         pointVO.setDate(appointmentDto.getDate());
         // 내역 저장
@@ -112,8 +116,16 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     ///////////////////////////////포인트 관련 내용 ///////////////////////////////
     @Override
-    public List<PointVO> getPointList(int userId) throws Exception {
-        return appointmentDao.getPointList(userId);
+    public List<PointListVO> getPointList(int userId) throws Exception {
+        List<PointVO> pointVOList =  appointmentDao.getPointList(userId);
+
+        List<PointListVO> list = new ArrayList<>();
+        for(PointVO pointVO : pointVOList) {
+            BoardInfoVO boardInfoVO = appointmentMapper.getBoardInfo(pointVO);
+            list.add(new PointListVO(pointVO, boardInfoVO));
+        }
+
+        return list;
     }
 
     @Override
@@ -225,8 +237,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     }
     @Override
-    public List<AppointmentDto> getAppointmentList(int boardId) throws Exception {
-        return appointmentMapper.getAppointmentList(boardId);
+    public List<AppointmentDto> getAppointmentList(int boardId, int type) throws Exception {
+        return appointmentMapper.getAppointmentList(boardId, type);
     }
 
     @Override
