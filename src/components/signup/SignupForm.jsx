@@ -13,7 +13,7 @@ import { SHA256 } from "./EmailCodeHashFunction";
 import { confirmEmail, checkNickName, postUserInformation } from "../../api/signup";
 import { useNavigate } from "react-router-dom";
 
-const SignupForm2 = () => {
+const SignupForm = () => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState("");
@@ -57,12 +57,10 @@ const SignupForm2 = () => {
     };
     if (isNickNameAvailable && isCodeConfirmed) {
       postUserInformation(userInformation).then((response) => {
-        if (response) {
-          navigate("/login");
-        }
+        console.log(response);
+        navigate("/login");
       });
     }
-    console.log("회원가입 고");
   }
   function onSubmitEmail() {
     setIsCodeConfirmed(false);
@@ -93,11 +91,9 @@ const SignupForm2 = () => {
       });
     } else if (!nickName) {
       setNickNameCheck("닉네임을 입력해주세요.");
-      // errors.nickName = "닉네임을 입력해주세요.";
       setIsNickNameAvailable(false);
     } else if (nickName.length > 6) {
       setNickNameCheck("닉네임은 최대 6자까지 설정할 수 있어요.");
-      // errors.nickName = "닉네임은 최대 6자까지 설정할 수 있어요.";
       setIsNickNameAvailable(false);
     }
   }
@@ -120,7 +116,6 @@ const SignupForm2 = () => {
     <form
       onSubmit={(event) => {
         handleSubmit(event);
-        // errorsInitialize();
       }}
     >
       <div css={inputContainer}>
@@ -474,4 +469,4 @@ const emailCodeWrapper = css`
   transition: all 0.5s;
 `;
 
-export default SignupForm2;
+export default SignupForm;

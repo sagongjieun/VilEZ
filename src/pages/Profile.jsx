@@ -4,7 +4,7 @@ import { css } from "@emotion/react";
 import { Routes, Route } from "react-router-dom";
 import { Link } from "react-router-dom";
 import ProfileInformation from "../components/profile/ProfileInformation";
-import ProfileMainCalander from "../components/profile/ProfileMainCalander";
+import ProfileMainCalendar from "../components/profile/ProfileMainCalendar";
 import ProfileMainProduct from "../components/profile/ProfileMainProduct";
 import ProfileMainPoint from "../components/profile/ProfileMainPoint";
 import EditProfile from "../components/modal/EditProfileModal";
@@ -24,7 +24,7 @@ const Profile = () => {
       />
       <div css={linkWrapper(move)}>
         <Link
-          to={"/profile/calander"}
+          to={"/profile/calendar"}
           onClick={() => {
             setMove("-12px");
           }}
@@ -50,7 +50,7 @@ const Profile = () => {
       </div>
 
       <Routes>
-        <Route path="/calander" element={<ProfileMainCalander />} />
+        <Route path="/calendar" element={<ProfileMainCalendar />} />
         <Route path="/product" element={<ProfileMainProduct />} />
         <Route path="/point" element={<ProfileMainPoint />} />
       </Routes>
