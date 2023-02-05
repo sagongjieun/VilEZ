@@ -1,15 +1,17 @@
-package kr.co.vilez.ui.share
+package kr.co.vilez.ui.ask
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import kr.co.vilez.databinding.HomeBoardListItemBinding
-import kr.co.vilez.ui.MainActivity
+import kr.co.vilez.data.dto.AskData
 
-class FragmentShareAdapter(val list:MutableList<ShareData>):
-RecyclerView.Adapter<FragmentShareAdapter.ShareHolder>(){
+import kr.co.vilez.databinding.AskBoardListItemBinding
+
+class AskListAdapter(val list: MutableList<AskData>):
+RecyclerView.Adapter<AskListAdapter.AskHolder>(){
 
     var pos = -1
     private lateinit var itemClickListener: OnItemClickListener
@@ -21,29 +23,31 @@ RecyclerView.Adapter<FragmentShareAdapter.ShareHolder>(){
         this.itemClickListener = OnItemClickListener
     }
 
-    inner class ShareHolder(var binding:HomeBoardListItemBinding):
+    inner class AskHolder(var binding: AskBoardListItemBinding):
     RecyclerView.ViewHolder(binding.root) {
 
-        fun bindingInfo(item: ShareData) {
-            binding.shareData = item
+        fun bindingInfo(item: AskData) {
+            binding.askData = item
             binding.root.setOnClickListener {
                 //itemClickListener.onClick(it, layoutPosition)
-                val intent = Intent(binding.root.context, ShareDetailActivity::class.java)
-                intent.putExtra("boardId", item.board_id)
+                Log.d("빌리지_요청_AskListAdapter", "bindingInfo: item 클릭!! :${item.toString()}")
+                val intent = Intent(binding.root.context, AskDetailActivity::class.java)
+                intent.putExtra("boardId", item.boardId)
+                intent.putExtra("userId", item.userId)
 
                 binding.root.context.startActivity(intent)
             }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShareHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AskHolder {
         // 아이템 하나를 바인딩해서 바로 xml을 찾아갈 수 있도록 함
-        val binding = HomeBoardListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = AskBoardListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return ShareHolder(binding)
+        return AskHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ShareHolder, position: Int) {
+    override fun onBindViewHolder(holder: AskHolder, position: Int) {
         holder.bindingInfo(list[position]) // 데이터 하나씩 넣기
     }
 

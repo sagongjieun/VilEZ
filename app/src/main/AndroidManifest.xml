@@ -22,8 +22,21 @@
         android:usesCleartextTraffic="true"
         android:windowSoftInputMode="adjustPan"
         tools:targetApi="31">
-<!--        android:networkSecurityConfig="@xml/network_security_config"-->
-
+        <activity
+            android:name=".ui.ask.write.AskWriteActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".ui.ask.AskDetailActivity"
+            android:exported="false"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity> <!-- android:networkSecurityConfig="@xml/network_security_config" -->
         <activity
             android:name=".ui.share.write.PlacePickerActivity"
             android:exported="false"
@@ -41,7 +54,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.share.AskSearchActivity"
+            android:name=".ui.ask.AskSearchActivity"
             android:exported="false"
             android:screenOrientation="portrait">
             <meta-data
@@ -99,7 +112,7 @@
         <activity
             android:name=".ui.share.ShareDetailActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.user.ProfileMenuActivity"
             android:exported="false"
@@ -158,6 +171,7 @@
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
+
             <meta-data
                 android:name="com.google.firebase.messaging.default_notification_icon"
                 android:resource="@drawable/img_default_profile" />

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -6,13 +7,21 @@
     <data>
         <variable
             name="fragment"
-            type="kr.co.vilez.ui.HomeFragment" />
+            type="kr.co.vilez.ui.ask.AskFragment" />
+
+        <variable
+            name="activity"
+            type="kr.co.vilez.ui.MainActivity" />
+
         <variable
             name="userLocationValid"
             type="boolean" />
-        <import type="android.view.View"/>
-    </data>
 
+        <import type="android.view.View"/>
+<!--        <variable-->
+<!--            name="model"-->
+<!--            type="kr.co.vilez.ui.ask.AskViewModel" />-->
+    </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -37,7 +46,7 @@
             android:id="@+id/btn_warn_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="@{fragment.moveToUserLocationSetting}"
+            android:onClick="@{activity.moveToUserLocationSetting}"
             android:text="동네 인증 하러가기"
             android:layout_marginTop="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -46,6 +55,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_warn_location"
             android:visibility="@{userLocationValid ? View.GONE : View.VISIBLE}"/>
+
+
+        <TextView
+            android:id="@+id/tv_no_article_msg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/share_no_article_message"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:visibility="gone"/>
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
@@ -67,20 +86,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="우리동네 공유글"
+                    android:text="우리동네 요청글"
                     android:textSize="20sp" />
             </com.google.android.material.appbar.MaterialToolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
-
-        <TextView
-            android:id="@+id/tv_no_article_msg"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/home_no_article_message"
-            android:textSize="16sp"
-            android:visibility="gone" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -88,11 +98,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/appbar"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:visibility="@{userLocationValid ? View.VISIBLE : View.GONE}">
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_share_list"
+                android:id="@+id/rv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scrollbarFadeDuration="0"
@@ -107,15 +116,12 @@
                 android:layout_gravity="bottom|right"
                 android:layout_margin="16dp"
                 android:backgroundTint="@color/main_1"
-                android:contentDescription="WRITE"
-                android:onClick="@{fragment.moveToShareWriteActivity}"
-                android:src="@drawable/ic_floating_edit"
                 app:borderWidth="0dp"
-                app:tint="@color/white" />
+                android:src="@drawable/ic_floating_edit"
+                app:tint="@color/white"
+                android:contentDescription="WRITE"
+                android:onClick="@{fragment.moveToAskWrite}"/>
         </FrameLayout>
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </layout>

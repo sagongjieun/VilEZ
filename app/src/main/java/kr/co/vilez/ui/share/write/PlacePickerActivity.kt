@@ -2,14 +2,9 @@ package kr.co.vilez.ui.share.write
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import com.google.android.material.snackbar.Snackbar
 import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityPlacePickerBinding
-import kr.co.vilez.ui.share.BoardMapFragment
 
 private const val TAG = "빌리지_지도마커_PlacePickerActivity"
 class PlacePickerActivity : AppCompatActivity(), HopePlaceInterface {
