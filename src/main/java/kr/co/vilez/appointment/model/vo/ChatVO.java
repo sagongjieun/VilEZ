@@ -13,5 +13,6 @@ public class ChatVO {
     private int toUserId;
     private String content;
     private long time;
+    private boolean system;
 
 }

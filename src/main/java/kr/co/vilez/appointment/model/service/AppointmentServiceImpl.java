@@ -200,8 +200,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         ChatLastVO chatLastVO = new ChatLastVO(chatVO.getRoomId(),chatVO.getToUserId(),
                 chatVO.getFromUserId(), chatVO.getContent(), now);
         appointmentDao.saveLastMsg(chatLastVO);
-        if(chatVO.getToUserId() != 0)
-            setEnterTimeMsg(chatVO.getRoomId(),chatVO.getFromUserId());
+        setEnterTimeMsg(chatVO.getRoomId(),chatVO.getFromUserId());
     }
 
     @Override
