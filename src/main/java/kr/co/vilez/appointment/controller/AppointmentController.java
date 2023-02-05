@@ -380,44 +380,14 @@ public class AppointmentController {
         sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+chatVO.getToUserId(),chatVO);
 
         // send FCM
-        fcmDataService.sendChatMessageTo(user2.getArea(), chatVO.getRoomId(), chatVO.getFromUserId(), user.getNickName(), chatVO.getContent());
-
-        return chatVO;
-    }
-
-    @MessageMapping("/recvsystem")
-    public ChatVO systemMsg(ChatVO chatVO) throws IOException {
-        UserDto user = null;
-        UserDto user2 = null;
-        HashMap<String, Object> map = new HashMap<>();
-        System.out.println(chatVO);
-        RoomDto roomDto = appointmentService.getBoard(chatVO.getRoomId());
-        try {
-            user = userService.detail2(roomDto.getShareUserId());
-            user2 = userService.detail2(roomDto.getNotShareUserId());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if(chatVO.isSystem()) {
+            fcmDataService.sendChatMessageTo(user.getArea(), chatVO.getRoomId(), user2.getId(), "시스템", chatVO.getContent());
+            fcmDataService.sendChatMessageTo(user2.getArea(), chatVO.getRoomId(), user.getId(), "시스템", chatVO.getContent());
+        } else {
+            fcmDataService.sendChatMessageTo(user2.getArea(), chatVO.getRoomId(), chatVO.getFromUserId(), user.getNickName(), chatVO.getContent());
         }
-        map.put("nickName",user.getNickName());
-        map.put("area", user.getArea());
-        map.put("content", chatVO.getContent());
-        map.put("roomId",chatVO.getRoomId());
-        map.put("fromUserId",0);
-        sendingOperations.convertAndSend("/sendlist/"+roomDto.getNotShareUserId(),map);
-
-        map.put("nickName",user2.getNickName());
-        sendingOperations.convertAndSend("/sendlist/"+roomDto.getShareUserId(),map);
-
-        appointmentService.recvMsg(chatVO);
-
-        sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+user.getId(),chatVO);
-        sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+user2.getId(),chatVO);
-
-        fcmDataService.sendChatMessageTo(user.getArea(), chatVO.getRoomId(), user2.getId(), "시스템", chatVO.getContent());
-        fcmDataService.sendChatMessageTo(user2.getArea(), chatVO.getRoomId(), user.getId(), "시스템", chatVO.getContent());
         return chatVO;
     }
-
 
     @MessageMapping("/room_enter")
     public void setEnterTimeMsg(HashMap<String, Integer> payload) {
