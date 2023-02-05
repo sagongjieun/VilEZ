@@ -12,6 +12,8 @@ import java.util.List;
 
 @Mapper
 public interface AppointmentMapper {
+
+    AppointmentDto getAppointmentDate(AppointmentDto appointmentDto) throws Exception;
     void cancelAppointment(AppointmentDto appointmentDto) throws Exception;
     void changePoint(PointVO pointVO) throws Exception;
 

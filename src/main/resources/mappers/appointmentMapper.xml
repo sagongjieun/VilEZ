@@ -34,6 +34,14 @@
         <result column="share_user_id" property="shareUserId"/>
         <result column="not_share_user_id" property="notShareUserId"/>
     </resultMap>
+    <select id="getAppointmentDate" parameterType="appointmentDto" resultMap="appointment">
+        select *
+        from appointment
+        where board_id = #{boardId}
+        and share_user_id = #{shareUserId}
+        and not_share_user_id = #{notShareUserId}
+        and state >= 0;
+    </select>
     <update id="cancelAppointment" parameterType="appointmentDto">
         update appointment
         set state = -2
@@ -78,7 +86,7 @@
     <select id="getBoardState" parameterType="int" resultType="kr.co.vilez.appointment.model.vo.BoardStateVO">
         SELECT board_id as boardId
         FROM appointment
-        WHERE now() >= appointment_start and appointment_end >= now() and board_id = #{boardId};
+        WHERE now() >= appointment_start and appointment_end >= now() and board_id = #{boardId} and type = #{type};
     </select>
 
     <select id="getGiveListShare" parameterType="int" resultMap="mylist">
