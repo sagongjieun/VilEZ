@@ -13,7 +13,7 @@ import { SHA256 } from "./EmailCodeHashFunction";
 import { confirmEmail, checkNickName, postUserInformation } from "../../api/signup";
 import { useNavigate } from "react-router-dom";
 
-const SignupForm2 = () => {
+const SignupForm = () => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState("");
@@ -474,4 +474,4 @@ const emailCodeWrapper = css`
   transition: all 0.5s;
 `;
 
-export default SignupForm2;
+export default SignupForm;
