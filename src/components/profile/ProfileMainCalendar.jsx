@@ -1,7 +1,7 @@
 import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import ProfileCalander from "./ProfileCalander";
+import ProfileCalendar from "./ProfileCalendar";
 
 const ProfileMainCalander = () => {
   return (
@@ -10,7 +10,8 @@ const ProfileMainCalander = () => {
         padding-top: 30px;
       `}
     >
-      <ProfileCalander />
+      <ProfileCalendar />
+      {/* <ProfileCalander /> */}
     </div>
   );
 };

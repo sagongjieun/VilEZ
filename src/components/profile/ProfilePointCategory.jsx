@@ -1,17 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { HiChevronUp, HiChevronDown } from "react-icons/hi2";
-import { useLocation, useParams } from "react-router-dom";
-import { getShareArticleByBoardId } from "../../api/share";
 
-const ProfilePointCategory = ({ sendCategory, category }) => {
+const ProfilePointCategory = ({ setCategory, category }) => {
   const categoryType = ["전체", "적립", "차감"];
-  const pathname = useLocation().pathname;
-  const boardId = parseInt(useParams().boardId);
-  const type = pathname.includes("share") ? 2 : 1;
   const [openCategory, setOpenCategory] = useState(false);
-  // const [category, setCategory] = useState("전체");
   function onClickOpenCategory() {
     if (openCategory) {
       setOpenCategory(false);
@@ -21,22 +15,12 @@ const ProfilePointCategory = ({ sendCategory, category }) => {
   }
 
   function onClickCategoryType(type) {
-    sendCategory(type);
+    setCategory(type);
     setOpenCategory(false);
   }
 
   useEffect(() => {
-    sendCategory(category);
-  }, [category]);
-
-  useEffect(() => {
-    type === 2
-      ? getShareArticleByBoardId(boardId).then((res) => {
-          const data = res[0];
-          sendCategory(data.category);
-          // console.log(data);
-        })
-      : null;
+    setCategory("전체");
   }, []);
 
   return (

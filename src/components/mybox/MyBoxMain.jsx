@@ -4,17 +4,17 @@ import { css } from "@emotion/react";
 import MyBoxHeader from "./MyBoxHeader";
 // import { Routes, Route } from "react-router-dom";
 import { getAppointmentsByUserId, getShareListByUserId, getNotShareListByUserId } from "../../api/appointment";
+import MyBoxShare from "./MyBoxShare";
+import MyBoxRent from "./MyBoxRent";
+import MyBoxBody from "./MyBoxBody";
 
 const MyBoxMain = () => {
   const userId = localStorage.getItem("id");
   const [myShareList, setMyShareList] = useState([]);
-  const [myNotShareList, setMyNotShareList] = useState([]);
+  const [myRentList, setMyRentList] = useState([]);
   const [myAppointList, setMyAppointList] = useState([]);
-  const [isHeaderOpen, setIsHeaderOpen] = useState(true);
-  console.log(myShareList, myNotShareList, myAppointList);
-  function onClickHeaderButton() {
-    setIsHeaderOpen(!isHeaderOpen);
-  }
+  console.log(myShareList, myRentList, myAppointList);
+
   useEffect(() => {
     getAppointmentsByUserId(userId).then((response) => {
       setMyAppointList([]);
@@ -26,26 +26,29 @@ const MyBoxMain = () => {
     });
     getNotShareListByUserId(userId).then((response) => {
       console.log(response);
-      setMyNotShareList([]);
+      setMyRentList([]);
     });
   }, []);
   return (
     <div css={mainWrapper}>
       <div>
         <h2>나의 공유박스</h2>
-        <div onClick={onClickHeaderButton}>
-          {isHeaderOpen ? (
-            <button css={[borderedButton, squareButton]}>접기</button>
-          ) : (
-            <button css={[basicButton, squareButton]}>보기</button>
-          )}
-        </div>
       </div>
       <MyBoxHeader />
+      <div css={appointContainer}>
+        {/* <h3>나의 공유 물품</h3> */}
+        <MyBoxShare />
+      </div>
+      <div css={appointContainer}>
+        {/* <h3>나의 대여 물품</h3> */}
+        <MyBoxRent />
+      </div>
+      <MyBoxBody />
     </div>
   );
 };
 const mainWrapper = css`
+  padding: 30px 0;
   > div:nth-of-type(1) {
     display: flex;
     justify-content: space-between;
@@ -60,32 +63,34 @@ const mainWrapper = css`
     }
   }
 `;
-const basicButton = css`
-  cursor: pointer;
-  height: 35px;
-  background-color: #66dd9c;
-  width: 100%;
-  font-size: 14px;
-  border: 1px solid #66dd9c;
-  color: #fff;
-`;
-const borderedButton = css`
-  cursor: pointer;
-  height: 35px;
-  background-color: #fff;
-  width: 100%;
-  font-size: 14px;
-  border: 1px solid #66dd9c;
-  color: #66dd9c;
-  :hover {
-    background-color: #acf0cb32;
-  }
-`;
-const squareButton = css`
-  border-radius: 5px;
-`;
+// const basicButton = css`
+//   cursor: pointer;
+//   height: 35px;
+//   background-color: #66dd9c;
+//   width: 100%;
+//   font-size: 14px;
+//   border: 1px solid #66dd9c;
+//   color: #fff;
+// `;
+// const borderedButton = css`
+//   cursor: pointer;
+//   height: 35px;
+//   background-color: #fff;
+//   width: 100%;
+//   font-size: 14px;
+//   border: 1px solid #66dd9c;
+//   color: #66dd9c;
+//   :hover {
+//     background-color: #acf0cb32;
+//   }
+// `;
+// const squareButton = css`
+//   border-radius: 5px;
+// `;
 // const roundButton = css`
 //   border-radius: 20px;
 // `;
+
+const appointContainer = css``;
 
 export default MyBoxMain;

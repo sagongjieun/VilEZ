@@ -57,12 +57,10 @@ const SignupForm = () => {
     };
     if (isNickNameAvailable && isCodeConfirmed) {
       postUserInformation(userInformation).then((response) => {
-        if (response) {
-          navigate("/login");
-        }
+        console.log(response);
+        navigate("/login");
       });
     }
-    console.log("회원가입 고");
   }
   function onSubmitEmail() {
     setIsCodeConfirmed(false);
@@ -93,11 +91,9 @@ const SignupForm = () => {
       });
     } else if (!nickName) {
       setNickNameCheck("닉네임을 입력해주세요.");
-      // errors.nickName = "닉네임을 입력해주세요.";
       setIsNickNameAvailable(false);
     } else if (nickName.length > 6) {
       setNickNameCheck("닉네임은 최대 6자까지 설정할 수 있어요.");
-      // errors.nickName = "닉네임은 최대 6자까지 설정할 수 있어요.";
       setIsNickNameAvailable(false);
     }
   }
@@ -120,7 +116,6 @@ const SignupForm = () => {
     <form
       onSubmit={(event) => {
         handleSubmit(event);
-        // errorsInitialize();
       }}
     >
       <div css={inputContainer}>

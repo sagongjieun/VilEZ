@@ -9,6 +9,7 @@ async function requestLogin(email, password) {
     const { data } = await jsonAxios.post(`/users/login`, { email, password });
 
     if (data.flag === "success") {
+      console.log(data);
       const res = data.data[0];
 
       localStorage.setItem("accessToken", res.accessToken);

@@ -115,7 +115,7 @@ const FindPassword = () => {
           }}
           css={isCodeConfirmed ? moveLeft : null}
         >
-          <div css={inputContainer}>
+          <div css={[inputContainer, isCodeConfirmed ? fadeOut : null]}>
             <label css={loginLabelFont} htmlFor="email">
               이메일 인증
             </label>
@@ -345,6 +345,11 @@ const moveLeft = css`
   transition: all 0.3s;
   transition-delay: 1s;
   transform: translateX(-50%);
+`;
+const fadeOut = css`
+  transition: all 0.3s;
+  transition-delay: 0.8s;
+  opacity: 0;
 `;
 const loginLabelFont = css`
   display: block;

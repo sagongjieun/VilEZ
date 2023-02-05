@@ -40,7 +40,7 @@ const ProfileMyWriting = (props) => {
               endDay={share.endDay}
               startDay={share.startDay}
               date={share.date}
-              thumbnail={share.list[0].path}
+              thumbnail={share.list[0]?.path}
               boardType={props.myWritingType === 1 ? "share" : props.myWritingType === 2 ? "ask" : null}
               boardId={share.id}
             />
