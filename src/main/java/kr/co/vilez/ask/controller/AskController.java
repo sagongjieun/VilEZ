@@ -6,6 +6,7 @@ import kr.co.vilez.ask.model.service.AskService;
 import kr.co.vilez.data.HttpVO;
 import kr.co.vilez.share.model.dto.PageNavigator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/askboard")
+@Log4j2
 public class AskController {
     final AskService askService;
 
@@ -93,21 +95,9 @@ public class AskController {
                                             @RequestPart(value = "image", required = false) MultipartFile[] files) throws IOException {
         HttpVO http = new HttpVO();
 
+        log.error(askDto);
+        log.error(files);
 
-        System.out.println("***************************************************************************");
-        System.out.println("***************************************************************************");
-        System.out.println("***************************************************************************");
-        System.out.println("***************************************************************************");
-        System.out.println("***************************************************************************");
-        System.out.println(askDto);
-        System.out.println("***************************************************************************");
-        System.out.println("***************************************************************************");
-        System.out.println("***************************************************************************");
-        System.out.println("***************************************************************************");
-        System.out.println("***************************************************************************");
-        System.out.println("***************************************************************************");
-        System.out.println("***************************************************************************");
-        System.out.println("***************************************************************************");
 
         askService.updateAskBoard(askDto, files);
         //글 작성 성공 : 0 , 실패 : -1
