@@ -1,7 +1,6 @@
 import { jsonInstance } from "./instance";
 
 const jsonAxios = jsonInstance();
-// const formdataAxios = formdataInstance();
 
 // GET
 
@@ -82,6 +81,17 @@ async function getNotShareListByUserId(userId) {
   }
 }
 
+async function getCheckShareCancelRequest(roomId) {
+  try {
+    const { data } = await jsonAxios.get(`/appointments/request/cancel/${roomId}`);
+
+    if (data.flag === "success") return data.data[0];
+    else console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // POST
 
 async function postShareDate(body) {
@@ -117,11 +127,35 @@ async function postShareEnd(roomId) {
   }
 }
 
+async function postShareCancelRequest(body) {
+  try {
+    const { data } = await jsonAxios.post(`/appointments/request/cancel`, body);
+
+    if (data.flag === "success") return true;
+    else return false;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // PUT
 
 async function putShareDate(body) {
   try {
     const { data } = await jsonAxios.put(`/appointments/set/period`, body);
+
+    if (data.flag === "success") return true;
+    else return false;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// DELETE
+
+async function deleteAppointment(reason, roomId) {
+  try {
+    const { data } = await jsonAxios.delete(`/appointments?reason=${reason}&roomId=${roomId}`);
 
     if (data.flag === "success") return true;
     else return false;
@@ -138,8 +172,11 @@ export {
   getShareReturnState,
   getShareListByUserId,
   getNotShareListByUserId,
+  getCheckShareCancelRequest,
   postShareDate,
   postShareReturnState,
   postShareEnd,
+  postShareCancelRequest,
   putShareDate,
+  deleteAppointment,
 };
