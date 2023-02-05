@@ -23,7 +23,6 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const boardId = parseInt(useParams().boardId);
   const pathname = useLocation().pathname;
-  console.log(pathname);
   const loginUserId = localStorage.getItem("id"); // 로그인유저 id
 
   const [writerId, setWriterId] = useState(""); // 공유자 id

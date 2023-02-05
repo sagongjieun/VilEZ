@@ -109,7 +109,6 @@ const ProductChatting = () => {
   function onClickEndShare() {
     // 공유자가 반납 확인을 눌렀는지 확인
     getShareReturnState(roomId).then((res) => {
-      console.log("@@@@@@@@@@@", res);
       if (res == "true") {
         postShareEnd(roomId).then((res) => {
           if (res) {
@@ -303,7 +302,7 @@ const ProductChatting = () => {
       {isOath ? (
         <OathModal close={setIsOath} openLastConfirm={setIsAppointmentComplete} roomId={roomId} readOnly={false} />
       ) : null}
-      {isAppointmentComplete ? <AppointmentCompleteModal /> : null}
+      {isAppointmentComplete ? <AppointmentCompleteModal close={setIsAppointmentComplete} /> : null}
       {isProductReturn ? (
         <ProductReturnModal
           close={setIsProductReturn}
@@ -314,10 +313,14 @@ const ProductChatting = () => {
       ) : null}
       {isShareComplete ? <ShareCompleteModal otherUserNickname={boardDetail.otherUserNickname} /> : null}
       {isShareCancel ? (
-        <ShareCancelModal close={setIsShareCancel} otherUserNickname={boardDetail.otherUserNickname} />
+        <ShareCancelModal close={setIsShareCancel} otherUserNickname={boardDetail.otherUserNickname} roomId={roomId} />
       ) : null}
       {isShareCancelAsk ? (
-        <ShareCancelAskModal close={setIsShareCancelAsk} otherUserNickname={boardDetail.otherUserNickname} />
+        <ShareCancelAskModal
+          close={setIsShareCancelAsk}
+          otherUserNickname={boardDetail.otherUserNickname}
+          roomId={roomId}
+        />
       ) : null}
     </div>
   );
