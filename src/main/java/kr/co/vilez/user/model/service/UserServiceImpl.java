@@ -198,12 +198,11 @@ public class UserServiceImpl implements UserService {
             refreshToken = jwtProvider.createRefreshToken(user.getEmail(), user.getNickName());
 
             // 로그인에 성공했다면, refresh 값을 db에 저장
-            HashMap<String, String> map = new HashMap<>();
-            map.put("userEmail", user.getEmail());
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("userId", user.getId());
             map.put("token", refreshToken);
             userMapper.saveToken(map);
 
-            http.setFlag("success");
             user.setAccessToken(accessToken);
             user.setRefreshToken(refreshToken);
             data.add(user);

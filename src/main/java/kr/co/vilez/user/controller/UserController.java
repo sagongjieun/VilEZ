@@ -216,6 +216,7 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody UserDto user){
         try {
             http = userService.login(user);
+            http.setFlag("success");
             log.info("로그인 성공 user : " + user.getId());
         } catch (Exception e){
             e.printStackTrace();
