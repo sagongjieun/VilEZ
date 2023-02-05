@@ -3,6 +3,7 @@ package kr.co.vilez.appointment.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import kr.co.vilez.appointment.model.dto.AppointmentDto;
+import kr.co.vilez.appointment.model.dto.CancelAppointmentDto;
 import kr.co.vilez.appointment.model.dto.RoomDto;
 import kr.co.vilez.appointment.model.dto.SetPeriodDto;
 import kr.co.vilez.appointment.model.service.AppointmentService;
@@ -36,6 +37,41 @@ public class AppointmentController {
     private final UserService userService;
     private final SimpMessageSendingOperations sendingOperations;
 
+    @PostMapping("/request/cancel")
+    @ApiOperation(value = "피공유자가 예약 취소 요청을 보내는 API")
+    public ResponseEntity<?> sendRequest(@RequestBody CancelAppointmentDto cancelAppointmentDto){
+        HttpVO http = new HttpVO();
+
+        try{
+            appointmentService.saveRequest(cancelAppointmentDto);
+            http.setFlag("success");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
+
+    @GetMapping("/request/cancel/{roomId}")
+    @ApiOperation(value = "피공유자가 예약을 취소하는 요청이 들어왔는지 확인하는 API"
+    ,notes ="null 이면 확인 안됨" +
+            "\n\t dto 가 존재하면 확인 됨")
+    public ResponseEntity<?> checkRequest(@PathVariable int roomId){
+        HttpVO http = new HttpVO();
+        ArrayList<Object> data = new ArrayList<>();
+
+        try{
+            data.add(appointmentService.checkRequest(roomId));
+            http.setFlag("success");
+            http.setData(data);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
+
     @DeleteMapping()
     @ApiOperation(value = "예약을 취소하는 API",
     notes = "-- arg --" +
@@ -59,10 +95,8 @@ public class AppointmentController {
 
     @GetMapping("/my/point")
     @ApiOperation(value = "나의 포인트 목록을 보여주는 정보를 출력하는 API",
-            notes = "\n\t type = 1 정상적인 포인트 추가/삭감" +
-                    "\n\t type = 2 반납기한을 넘겨 얻은 패널티 포인트 삭감" +
-                    "\n\t isIncrease가 true면 +10" +
-                    "\n\t false면 -10")
+            notes = "date가 없는 데이터는 취소에 의해 되돌려받은 포인트 내역" +
+                    "date가 있는 데이터는 예약에 의해 삭감/증가된 포인트 내역")
     public ResponseEntity<?> getPointList(@RequestParam int userId){
         HttpVO http = new HttpVO();
         ArrayList<Object> data = new ArrayList<>();
