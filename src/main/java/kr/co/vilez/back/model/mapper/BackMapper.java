@@ -11,6 +11,6 @@ import java.util.List;
 @Mapper
 public interface BackMapper {
     AppointmentVO getAppointmentId(int roomId) throws SQLException;
-    void setAppointment(int appointmentId) throws SQLException;
+    void setAppointment(AppointmentVO appointmentVO) throws SQLException;
     List<Integer> getAppointmentState(int roomId) throws SQLException;
 }

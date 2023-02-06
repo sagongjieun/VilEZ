@@ -33,7 +33,7 @@ public class BackServiceImpl implements BackService{
         backDao.deleteReturnRequest(roomId);
 
         // 에약 내역 -1 변경
-        backMapper.setAppointment(appointmentVO.getAppointmentId());
+        backMapper.setAppointment(appointmentVO);
 
         return appointmentVO;
     }
