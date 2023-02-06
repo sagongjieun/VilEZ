@@ -287,8 +287,8 @@ public class AppointmentController {
     @GetMapping("/{boardId}/{type}")
     @ApiOperation(value = "글 번호에 약속 정보들을 불러온다." ,
             notes = "List에 dto 담아서 리턴")
-    public ResponseEntity<?> getAppointmentList(@PathVariable int boardId,
-                                                @PathVariable int type){
+    public ResponseEntity<?> getAppointmentList(@PathVariable("boardId") int boardId,
+                                                @PathVariable("type") int type){
         HttpVO http = new HttpVO();
         List<Object> data = new ArrayList<>();
         try {
