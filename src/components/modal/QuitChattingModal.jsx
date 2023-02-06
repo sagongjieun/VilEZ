@@ -1,14 +1,12 @@
 import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useNavigate } from "react-router-dom";
 import MiddleWideButton from "../button/MiddleWideButton";
 import { deleteChatRoom } from "../../api/chat";
 import { checkUserLeaveState } from "../../recoil/atom";
 import { useSetRecoilState } from "recoil";
 
 function QuitChattingModal({ close, roomId }) {
-  const navigate = useNavigate();
   const loginUserId = localStorage.getItem("id");
   const setCheckUserLeave = useSetRecoilState(checkUserLeaveState);
 
@@ -20,7 +18,6 @@ function QuitChattingModal({ close, roomId }) {
     deleteChatRoom(roomId, loginUserId).then((res) => {
       if (res) {
         setCheckUserLeave(true); // stomp로 알리고
-        navigate(`/product/list/share`);
       }
     });
   }

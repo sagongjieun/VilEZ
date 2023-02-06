@@ -21,15 +21,16 @@ import {
   checkShareReturnState,
   checkUserLeaveState,
 } from "../recoil/atom";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 let client;
 
-const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareUserId, shareState }) => {
+const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareUserId, shareState, roomState }) => {
   const scrollRef = useRef();
   const myUserId = localStorage.getItem("id");
   const chatRoomId = roomId;
   const pathname = useLocation().pathname;
+  const navigate = useNavigate();
 
   const [checkShareDate, setCheckShareDate] = useRecoilState(checkShareDateState);
   const [checkAppointment, setCheckAppointment] = useRecoilState(checkAppointmentState);
@@ -48,6 +49,8 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
   const [calendarModalOpen, setCalendarModalOpen] = useState(false);
   const [isOathModalOpen, setIsOathModalOpen] = useState(false);
   const [oathSign, setOathSign] = useState("");
+  const [disableMapLat, setDisableMapLat] = useState("");
+  const [disableMapLng, setDisableMapLng] = useState("");
 
   function onKeyDownSendMessage(e) {
     if (e.keyCode === 13) {
@@ -141,6 +144,9 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
           setMovedLng(res.lng);
           setMovedZoomLevel(res.zoomLevel);
           setMovedMarker(res.isMarker);
+
+          setDisableMapLat(res.lat);
+          setDisableMapLng(res.lng);
         }
         // 마지막 장소가 없다면
         else {
@@ -148,6 +154,9 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
           setMovedLat(37.56682870560737);
           setMovedLng(126.9786409384806);
           setMovedZoomLevel(3);
+
+          setDisableMapLat(37.56682870560737);
+          setDisableMapLng(126.9786409384806);
         }
       });
 
@@ -182,6 +191,7 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
       client.connect({}, () => {
         // 다른 유저의 채팅을 구독
         client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
+          console.log("다른사람이 나감으로써 받는 메시지 : ", JSON.parse(data.body));
           setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
 
           if (JSON.parse(data.body).content === "예약이 확정됐어요 🙂") {
@@ -210,9 +220,9 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
   useEffect(() => {
     /* state : 0 예약 후, -1 반납 후, -2 예약 후(예약 취소 : 확장), -3 예약 전 */
     // test로 0, 원래는 -1
-    if (shareState === -1) {
+    if (shareState == -1 || roomState == -1) {
       // 소켓 끊기
-      // client.disconnect();
+      client.disconnect();
 
       // 채팅방 막기
       const messageInput = document.getElementById("messageInput");
@@ -221,10 +231,8 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
 
       const messageSendButton = document.getElementById("messageSendButton");
       messageSendButton.hidden = true;
-
-      // 공유지도 막기
     }
-  }, [shareState]);
+  }, [shareState, roomState]);
 
   // 시스템 메시지
   useEffect(() => {
@@ -329,13 +337,12 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
         time: new Date().getTime(),
       };
 
-      console.log("나갈때 보내는메시지 : ", sendMessage);
-
       setShowingMessage((prev) => [...prev, sendMessage]);
 
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
       setCheckUserLeave(false);
+      navigate(`/product/list/share`);
     }
   }, [checkShareDate, checkAppointment, checkShareCancelAsk, checkShareCancel, checkShareReturn, checkUserLeave]);
 
@@ -344,15 +351,19 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
       <div css={mapWrapper}>
         <span>{hopeLocation}</span>
         <div>
-          <Map
-            readOnly={false}
-            sendLocation={receiveLocation}
-            movedLat={movedLat}
-            movedLng={movedLng}
-            movedZoomLevel={movedZoomLevel}
-            movedMarker={movedMarker}
-            shareState={shareState}
-          />
+          {shareState == -1 || roomState == -1 ? (
+            // 공유지도 막기
+            <Map readOnly={true} disableMapLat={disableMapLat} disableMapLng={disableMapLng} />
+          ) : (
+            <Map
+              readOnly={false}
+              sendLocation={receiveLocation}
+              movedLat={movedLat}
+              movedLng={movedLng}
+              movedZoomLevel={movedZoomLevel}
+              movedMarker={movedMarker}
+            />
+          )}
         </div>
       </div>
       <div>
@@ -366,7 +377,6 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
           <div ref={scrollRef}>
             {showingMessage.map((message, index) => {
               if (message.system) {
-                console.log("###################", message.content);
                 return (
                   <div key={index} css={systemMessageWrapper}>
                     <span>{message.content}</span>
