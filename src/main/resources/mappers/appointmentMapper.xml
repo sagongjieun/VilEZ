@@ -193,7 +193,7 @@
         SELECT r.*
         from
             (select * from room where share_user_id = #{userId} or not_share_user_id = #{userId}) r
-        where board_id = #{boardId} and type = #{type}
+        where board_id = #{boardId} and type = #{type} and state >= 0
     </select>
 
     <select id="checkRoom2" parameterType="int" resultMap="room">

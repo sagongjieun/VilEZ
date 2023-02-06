@@ -381,6 +381,7 @@ public class AppointmentController {
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
 
+
     @ResponseBody
     @PostMapping("/room")
     public ResponseEntity<?> createRoom(@RequestBody RoomDto room) {
