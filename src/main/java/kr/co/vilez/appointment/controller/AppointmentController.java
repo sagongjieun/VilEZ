@@ -427,8 +427,20 @@ public class AppointmentController {
         http.setData(list);
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
+    /////////////// //////////// 채팅관련 API ////////////////////////////////
+    @DeleteMapping("/chat")
+    @ApiOperation(value = "해당하는 채팅을 나가는 API")
+    public ResponseEntity<?> deleteChat(@PathVariable int roomId){
+        HttpVO http = new HttpVO();
 
-    /////////////// ////////////////////////////////////////////
+        try{
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
 
     @MessageMapping("/recvchat")
     public ChatVO socketHandler(ChatVO chatVO) throws IOException {

@@ -183,6 +183,12 @@
         select * from room where id = #{roomId}
     </select>
 
+    <update id="deleteRoom" parameterType="int">
+        update room
+        set state = -1
+        where room_id = #{roomId}
+    </update>
+
     <select id="checkRoom" parameterType="int" resultMap="room">
         SELECT r.*
         from
