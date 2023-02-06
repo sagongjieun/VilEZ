@@ -31,7 +31,7 @@ class SharedPreferencesUtil(context: Context) {
     fun getUser():User {
         return User (
             accessToken = prefs.getString("accessToken", "")!!,
-            area = prefs.getString("area", "")!!,
+            token = prefs.getString("area", "")!!,
             date = prefs.getString("date", "")!!,
             email = prefs.getString("email", "")!!,
             id = prefs.getInt("id", -1),
@@ -60,7 +60,7 @@ class SharedPreferencesUtil(context: Context) {
             putString("profileImg", user.profileImg)
             putInt("point", user.point)
             putInt("manner", user.manner)
-            putString("area", user.area)
+            putString("area", user.token)
             putInt("state", user.state)
             putString("areaLat", user.areaLat)
             putString("areaLng",user.areaLng)
