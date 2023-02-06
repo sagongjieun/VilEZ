@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 public interface UserService {
+    void modifyPassword(String email) throws Exception;
     void saveLocationMobile(UserDto userDto) throws Exception;
     void setManner(int userId, int degree) throws Exception;
     void saveLocation(LocationDto locationDto) throws Exception;

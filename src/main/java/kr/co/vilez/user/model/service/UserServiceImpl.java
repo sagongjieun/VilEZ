@@ -31,6 +31,10 @@ public class UserServiceImpl implements UserService {
     HttpVO http = null;
     List<Object> data = null;
 
+    @Override
+    public void modifyPassword(String email) throws Exception {
+        userMapper.modifyPassword(email);
+    }
 
     @Override
     public void saveLocationMobile(UserDto userDto) throws Exception {
