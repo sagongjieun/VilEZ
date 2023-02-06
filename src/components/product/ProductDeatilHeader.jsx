@@ -20,19 +20,19 @@ const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
         {type === 1 ? (
           <div>
             <Link to={"/product/list/ask"}>
-              <span>목록</span>
+              <span css={optionWrap}>목록</span>
             </Link>
             <Link to={`/product/edit/ask/${boardId}`}>
-              <span>수정</span>
+              <span css={optionWrap}>수정</span>
             </Link>
           </div>
         ) : (
           <div>
             <Link to={"/product/list/share"}>
-              <span>목록</span>
+              <span css={optionWrap}>목록</span>
             </Link>
             <Link to={`/product/edit/share/${boardId}`}>
-              <span>수정</span>
+              <span css={optionWrap}>수정</span>
             </Link>
           </div>
         )}
@@ -76,7 +76,6 @@ const headerLeftSectionWrapper = css`
 const headerRightSectionWrapper = css`
   display: flex;
   flex-direction: row;
-
   & > a {
     color: #8a8a8a;
     cursor: pointer;
@@ -94,6 +93,11 @@ const headerRightSectionWrapper = css`
       height: 20px;
     }
   }
+`;
+
+const optionWrap = css`
+  margin-right: 10px;
+  color: black;
 `;
 
 export default ProductDeatilHeader;
