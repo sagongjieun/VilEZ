@@ -25,6 +25,7 @@ function App() {
         <Route path="/password" element={<FindPassword />} />
         <Route path="/oauth/kakao/callback" element={<OAuthKakao />} />
         <Route path="/mybox" element={<MyBox />} />
+        <Route path="/oauth/kakao/callback" element={<OAuthKakao />} />
         {/* <Route path="*" element={<NotFound />}></Route> */}
       </Routes>
     </BrowserRouter>
