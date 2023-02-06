@@ -10,11 +10,15 @@ import android.widget.LinearLayout
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.dto.PointDto
 import kr.co.vilez.databinding.FragmentPointBinding
 import kr.co.vilez.ui.user.ProfileMenuActivity
 import kr.co.vilez.util.ApplicationClass
+import retrofit2.awaitResponse
 
 private const val TAG = "빌리지_PointFragment"
 class PointFragment : Fragment() {
@@ -66,17 +70,26 @@ class PointFragment : Fragment() {
 
     fun initData() {
         // test용 데이터
-        pointList.add(PointDto(7, 6, 4, "안녕하세요",
+       /* pointList.add(PointDto(7, 6, 4, "안녕하세요",
             "2023-02-05", 1, true))
         pointList.add(PointDto(7, 6, 4, "안녕하세요2",
-            "2023-02-05", 1, false))
+            "2023-02-05", 1, false))*/
+        CoroutineScope(Dispatchers.Main).launch {
+            val result = ApplicationClass.retrofitAppointmentService.getPointList(ApplicationClass.prefs.getId()).awaitResponse().body()
+            if(result?.flag=="success") {
+                val data = result.data[0]
+                // point 차감액, 적립액 구하기
+                /*for(i in 0 until pointList.size) {
+                    if (pointList[i].isIncrease) pointPlusSum+=10
+                    else pointMinusSum += 10
+                }*/
+            } else {
 
-
-        // point 차감액, 적립액 구하기
-        for(i in 0 until pointList.size) {
-            if (pointList[i].isIncrease) pointPlusSum+=10
-            else pointMinusSum += 10
+            }
         }
+
+
+
     }
 
     fun initView() {

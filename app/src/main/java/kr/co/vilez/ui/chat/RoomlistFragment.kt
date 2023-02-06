@@ -133,7 +133,7 @@ class ChatlistFragment : Fragment() {
                                     json.getInt("roomId"),
                                     json.getString("nickName"),
                                     json.getString("content"),
-                                    json.getString("area"),
+                                    "",
                                     json.getInt("fromUserId"),
                                     1,
                                     json.getString("profile")
