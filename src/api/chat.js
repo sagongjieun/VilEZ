@@ -26,9 +26,9 @@ async function getChatHistory(chatRoomId) {
   }
 }
 
-async function getAppointmentsByBoardId(boardId) {
+async function getAppointmentsByBoardId(boardId, type) {
   try {
-    const { data } = await jsonAxios.get(`/appointments/${boardId}`);
+    const { data } = await jsonAxios.get(`/appointments/${boardId}/${type}`);
 
     if (data.flag === "success") return data.data;
     else console.log("일치하는 게시글이 없습니다. 😅");
