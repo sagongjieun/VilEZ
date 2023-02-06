@@ -121,7 +121,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         List<PointListVO> list = new ArrayList<>();
         for(PointVO pointVO : pointVOList) {
-            BoardInfoVO boardInfoVO = appointmentMapper.getBoardInfo(pointVO);
+            BoardInfoVO boardInfoVO = new BoardInfoVO();
+            if(pointVO.getBoardId() == -1) {
+                boardInfoVO.setTitle("기본 포인트");
+            } else {
+                boardInfoVO = appointmentMapper.getBoardInfo(pointVO);
+            }
             list.add(new PointListVO(pointVO, boardInfoVO));
         }
 
