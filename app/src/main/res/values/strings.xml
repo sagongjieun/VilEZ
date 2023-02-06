@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">vilez</string>
+    <string name="app_title">ViLEZ</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="kakao_app_key">66676a678632bb4a0aa95b77fd0235f8</string>
+
+    <string name="naver_client_id">KdnHuDfQRJ8OKSLDdgB6</string>
+    <string name="naver_client_secret">iaX0nJ2Q5Z</string>
+    <string name="naver_client_name">vilez</string>
+
+    <string name="kakao_oauth_app_key">9ff34f207daffa89c01684489f53c7dc</string>
+    <string name="kakao_native_app_key">kakao9ff34f207daffa89c01684489f53c7dc</string>
+
+
+    <string name="home_no_article_message">근처에 대여 가능한 물품이 더 없네요.😥\n\n요청 게시글을 작성해 보는 건 어때요?</string>
+    <string name="share_no_article_message">근처에 공유를 원하는 사람이 없네요 😥\n\n요청 게시글을 직접 작성해 보는 건 어때요?</string>
+
+
+</resources>

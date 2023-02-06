@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/page_home"
+        android:enabled="true"
+        android:icon="@drawable/home_line"
+        android:title="홈"/>
+    <item
+        android:id="@+id/page_share"
+        android:enabled="true"
+        android:icon="@drawable/share_request_line"
+        android:title="공유 요청"/>
+    <item
+        android:id="@+id/page_chat"
+        android:enabled="true"
+        android:icon="@drawable/message_line"
+        android:title="채팅"/>
+    <item
+        android:id="@+id/page_profile"
+        android:enabled="true"
+        android:icon="@drawable/user_line"
+        android:title="나의 빌리지"/>
+</menu>
