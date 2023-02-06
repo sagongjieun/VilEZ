@@ -346,7 +346,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                     throw new RuntimeException(e);
                 }
             }
-            chatDatasVO.setArea(user.getArea());
+
             chatDatasVO.setNickName(user.getNickName());
             chatDatasVO.setProfile(user.getProfileImg());
             chatDatasVO.setChatData(vo);

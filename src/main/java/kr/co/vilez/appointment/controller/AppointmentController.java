@@ -36,7 +36,6 @@ public class AppointmentController {
     private final AppointmentService appointmentService;
     private final UserService userService;
     private final SimpMessageSendingOperations sendingOperations;
-
     @GetMapping("/date")
     @ApiOperation(value = "채팅방 유저간의 약속된 시간을 불러오는 API")
     public ResponseEntity<?> getAppointmentDate(@RequestParam int boardId,
@@ -455,7 +454,7 @@ public class AppointmentController {
             throw new RuntimeException(e);
         }
         map.put("nickName",user.getNickName());
-        map.put("area", user.getArea());
+        map.put("token", user.getToken());
         map.put("content", chatVO.getContent());
         map.put("roomId",chatVO.getRoomId());
         map.put("fromUserId",chatVO.getFromUserId());
@@ -468,10 +467,10 @@ public class AppointmentController {
 
         // send FCM
         if(chatVO.isSystem()) {
-            fcmDataService.sendChatMessageTo(user.getArea(), chatVO.getRoomId(), user2.getId(), "시스템", chatVO.getContent());
-            fcmDataService.sendChatMessageTo(user2.getArea(), chatVO.getRoomId(), user.getId(), "시스템", chatVO.getContent());
+            fcmDataService.sendChatMessageTo(user.getToken(), chatVO.getRoomId(), user2.getId(), "시스템", chatVO.getContent());
+            fcmDataService.sendChatMessageTo(user2.getToken(), chatVO.getRoomId(), user.getId(), "시스템", chatVO.getContent());
         } else {
-            fcmDataService.sendChatMessageTo(user2.getArea(), chatVO.getRoomId(), chatVO.getFromUserId(), user.getNickName(), chatVO.getContent());
+            fcmDataService.sendChatMessageTo(user2.getToken(), chatVO.getRoomId(), chatVO.getFromUserId(), user.getNickName(), chatVO.getContent());
         }
         return chatVO;
     }

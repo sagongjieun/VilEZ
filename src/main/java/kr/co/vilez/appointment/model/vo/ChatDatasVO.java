@@ -11,7 +11,6 @@ import java.util.List;
 public class ChatDatasVO {
     int noReadCount;
     String nickName;
-    String area;
     String profile;
     ChatLastVO chatData;
 }

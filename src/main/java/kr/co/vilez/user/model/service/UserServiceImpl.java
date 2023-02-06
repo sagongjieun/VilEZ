@@ -227,7 +227,7 @@ public class UserServiceImpl implements UserService {
 
         HashMap<String, Object> map = new HashMap<>();
         map.put("nickName",user.getNickName());
-        map.put("area",user.getArea());
+        map.put("area",user.getToken());
         map.put("manner",user.getManner());
         map.put("point",user.getPoint());
         map.put("profile_img", user.getProfileImg());
