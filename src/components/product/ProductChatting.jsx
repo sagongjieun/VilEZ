@@ -123,6 +123,11 @@ const ProductChatting = () => {
     });
   }
 
+  // StompREalTime.jsx에서 변경되는 state값 받기
+  function receiveShareState(state) {
+    setShareState(state);
+  }
+
   useEffect(() => {
     // boardId 얻기
     getBoardIdByRoomId(roomId)
@@ -259,6 +264,7 @@ const ProductChatting = () => {
             notShareUserId={notShareUserId}
             shareState={shareState}
             roomState={roomState}
+            sendShareState={receiveShareState}
           />
         )}
       </div>

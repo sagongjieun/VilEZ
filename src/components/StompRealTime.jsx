@@ -25,7 +25,16 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 let client;
 
-const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareUserId, shareState, roomState }) => {
+const StompRealTime = ({
+  roomId,
+  boardId,
+  otherUserId,
+  otherUserNickname,
+  shareUserId,
+  shareState,
+  roomState,
+  sendShareState,
+}) => {
   const scrollRef = useRef();
   const myUserId = localStorage.getItem("id");
   const chatRoomId = roomId;
@@ -127,10 +136,6 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
     });
   }
 
-  function onClickRecommendLocation() {
-    alert("추천 장소 가져오기");
-  }
-
   useEffect(() => {
     if (chatRoomId) {
       console.log(chatRoomId);
@@ -191,7 +196,6 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
       client.connect({}, () => {
         // 다른 유저의 채팅을 구독
         client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
-          console.log("다른사람이 나감으로써 받는 메시지 : ", JSON.parse(data.body));
           setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
 
           if (JSON.parse(data.body).content === "예약이 확정됐어요 🙂") {
@@ -270,6 +274,7 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
       setCheckAppointment(false);
+      sendShareState(0);
     }
 
     // 예약 취소 요청
@@ -306,6 +311,7 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
       setCheckShareCancel(false);
+      sendShareState(-2);
     }
 
     // 반납 확인 -> 대화 종료
@@ -324,6 +330,7 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
       setCheckShareReturn(false);
+      sendShareState(-1);
     }
 
     // 상대방이 채팅방 나감 -> 대화 종료
@@ -371,7 +378,7 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
           <img src={selectDateButton} onClick={onClickOpenCalendarModal} />
           {calendarModalOpen && <CalendarModal setCalendarModalOpen={setCalendarModalOpen} boardId={boardId} />}
           <img src={openOathButton} onClick={onClickOpenOath} />
-          <img src={recommendLocationButton} onClick={onClickRecommendLocation} />
+          <img src={recommendLocationButton} />
         </div>
         <div css={chatWrapper}>
           <div ref={scrollRef}>
