@@ -104,10 +104,10 @@
             <if test ="word != null and word != ''">
                 AND (title like #{word} OR content like #{word})
             </if>
-            <if test="category != null and category != ''">
-                AND category = #{category}
-            </if>
-        </where>
+        <if test="category != null and category != ''">
+            AND category = #{category}
+        </if>
+    </where>
         LIMIT #{low}
         OFFSET #{high};
     </select>
