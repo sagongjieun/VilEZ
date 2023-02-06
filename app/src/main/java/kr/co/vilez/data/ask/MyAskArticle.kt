@@ -1,7 +1,10 @@
-package kr.co.vilez.data.model
+package kr.co.vilez.data.ask
 
-data class ShareListDtoX(
-    val area: String,
+import kr.co.vilez.data.model.ImgPath
+
+data class MyAskArticle(
+    val address: String,
+    val area: Any,
     val category: String,
     val content: String,
     val date: String,
@@ -12,10 +15,9 @@ data class ShareListDtoX(
     val list: List<ImgPath>,
     val manner: Int,
     val nickName: String,
-    val path: Any,
     val startDay: String,
     val state: Int,
     val title: String,
-    val userId: Int,
-    val address: String,
+    val type: Any,
+    val userId: Int
 )

@@ -68,9 +68,9 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    fun initMenus() {
+    private fun initMenus() {
         // 나의 공유 메뉴 초기화
-        val sharedMenuName = arrayOf("공유 캘린더", "공유 내역", "요청 내역", "관심 목록", "포인트 내역")
+        val sharedMenuName = arrayOf("공유 캘린더", "나의 작성글", "나의 관심글", "포인트 내역")
         val shareSimpleAdapter = ArrayAdapter(mainActivity, android.R.layout.simple_list_item_1, sharedMenuName)
         binding.lvMenuShare.apply {
             divider = null
@@ -80,6 +80,18 @@ class ProfileFragment : Fragment() {
                 moveEditActivity(sharedMenuName[i])
             }
         }
+
+        // 나의 공유 박스 메뉴 초기화
+        val myShareBoxMenuName = arrayOf("나의 공유중 물품" , "나의 공유예정 물품", "나의 대여 물품", "나의 대여예정 물품")
+        val myShareBoxSimpleAdapter =  ArrayAdapter(mainActivity, android.R.layout.simple_list_item_1, myShareBoxMenuName)
+        binding.lvMenuMyBox.apply {
+            divider = null
+            adapter = myShareBoxSimpleAdapter
+            setOnItemClickListener { _, _, i, _ ->
+                moveEditActivity(myShareBoxMenuName[i])
+            }
+        }
+
         // 설정 메뉴 초기화
         val settingsMenuName = arrayOf("내 동네 설정")
         val settingsSimpleAdapter =  ArrayAdapter(mainActivity, android.R.layout.simple_list_item_1, settingsMenuName)
@@ -92,7 +104,7 @@ class ProfileFragment : Fragment() {
         }
 
         // 계정 메뉴 초기화
-        val accountMenuName = arrayOf("내 정보 수정", "로그아웃")
+        val accountMenuName = arrayOf("로그아웃")
         val accountSimpleAdapter =  ArrayAdapter(mainActivity, android.R.layout.simple_list_item_1, accountMenuName)
         binding.lvMenuAccount.apply {
             divider = null
@@ -105,6 +117,11 @@ class ProfileFragment : Fragment() {
                 }
             }
         }
+    }
+
+    fun mannerHelp(view: View) { // 매너 지수 클릭했을 때 알림 메시지
+        val dialog = AlertDialog(mainActivity, "매너점수는 빌리지 사용자로부터 받은 후기,\n운영자 제재 등을 종합해서 만든 매너 지표입니다.")
+        dialog.show(mainActivity.supportFragmentManager, "MannerHelp")
     }
 
 

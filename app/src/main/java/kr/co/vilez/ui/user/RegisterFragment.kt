@@ -237,6 +237,7 @@ class RegisterFragment : Fragment() {
         // 올바른 이메일 형식이면
         CoroutineScope(Dispatchers.Main).launch {
             val result = ApplicationClass.retrofitEmailService.checkEmail(Email(email)).awaitResponse().body()
+            Log.d(TAG, "sendEmailAuth: 회원가입 이메일 날림 result: $result")
             if(result != null) {
                 when(result.flag) {
                     "success" -> {
@@ -257,7 +258,7 @@ class RegisterFragment : Fragment() {
                         }
                         binding.btnRegisterEmailAuth.text = "다시전송"
                     }
-                    "duplicate" -> {
+                    "duplicated" -> {
                         isEmailSent = false
                         binding.inputRegisterEmail.error = "이미 사용중인 이메일입니다."
                         Log.d(TAG, "checkEmail: 이미 사용중인 이메일입니다.")

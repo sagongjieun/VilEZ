@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
             name="fragment"
-            type="kr.co.vilez.ui.profile.EditAccountFragment" />
+            type="kr.co.vilez.ui.profile.MyAskFragment" />
 
         <variable
             name="title"
@@ -41,25 +42,44 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@{title}"
+                    android:text="나의 대여 물품"
                     android:textSize="20sp" />
             </com.google.android.material.appbar.MaterialToolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
-
-        <FrameLayout
+        <LinearLayout
+            android:id="@+id/ll_home"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            tools:context=".ui.profile.InterestFragment">
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/appbar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:orientation="vertical">
 
-            <!-- TODO: Update blank fragment layout -->
-            <TextView
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout_my_ask_list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/hello_blank_fragment" />
+                android:layout_height="match_parent">
 
-        </FrameLayout>
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tab_item_sharing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="대여 중" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tab_item_reserve"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="대여 예정" />
+            </com.google.android.material.tabs.TabLayout>
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
     </LinearLayout>
 
 </layout>

@@ -12,10 +12,13 @@ class Common {
 
     companion object {
 
-        val DEFAULT_PROFILE_IMG = "https://kr.object.ncloudstorage.com/vilez/basicProfile.png"
+        const val DEFAULT_PROFILE_IMG = "https://kr.object.ncloudstorage.com/vilez/basicProfile.png"
 
-        val BOARD_TYPE_SHARE = 2
-        val BOARD_TYPE_ASK = 1
+        const val BOARD_TYPE_SHARE = 2
+        const val BOARD_TYPE_ASK = 1
+
+        const val SHARE_STATE_DEFAULT = 0 // 공유가능
+        const val SHARE_STATE_SHARING = 1 // 공유중
 
 
         fun showAlertDialog(context: AppCompatActivity, title:String, tag:String) {

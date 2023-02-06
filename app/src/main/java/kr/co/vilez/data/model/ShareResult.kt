@@ -1,6 +1,6 @@
 package kr.co.vilez.data.model
 
-data class Data(
+data class ShareResult(
     val listCnt: Int,
-    val shareListDto: ShareListDtoX
+    val shareListDto: ShareDto
 )

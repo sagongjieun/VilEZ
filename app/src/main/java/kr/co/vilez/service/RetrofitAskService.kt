@@ -1,13 +1,21 @@
 package kr.co.vilez.service
 
+import kr.co.vilez.data.ask.MyAskArticle
 import kr.co.vilez.data.dto.WriteBoard
 import kr.co.vilez.data.model.*
 import okhttp3.MultipartBody
 import retrofit2.Call
-import retrofit2.CallAdapter
 import retrofit2.http.*
 
+data class RESTMyAskArticleResult(
+    val `data`: List<MyAskArticle>,
+    val flag: String
+)
 interface RetrofitAskService {
+    // 내가 쓴 글 목록을 불러온다.
+    @GET("/vilez/askboard/my/{userId}")
+    fun getMyArticle(@Path("userId")id:Int):Call<RESTMyAskArticleResult>
+
     // 모든 요청 글 목록을 불러온다. (area는 쓰지 않는다)
     @GET("/vilez/askboard")
     fun boardList(

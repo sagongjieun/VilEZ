@@ -161,8 +161,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
 
-    private fun initShareData(
-        filtered: Boolean = false, keyword: String, category: String? = null) {
+    private fun initShareData(filtered: Boolean = false, keyword: String, category: String? = null) {
         // 데이터 가져오기
         shareDatas = arrayListOf()
 
@@ -178,9 +177,7 @@ class SearchActivity : AppCompatActivity() {
         // 리사이클러뷰에 어댑터 등록
         binding.rvShareSearch.apply {
             adapter = shareAdapter
-            layoutManager =
-                LinearLayoutManager(this@SearchActivity, LinearLayoutManager.VERTICAL, false)
-        }
+            layoutManager = LinearLayoutManager(this@SearchActivity, LinearLayoutManager.VERTICAL, false) }
 
         var num = 0;
         var max = 10;
@@ -213,7 +210,7 @@ class SearchActivity : AppCompatActivity() {
                         data.shareListDto.title,
                         Common.elapsedTime(data.shareListDto.date),
                         "구미",
-                        data.shareListDto.startDay + "~" + data.shareListDto.endDay,
+                        data.shareListDto.startDay + " ~ " + data.shareListDto.endDay,
                         Integer.toString(data.listCnt),
                         data.shareListDto.state,
                         data.shareListDto.userId
@@ -246,7 +243,7 @@ class SearchActivity : AppCompatActivity() {
                                     data.shareListDto.title,
                                     Common.elapsedTime(data.shareListDto.date),
                                     "구미",
-                                    data.shareListDto.startDay + "~" + data.shareListDto.endDay,
+                                    data.shareListDto.startDay + " ~ " + data.shareListDto.endDay,
                                     Integer.toString(data.listCnt),
                                     data.shareListDto.state,
                                     data.shareListDto.userId
@@ -302,7 +299,7 @@ class SearchActivity : AppCompatActivity() {
                         data.askDto.title,
                         data.askDto.date,
                         "", // 이거 안쓰기로함
-                        data.askDto.startDay + "~" + data.askDto.endDay,
+                        data.askDto.startDay + " ~ " + data.askDto.endDay,
                         data.askDto.state,
                         data.askDto.userId
                     )
@@ -333,7 +330,7 @@ class SearchActivity : AppCompatActivity() {
                                 data.askDto.title,
                                 data.askDto.date,
                                 "", // 이거 안쓰기로함
-                                data.askDto.startDay + "~" + data.askDto.endDay,
+                                data.askDto.startDay + " ~ " + data.askDto.endDay,
                                 data.askDto.state,
                                 data.askDto.userId
                             )

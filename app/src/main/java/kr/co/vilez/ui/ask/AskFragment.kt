@@ -132,7 +132,7 @@ class AskFragment : Fragment() {
                         data.askDto.title,
                         data.askDto.date,
                         "", // 이거 안쓰기로함
-                        data.askDto.startDay+"~"+data.askDto.endDay,
+                        data.askDto.startDay+" ~ "+data.askDto.endDay,
                         data.askDto.state,
                         data.askDto.userId
                     )
@@ -164,7 +164,7 @@ class AskFragment : Fragment() {
                                 data.askDto.title,
                                 data.askDto.date,
                                 "", // 이거 안쓰기로함
-                                data.askDto.startDay+"~"+data.askDto.endDay,
+                                data.askDto.startDay+" ~ "+data.askDto.endDay,
                                 data.askDto.state,
                                 data.askDto.userId
                             )
