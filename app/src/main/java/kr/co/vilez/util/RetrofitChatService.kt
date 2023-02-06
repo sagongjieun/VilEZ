@@ -3,6 +3,7 @@ package kr.co.vilez.util
 import kr.co.vilez.data.model.*
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -70,4 +71,7 @@ interface RetrofitChatService {
 
     @POST("/vilez/signs")
     fun addSign(@Body sign: Sign) : Call<RESTResult>
+
+    @DELETE("/vilez/appointments/chat")
+    fun closeRoom(@Query("roomId") roomId: Int,@Query("userId") userId: Int): Call<RESTResult>
 }

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.contains
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,6 +36,8 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
     private var otherUserId  = 0
     private val itemList = ArrayList<ChatlistData>()
     private var roomId: Int = 0
+    private lateinit var mapView :MapView
+    private var binding: FragmentKakaoMapBinding? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -48,17 +51,23 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentKakaoMapBinding.inflate(inflater, container, false)
-        context ?: return binding.root
+        binding = FragmentKakaoMapBinding.inflate(inflater, container, false)
+        context ?: return binding!!.root
         var bundle = arguments as Bundle
         roomId = bundle.getInt("roomId")
         otherUserId = bundle.getInt("otherUserId")
-        val mapView = MapView(context)
-        binding.mapView.addView(mapView)
+        mapView = MapView(context)
+        binding!!.mapView.addView(mapView)
         subMap(mapView)
         mapView.setMapViewEventListener(this)
 //         Inflate the layout for this fragment
-        return binding.root
+        return binding!!.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if(binding!!.mapView.contains(mapView))
+            binding!!.mapView.removeView(mapView)
     }
 
     fun subMap(mapView : MapView){
