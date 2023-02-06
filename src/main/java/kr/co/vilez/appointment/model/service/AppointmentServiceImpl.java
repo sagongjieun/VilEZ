@@ -6,6 +6,8 @@ import kr.co.vilez.appointment.model.mapper.AppointmentMapper;
 import kr.co.vilez.appointment.model.vo.ChatVO;
 import kr.co.vilez.appointment.model.vo.MapVO;
 import kr.co.vilez.appointment.model.vo.*;
+import kr.co.vilez.back.model.dao.BackDao;
+import kr.co.vilez.back.model.vo.RoomStatusVO;
 import kr.co.vilez.share.model.dao.ShareDao;
 import kr.co.vilez.share.model.dto.BookmarkDto;
 import kr.co.vilez.share.model.dto.ImgPath;
@@ -27,6 +29,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentDao appointmentDao;
     private final AppointmentMapper appointmentMapper;
     private final ShareDao shareDao;
+    private final BackDao backDao;
 
     @Override
     public AppointmentDto getAppointmentDate(int boardId, int shareUserId, int notShareUserId, int type) throws Exception {
@@ -53,6 +56,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void cancelAppointment(int roomId, int reason) throws Exception {
         // 해당하는 roomId의 확인 요청 데이터를 삭제한다.
         appointmentDao.deleteRequest(roomId);
+
+        // 현재 채팅방 상태를 설정한다.
+        // 예약취소 -2
+        backDao.insertRoomStatus(new RoomStatusVO(roomId, -2));
 
         // roomId 를 통해 appointment 내역을 가져온다
         RoomDto roomDto = appointmentMapper.getBoard(roomId);
@@ -249,6 +256,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public void create(AppointmentDto appointmentDto) throws Exception {
         appointmentMapper.create(appointmentDto);
+
+        // 현재 채팅방 상태를 설정한다.
+        // 예약중 0
+        backDao.insertRoomStatus(new RoomStatusVO(appointmentDto.getRoomId(), 0));
     }
 
     ////////////////////////////////////////// chat ///////////////////////////////////////////

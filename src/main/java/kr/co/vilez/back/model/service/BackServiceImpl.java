@@ -1,16 +1,13 @@
 package kr.co.vilez.back.model.service;
 
-import kr.co.vilez.appointment.model.mapper.AppointmentMapper;
 import kr.co.vilez.back.model.dao.BackDao;
-import kr.co.vilez.back.model.dto.AppointmentStateDto;
 import kr.co.vilez.back.model.dto.ReturnRequestDto;
 import kr.co.vilez.back.model.mapper.BackMapper;
 import kr.co.vilez.back.model.vo.AppointmentVO;
+import kr.co.vilez.back.model.vo.RoomStatusVO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,11 +21,20 @@ public class BackServiceImpl implements BackService{
     final BackMapper backMapper;
 
     @Override
+    public RoomStatusVO getRoomStatus(int roomId) throws Exception {
+        return backDao.selectRoomStatus(roomId);
+    }
+
+    @Override
     public AppointmentVO confirmedReturns(int roomId) throws Exception {
         // roomId를 통한 예약 Id 불러오기
         AppointmentVO appointmentVO = backMapper.getAppointmentId(roomId);
         System.out.println("appointmentVO = " + appointmentVO);
-        
+
+        // 현재 채팅방 상태를 설정한다.
+        // 반납 -1
+        backDao.insertRoomStatus(new RoomStatusVO(roomId, -1));
+
         // 이전 반납 요청 내역 삭제
         backDao.deleteReturnRequest(roomId);
 

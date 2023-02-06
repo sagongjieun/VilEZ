@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppointmentDto {
+    private int roomId;
     private int appointmentId;
     private int boardId;
     private int shareUserId;
