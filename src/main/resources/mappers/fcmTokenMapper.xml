@@ -5,7 +5,7 @@
 
     <update id="updateUserToken" parameterType="FCMTokenDto">
         UPDATE user
-            SET area = #{token}
+            SET token = #{token}
             WHERE id = #{userId}
     </update>
 </mapper>
