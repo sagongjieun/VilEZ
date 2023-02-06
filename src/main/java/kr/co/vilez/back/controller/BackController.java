@@ -24,7 +24,7 @@ import java.util.Map;
 public class BackController {
     final BackService backService;
 
-    @PostMapping("/confirmed/returns")
+    @PostMapping("/confirmed")
     @ApiOperation(value = "반납 확정 API",
             notes = "-- return --" +
                     "\n\t 반납확정시 예약된 내역을 삭제하고(-1로 설정)")
@@ -43,18 +43,21 @@ public class BackController {
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
 
-    @GetMapping()
-    @ApiOperation(value = "반납 요청을 확인하는 API",
-    notes = "-- return --" +
-            "\n\t 반납 요청이 있으면 true, 없으면 false")
-    public ResponseEntity<?> requestReturn(@RequestParam int roomId){
+    @GetMapping("/{roomId}")
+    @ApiOperation(value = "현재 채팅방의 상태를 나타내는 API",
+    notes = "-- return -- " +
+            "\n\t status : null : 현재 공유 전" +
+            "\n\t status : 0 : 공유중" +
+            "\n\t status : -1 : 반납완료" +
+            "\n\t status : -2 : 예약취소")
+    public ResponseEntity<?> getRoomStatus(@PathVariable int roomId){
         HttpVO http = new HttpVO();
         ArrayList<Object> data = new ArrayList<>();
 
         try{
-            data.add(backService.checkReturnRequest(roomId));
-            http.setData(data);
+            data.add(backService.getRoomStatus(roomId));
             http.setFlag("success");
+            http.setData(data);
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -69,6 +72,25 @@ public class BackController {
 
         try{
             backService.requestReturn(returnRequestDto);
+            http.setFlag("success");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
+
+    @GetMapping()
+    @ApiOperation(value = "반납 요청을 확인하는 API",
+            notes = "-- return --" +
+                    "\n\t 반납 요청이 있으면 true, 없으면 false")
+    public ResponseEntity<?> requestReturn(@RequestParam int roomId){
+        HttpVO http = new HttpVO();
+        ArrayList<Object> data = new ArrayList<>();
+
+        try{
+            data.add(backService.checkReturnRequest(roomId));
+            http.setData(data);
             http.setFlag("success");
         } catch (Exception e){
             e.printStackTrace();
