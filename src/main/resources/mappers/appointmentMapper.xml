@@ -197,7 +197,7 @@
     </select>
 
     <select id="checkRoom2" parameterType="int" resultMap="room">
-        SELECT r.*
+        SELECT *
         from room
         where board_id = #{boardId} and type = #{type}
             and share_user_id = #{shareUserId} and not_share_user_id = #{notShareUserId}
