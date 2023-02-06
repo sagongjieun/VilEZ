@@ -27,16 +27,22 @@
         <result column="lat" property="area_lat"/>
     </resultMap>
 
+    <update id="modifyPassword" parameterType="string" >
+        update user
+        set password = #{password}
+        where email = #{email};
+    </update>
+
     <update id="setPoint" parameterType="int">
         update user
         set point = point + #{point}
-        where id = #{userId}
+        where id = #{userId};
     </update>
 
     <update id="setManner" parameterType="int" >
         update user
         set manner =  manner + #{degree}
-        where id = #{userId}
+        where id = #{userId};
     </update>
 
     <select id="saveLocation" parameterType="locationDto" resultMap="location">
@@ -48,7 +54,7 @@
     <select id="saveLocationMobile" parameterType="userDto">
         UPDATE user
         SET area_lng = #{areaLng}, area_lat=#{areaLat}
-        WHERE id = #{id}
+        WHERE id = #{id};
     </select>
 
     <select id="checkEmail" parameterType="string" resultMap="user">
@@ -94,7 +100,7 @@
     <update id="modifyProfile" parameterType="userDto">
         UPDATE user
         SET profile_img = #{profileImg}
-        WHERE id = #{id}
+        WHERE id = #{id};
     </update>
 
     <insert id = "join">
@@ -113,7 +119,7 @@
     <update id="saveToken" parameterType="map">
         UPDATE user
         SET refresh_token = #{token}
-        WHERE id = #{userId}
+        WHERE id = #{userId};
     </update>
 
 </mapper>
