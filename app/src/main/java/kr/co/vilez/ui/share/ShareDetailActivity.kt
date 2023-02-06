@@ -135,7 +135,7 @@ class ShareDetailActivity : AppCompatActivity(){
                 val fragment = supportFragmentManager.findFragmentById(R.id.share_detail_map)
                 if(fragment != null)
                     supportFragmentManager.beginTransaction().remove(fragment!!).commitNow()
-
+                //todo 확인할 필요있음!!!!!! 서버도 봅시다
                 val intent = Intent(this@ShareDetailActivity, ChatRoomActivity::class.java)
                 intent.putExtra("roomId", isExist.data[0].id)
                 intent.putExtra("otherUserId", userId!!)
@@ -152,6 +152,7 @@ class ShareDetailActivity : AppCompatActivity(){
                 )
                 val result = ApplicationClass.retrofitChatService.createChatroom(chatRoom).awaitResponse().body()
                 if(result?.flag == "success") {
+
                     val fragment = supportFragmentManager.findFragmentById(R.id.share_detail_map)
                     if(fragment != null)
                         supportFragmentManager.beginTransaction().remove(fragment!!).commitNow()
@@ -168,7 +169,7 @@ class ShareDetailActivity : AppCompatActivity(){
                         0, RoomlistData(
                             result.data[0].id,
                             binding.writer!!.nickName,
-                            "",
+                            "대화가 시작 되었습니다.",
                             "",
                             ApplicationClass.prefs.getId(),
                             1,

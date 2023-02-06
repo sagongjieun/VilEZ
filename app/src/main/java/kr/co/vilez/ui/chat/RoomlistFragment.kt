@@ -110,7 +110,6 @@ class ChatlistFragment : Fragment() {
                                     break
                                 }
                             }
-
                             if(data != roomId) {
                                 DataState.itemList[index].noReadCnt++
                             } else {
