@@ -9,7 +9,7 @@ async function requestLogin(email, password) {
     const { data } = await jsonAxios.post(`/users/login`, { email, password });
 
     if (data.flag === "success") {
-      if (data.data) {
+      if (data.data === !null) {
         console.log(data);
         const res = data.data[0];
 
