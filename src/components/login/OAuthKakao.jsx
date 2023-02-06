@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
@@ -10,8 +10,8 @@ import { loginUserState } from "../../recoil/atom";
 const OAuthKakao = () => {
   const setLoginUser = useSetRecoilState(loginUserState);
   const navigate = useNavigate();
-  const code = new URL(window.location.href).searchParams.get("code");
-  const onKakaoLogin = () => {
+  const [code, setCode] = useState("");
+  function onKakaoLogin() {
     requestKakaoLogin(code).then((response) => {
       const data = response.data[0];
       localStorage.setItem("accessToken", data.accessToken);
@@ -29,10 +29,13 @@ const OAuthKakao = () => {
         };
       });
     });
-  };
+  }
+  useEffect(() => {
+    setCode(new URL(window.location.href).searchParams.get("code"));
+  }, []);
   useEffect(() => {
     onKakaoLogin();
-  }, []);
+  }, [code]);
   setTimeout(() => {
     navigate("/");
   }, 1500);
