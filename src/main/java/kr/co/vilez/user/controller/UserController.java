@@ -232,7 +232,7 @@ public class UserController {
         try {
             http = userService.login(user);
             http.setFlag("success");
-            log.info("로그인 성공 user : " + user.getId());
+            log.info("로그인 성공 user : " + user);
         } catch (Exception e){
             e.printStackTrace();
             log.error("로그인 실패");
