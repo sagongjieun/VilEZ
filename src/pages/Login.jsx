@@ -10,10 +10,10 @@ import Naver from "../assets/images/social_naver.png";
 
 const Login = () => {
   const navigate = useNavigate();
-  const KAKAO_REDIRECT_URI = process.env.REACT_APP_KAKAO_REDIRECT_URI;
-  const KAKAO_REST_API_KEY = process.env.REACT_APP_KAKAO_REST_API_KEY;
-  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_API_KEY}&redirect_uri=${KAKAO_REDIRECT_URI}&response_type=code`;
-  // const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=bc1b0d18239d9332d371b33821ffb2e5&redirect_uri=https://i8d111.p.ssafy.io/oauth/kakao/callback&response_type=code`;
+  // const KAKAO_REDIRECT_URI = process.env.REACT_APP_KAKAO_REDIRECT_URI;
+  // const KAKAO_REST_API_KEY = process.env.REACT_APP_KAKAO_REST_API_KEY;
+  // const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_API_KEY}&redirect_uri=${KAKAO_REDIRECT_URI}&response_type=code`;
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=bc1b0d18239d9332d371b33821ffb2e5&redirect_uri=https://i8d111.p.ssafy.io/oauth/kakao/callback&response_type=code`;
   // const NAVER_REDIRECT_URI = process.env.REACT_APP_KAKAO_REDIRECT_URI;
   // const NAVER_REST_API_KEY = process.env.REACT_APP_KAKAO_REST_API_KEY;
   // const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_REST_API_KEY}&state=randomtext&redirect_uri=${NAVER_REDIRECT_URI}`;
