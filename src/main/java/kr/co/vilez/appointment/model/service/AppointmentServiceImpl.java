@@ -250,8 +250,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final UserMapper userMapper;
 
     @Override
-    public void deleteRoom(String roomId) {
-
+    public void deleteRoom(int roomId) {
+        appointmentMapper.deleteRoom(roomId);
     }
 
     @Override

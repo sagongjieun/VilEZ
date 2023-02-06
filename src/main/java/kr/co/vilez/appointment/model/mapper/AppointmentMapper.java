@@ -30,6 +30,7 @@ public interface AppointmentMapper {
     public void create(AppointmentDto appointmentDto) throws SQLException;
     List<RoomDto> getRoomListByUserId(int userId);
     void createRoom(RoomDto room);
+    void deleteRoom(int roomId);
 
     RoomDto getBoard(int roomId);
 
