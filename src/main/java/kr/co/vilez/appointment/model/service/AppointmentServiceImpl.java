@@ -69,7 +69,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         PointVO pointVO = new PointVO();
         pointVO.setBoardId(appointmentDto.getBoardId());
         pointVO.setUserId(appointmentDto.getShareUserId());
-        pointVO.setPoint(-10);
+        pointVO.setPoint(-30);
         pointVO.setReason(1);
         LocalDate now = LocalDate.now();
         pointVO.setDate(now.toString());
@@ -84,7 +84,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         // 피공유자 포인트 되돌리기를 진행한다.
         if(reason == 1){
             pointVO.setUserId(appointmentDto.getNotShareUserId());
-            pointVO.setPoint(10);
+            pointVO.setPoint(30);
             // 내역 저장
             appointmentDao.savePoint(pointVO);
             // 피공유자 포인트 변동
@@ -139,7 +139,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         PointVO pointVO = new PointVO();
         pointVO.setBoardId(appointmentDto.getBoardId());
         pointVO.setUserId(appointmentDto.getShareUserId());
-        pointVO.setPoint(10);
+        pointVO.setPoint(30);
         pointVO.setType(appointmentDto.getType());
         pointVO.setDate(appointmentDto.getDate());
         // 내역 저장
@@ -150,7 +150,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         // 공유자 포인트 내역을 저장하고 포인트를 바꾸는 로직
         pointVO.setUserId(appointmentDto.getNotShareUserId());
-        pointVO.setPoint(-10);
+        pointVO.setPoint(-30);
         // 내역 저장
         appointmentDao.savePoint(pointVO);
         // 피공유자 포인트 변동
