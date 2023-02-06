@@ -320,7 +320,7 @@ class ShareWriteActivity : AppCompatActivity() {
 
             Log.d(TAG, "savePost: startDay : $sDay , endDay: $eDay")
 
-            val writeBoard = WriteBoard(category= category!!, startDay = sDay!!, endDay = eDay!!,
+            val writeBoard = WriteBoard(id=editBoardId, category= category!!, startDay = sDay!!, endDay = eDay!!,
                 hopeAreaLat = lat!!, hopeAreaLng = lng!!, title = binding.etTitle.text.toString(),
                 content = binding.etContent.text.toString(), userId = ApplicationClass.prefs.getId(),
                 address = place!!)
@@ -356,9 +356,6 @@ class ShareWriteActivity : AppCompatActivity() {
                             ApplicationClass.retrofitAskService.postBoard(writeBoard, imgMultiPart).awaitResponse().body()
                         }
                         Log.d(TAG, "savePost: 게시글 작성/수정 결과 : $result")
-                        Log.d(TAG, "@@@@savePost: 게시글 작성/수정 결과 header : ${ApplicationClass.retrofitAskService.putBoard(writeBoard, imgMultiPart).awaitResponse().headers()}")
-                        Log.d(TAG, "@@@@savePost: 게시글 작성/수정 결과 raw : ${ApplicationClass.retrofitAskService.putBoard(writeBoard, imgMultiPart).awaitResponse().raw()}")
-
                         if(result?.flag == "success") {
                             Toast.makeText(this@ShareWriteActivity, if(editBoardId!=0) "게시글 수정을 완료했습니다." else "게시글 작성을 완료했습니다.", Toast.LENGTH_SHORT).show()
                             val boardId = if(editBoardId != 0) editBoardId else result.data[0].id
