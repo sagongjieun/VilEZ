@@ -30,6 +30,20 @@ public class UserController {
 
     final UserService userService;
 
+    @PutMapping("/modify/password")
+    public ResponseEntity<?> modifyPassword(String email, String password){
+        HttpVO http = new HttpVO();
+
+        try{
+            userService.modifyPassword(email);
+            http.setFlag("success");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
+
     @PutMapping("/point")
     public ResponseEntity<?> addManner(@RequestBody HashMap<String,Integer> map){
         HttpVO http = new HttpVO();
