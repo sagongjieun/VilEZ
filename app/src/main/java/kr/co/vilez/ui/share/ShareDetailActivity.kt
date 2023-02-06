@@ -103,16 +103,16 @@ class ShareDetailActivity : AppCompatActivity(){
                     binding.tvBookmark.text = binding.article!!.bookmarkCnt.toString()
                     Snackbar.make(
                         view,
-                        "관심목록에 추가됐습니다.",
+                        "나의 관심글에 추가됐습니다.",
                         Snackbar.LENGTH_SHORT
                     ) // 스낵바 Action 설정("표시할 텍스트", onClick)
                         .setAction("관심목록 보기") { view -> // 스낵바의 OK 클릭시 실행할 작업
                             val intent = Intent(this@ShareDetailActivity, ProfileMenuActivity::class.java)
-                            intent.putExtra("fragment", "관심 목록")
+                            intent.putExtra("fragment", "나의 관심글")
                             startActivity(intent)
                         }.show()
                 } else {
-                    Snackbar.make(view, "관심목록 추가를 실패했습니다.", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(view, "나의 관심글 추가를 실패했습니다.", Snackbar.LENGTH_SHORT).show();
                 }
             }
 

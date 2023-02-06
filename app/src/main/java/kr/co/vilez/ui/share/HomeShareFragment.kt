@@ -144,7 +144,7 @@ class HomeShareFragment : Fragment() {
                             data.shareListDto.title,
                             data.shareListDto.date,
                             "구미",
-                            data.shareListDto.startDay + "~"
+                            data.shareListDto.startDay + " ~ "
                                     + data.shareListDto.endDay,
                             Integer.toString(data.listCnt),
                             data.shareListDto.state,
@@ -178,7 +178,7 @@ class HomeShareFragment : Fragment() {
                                     data.shareListDto.title,
                                     data.shareListDto.date,
                                     "구미",
-                                    data.shareListDto.startDay + "~"
+                                    data.shareListDto.startDay + " ~ "
                                             + data.shareListDto.endDay,
                                     Integer.toString(data.listCnt),
                                     data.shareListDto.state,

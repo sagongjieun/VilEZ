@@ -52,8 +52,6 @@ class FCMTokenUtil  {
                         Log.d(TAG, t.message ?: "토큰 정보 등록 중 통신오류")
                     }
                 })
-
-
             }
         })
         createNotificationChannel(context, CHANNEL_ID, "guffy")

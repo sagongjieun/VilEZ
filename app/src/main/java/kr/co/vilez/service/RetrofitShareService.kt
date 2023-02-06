@@ -2,6 +2,7 @@ package kr.co.vilez.service
 
 import kr.co.vilez.data.dto.WriteBoard
 import kr.co.vilez.data.model.*
+import kr.co.vilez.data.share.MyShareArticle
 import kr.co.vilez.util.RESTBookmarkResult
 import okhttp3.MultipartBody
 import retrofit2.Call
@@ -12,8 +13,24 @@ data class RESTShareBoardDetail(
     val `data`: List<ShareBoardDetail>,
     val flag: String
 )
-
+data class RESTMyShareArticleResult(
+    val `data`: List<List<MyShareArticle>>,
+    val flag: String
+)
+data class RESTShareResult(
+    val `data`: List<ShareResult>,
+    val flag: String
+)
 interface RetrofitShareService {
+
+    // 내 북마크 리스트를 불러온다
+    @GET("/vilez/shareboard/bookmark/my/{userId}")
+    fun getBookmark(@Path("userId")id:Int):Call<RESTShareResult>
+
+    // 내가 작성한 모든 게시글을 가져온다. state 1 : 내가 공유자, state 0 : 내가 피공유자
+    @GET("/vilez/shareboard/my/{userId}")
+    fun getMyArticle(@Path("userId")id:Int):Call<RESTMyShareArticleResult>
+
 
     // 모든 공유 게시글을 가져온다. 유저 위치 기반해서 반경 2.5km 이내의 데이터를 가져온다.
     @GET("/vilez/shareboard")
@@ -22,7 +39,7 @@ interface RetrofitShareService {
         @Query(value = "low") low: Int,
         @Query(value = "high") high: Int,
         @Query(value = "userId") id: Int
-    ): Call<RestShare>
+    ): Call<RESTShareResult>
 
     // 검색 키워드를 포함하는 제목, 본문을 가진 게시글 리스트를 불러온다.
     @GET("vilez/shareboard")
@@ -33,7 +50,7 @@ interface RetrofitShareService {
         @Query(value = "userId") id: Int,
         @Query(value = "word") word: String?= null,
         @Query(value = "category") category: String?= null
-    ): Call<RestShare>
+    ): Call<RESTShareResult>
 
     // 카테고리에 해당하는 게시글 리스트를 불러온다.
     @GET("vilez/shareboard")
@@ -43,7 +60,7 @@ interface RetrofitShareService {
         @Query(value = "high") high: Int,
         @Query(value = "userId") id: Int,
         @Query(value = "category") category: String
-    ): Call<RestShare>
+    ): Call<RESTShareResult>
 
 
     // 해당 게시글의 상세 정보를 가져온다.

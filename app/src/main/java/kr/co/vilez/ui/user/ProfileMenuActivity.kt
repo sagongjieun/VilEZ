@@ -28,19 +28,18 @@ class ProfileMenuActivity : AppCompatActivity() {
                 transaction
                     .replace(R.id.frame_layout_profile_myshare, EditProfileFragment())
             }
+
+
+            // 공유 목록
             "공유 캘린더" -> {
                 transaction
                     .replace(R.id.frame_layout_profile_myshare, CalendarFragment())
             }
-            "공유 내역" -> {
+            "나의 작성글" -> {
                 transaction
-                    .replace(R.id.frame_layout_profile_myshare, SharedListFragment())
+                    .replace(R.id.frame_layout_profile_myshare, MyArticleFragment())
             }
-            "요청 내역" -> {
-                transaction
-                    .replace(R.id.frame_layout_profile_myshare, RequestListFragment())
-            }
-            "관심 목록" -> {
+            "나의 관심글" -> {
                 transaction
                     .replace(R.id.frame_layout_profile_myshare, InterestFragment())
             }
@@ -48,14 +47,26 @@ class ProfileMenuActivity : AppCompatActivity() {
                 transaction
                     .replace(R.id.frame_layout_profile_myshare, PointFragment())
             }
+
+
+            // 나의 공유 박스
+            "나의 공유 물품" -> {
+                transaction
+                    .replace(R.id.frame_layout_profile_myshare, MyShareFragment())
+            }
+            "나의 대여 물품" -> {
+                transaction
+                    .replace(R.id.frame_layout_profile_myshare, MyAskFragment())
+            }
+
+
+            // 내 정보
             "내 동네 설정" -> {
                 transaction
                     .replace(R.id.frame_layout_profile_myshare, EditLocation())
             }
-            "내 정보 수정" -> {
-                transaction
-                    .replace(R.id.frame_layout_profile_myshare, EditAccountFragment())
-            }
+
+
         }
         transaction.commit()
     }
