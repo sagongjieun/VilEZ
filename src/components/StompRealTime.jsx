@@ -223,10 +223,11 @@ const StompRealTime = ({
 
   useEffect(() => {
     /* state : 0 예약 후, -1 반납 후, -2 예약 후(예약 취소 : 확장), -3 예약 전 */
-    // test로 0, 원래는 -1
-    if (shareState == -1 || roomState == -1) {
+    if (shareState == -1 || shareState == -2 || roomState == -1) {
       // 소켓 끊기
-      client.disconnect();
+      if (client != null) {
+        if (client.connected) client.deactivate();
+      }
 
       // 채팅방 막기
       const messageInput = document.getElementById("messageInput");
@@ -295,7 +296,7 @@ const StompRealTime = ({
       setCheckShareCancelAsk(false);
     }
 
-    // 예약 취소 -> 대화 종료
+    // 예약 취소
     if (checkShareCancel) {
       const sendMessage = {
         roomId: chatRoomId,
@@ -314,7 +315,7 @@ const StompRealTime = ({
       sendShareState(-2);
     }
 
-    // 반납 확인 -> 대화 종료
+    // 반납 확인
     if (checkShareReturn) {
       const sendMessage = {
         roomId: chatRoomId,
