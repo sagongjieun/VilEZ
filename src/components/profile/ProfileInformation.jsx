@@ -7,22 +7,37 @@ import ProfileLocation from "./ProfileLocation";
 import ProfilePoint from "./ProfilePoint";
 import { getUserDetail } from "../../api/profile";
 // import { set } from "date-fns";
-
+// const { kakao } = window;
 const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpen, isEditProfileOpen }) => {
   const id = localStorage.getItem("id");
   // const id = 28;
-  const [area, setArea] = useState("동네를 설정해주세요.");
+  const [areaLng, setAreaLng] = useState("");
+  const [areaLat, setAreaLat] = useState("");
+  const [location, setLocation] = useState("동네를 설정해주세요.");
   const [profileImage, setProfileImage] = useState("");
   const [nickName, setNickName] = useState("");
   const [manner, setManner] = useState(0);
   const [point, setPoint] = useState(0);
   function onClickEditProfileOpen() {
     setIsEditProfileOpen(true);
-    console.log("true true");
   }
+
+  // 좌표로 주소 불러오기
+  // function getAddr(areaLat, areaLng) {
+  //   console.log("**************");
+  //   const geocoder = new kakao.maps.services.Geocoder();
+  //   function callback(result, status) {
+  //     if (status === kakao.maps.services.Status.OK) {
+  //       const data = result[0].address;
+  //       setLocation(data.region_1depth_name + " " + data.region_2depth_name + " " + data.region_3depth_name);
+  //     }
+  //   }
+  //   geocoder.coord2Address(areaLng, areaLat, callback);
+  // }
   useEffect(() => {
     getUserDetail(id).then((response) => {
-      setArea(response.area);
+      setAreaLat(response.areaLat);
+      setAreaLng(response.areaLng);
       setProfileImage(response.profile_img);
       setNickName(response.nickName);
       setManner(response.manner);
@@ -30,15 +45,14 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
     });
   }, [isQrCodeOpen, isEditProfileOpen]);
   useEffect(() => {
-    if (!area) {
-      setArea("동네를 설정해주세요.");
-    }
-  }, [area]);
+    // getAddr(areaLng, areaLat);
+    setLocation("동네를 설정해주세요");
+  }, [areaLng, areaLat]);
   return (
     <div css={profileWrapper}>
       <ProfileEditButton text="프로필 수정하기" onClick={onClickEditProfileOpen} />
       <ProfileSummary profileImage={profileImage} manner={manner} nickName={nickName} />
-      <ProfileLocation area={area} setIsQrCodeOpen={setIsQrCodeOpen} />
+      <ProfileLocation location={location} setIsQrCodeOpen={setIsQrCodeOpen} />
       <div
         css={css`
           width: 44%;

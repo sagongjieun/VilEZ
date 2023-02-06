@@ -47,6 +47,17 @@ async function getUserBookMark(userId) {
 
 // PUT
 
+async function putUserPasswordByEmail(email, password) {
+  try {
+    const { data } = await jsonAxios.put(`/users/modify/password?email=${email}&password=${password}`);
+    if (data.flag === "success") {
+      alert("비밀번호가 성공적으로 변경되었습니다. 로그인을 진행해주세요.");
+    } else alert("비밀번호가 변경에 실패했습니다. 다시 시도해주세요.");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 async function putUserPasswordNickName(id, nickName, password) {
   try {
     const { data } = await jsonAxios.put("/users/modify", { id, nickName, password });
@@ -67,4 +78,12 @@ async function putUserProfileImage(formData) {
   }
 }
 
-export { getUserDetail, getUserAsk, getUserShare, getUserBookMark, putUserPasswordNickName, putUserProfileImage };
+export {
+  getUserDetail,
+  getUserAsk,
+  getUserShare,
+  getUserBookMark,
+  putUserPasswordNickName,
+  putUserProfileImage,
+  putUserPasswordByEmail,
+};

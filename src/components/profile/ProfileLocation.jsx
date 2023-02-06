@@ -4,7 +4,6 @@ import { css } from "@emotion/react";
 import location_icon from "../../assets/images/location_icon.png";
 // import { useState } from "react";
 // import { useEffect } from "react";
-
 const ProfileLocation = (props) => {
   function modalQrcode() {
     props.setIsQrCodeOpen(true);
@@ -14,7 +13,7 @@ const ProfileLocation = (props) => {
       <div>
         <h4>나의 동네</h4>
         <div css={locationIcon}></div>
-        <div>{props.area}</div>
+        <div>{props.location}</div>
         <button css={locationButton} onClick={modalQrcode}>
           동네 인증하기
         </button>

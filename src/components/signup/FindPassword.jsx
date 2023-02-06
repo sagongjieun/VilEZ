@@ -11,7 +11,7 @@ import Validation from "./SignupValidation";
 import useForm from "../../hooks/useForm";
 import { SHA256 } from "./EmailCodeHashFunction";
 import { confirmEmailForPassword } from "../../api/signup";
-import { putUserPasswordNickName } from "../../api/profile";
+import { putUserPasswordByEmail } from "../../api/profile";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -46,10 +46,9 @@ const FindPassword = () => {
     const userInformation = {
       email,
       password,
-      nickName: "",
     };
     if (isCodeConfirmed) {
-      putUserPasswordNickName(userInformation).then((response) => {
+      putUserPasswordByEmail(userInformation).then((response) => {
         if (response) {
           navigate("/login");
         }
@@ -319,7 +318,7 @@ const FindPassword = () => {
                   padding-top: 20px;
                 `}
               >
-                <LargeWideButton text="비밀번호 재설정 완료" />
+                <LargeWideButton text="비밀번호 재설정 완료" onclick={onSubmit} />
               </div>
             </div>
           ) : null}
