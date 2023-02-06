@@ -2,7 +2,7 @@ package kr.co.vilez.data.model
 
 data class User(
     val accessToken: String,
-    val area: String,
+    val token: String,
     val date: String,
     val email: String,
     val id: Int,
@@ -16,7 +16,6 @@ data class User(
     val state: Int,
     val areaLat: String,
     val areaLng: String
-
 ) {
 
     constructor(id: Int):this(

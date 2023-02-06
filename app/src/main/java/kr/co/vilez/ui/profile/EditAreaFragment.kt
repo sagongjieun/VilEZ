@@ -37,8 +37,10 @@ import kr.co.vilez.util.PermissionUtil
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapReverseGeoCoder
 import net.daum.mf.map.api.MapView
+import org.json.JSONObject
 import retrofit2.awaitResponse
 import java.util.regex.Pattern
+import kotlin.math.log
 
 private const val TAG = "빌리지_EditAreaFragment"
 class EditAreaFragment : Fragment(), MapReverseGeoCoder.ReverseGeoCodingResultListener {
@@ -75,15 +77,16 @@ class EditAreaFragment : Fragment(), MapReverseGeoCoder.ReverseGeoCodingResultLi
         profileMenuActivity.finish()
     }
 
-    fun getUserLocation() {
-        val userLat = ApplicationClass.prefs.getLat().toDouble()
-        val userLng = ApplicationClass.prefs.getLng().toDouble()
+    private fun getUserLocation() {
 
-        if(userLat == 0.0 && userLng == 0.0) {
+        val userLat = ApplicationClass.prefs.getLat()
+        val userLng = ApplicationClass.prefs.getLng()
+
+        if(userLat.isEmpty() || userLng.isEmpty()) {
             binding.location = null
             return
         }
-        val pos = MapPoint.mapPointWithGeoCoord(userLat, userLng)
+        val pos = MapPoint.mapPointWithGeoCoord(userLat.toDouble(), userLng.toDouble())
         val reverseGeoCoder = MapReverseGeoCoder(
             getString(R.string.kakao_app_key),
             pos,
@@ -135,10 +138,19 @@ class EditAreaFragment : Fragment(), MapReverseGeoCoder.ReverseGeoCodingResultLi
 
             // DB도 업데이트
             CoroutineScope(Dispatchers.Main).launch {
-                val newUser = User(id = ApplicationClass.prefs.getId(), areaLat = uLatitude.toString(), areaLng = uLongitude.toString())
-                val result = ApplicationClass.retrofitUserService.updateUserLocation(newUser).awaitResponse().body()
-                Log.d(TAG, "onAreaSetClick: result: $result")
-                if(result?.flag == "success") {
+
+                Log.d(TAG, "onAreaSetClick: id: ${ApplicationClass.prefs.getId()} , areaLat:${ uLatitude.toString()} , areaLng:${uLongitude.toString()}")
+
+                val newUser = HashMap<String, String>()
+                newUser["id"] = ApplicationClass.prefs.getId().toString()
+                newUser["areaLat"] = uLatitude.toString()
+                newUser["areaLng"] = uLongitude.toString()
+
+                Log.d(TAG, "onAreaSetClick: 동네인증할 사용자: ${newUser.toString()}")
+                val result = ApplicationClass.retrofitUserService.updateUserLocation(newUser).awaitResponse()
+                Log.d(TAG, "onAreaSetClick: body: ${result.body()}")
+                Log.d(TAG, "onAreaSetClick: raw: ${result.raw()} \nbody:${result.body()}\n header: ${result.headers()}")
+                if(result.body()?.flag == "success") {
                     Log.d(TAG, "onAreaSetClick: 동네인증성공")
                     var dialog = AlertDialog(profileMenuActivity, "동네인증을 성공했습니다.")
                     dialog.show(profileMenuActivity.supportFragmentManager, "UserLocation")

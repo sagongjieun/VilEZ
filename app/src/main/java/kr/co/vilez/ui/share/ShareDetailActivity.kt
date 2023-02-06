@@ -129,7 +129,7 @@ class ShareDetailActivity : AppCompatActivity(){
             // 먼저 채팅방이 존재하는지 확인하기
             val isExist = ApplicationClass.retrofitChatService.isExistChatroom(boardId!!,
                 Common.BOARD_TYPE_SHARE, ApplicationClass.prefs.getId()).awaitResponse().body()
-            if(isExist?.flag == "success") { // 이미 채팅방이 존재함
+            if(isExist?.flag == "success" ) { // 이미 채팅방이 존재함
                 Log.d(TAG, "onChatBtnClick: 채팅방 이미 존재")
                 Toast.makeText(this@ShareDetailActivity, "이미 채팅중인 게시글이어서\n기존 채팅방으로 이동합니다.", Toast.LENGTH_SHORT).show()
                 val fragment = supportFragmentManager.findFragmentById(R.id.share_detail_map)
