@@ -46,7 +46,6 @@ public class ShareServiceImpl implements ShareService{
         List<TotalListShare> data = new ArrayList<>();
 
         UserDto userDto = userMapper.detail(uesrId);
-        System.out.println("userDto = " + userDto);
 
         PageNavigator pageNavigator = new PageNavigator();
         pageNavigator.setAreaLat(userDto.getAreaLat());
@@ -273,20 +272,17 @@ public class ShareServiceImpl implements ShareService{
             pageNavigator.setWord("%"+pageNavigator.getWord()+"%");
         }
 
-        System.out.println(pageNavigator);
 
         int tmp = pageNavigator.getHigh();
         pageNavigator.setHigh(pageNavigator.getHigh() * pageNavigator.getCnt());
         pageNavigator.setLow(tmp);
 
         UserDto userDto = userMapper.detail(pageNavigator.getUserId());
-        System.out.println("userDto = " + userDto);
 
         pageNavigator.setAreaLat(userDto.getAreaLat());
         pageNavigator.setAreaLng(userDto.getAreaLng());
         List<ShareListDto> list = shareMapper.loadShareList(pageNavigator);
-        System.out.println("list = " + list);
-        
+
         for(ShareListDto shareListDto : list){
             TotalListShare totalListShare = new TotalListShare();
 
