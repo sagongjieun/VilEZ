@@ -26,9 +26,9 @@ async function getChatHistory(chatRoomId) {
   }
 }
 
-async function getAppointmentsByBoardId(boardId) {
+async function getAppointmentsByBoardId(boardId, type) {
   try {
-    const { data } = await jsonAxios.get(`/appointments/${boardId}`);
+    const { data } = await jsonAxios.get(`/appointments/${boardId}/${type}`);
 
     if (data.flag === "success") return data.data;
     else console.log("일치하는 게시글이 없습니다. 😅");
@@ -120,6 +120,19 @@ async function postAppointment(body) {
   }
 }
 
+// DELETE
+
+async function deleteChatRoom(roomId, userId) {
+  try {
+    const { data } = await jsonAxios.delete(`/appointments/chat?roomId=${roomId}&userId=${userId}`);
+    console.log(data);
+    if (data.flag === "success") return true;
+    else return false;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export {
   getLatestMapLocation,
   getChatHistory,
@@ -131,4 +144,5 @@ export {
   getMyAppointmentList,
   postChatRoom,
   postAppointment,
+  deleteChatRoom,
 };

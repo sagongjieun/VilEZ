@@ -56,6 +56,7 @@ const ProductChatting = () => {
   const [confirmedStartDate, setConfirmedStartDate] = useState("");
   const [confirmedEndDate, setConfirmedEndDate] = useState("");
   const [shareState, setShareState] = useState("");
+  const [roomState, setRoomState] = useState("");
 
   // 채팅 나가기
   function onClickQuit() {
@@ -122,6 +123,11 @@ const ProductChatting = () => {
     });
   }
 
+  // StompREalTime.jsx에서 변경되는 state값 받기
+  function receiveShareState(state) {
+    setShareState(state);
+  }
+
   useEffect(() => {
     // boardId 얻기
     getBoardIdByRoomId(roomId)
@@ -130,6 +136,12 @@ const ProductChatting = () => {
 
         setBoardId(res.boardId);
         setBoardType(res.type);
+
+        if (res.state == -1) {
+          console.log("대화가 종료된 채팅방입니다.");
+          setRoomState(res.state);
+          // 공유지도랑 채팅 막기
+        }
 
         // 로그인유저가 공유자면
         if (loginUserId == res.shareUserId) {
@@ -251,6 +263,8 @@ const ProductChatting = () => {
             shareUserId={shareUserId}
             notShareUserId={notShareUserId}
             shareState={shareState}
+            roomState={roomState}
+            sendShareState={receiveShareState}
           />
         )}
       </div>
@@ -298,7 +312,7 @@ const ProductChatting = () => {
           confirmedEndDate={confirmedEndDate}
         />
       ) : null}
-      {isQuit ? <QuitChattingModal close={setIsQuit} /> : null}
+      {isQuit ? <QuitChattingModal close={setIsQuit} roomId={roomId} /> : null}
       {isOath ? (
         <OathModal close={setIsOath} openLastConfirm={setIsAppointmentComplete} roomId={roomId} readOnly={false} />
       ) : null}

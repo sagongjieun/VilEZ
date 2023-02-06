@@ -5,11 +5,9 @@ import MiddleWideButton from "../button/MiddleWideButton";
 import { useSetRecoilState } from "recoil";
 import { checkShareCancelState } from "../../recoil/atom";
 import { getCheckShareCancelRequest, deleteAppointment } from "../../api/appointment";
-import { putUserPoint } from "../../api/profile";
 
 const ShareCancelModal = ({ close, otherUserNickname, roomId }) => {
   const setCheckShareCancel = useSetRecoilState(checkShareCancelState);
-  const loginUserId = localStorage.getItem("id");
 
   function onCloseModal() {
     close(false);
@@ -24,13 +22,6 @@ const ShareCancelModal = ({ close, otherUserNickname, roomId }) => {
         deleteAppointment(2, roomId).then((res) => {
           if (res) {
             setCheckShareCancel(true); // stomp로 전달하기
-
-            // 피공유자의 포인트 -30 깎기
-            putUserPoint({
-              userId: loginUserId,
-              point: -30,
-            });
-
             close(false); // 모달 닫기
           }
         });

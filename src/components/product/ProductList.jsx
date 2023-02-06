@@ -17,17 +17,26 @@ import { locationState } from "../../recoil/atom";
 import { getUserDetail } from "../../api/user";
 
 const ProductList = () => {
-  // isAll이 새로고침시마다 바껴있어야 공유가능 물품 조건 유지 가능
+  // detail api에서 userId 받아오면, 동네인증 한 경우 위도 경도가 존재. 이를 recoil에 넣어 상태관리
   const userId = localStorage.getItem("id");
   const [location, setLocation] = useRecoilState(locationState);
   useEffect(() => {
-    getUserDetail(userId).then((res) => {
-      const userData = res;
-      console.log(userData[0]);
-      setLocation({ lat: userData[0].areaLat, lng: userData[0].areaLng });
-      console.log(location.lng);
-    });
-  }, []);
+    if (userId) {
+      getUserDetail(userId).then((res) => {
+        if (res) {
+          const userData = res;
+          if (userData[0].areaLat === null) {
+            alert("동네인증을 진행해주셔야 해요");
+          }
+          // console.log(userData[0].areaLat);
+          // console.log(userData[0].areaLng);
+          setLocation({ areaLat: userData[0].areaLat, areaLng: userData[0].areaLng });
+        }
+      });
+    }
+  }, [userId]);
+
+  // isAll이 새로고침시마다 바껴있어야 공유가능 물품 조건 유지 가능
   const [isAll, setIsAll] = useState(localStorage.getItem("isAll") === "false" ? false : true);
   useEffect(() => {
     localStorage.setItem("isAll", isAll);
@@ -38,11 +47,10 @@ const ProductList = () => {
   const [getArticle, setArticles] = useState([]);
   const [originalArticle, setOriginalArticle] = useState([]);
 
-  // 무한 스크롤 관련 변수
+  // 무한 스크롤 관련 변수. cnt가 페이지번호를 담당, 일정 기준 이상 스크롤시 cnt 증가, 페이지 숫자가 증가하는 것
   const [cnt, setCnt] = useState(0);
 
   const pathname = useLocation().pathname;
-
   const navigate = useNavigate();
   const urlId = pathname.includes("share") ? 2 : 1;
   const [list, setList] = useState("");
@@ -71,11 +79,10 @@ const ProductList = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [cnt, getArticle, search, pathname]);
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname, search]);
+
   // 카테고리 변경 후 스크롤을 내렸다가 ,다른 카테고리를 선택했을 때 이전 카테고리 데이터가 쌓여 나옴
   useEffect(() => {
+    window.scrollTo(0, 0);
     setCnt(0);
     setOriginalArticle([]);
     setArticles([]);
@@ -85,21 +92,23 @@ const ProductList = () => {
     // Check if the component is still mounted before making the API call
     urlId === 1
       ? // 요청
-        getAskArticleList("38.403414823192", "125.00263781627977", categoryToUse, cnt, 15, 0, userId, search).then(
+        getAskArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then((res) => {
+          const data = res;
+          setOriginalArticle([...originalArticle, ...data[0]]);
+          setArticles([...originalArticle, ...data[0]]);
+          setList("물품 요청 목록");
+          console.log(cnt);
+        })
+      : // 공유
+        getShareArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then(
           (res) => {
             const data = res;
-            setOriginalArticle([...originalArticle, ...data[0]]);
-            setArticles([...originalArticle, ...data[0]]);
-            setList("물품 요청 목록");
+            setOriginalArticle([...originalArticle, ...data]);
+            setArticles([...originalArticle, ...data]);
+            setList("물품 공유 목록");
+            console.log(cnt);
           }
-        )
-      : // 공유
-        getShareArticleList(location.lat, location.lng, categoryToUse, cnt, 15, 0, userId, search).then((res) => {
-          const data = res;
-          setOriginalArticle([...originalArticle, ...data]);
-          setArticles([...originalArticle, ...data]);
-          setList("물품 공유 목록");
-        });
+        );
   }, [search, pathname, isAll, cnt, categoryToUse]);
 
   // 공유가능 목록 보기위해 작성한 useEffect 0일때 공유가능, 1일때 공유 중
@@ -153,13 +162,15 @@ const ProductList = () => {
     setOriginalArticle([]);
     setCnt(0);
     urlId === 2
-      ? getShareArticleList(location.lat, location.lng, categoryToUse, cnt, 15, 0, userId, search).then((res) => {
-          const data = res;
-          setOriginalArticle(data);
-          setArticles(data);
-          setList("물품 공유 목록");
-        })
-      : getAskArticleList(location.lat, location.lng, categoryToUse, cnt, 15, 0, userId, search).then((res) => {
+      ? getShareArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then(
+          (res) => {
+            const data = res;
+            setOriginalArticle(data);
+            setArticles(data);
+            setList("물품 공유 목록");
+          }
+        )
+      : getAskArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then((res) => {
           const data = res;
           setOriginalArticle(data);
           setArticles(data);
