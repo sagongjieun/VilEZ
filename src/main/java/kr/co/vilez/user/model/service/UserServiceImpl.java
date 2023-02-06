@@ -37,8 +37,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveLocationMobile(UserDto userDto) throws Exception {
-        userMapper.saveLocationMobile(userDto);
+    public void saveLocationMobile(HashMap<String,Object> map) throws Exception {
+        userMapper.saveLocationMobile(map);
     }
 
     @Override
@@ -227,7 +227,7 @@ public class UserServiceImpl implements UserService {
 
         HashMap<String, Object> map = new HashMap<>();
         map.put("nickName",user.getNickName());
-        map.put("area",user.getToken());
+        map.put("token",user.getToken());
         map.put("manner",user.getManner());
         map.put("point",user.getPoint());
         map.put("profile_img", user.getProfileImg());

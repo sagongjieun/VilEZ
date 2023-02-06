@@ -102,10 +102,10 @@ public class UserController {
     @PutMapping("/locationMobile")
     @ApiOperation(value = "유저의 주소를 update한다."
             , notes = "code에 userId를 string으로 변환해서 넣기")
-    public ResponseEntity<?> saveLocationMobile(@RequestBody UserDto userDto){
+    public ResponseEntity<?> saveLocationMobile(@RequestBody HashMap<String, Object> map){
         http = new HttpVO();
         try{
-            userService.saveLocationMobile(userDto);
+            userService.saveLocationMobile(map);
             http.setFlag("success");
         } catch(Exception e){
             e.printStackTrace();
