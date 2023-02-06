@@ -175,7 +175,9 @@ const ProductDetail = () => {
       });
     }
   }, [state]);
-
+  useEffect(() => {
+    window.scroll(0, 0);
+  }, []);
   return (
     <div css={wrapper}>
       <ProductDeatilHeader

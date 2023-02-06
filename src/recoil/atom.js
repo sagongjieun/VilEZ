@@ -68,6 +68,11 @@ const checkUserLeaveState = atom({
   default: false,
 });
 
+const goCntZero = atom({
+  key: "goCntZero",
+  default: 0,
+});
+
 export {
   loginUserState,
   shareDataState,
@@ -80,4 +85,5 @@ export {
   checkShareCancelState,
   checkShareReturnState,
   checkUserLeaveState,
+  goCntZero,
 };
