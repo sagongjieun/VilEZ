@@ -88,7 +88,7 @@ function Qrcode({ setIsQrCodeOpen }) {
       <button type="button" onClick={onClickClose}>
         <IoCloseSharp size={20} />
       </button>
-      <MiddleWideButton text={"인증 완료"} isActive={!isVerified} />
+      <MiddleWideButton text={"인증 완료"} isActive={!isVerified} onClick={onClickClose} />
     </div>
   );
 }

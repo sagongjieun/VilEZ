@@ -7,7 +7,7 @@ import ProfileLocation from "./ProfileLocation";
 import ProfilePoint from "./ProfilePoint";
 import { getUserDetail } from "../../api/profile";
 // import { set } from "date-fns";
-const { kakao } = window;
+// const { kakao } = window;
 const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpen, isEditProfileOpen }) => {
   const id = localStorage.getItem("id");
   // const id = 28;
@@ -20,20 +20,20 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
   const [point, setPoint] = useState(0);
   function onClickEditProfileOpen() {
     setIsEditProfileOpen(true);
-    console.log("true true");
   }
 
   // 좌표로 주소 불러오기
-  function getAddr(areaLat, areaLng) {
-    const geocoder = new kakao.maps.services.Geocoder();
-    const callback = function (result, status) {
-      if (status === kakao.maps.services.Status.OK) {
-        const data = result[0].address;
-        setLocation(data.region_1depth_name + " " + data.region_2depth_name + " " + data.region_3depth_name);
-      }
-    };
-    geocoder.coord2Address(areaLng, areaLat, callback);
-  }
+  // function getAddr(areaLat, areaLng) {
+  //   console.log("**************");
+  //   const geocoder = new kakao.maps.services.Geocoder();
+  //   function callback(result, status) {
+  //     if (status === kakao.maps.services.Status.OK) {
+  //       const data = result[0].address;
+  //       setLocation(data.region_1depth_name + " " + data.region_2depth_name + " " + data.region_3depth_name);
+  //     }
+  //   }
+  //   geocoder.coord2Address(areaLng, areaLat, callback);
+  // }
   useEffect(() => {
     getUserDetail(id).then((response) => {
       setAreaLat(response.areaLat);
@@ -42,15 +42,11 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
       setNickName(response.nickName);
       setManner(response.manner);
       setPoint(response.point);
-      console.log(response);
     });
   }, [isQrCodeOpen, isEditProfileOpen]);
   useEffect(() => {
-    if (!areaLng || !areaLat) {
-      setLocation("동네를 설정해주세요.");
-    } else {
-      getAddr(areaLng, areaLat);
-    }
+    // getAddr(areaLng, areaLat);
+    setLocation("동네를 설정해주세요");
   }, [areaLng, areaLat]);
   return (
     <div css={profileWrapper}>
