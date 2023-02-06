@@ -185,6 +185,8 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
         rv_chat.adapter = roomAdapter
         rv_chat.layoutManager = LinearLayoutManager(this)
 
+
+        //나가기 버튼 처리
         binding.toolbar.menu.get(0).setOnMenuItemClickListener { item ->
             when(item.itemId) {
                 R.id.close_room -> {

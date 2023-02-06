@@ -137,6 +137,7 @@ class ShareDetailActivity : AppCompatActivity(){
                     supportFragmentManager.beginTransaction().remove(fragment!!).commitNow()
                 //todo 확인할 필요있음!!!!!! 서버도 봅시다
                 val intent = Intent(this@ShareDetailActivity, ChatRoomActivity::class.java)
+                Log.d(TAG, "otherUserId $userId")
                 intent.putExtra("roomId", isExist.data[0].id)
                 intent.putExtra("otherUserId", userId!!)
                 intent.putExtra("nickName", binding.writer!!.nickName)
@@ -171,7 +172,7 @@ class ShareDetailActivity : AppCompatActivity(){
                             binding.writer!!.nickName,
                             "대화가 시작 되었습니다.",
                             "",
-                            ApplicationClass.prefs.getId(),
+                             userId!!,
                             1,
                             binding.writer!!.profile_img
                         )
