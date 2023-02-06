@@ -116,7 +116,6 @@ public class AskServiceImpl implements AskService{
                 img.setBoardId(askDto.getId());
                 img.setPath("https://kr.object.ncloudstorage.com/"+bucketName+"/"+fileName);
                 img.setFileName(multipartFile.getOriginalFilename());
-                System.out.println(img);
                 askDao.insert(img);
                 askDto.getList().add(img);
                 osUpload.put(bucketName,fileName,uploadFile);
@@ -150,7 +149,6 @@ public class AskServiceImpl implements AskService{
                 img.setBoardId(askDto.getId());
                 img.setPath("https://kr.object.ncloudstorage.com/"+bucketName+"/"+fileName);
                 img.setFileName(multipartFile.getOriginalFilename());
-                System.out.println(img);
                 askDao.insert(img);
                 askDto.getList().add(img);
                 osUpload.put(bucketName,fileName,uploadFile);
