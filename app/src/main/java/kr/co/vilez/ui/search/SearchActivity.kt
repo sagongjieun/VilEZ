@@ -33,8 +33,6 @@ private const val TAG = "빌리지_SearchActivity"
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivityShareSearchBinding
-    private var keyword = ""
-    private var category = ""
 
     private lateinit var shareAdapter: ShareListAdapter
     private lateinit var shareDatas: ArrayList<ShareData>
@@ -61,33 +59,13 @@ class SearchActivity : AppCompatActivity() {
     }
 
 
-    fun initSearchBtn() {
+    private fun initSearchBtn() {
         binding.etSearch.setOnEditorActionListener { _, actionId, keyEvent ->
             when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> {
-                    Log.d(
-                        TAG,
-                        "@@@@@@@@@@initSearchBtn: 검색버튼클릭 입력값: ${binding.etSearch.text.toString()}"
-                    )
-                    Log.d(
-                        TAG,
-                        "@@@@@@@@@@initSearchBt: 선택된 탭: ${binding.searchTabLayout.selectedTabPosition}"
-                    )
-                    keyword = binding.etSearch.text.toString()
-                    if (keyword.isEmpty()) {
-                        val dialog = AlertDialog(this@SearchActivity, "1글자 이상 입력해주세요.")
-                        dialog.show(supportFragmentManager, "SearchFailed")
-                    }
-                    if (keyword.isNotEmpty()) {
-                        Log.d(
-                            TAG,
-                            "initSearchBtn: 선택된 탭: ${binding.searchTabLayout.selectedTabPosition}, 엔터 눌러서 검색함 : $keyword "
-                        )
-                        search(
-                            binding.searchTabLayout.selectedTabPosition,
-                            binding.checkboxShare.isChecked
-                        )
-                    }
+                    Log.d(TAG, "@@@@@@@@@@initSearchBtn: 검색버튼클릭 입력값: ${binding.etSearch.text.toString()}")
+                    Log.d(TAG, "@@@@@@@@@@initSearchBt: 선택된 탭: ${binding.searchTabLayout.selectedTabPosition}")
+                    search(binding.searchTabLayout.selectedTabPosition, binding.checkboxShare.isChecked)
                 }
             }
             return@setOnEditorActionListener true
@@ -96,30 +74,23 @@ class SearchActivity : AppCompatActivity() {
 
 
     private fun initChipGroup() {
+
         binding.chipGroupCategory.setOnCheckedChangeListener { group, _ ->
             group.children.toList().filter { (it as Chip).isChecked }.forEach {
                 val chip = it as Chip
-                category = chip.text.toString()
-                Log.d(TAG, "initChipGroup: 선택된 칩 : $category")
-
-                if (binding.etSearch.length() > 0) {
-                    when (binding.searchTabLayout.selectedTabPosition) {
-                        SEARCH_SHARE -> {
-                            search(
-                                SEARCH_SHARE,
-                                binding.checkboxShare.isChecked,
-                                keyword = binding.etSearch.text.toString(),
-                                category = category
-                            )
-                        }
-                        SEARCH_ASK -> {
-                            search(SEARCH_ASK, keyword = binding.etSearch.text.toString(), category = category)
-                        }
+                if(chip.text.isNotEmpty()) {
+                    
+                }
+                when (binding.searchTabLayout.selectedTabPosition) {
+                    SEARCH_SHARE -> {
+                        search(
+                            SEARCH_SHARE,
+                            binding.checkboxShare.isChecked
+                        )
                     }
-                } else {
-                    Toast.makeText(
-                        this@SearchActivity, "검색할 내용을 입력하세요.", Toast.LENGTH_SHORT
-                    ).show()
+                    SEARCH_ASK -> {
+                        search(SEARCH_ASK)
+                    }
                 }
             }
         }
@@ -137,19 +108,11 @@ class SearchActivity : AppCompatActivity() {
                 when (tab!!.position) {
                     SEARCH_SHARE -> { // 공유 검색
                         binding.checkboxShare.visibility = View.VISIBLE
-                        if (binding.etSearch.length() > 0) search(
-                            SEARCH_SHARE, binding.checkboxShare.isChecked, keyword = keyword
-                        )
-                        else Toast.makeText(
-                            this@SearchActivity, "검색할 내용을 입력하세요.", Toast.LENGTH_SHORT
-                        ).show()
+                        search(SEARCH_SHARE, binding.checkboxShare.isChecked)
                     }
                     SEARCH_ASK -> { // 요청 검색
                         binding.checkboxShare.visibility = View.GONE
-                        if (binding.etSearch.length() > 0) search(SEARCH_ASK, keyword = keyword)
-                        else Toast.makeText(
-                            this@SearchActivity, "검색할 내용을 입력하세요.", Toast.LENGTH_SHORT
-                        ).show()
+                        search(SEARCH_ASK)
                     }
                 }
             }
@@ -163,15 +126,22 @@ class SearchActivity : AppCompatActivity() {
     }
 
 
-    fun search(
-        flag: Int, filtered: Boolean = false, keyword: String? = null, category: String? = null
-    ) {
-        when (flag) {
-            SEARCH_SHARE -> { // 공유 검색
-                initShareData(filtered, keyword = keyword, category = category)
-            }
-            SEARCH_ASK -> { // 요청 검색
-                initAskData(keyword = keyword, category = category)
+    fun search(flag: Int, filtered: Boolean = false) {
+        val category = binding.chipGroupCategory.children.toList().filter { (it as Chip).isChecked }.joinToString{ (it as Chip).text }
+        Log.d(TAG, "initChipGroup: category: $category")
+        val keyword = binding.etSearch.text.toString()
+        Log.d(TAG, "initSearchBtn: 선택된 탭: ${binding.searchTabLayout.selectedTabPosition}, 엔터 눌러서 검색함 : $keyword ")
+        if (keyword.isEmpty()) {
+            val dialog = AlertDialog(this@SearchActivity, "1글자 이상 입력해주세요.")
+            dialog.show(supportFragmentManager, "SearchFailed")
+        } else { // 카테고리 검색은 있으니까 무조건 검색어 입력해야함
+            when (flag) {
+                SEARCH_SHARE -> { // 공유 검색
+                    initShareData(filtered, keyword = keyword, category = category)
+                }
+                SEARCH_ASK -> { // 요청 검색
+                    initAskData(keyword = keyword, category = category)
+                }
             }
         }
     }
@@ -179,25 +149,20 @@ class SearchActivity : AppCompatActivity() {
     private fun initFilterCheckBox() {
         binding.checkboxShare.isChecked = false // 디폴트 : 모두 보기
         binding.checkboxShare.setOnCheckedChangeListener { button, b ->
-            keyword = binding.etSearch.text.toString()
-            if (keyword.isEmpty()) {
-                val dialog = AlertDialog(this@SearchActivity, "1글자 이상 입력해주세요.")
-                dialog.show(supportFragmentManager, "SearchFailed")
-            } else {
-                Log.d(TAG, "initSearchBtn: 선택된 탭: ${binding.searchTabLayout.selectedTabPosition}, 엔터 눌러서 검색함 : $keyword ")
-                if (b) { // 체크된 경우 => 공유가능만 보기
-                    search(binding.searchTabLayout.selectedTabPosition, true)
-                } else { // 체크 해제된 경우 => 전체보기
-                    search(binding.searchTabLayout.selectedTabPosition)
-                }
+            Log.d(TAG, "initSearchBtn: 선택된 탭: ${binding.searchTabLayout.selectedTabPosition}, 공유가능만 보기 필터링")
+
+            if (b) { // 체크된 경우 => 공유가능만 보기
+                search(binding.searchTabLayout.selectedTabPosition, true)
+            } else { // 체크 해제된 경우 => 전체보기
+                search(flag = binding.searchTabLayout.selectedTabPosition)
             }
+
         }
     }
 
 
     private fun initShareData(
-        filtered: Boolean = false, keyword: String? = null, category: String? = null
-    ) {
+        filtered: Boolean = false, keyword: String, category: String? = null) {
         // 데이터 가져오기
         shareDatas = arrayListOf()
 
@@ -297,7 +262,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    fun initAskData(keyword: String? = null, category: String? = null) {
+    fun initAskData(keyword: String, category: String? = null) {
         // 데이터 가져오기
         askDatas = arrayListOf()
 
