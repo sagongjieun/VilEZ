@@ -127,7 +127,9 @@ class ChatlistFragment : Fragment() {
                             roomAdapter.notifyDataSetChanged()
                         } else {
                             DataState.set.add(roomId)
-
+                            if(json.getString("profile") == null) {
+                                json.put("profile","")
+                            }
                             DataState.itemList.add(
                                 0, RoomlistData(
                                     json.getInt("roomId"),
@@ -136,7 +138,7 @@ class ChatlistFragment : Fragment() {
                                     "",
                                     json.getInt("fromUserId"),
                                     1,
-                                    json.getString("profile")
+                                    json.optString("profile","")
 
                                 )
                             )
