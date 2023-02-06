@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
+import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,6 +30,7 @@ import kr.co.vilez.ui.dialog.AppointConfirmDialog
 import kr.co.vilez.ui.dialog.AppointConfirmDialogInterface
 import kr.co.vilez.ui.dialog.SignDialog
 import kr.co.vilez.util.ApplicationClass
+import kr.co.vilez.util.DataState
 import kr.co.vilez.util.StompClient2
 import org.json.JSONObject
 import retrofit2.awaitResponse
@@ -88,31 +90,26 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
                         ).awaitResponse().body()
                         if (result?.flag == "success") {
                             setPeriodDto = result.data.get(0)
-                            println(setPeriodDto)
                         }
                     }
                 }
-                // 약속 정보 없으면
-
-
             }
         }
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         initView()
         initAcceptButton()
-//        kakaoMapFragment.arguments = bundle
-//
-//
-//        supportFragmentManager.beginTransaction()
-//            .replace(R.id.frameLayout, kakaoMapFragment)
-//            .commit()
+        kakaoMapFragment.arguments = bundle
 
 
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.frameLayout, kakaoMapFragment)
+            .commit()
     }
 
     override fun onDestroy() {
         super.onDestroy()
+
         topic.dispose()
     }
 
@@ -181,7 +178,50 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
         rv_chat.adapter = roomAdapter
         rv_chat.layoutManager = LinearLayoutManager(this)
 
-
+        binding.toolbar.menu.get(0).setOnMenuItemClickListener { item ->
+            when(item.itemId) {
+                R.id.close_room -> {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        val result = ApplicationClass.retrofitChatService.getAppointMent(
+                            room.boardId, room.notShareUserId,
+                            room.shareUserId,room.type
+                        ).awaitResponse().body()
+                        if(result?.flag == "success") {
+                            appointDto = result.data.get(0)
+                            if(appointDto != null) {
+                                showDialog("약속된 정보가 있습니다.\n만남을 취소하고 해주세요!")
+                                return@launch
+                            } else {
+                                val result =
+                                    ApplicationClass.retrofitChatService.closeRoom(roomId,ApplicationClass.prefs.getId()).awaitResponse().body()
+                                if(result?.flag == "success") {
+                                    var data = JSONObject()
+                                    data.put("roomId", roomId)
+                                    data.put("fromUserId", "-1")
+                                    data.put("toUserId", otherUserId)
+                                    data.put("content", "상대방이 채팅방을 나갔습니다")
+                                    data.put("time", System.currentTimeMillis())
+                                    data.put("system",true)
+                                    StompClient2.stompClient.send("/recvchat", data.toString()).subscribe()
+                                    topic.dispose()
+                                    var index = 0
+                                    for(i in 0 until DataState.itemList.size) {
+                                        if(roomId==DataState.itemList[i].roomId) {
+                                            index = i
+                                            break
+                                        }
+                                    }
+                                    DataState.itemList.removeAt(index)
+                                    finish()
+                                }
+                            }
+                        }
+                    }
+                 true
+                }
+            }
+            true
+        }
         CoroutineScope(Dispatchers.Main).launch {
             val result =
                 ApplicationClass.retrofitChatService.loadChatList(roomId).awaitResponse().body()
@@ -220,8 +260,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
                 run {
                     CoroutineScope(Dispatchers.Main).launch {
                         val json = JSONObject(topicMessage)
-                        println(json)
-                        if(json.getInt("toUserId") == 0)
+                        if(json.getBoolean("system"))
                             itemList.add(ChatlistData(json.getString("content"), 0,"none"))
                         else
                             itemList.add(ChatlistData(json.getString("content"), 1,profile))
@@ -399,8 +438,6 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
                     roomAdapter.notifyDataSetChanged()
                 }
             }
-
-
         }
         datePicker.show(supportFragmentManager, "Date")
 
@@ -437,5 +474,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
             }
         }
     }
+
+
 
 }
