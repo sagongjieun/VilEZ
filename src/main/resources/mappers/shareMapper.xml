@@ -108,6 +108,7 @@
             AND category = #{category}
         </if>
     </where>
+        ORDER BY date DESC
         LIMIT #{low}
         OFFSET #{high};
     </select>
