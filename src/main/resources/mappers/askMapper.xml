@@ -16,7 +16,6 @@
         <result column="manner" property="manner"/>
         <result column="state" property="state"/>
         <result column="nickname" property="nickName"/>
-        <result column="area" property="area"/>
         <result column="address" property="address"/>
         <result column="type" property="type"/>
     </resultMap>
