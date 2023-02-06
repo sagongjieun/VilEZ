@@ -51,7 +51,7 @@
         WHERE id = #{code};
     </select>
 
-    <select id="saveLocationMobile" parameterType="userDto">
+    <select id="saveLocationMobile" parameterType="map">
         UPDATE user
         SET area_lng = #{areaLng}, area_lat=#{areaLat}
         WHERE id = #{id};
