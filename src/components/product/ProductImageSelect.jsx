@@ -41,17 +41,19 @@ const ProductImageSelect = ({ sendImageList }) => {
     sendImageList(imageList);
   }, [imageList]);
   useEffect(() => {
-    listType === 2
-      ? getShareArticleByBoardId(boardId).then((res) => {
-          const data = res[0].list;
-          // console.log("@@@@@@", data);
-          setImageList(data);
-        })
-      : getAskArticleDetailByBoardId(boardId).then((res) => {
-          const data = res[0].list;
-          // console.log("@@@@@@", data);
-          setImageList(data);
-        });
+    if (pathname.includes("edit")) {
+      listType === 2
+        ? getShareArticleByBoardId(boardId).then((res) => {
+            const data = res[0].list;
+            // console.log("@@@@@@", data);
+            setImageList(data);
+          })
+        : getAskArticleDetailByBoardId(boardId).then((res) => {
+            const data = res[0].list;
+            // console.log("@@@@@@", data);
+            setImageList(data);
+          });
+    }
   }, []);
 
   return (

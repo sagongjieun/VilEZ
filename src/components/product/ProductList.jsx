@@ -2,7 +2,7 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import DivideLine from "../../components/common/DivideLine";
-import InputBox from "../common/InputBox";
+
 import ProductCategory from "./ProductCategory";
 import { useState, useEffect } from "react";
 import NoProductList from "./NoProductList";
@@ -50,15 +50,12 @@ const ProductList = () => {
 
   // 무한 스크롤 관련 변수. cnt가 페이지번호를 담당, 일정 기준 이상 스크롤시 cnt 증가, 페이지 숫자가 증가하는 것
   const [cnt, setCnt] = useState(0);
-
+  const [currentTab, setCurrentTab] = useState(null);
   const pathname = useLocation().pathname;
   const navigate = useNavigate();
   const urlId = pathname.includes("share") ? 2 : 1;
   const [list, setList] = useState("");
   const categoryToUse = category === "전체" ? "" : category;
-  useEffect(() => {
-    setCnt(0);
-  }, [urlId]);
   // 무한 스크롤 관련
   useEffect(() => {
     const handleScroll = () => {
@@ -81,22 +78,23 @@ const ProductList = () => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [cnt, getArticle, search, urlId]);
-  // useEffect(() => {
-  //   console.log(askArticles);
-  // }, [askArticles]);
+  }, [cnt, getArticle, search]);
+
   // 카테고리 변경 후 스크롤을 내렸다가 ,다른 카테고리를 선택했을 때 이전 카테고리 데이터가 쌓여 나옴
+  // 네비게이션 바에서 공유 -> 요청 혹은 요청 -> 공유로 갔을 때 setCnt가 작동해야하는데, 하지 않아서 또 다른 변수가 변할 때 setCnt(0)으로 작동하게 하였음.
   useEffect(() => {
-    window.scrollTo(0, 0);
     setCnt(0);
-
-    // setOriginalArticle([]);
-    setArticles([]);
-    setAskArticles([]);
-  }, [urlId]);
-
+  }, [currentTab]);
   useEffect(() => {
-    // Check if the component is still mounted before making the API call
+    if (currentTab !== urlId) {
+      setCurrentTab(urlId);
+      setArticles([]);
+      setAskArticles([]);
+      setCnt(0);
+      window.scrollTo(0, 0);
+    }
+  }, [urlId, search]);
+  useEffect(() => {
     urlId === 1
       ? // 요청
         getAskArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then((res) => {
@@ -104,8 +102,8 @@ const ProductList = () => {
           // setOriginalArticle([...originalArticle, ...data[0]]);
           setAskArticles([...askArticles, ...data[0]]);
           setList("물품 요청 목록");
-          console.log(urlId);
-          console.log(cnt);
+          // console.log(urlId);
+          // console.log(cnt);
         })
       : // 공유
         getShareArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then(
@@ -114,10 +112,12 @@ const ProductList = () => {
             // setOriginalArticle([...originalArticle, ...data]);
             setArticles([...getArticle, ...data]);
             setList("물품 공유 목록");
-            console.log(cnt);
+            // console.log(cnt);
           }
         );
-  }, [search, urlId, isAll, cnt, categoryToUse]);
+
+    // Check if the component is still mounted before making the API call
+  }, [urlId, isAll, cnt, categoryToUse]);
 
   // props에서 받아온 값이 newCategory에 들어감
   // setCategory에 넘어온 값을 입력
@@ -137,42 +137,43 @@ const ProductList = () => {
     // setOriginalArticle([]);
   }
   // 목록 검색창
-  function onSubmitSearch(event) {
-    event.preventDefault();
+  // function onSubmitSearch(event) {
+  //   event.preventDefault();
 
-    onChangeSearch(search);
-    setArticles([]);
-    setAskArticles([]);
+  //   onChangeSearch(search);
+  //   setArticles([]);
+  //   setAskArticles([]);
 
-    // setOriginalArticle([]);
-    setCnt(0);
-  }
+  //   // setOriginalArticle([]);
+  //   setCnt(0);
+  // }
 
   // 검색후, 지웠을 때 이전 검색이 리스트에 쌓이는 것을 방지
   // 스크롤이 내려가서 cnt가 변했을 때, 검색을 하면 그 페이지를 기준으로 해서 문제를 해결함
   function onChangeSearch(event) {
-    console.log(event);
+    if (event.key === "Enter") {
+      console.log(event);
 
-    setSearch(event);
-    // setOriginalArticle([]);
-    setArticles([]);
-    setAskArticles([]);
-    setCnt(0);
-    urlId === 2
-      ? getShareArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then(
-          (res) => {
-            const data = res;
-            // setOriginalArticle(data);
-            setArticles(data);
-            setList("물품 공유 목록");
-          }
-        )
-      : getAskArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then((res) => {
-          const data = res;
-          // setOriginalArticle(data);
-          setAskArticles(data);
-          setList("물품 공유 목록");
-        });
+      setSearch(event.target.value);
+      setArticles([]);
+      setAskArticles([]);
+      setCnt(0);
+      urlId === 2
+        ? getShareArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then(
+            (res) => {
+              const data = res;
+              setArticles(data);
+              setList("물품 공유 목록");
+            }
+          )
+        : getAskArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then(
+            (res) => {
+              const data = res;
+              setAskArticles(data);
+              setList("물품 공유 목록");
+            }
+          );
+    }
   }
   function onClicktoRegist() {
     navigate("/product/regist");
@@ -204,15 +205,17 @@ const ProductList = () => {
             <ProductCategory isMain={false} sendCategory={receiveCategory} list={true} />
           </div>
           <div css={filterRighWrap}>
-            <form css={searchWrap} onSubmit={onSubmitSearch}>
-              <InputBox
-                useMainList={true}
-                onChangeValue={onChangeSearch}
+            <div css={searchWrap}>
+              <input
+                css={MainInputBox}
+                placeholder="필요한 물품을 검색해보세요"
+                type="text"
                 value={search}
-                placeholder="필요한 물품을 검색해보세요."
+                onChange={(event) => setSearch(event.target.value)}
+                onKeyDown={onChangeSearch}
               />
               <img src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
-            </form>
+            </div>
 
             <div onClick={onClickSeePossible} css={isAll ? unPossibleWrap : possibleWrap}>
               공유가능한 물품만 보기
@@ -310,6 +313,21 @@ const filterRighWrap = css`
   width: 60%;
   justify-content: right;
   align-items: center;
+`;
+const MainInputBox = css`
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  height: 35px;
+  border: 1px solid #e1e2e3;
+  border-radius: 5px;
+  font-size: 15px;
+  background-color: #ffffff;
+  outline: none;
+  padding: 0 20px;
+  & ::placeholder {
+    color: #c4c4c4;
+  }
 `;
 
 const searchWrap = css`
