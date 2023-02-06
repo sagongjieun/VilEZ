@@ -9,15 +9,19 @@ async function requestLogin(email, password) {
     const { data } = await jsonAxios.post(`/users/login`, { email, password });
 
     if (data.flag === "success") {
-      console.log(data);
-      const res = data.data[0];
+      if (data.data) {
+        console.log(data);
+        const res = data.data[0];
 
-      localStorage.setItem("accessToken", res.accessToken);
-      localStorage.setItem("refreshToken", res.refreshToken);
-      localStorage.setItem("id", res.id);
-      localStorage.setItem("nickName", res.nickName);
+        localStorage.setItem("accessToken", res.accessToken);
+        localStorage.setItem("refreshToken", res.refreshToken);
+        localStorage.setItem("id", res.id);
+        localStorage.setItem("nickName", res.nickName);
 
-      return data.data;
+        return data.data;
+      } else {
+        alert("이메일 혹은 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+      }
     } else {
       alert("이메일 혹은 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
       return false;
