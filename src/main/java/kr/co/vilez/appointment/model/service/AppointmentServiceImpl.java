@@ -285,7 +285,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public RoomDto createRoom(RoomDto room) {
-        RoomDto roomDto = appointmentMapper.checkRoom2(room.getBoardId(),room.getType(),room.getShareUserId(),room.getNotShareUserId())
+        RoomDto roomDto = appointmentMapper.checkRoom2(room.getBoardId(),room.getType(),room.getShareUserId(),room.getNotShareUserId());
         if(roomDto != null) {
             return roomDto;
         }
