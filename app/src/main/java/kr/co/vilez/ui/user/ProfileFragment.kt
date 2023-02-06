@@ -119,7 +119,7 @@ class ProfileFragment : Fragment() {
         }
 
         // 나의 공유 박스 메뉴 초기화
-        val myShareBoxMenuName = arrayOf("나의 공유중 물품" , "나의 공유예정 물품", "나의 대여 물품", "나의 대여예정 물품")
+        val myShareBoxMenuName = arrayOf("나의 공유 물품", "나의 대여 물품")
         val myShareBoxSimpleAdapter =  ArrayAdapter(mainActivity, android.R.layout.simple_list_item_1, myShareBoxMenuName)
         binding.lvMenuMyBox.apply {
             divider = null
