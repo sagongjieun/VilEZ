@@ -469,9 +469,11 @@ public class AppointmentController {
         map.put("content", chatVO.getContent());
         map.put("roomId",chatVO.getRoomId());
         map.put("fromUserId",chatVO.getFromUserId());
+        map.put("profile",user.getProfileImg());
         sendingOperations.convertAndSend("/sendlist/"+chatVO.getToUserId(),map);
 
         map.put("nickName",user2.getNickName());
+        map.put("profile",user2.getProfileImg());
         sendingOperations.convertAndSend("/sendlist/"+chatVO.getFromUserId(),map);
 //        sendingOperations.convertAndSend("/sendmy/"+chatVO.getRoomId()+"/"+chatVO.getFromUserId(),chatVO);
         System.out.println(chatVO);
