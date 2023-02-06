@@ -63,7 +63,7 @@ class EditProfileFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile, container, false)
         binding.fragment = this
         binding.user = ApplicationClass.prefs.getUser()
-        Log.d(TAG, "onCreateView: 유저 정보: ${binding.user}")
+        Log.d(TAG, "onCreateView: 유저 정보: ${ApplicationClass.prefs.getUser()}")
         getUserDetail(ApplicationClass.prefs.getId())
         initView()
         initToolBar()
