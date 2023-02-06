@@ -36,6 +36,7 @@ const ProductList = () => {
 
   // isAll이 새로고침시마다 바껴있어야 공유가능 물품 조건 유지 가능
   const [isAll, setIsAll] = useState(localStorage.getItem("isAll") === "false" ? false : true);
+  console.log(isAll);
   useEffect(() => {
     localStorage.setItem("isAll", isAll);
   }, [isAll]);
@@ -84,6 +85,7 @@ const ProductList = () => {
   // 네비게이션 바에서 공유 -> 요청 혹은 요청 -> 공유로 갔을 때 setCnt가 작동해야하는데, 하지 않아서 또 다른 변수가 변할 때 setCnt(0)으로 작동하게 하였음.
   useEffect(() => {
     setCnt(0);
+    window.scrollTo(0, 0);
   }, [currentTab]);
   useEffect(() => {
     if (currentTab !== urlId) {
@@ -91,7 +93,6 @@ const ProductList = () => {
       setArticles([]);
       setAskArticles([]);
       setCnt(0);
-      window.scrollTo(0, 0);
     }
   }, [urlId, search]);
   useEffect(() => {
@@ -181,6 +182,7 @@ const ProductList = () => {
 
   // 공유가능 목록 보기위해 작성한 useEffect 0일때 공유가능, 1일때 공유 중
   // useEffect(() => {
+  //   // true면 다 볼 수 있음
   //   if (isAll) {
   //     setArticles(originalArticle);
   //     // console.log(getArticle);
@@ -217,7 +219,7 @@ const ProductList = () => {
               <img src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
             </div>
 
-            <div onClick={onClickSeePossible} css={isAll ? unPossibleWrap : possibleWrap}>
+            <div onClick={onClickSeePossible} css={isAll ? possibleWrap : unPossibleWrap}>
               공유가능한 물품만 보기
             </div>
           </div>
