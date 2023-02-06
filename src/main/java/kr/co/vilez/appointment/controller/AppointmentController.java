@@ -434,6 +434,7 @@ public class AppointmentController {
         HttpVO http = new HttpVO();
         try{
             appointmentService.deleteRoom(roomId, userId);
+            http.setFlag("success");
         } catch (Exception e){
             e.printStackTrace();
         }
