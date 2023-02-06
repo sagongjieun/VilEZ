@@ -11,7 +11,18 @@ const { kakao } = window;
  * @selectedLat readOnly일 때, 부모 컴포넌트로부터 받은 위도
  * @selectedLng readOnly일 때, 부모 컴포넌트로부터 받은 경도
  */
-const Map = ({ readOnly, sendLocation, selectedLat, selectedLng, movedLat, movedLng, movedZoomLevel, movedMarker }) => {
+const Map = ({
+  readOnly,
+  sendLocation,
+  selectedLat,
+  selectedLng,
+  movedLat,
+  movedLng,
+  movedZoomLevel,
+  movedMarker,
+  disableMapLat,
+  disableMapLng,
+}) => {
   const [location, setLocation] = useState("지도에서 장소를 선택해주세요!");
   const [lat, setLat] = useState("");
   const [lng, setLng] = useState("");
@@ -174,8 +185,20 @@ const Map = ({ readOnly, sendLocation, selectedLat, selectedLng, movedLat, moved
       marker.setMap(map);
       map.setCenter(latlng);
       marker.setPosition(latlng);
+      map.setDraggable(false);
+      map.setZoomable(false);
+    } else {
+      if (disableMapLat && disableMapLng) {
+        initMap();
+
+        const latlng = new kakao.maps.LatLng(disableMapLat, disableMapLng);
+
+        map.setCenter(latlng);
+        map.setDraggable(false);
+        map.setZoomable(false);
+      }
     }
-  }, [selectedLat, selectedLng]);
+  }, [selectedLat, selectedLng, disableMapLat, disableMapLng]);
 
   return <div id="map" css={mapWrapper}></div>;
 };

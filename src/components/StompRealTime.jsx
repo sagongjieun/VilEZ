@@ -19,22 +19,34 @@ import {
   checkShareCancelAskState,
   checkShareCancelState,
   checkShareReturnState,
+  checkUserLeaveState,
 } from "../recoil/atom";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 let client;
 
-const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareUserId, shareState }) => {
+const StompRealTime = ({
+  roomId,
+  boardId,
+  otherUserId,
+  otherUserNickname,
+  shareUserId,
+  shareState,
+  roomState,
+  sendShareState,
+}) => {
   const scrollRef = useRef();
   const myUserId = localStorage.getItem("id");
   const chatRoomId = roomId;
   const pathname = useLocation().pathname;
+  const navigate = useNavigate();
 
   const [checkShareDate, setCheckShareDate] = useRecoilState(checkShareDateState);
   const [checkAppointment, setCheckAppointment] = useRecoilState(checkAppointmentState);
   const [checkShareCancelAsk, setCheckShareCancelAsk] = useRecoilState(checkShareCancelAskState);
   const [checkShareCancel, setCheckShareCancel] = useRecoilState(checkShareCancelState);
   const [checkShareReturn, setCheckShareReturn] = useRecoilState(checkShareReturnState);
+  const [checkUserLeave, setCheckUserLeave] = useRecoilState(checkUserLeaveState);
 
   const [chatMessage, setChatMessage] = useState(""); // 클라이언트가 입력하는 메시지
   const [showingMessage, setShowingMessage] = useState([]); // 서버로부터 받는 메시지
@@ -46,6 +58,8 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
   const [calendarModalOpen, setCalendarModalOpen] = useState(false);
   const [isOathModalOpen, setIsOathModalOpen] = useState(false);
   const [oathSign, setOathSign] = useState("");
+  const [disableMapLat, setDisableMapLat] = useState("");
+  const [disableMapLng, setDisableMapLng] = useState("");
 
   function onKeyDownSendMessage(e) {
     if (e.keyCode === 13) {
@@ -122,10 +136,6 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
     });
   }
 
-  function onClickRecommendLocation() {
-    alert("추천 장소 가져오기");
-  }
-
   useEffect(() => {
     if (chatRoomId) {
       console.log(chatRoomId);
@@ -139,6 +149,9 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
           setMovedLng(res.lng);
           setMovedZoomLevel(res.zoomLevel);
           setMovedMarker(res.isMarker);
+
+          setDisableMapLat(res.lat);
+          setDisableMapLng(res.lng);
         }
         // 마지막 장소가 없다면
         else {
@@ -146,6 +159,9 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
           setMovedLat(37.56682870560737);
           setMovedLng(126.9786409384806);
           setMovedZoomLevel(3);
+
+          setDisableMapLat(37.56682870560737);
+          setDisableMapLng(126.9786409384806);
         }
       });
 
@@ -208,9 +224,9 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
   useEffect(() => {
     /* state : 0 예약 후, -1 반납 후, -2 예약 후(예약 취소 : 확장), -3 예약 전 */
     // test로 0, 원래는 -1
-    if (shareState === -1) {
+    if (shareState == -1 || roomState == -1) {
       // 소켓 끊기
-      // client.disconnect();
+      client.disconnect();
 
       // 채팅방 막기
       const messageInput = document.getElementById("messageInput");
@@ -219,10 +235,8 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
 
       const messageSendButton = document.getElementById("messageSendButton");
       messageSendButton.hidden = true;
-
-      // 공유지도 막기
     }
-  }, [shareState]);
+  }, [shareState, roomState]);
 
   // 시스템 메시지
   useEffect(() => {
@@ -260,6 +274,7 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
       setCheckAppointment(false);
+      sendShareState(0);
     }
 
     // 예약 취소 요청
@@ -296,6 +311,7 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
       setCheckShareCancel(false);
+      sendShareState(-2);
     }
 
     // 반납 확인 -> 대화 종료
@@ -314,25 +330,47 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
       setCheckShareReturn(false);
+      sendShareState(-1);
     }
 
     // 상대방이 채팅방 나감 -> 대화 종료
-  }, [checkShareDate, checkAppointment, checkShareCancelAsk, checkShareCancel, checkShareReturn]);
+    if (checkUserLeave) {
+      const sendMessage = {
+        roomId: chatRoomId,
+        fromUserId: -1,
+        toUserId: otherUserId,
+        content: "상대방이 채팅방을 나가서 대화가 종료됐어요",
+        system: true,
+        time: new Date().getTime(),
+      };
+
+      setShowingMessage((prev) => [...prev, sendMessage]);
+
+      client.send("/recvchat", {}, JSON.stringify(sendMessage));
+
+      setCheckUserLeave(false);
+      navigate(`/product/list/share`);
+    }
+  }, [checkShareDate, checkAppointment, checkShareCancelAsk, checkShareCancel, checkShareReturn, checkUserLeave]);
 
   return (
     <>
       <div css={mapWrapper}>
         <span>{hopeLocation}</span>
         <div>
-          <Map
-            readOnly={false}
-            sendLocation={receiveLocation}
-            movedLat={movedLat}
-            movedLng={movedLng}
-            movedZoomLevel={movedZoomLevel}
-            movedMarker={movedMarker}
-            shareState={shareState}
-          />
+          {shareState == -1 || roomState == -1 ? (
+            // 공유지도 막기
+            <Map readOnly={true} disableMapLat={disableMapLat} disableMapLng={disableMapLng} />
+          ) : (
+            <Map
+              readOnly={false}
+              sendLocation={receiveLocation}
+              movedLat={movedLat}
+              movedLng={movedLng}
+              movedZoomLevel={movedZoomLevel}
+              movedMarker={movedMarker}
+            />
+          )}
         </div>
       </div>
       <div>
@@ -340,7 +378,7 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
           <img src={selectDateButton} onClick={onClickOpenCalendarModal} />
           {calendarModalOpen && <CalendarModal setCalendarModalOpen={setCalendarModalOpen} boardId={boardId} />}
           <img src={openOathButton} onClick={onClickOpenOath} />
-          <img src={recommendLocationButton} onClick={onClickRecommendLocation} />
+          <img src={recommendLocationButton} />
         </div>
         <div css={chatWrapper}>
           <div ref={scrollRef}>

@@ -78,24 +78,12 @@ async function putUserProfileImage(formData) {
   }
 }
 
-async function putUserPoint(body) {
-  try {
-    const { data } = await jsonAxios.put(`/users/point`, body);
-
-    if (data.flag === "success") return true;
-    else return false;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 export {
   getUserDetail,
   getUserAsk,
   getUserShare,
   getUserBookMark,
-  putUserPasswordByEmail,
   putUserPasswordNickName,
   putUserProfileImage,
-  putUserPoint,
+  putUserPasswordByEmail,
 };
