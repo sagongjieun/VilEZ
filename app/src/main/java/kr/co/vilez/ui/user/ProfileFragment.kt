@@ -10,19 +10,30 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.*
 import kr.co.vilez.R
+import kr.co.vilez.data.dto.AskData
+import kr.co.vilez.data.dto.BoardData
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentProfileBinding
 import kr.co.vilez.ui.MainActivity
+import kr.co.vilez.ui.ask.AskListAdapter
 import kr.co.vilez.ui.dialog.*
+import kr.co.vilez.ui.profile.BoardListAdapter
+import kr.co.vilez.ui.share.ShareListAdapter
 import kr.co.vilez.util.ApplicationClass
+import kr.co.vilez.util.Common
 import retrofit2.awaitResponse
 
 private const val TAG = "빌리지_ProfileFragment"
 class ProfileFragment : Fragment() {
     private lateinit var binding:FragmentProfileBinding
     private lateinit var mainActivity: MainActivity
+
+    private lateinit var myAdapter: BoardListAdapter
+    private lateinit var myList:ArrayList<BoardData>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainActivity = context as MainActivity
@@ -37,26 +48,52 @@ class ProfileFragment : Fragment() {
 
         binding.user = ApplicationClass.prefs.getUser()
         binding.userDetail = ApplicationClass.prefs.getUserDetail()
-        //getUserDetail(ApplicationClass.prefs.getId()) // 현재 로그인한 유저 id로 user detail 가져오기
+        
+        initData() // 현재 대여중인 정보 가져오기
 
         return binding.root
     }
+    
+    private fun initData() {
+        myList = arrayListOf()
+        myAdapter = BoardListAdapter(myList)
+        binding.rvAppointmentList.apply {
+            adapter = myAdapter
+            layoutManager =
+                LinearLayoutManager(mainActivity, LinearLayoutManager.HORIZONTAL, false)
+        }
 
-    private fun getUserDetail(userId: Int) {
-        Log.d(TAG, "getUserDetail: 넘어온 유저 id: $userId")
-        CoroutineScope(Dispatchers.IO).launch {
-            val result =
-                ApplicationClass.retrofitUserService.getUserDetail(userId).awaitResponse().body()
+        var index = 0
+        CoroutineScope(Dispatchers.Main).launch {
+            val result = ApplicationClass.retrofitAppointmentService.getMyAppointment(ApplicationClass.prefs.getId()).awaitResponse().body()
+            Log.d(TAG, "initData: result: $result")
             if (result?.flag == "success") {
-                val data = result.data[0]
-                Log.d(TAG, "user detail 조회 성공, 받아온 user = $data")
-                binding.userDetail = data // user detail data binding
-                ApplicationClass.prefs.setUserDetail(data) // prefs도 갱신
+                Log.d(TAG, "initList: success!!!!!  검색 결과 : ${result.data[0].size}  result: $result")
+                if (result.data.isEmpty()) {
+                    Log.d(TAG, "onViewCreated: 데이터 0개")
+                }
+                for (data in result.data[0]) {
+                    val boardData = BoardData(
+                        data.myAppointListVO.id,
+                        if (data.imgPathList.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.imgPathList[0].path,
+                        data.myAppointListVO.title,
+                        "2023-02-07 13:55:03", // TODO : DATE 넣어줘야함
+                        data.myAppointListVO.startDay+ " ~ " + data.myAppointListVO.endDay,
+                        data.bookmarkCnt.toString(),
+                        data.myAppointListVO.userId,
+                        data.myAppointListVO.type
+                    )
+                    Log.d(TAG, "추가?: $boardData")
+                    myList.add(boardData)
+                }
             } else {
-                Log.d(TAG, "user detail 조회 실패, result:$result")
+                Log.d(TAG, "initData: 실패!!")
             }
+            Log.d(TAG, "추가완료: myList: $myList")
+            myAdapter.notifyItemInserted(index - 1)
         }
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
