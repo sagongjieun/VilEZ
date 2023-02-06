@@ -1,7 +1,9 @@
 package kr.co.vilez.service
 
+import com.google.gson.JsonObject
 import kr.co.vilez.data.model.*
 import okhttp3.MultipartBody
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -27,7 +29,7 @@ interface RetrofitUserService {
     fun getUserDetail(@Path("id") id:Int) : Call<RESTUserDetailResult>
 
     @PUT("/vilez/users/locationMobile")
-    fun updateUserLocation(@Body user:User) : Call <RESTResult>
+    fun updateUserLocation(@Body user:HashMap<String, String>) : Call <RESTResult>
 
     // 헤더 직접 넣는 방법 이제 쓰지말기~
     /*@PUT("/vilez/users/modify")
