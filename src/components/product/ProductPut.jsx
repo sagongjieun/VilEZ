@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { getShareArticleByBoardId, putShareArticle } from "../../api/share";
-import { putAskArticle } from "../../api/ask";
+import { getAskArticleDetailByBoardId, putAskArticle } from "../../api/ask";
 import DivideLine from "../common/DivideLine";
 import InputBox from "../common/InputBox";
 import ProductCalendar from "./ProductCalendar";
@@ -14,7 +14,7 @@ import Map from "../common/Map";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const ProductPut = () => {
-  const loginUserId = localStorage.getItem("id");
+  // const loginUserId = localStorage.getItem("id");
   const navigate = useNavigate();
   const boardId = parseInt(useParams().boardId);
   const [registType, setRegistType] = useState();
@@ -42,9 +42,20 @@ const ProductPut = () => {
           setHopeAreaLat(data.hopeAreaLat);
           setHopeAreaLng(data.hopeAreaLng);
           setLocation(data.address);
-          console.log(data);
+          console.log("@@@@@", title, imageList);
         })
-      : null;
+      : getAskArticleDetailByBoardId(boardId).then((res) => {
+          const data = res[0];
+          setTitle(data.title);
+          setCategory(data.category);
+          setImageList(data.list);
+          setContent(data.content);
+          setStartDay(data.startDay);
+          setEndDay(data.endDay);
+          setHopeAreaLat(data.hopeAreaLat);
+          setHopeAreaLng(data.hopeAreaLng);
+          setLocation(data.address);
+        });
   }, []);
   function receiveRegistType(registType) {
     setRegistType(registType);
@@ -57,7 +68,7 @@ const ProductPut = () => {
   function receiveCategory(category) {
     setCategory(category);
   }
-
+  // 불변성 찾아보기 (배열, 객체)
   function receiveImageList(imageList) {
     setImageList(imageList);
   }
@@ -117,11 +128,13 @@ const ProductPut = () => {
       formData.append("image", image);
     });
 
+    console.log(imageList);
     formData.append(
       "board",
       new Blob(
         [
           JSON.stringify({
+            id: boardId,
             category: category,
             content: content,
             endDay: endDay,
@@ -129,8 +142,6 @@ const ProductPut = () => {
             hopeAreaLng: hopeAreaLng,
             startDay: startDay,
             title: title,
-            userId: loginUserId,
-            address: location,
           }),
         ],
         { type: "application/json" }
