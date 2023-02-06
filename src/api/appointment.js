@@ -118,7 +118,7 @@ async function postShareReturnState(roomId) {
 
 async function postShareEnd(roomId) {
   try {
-    const { data } = await jsonAxios.post(`/returns/confirmed/returns`, { roomId });
+    const { data } = await jsonAxios.post(`/returns/confirmed`, { roomId });
 
     if (data.flag === "success") return true;
     else return false;
