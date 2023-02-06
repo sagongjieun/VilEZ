@@ -110,6 +110,7 @@ class ChatlistFragment : Fragment() {
                                     break
                                 }
                             }
+
                             if(data != roomId) {
                                 DataState.itemList[index].noReadCnt++
                             } else {
@@ -133,10 +134,11 @@ class ChatlistFragment : Fragment() {
                                     json.getInt("roomId"),
                                     json.getString("nickName"),
                                     json.getString("content"),
-                                    json.getString("area"),
+                                    "",
                                     json.getInt("fromUserId"),
                                     1,
                                     json.getString("profile")
+
                                 )
                             )
                             roomAdapter.notifyItemInserted(0)
