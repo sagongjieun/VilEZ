@@ -1,6 +1,7 @@
 package kr.co.vilez.data.dto
 
 data class WriteBoard(
+    val id: Int,
     val category: String,
     val endDay: String,
     val hopeAreaLat: String,
