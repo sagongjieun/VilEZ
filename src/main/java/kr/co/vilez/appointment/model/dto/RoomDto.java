@@ -10,4 +10,5 @@ public class RoomDto {
     private int boardId;
     private int shareUserId;
     private int notShareUserId;
+    private int state;
 }
