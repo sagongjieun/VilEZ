@@ -100,7 +100,6 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
                 if(room.state == 0) {
                     kakaoMapFragment.arguments = bundle
 
-
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.frameLayout, kakaoMapFragment)
                         .commit()
@@ -115,7 +114,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
     override fun onDestroy() {
         super.onDestroy()
         if(topic != null)
-        topic!!.dispose()
+            topic!!.dispose()
     }
 
     @SuppressLint("CheckResult")
@@ -186,6 +185,8 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
         rv_chat.adapter = roomAdapter
         rv_chat.layoutManager = LinearLayoutManager(this)
 
+
+        //나가기 버튼 처리
         binding.toolbar.menu.get(0).setOnMenuItemClickListener { item ->
             when(item.itemId) {
                 R.id.close_room -> {
@@ -211,7 +212,8 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
                                     data.put("time", System.currentTimeMillis())
                                     data.put("system",true)
                                     StompClient2.stompClient.send("/recvchat", data.toString()).subscribe()
-                                    topic!!.dispose()
+                                    if(topic!=null)
+                                        topic!!.dispose()
                                     var index = 0
                                     for(i in 0 until DataState.itemList.size) {
                                         if(roomId==DataState.itemList[i].roomId) {
@@ -285,8 +287,6 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
                         }
                     }
                 }
-
-
         }
 
         initScheduleButton()
