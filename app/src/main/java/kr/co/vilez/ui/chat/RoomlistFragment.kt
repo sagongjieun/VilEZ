@@ -58,6 +58,7 @@ class ChatlistFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         data = 0;
+        roomAdapter.notifyDataSetChanged()
     }
 
     override fun onDestroy() {
