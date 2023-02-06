@@ -60,7 +60,7 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
   }
 
   useEffect(() => {
-    getAppointmentsByBoardId(boardId).then((res) => {
+    getAppointmentsByBoardId(boardId, shareData.boardType).then((res) => {
       // 해당 boardId에 이미 약속 정보가 있다면
       if (res[0].length > 1) {
         for (let appointment of res) {
