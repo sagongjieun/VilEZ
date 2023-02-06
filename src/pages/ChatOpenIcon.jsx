@@ -21,17 +21,11 @@ function ChatOpenIcon() {
     setModalOpen(!modalOpen);
   };
 
-  // map.put("nickName",user.getNickName());
-  // map.put("area", user.getArea());
-  // map.put("content", chatVO.getContent());
-  // map.put("roomId",chatVO.getRoomId());
-  // map.put("fromUserId",chatVO.getFromUserId());
-  // sendingOperations.convertAndSend("/sendlist/"+chatVO.getToUserId(),map);
-
   useEffect(() => {
     if (loginUserId) {
-      const sockJS = new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
-      client = Stomp.over(sockJS); // 웹소켓 클라이언트 생성
+      client = Stomp.over(function () {
+        return new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
+      }); // 웹소켓 클라이언트 생성
 
       // 웹소켓과 연결됐을 때 동작하는 콜백함수들
       client.connect({}, () => {
