@@ -74,35 +74,6 @@ class LoginFragment : Fragment() {
     }
 
 
-    fun loginToProfile(user: User) {
-        // 닉네임을 변경하지 않은 oauth 사용자의 경우 닉네임 변경 유도를 위해 프로필 창으로 이동시킴
-        CoroutineScope(Dispatchers.Main).launch {
-            val user = User(user.email, user.password)
-            val result =
-                ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
-            if (result?.flag == "success") {
-                Log.d(TAG, "로그인 성공, 받아온 user = ${result.data[0]}")
-
-                ApplicationClass.prefs.setUser(result.data[0])
-                ApplicationClass.prefs.setAutoLogin(user) // 로그인시 자동으로 자동로그인 넣기
-
-                val resultDetail = ApplicationClass.retrofitUserService.getUserDetail(result.data[0].id).awaitResponse().body()
-                if(resultDetail?.flag == "success") {
-                    Log.d(TAG, "login: Detail조회도 로그인와 같이 성공~, result: ${resultDetail.data[0]}")
-                    ApplicationClass.prefs.setUserDetail(resultDetail.data[0])
-                }
-
-                val intent = Intent(loginActivity, MainActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
-            } else {
-                Log.d(TAG, "login: 로그인 실패, result:$result")
-
-            }
-        }
-    }
-
     fun moveFragment(view: View) {
         when (view.id) {
             R.id.tv_login_findpw -> { // 비밀번호 찾기
@@ -153,6 +124,7 @@ class LoginFragment : Fragment() {
                     }
                 }
             } else {
+                Log.d(TAG, "kakaoLogin: 카카오 로그인 실패 에러 : : $error")
                 val dialog = AlertDialog(loginActivity, "카카오 로그인을 실패했습니다.")
                 dialog.show(loginActivity.supportFragmentManager, "KakaoLoginFailed")
             }
