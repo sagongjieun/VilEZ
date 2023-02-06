@@ -331,16 +331,17 @@ public class AppointmentServiceImpl implements AppointmentService {
                 chatDatasVO.setNoReadCount((int) count);
             }
             UserDto user = null;
-            if(vo.getToUserId() == userId) {
+            RoomDto room = appointmentMapper.getBoard(vo.getRoomId());
+            if(room.getShareUserId() == userId) {
                 try {
-                    user =  userMapper.detail(vo.getFromUserId());
+                    user =  userMapper.detail(room.getNotShareUserId());
 
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
             } else {
                 try {
-                    user =  userMapper.detail(vo.getToUserId());
+                    user =  userMapper.detail(room.getShareUserId());
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
