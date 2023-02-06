@@ -23,9 +23,9 @@ const ProductList = () => {
   useEffect(() => {
     getUserDetail(userId).then((res) => {
       const userData = res;
-      // console.log(userData[0]);
+      console.log(userData[0]);
       setLocation({ lat: userData[0].areaLat, lng: userData[0].areaLng });
-      console.log(location);
+      console.log(location.lng);
     });
   }, []);
   const [isAll, setIsAll] = useState(localStorage.getItem("isAll") === "false" ? false : true);
@@ -85,14 +85,16 @@ const ProductList = () => {
     // Check if the component is still mounted before making the API call
     urlId === 1
       ? // 요청
-        getAskArticleList(location.lat, location.lng, categoryToUse, cnt, 15, 0, 1, search).then((res) => {
-          const data = res;
-          setOriginalArticle([...originalArticle, ...data[0]]);
-          setArticles([...originalArticle, ...data[0]]);
-          setList("물품 요청 목록");
-        })
+        getAskArticleList("38.403414823192", "125.00263781627977", categoryToUse, cnt, 15, 0, userId, search).then(
+          (res) => {
+            const data = res;
+            setOriginalArticle([...originalArticle, ...data[0]]);
+            setArticles([...originalArticle, ...data[0]]);
+            setList("물품 요청 목록");
+          }
+        )
       : // 공유
-        getShareArticleList(location.lat, location.lng, categoryToUse, cnt, 15, 0, 1, search).then((res) => {
+        getShareArticleList(location.lat, location.lng, categoryToUse, cnt, 15, 0, userId, search).then((res) => {
           const data = res;
           setOriginalArticle([...originalArticle, ...data]);
           setArticles([...originalArticle, ...data]);
@@ -151,13 +153,13 @@ const ProductList = () => {
     setOriginalArticle([]);
     setCnt(0);
     urlId === 2
-      ? getShareArticleList(location.lat, location.lng, categoryToUse, cnt, 15, 0, 1, search).then((res) => {
+      ? getShareArticleList(location.lat, location.lng, categoryToUse, cnt, 15, 0, userId, search).then((res) => {
           const data = res;
           setOriginalArticle(data);
           setArticles(data);
           setList("물품 공유 목록");
         })
-      : getAskArticleList(location.lat, location.lng, categoryToUse, cnt, 15, 0, 1, search).then((res) => {
+      : getAskArticleList(location.lat, location.lng, categoryToUse, cnt, 15, 0, userId, search).then((res) => {
           const data = res;
           setOriginalArticle(data);
           setArticles(data);
