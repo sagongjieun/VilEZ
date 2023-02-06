@@ -12,4 +12,5 @@ public class AppointmentVO {
     private int boardId;
     private int shareUserId;
     private int notShareUserId;
+    private int type;
 }
