@@ -107,11 +107,11 @@
         insert into user(email, password, nickname, point, manner,
                          date, state, oauth)
         values(#{email}, #{password}, #{nickName},
-               300, 21, now(), 0, #{oauth});
+               100, 21, now(), 0, #{oauth});
     </insert>
 
     <select id="login" parameterType="UserDto" resultMap="user">
-        SELECT id, email, password, nickname, area_lat, area_lng, oauth
+        SELECT id, email, password, nickname, area_lat, area_lng, oauth,date
         FROM user
         WHERE email = #{email} and password = #{password};
     </select>

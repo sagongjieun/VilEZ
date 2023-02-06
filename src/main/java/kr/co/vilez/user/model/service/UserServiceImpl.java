@@ -1,5 +1,7 @@
 package kr.co.vilez.user.model.service;
 
+import kr.co.vilez.appointment.model.dao.AppointmentDao;
+import kr.co.vilez.appointment.model.vo.PointVO;
 import kr.co.vilez.data.HttpVO;
 import kr.co.vilez.jwt.JwtProviderImpl;
 import kr.co.vilez.tool.AES256;
@@ -26,7 +28,7 @@ public class UserServiceImpl implements UserService {
     final ResourceLoader resourceLoader;
     final OSUpload osUpload;
     final SimpMessageSendingOperations sendingOperations;
-
+    final AppointmentDao appointmentDao;
     final String bucketName = "vilez";
     HttpVO http = null;
     List<Object> data = null;
@@ -160,6 +162,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public HttpVO join(UserDto userDto) throws Exception {
         userMapper.join(userDto);
+        UserDto sub = userMapper.login(userDto);
+        PointVO pointVO = new PointVO();
+        pointVO.setBoardId(-1);
+        pointVO.setUserId(sub.getId());
+        pointVO.setPoint(100);
+        pointVO.setType(-1);
+        pointVO.setDate(sub.getDate());
+        appointmentDao.savePoint(pointVO);
+
         http = new HttpVO();
         http.setFlag("success");
 
