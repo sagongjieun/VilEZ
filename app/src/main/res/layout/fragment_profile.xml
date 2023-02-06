@@ -110,12 +110,13 @@
             android:layout_width="0dp"
             android:layout_height="20dp"
             android:paddingStart="20dp"
-            android:text="@{user.email}"
+            android:text="@{ (user.oauth.length > 1) ? ( user.oauth.equals(`naver`) ? `네이버 사용자` : `카카오 사용자` ) : user.email }"
             android:maxLength="30"
             app:layout_constraintEnd_toStartOf="@+id/iv_edit"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/iv_profile_img"
-            app:layout_constraintTop_toBottomOf="@id/tv_profile_nickName" />
+            app:layout_constraintTop_toBottomOf="@id/tv_profile_nickName"
+            tools:ignore="RtlSymmetry" />
 
 
         <View

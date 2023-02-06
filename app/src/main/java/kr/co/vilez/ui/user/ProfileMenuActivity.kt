@@ -50,7 +50,7 @@ class ProfileMenuActivity : AppCompatActivity() {
             }
             "내 동네 설정" -> {
                 transaction
-                    .replace(R.id.frame_layout_profile_myshare, EditAreaFragment())
+                    .replace(R.id.frame_layout_profile_myshare, EditLocation())
             }
             "내 정보 수정" -> {
                 transaction
