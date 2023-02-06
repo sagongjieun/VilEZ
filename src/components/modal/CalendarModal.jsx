@@ -67,13 +67,12 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
           let start = appointment.appointmentStart.split("-").map(Number);
           let end = appointment.appointmentEnd.split("-").map(Number);
 
-          setBlockDate([
-            ...blockDate,
-            {
-              start: new Date(start[0], start[1] - 1, start[2]),
-              end: new Date(end[0], end[1] - 1, end[2]),
-            },
-          ]);
+          const newBlockDate = {
+            start: new Date(start[0], start[1] - 1, start[2]),
+            end: new Date(end[0], end[1] - 1, end[2]),
+          };
+
+          setBlockDate((prev) => [...prev, newBlockDate]);
         }
       }
     });
