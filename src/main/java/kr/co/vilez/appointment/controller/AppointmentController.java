@@ -448,9 +448,19 @@ public class AppointmentController {
         HashMap<String, Object> map = new HashMap<>();
         UserDto user = null;
         UserDto user2 = null;
+        RoomDto roomDto = appointmentService.getBoard(chatVO.getRoomId());
+        int fromUserId = chatVO.getFromUserId();
+        int toUserId = chatVO.getToUserId();
+        if(chatVO.getFromUserId()==-1) {
+            if(roomDto.getNotShareUserId() == toUserId) {
+                fromUserId = roomDto.getShareUserId();
+            } else {
+                fromUserId = roomDto.getNotShareUserId();
+            }
+        }
         try {
-            user = userService.detail2(chatVO.getFromUserId());
-            user2 = userService.detail2(chatVO.getToUserId());
+            user = userService.detail2(fromUserId);
+            user2 = userService.detail2(fromUserId);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
