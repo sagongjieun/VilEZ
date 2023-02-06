@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { HiChevronRight, HiChevronLeft } from "react-icons/hi2";
-import { useLocation, useParams } from "react-router-dom";
-import { getShareArticleByBoardId } from "../../api/share";
 
 const ProductCategory = ({ isMain, sendCategory, list }) => {
   const categoryType = [
@@ -18,6 +16,7 @@ const ProductCategory = ({ isMain, sendCategory, list }) => {
     "여가/생활편의",
     "패션의류",
     "도서",
+    "기타",
   ];
   const categoryTypeList = [
     "전체",
@@ -32,10 +31,9 @@ const ProductCategory = ({ isMain, sendCategory, list }) => {
     "여가/생활편의",
     "패션의류",
     "도서",
+    "기타",
   ];
-  const pathname = useLocation().pathname;
-  const boardId = parseInt(useParams().boardId);
-  const type = pathname.includes("share") ? 2 : 1;
+
   const [openCategory, setOpenCategory] = useState(false);
   const [category, setCategory] = useState(list === true ? "전체" : "카테고리");
   function onClickOpenCategory() {
@@ -54,16 +52,6 @@ const ProductCategory = ({ isMain, sendCategory, list }) => {
   useEffect(() => {
     sendCategory(category);
   }, [category]);
-
-  useEffect(() => {
-    type === 2
-      ? getShareArticleByBoardId(boardId).then((res) => {
-          const data = res[0];
-          setCategory(data.category);
-          // console.log(data);
-        })
-      : null;
-  }, []);
 
   return (
     <div css={isMain ? categoryWrapper : noBorder}>
