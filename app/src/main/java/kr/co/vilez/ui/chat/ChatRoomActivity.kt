@@ -19,16 +19,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
-import kr.co.vilez.data.model.AppointDto
-import kr.co.vilez.data.model.AppointVO
-import kr.co.vilez.data.model.SetPeriodDto
-import kr.co.vilez.data.model.Room
+import kr.co.vilez.data.model.*
 import kr.co.vilez.databinding.ActivityChatRoomBinding
 import kr.co.vilez.ui.chat.map.KakaoMapFragment
-import kr.co.vilez.ui.dialog.AlertDialog
-import kr.co.vilez.ui.dialog.AppointConfirmDialog
-import kr.co.vilez.ui.dialog.AppointConfirmDialogInterface
-import kr.co.vilez.ui.dialog.SignDialog
+import kr.co.vilez.ui.dialog.*
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.DataState
 import kr.co.vilez.util.StompClient2
@@ -37,15 +31,18 @@ import retrofit2.awaitResponse
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 private const val TAG = "빌리지_채팅_ChatRoomActivity"
-class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
+class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
+    ReturnConfirmDialogInterface {
     private lateinit var binding: ActivityChatRoomBinding
     private var roomId = 0
     private var otherUserId = 0
     private var nickName = "알수없음"
     private var profile = "https://kr.object.ncloudstorage.com/vilez/basicProfile.png"
     var topic : Disposable?? =  null
+    var topic2 : Disposable?? =  null
     private var now : Int = 0
     private val itemList = ArrayList<ChatlistData>()
     private val kakaoMapFragment = KakaoMapFragment()
@@ -68,9 +65,18 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
         val data = JSONObject()
         data.put("roomId", roomId)
         data.put("userId", ApplicationClass.prefs.getId())
+        topic2 = StompClient2.stompClient.join("/sendend/" + roomId )
+            .subscribe { topicMessage ->
+                run {
+                    room.state = -1
+                    if(topic != null)
+                        topic!!.dispose()
+                    topic2!!.dispose()
+                }
+            }
+
         StompClient2.stompClient.send("/room_enter", data.toString()).subscribe()
         CoroutineScope(Dispatchers.Main).launch {
-            println(roomId)
             val result = ApplicationClass.retrofitChatService.getRoomData(roomId).awaitResponse().body()
             if (result?.flag == "success") {
                 room = result.data.get(0)
@@ -291,6 +297,9 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
 
         initScheduleButton()
         initSignButton()
+        binding.btnChatReturn.setOnClickListener {
+            initReturnButton()
+        }
     }
 
     private fun initSignButton() {
@@ -389,6 +398,11 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
         dialog.show(this.supportFragmentManager, "Appoint")
     }
 
+    fun showReturnDialog() {
+        var dialog = ReturnConfirmDialog(this, nickName)
+        dialog.show(this.supportFragmentManager, "Appoint")
+    }
+
     fun showDialog(msg: String) {
         var dialog = AlertDialog(this, msg)
         dialog.show(this.supportFragmentManager, "Appoint")
@@ -461,6 +475,55 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
 
     }
 
+    // 반납 로직
+    // 공유자가 먼저 한 후 피공유자 시작
+    fun initReturnButton() {
+
+        CoroutineScope(Dispatchers.Main).launch {
+            var result = ApplicationClass.retrofitChatService.getAppointMent(
+                room.boardId, room.notShareUserId,
+                room.shareUserId,room.type
+            ).awaitResponse().body()
+
+            if(result?.flag == "success") {
+                appointDto = result.data.get(0)
+                if(appointDto == null) {
+                    return@launch
+                }
+                var result = ApplicationClass.retrofitChatService.getReturns(room.id).awaitResponse().body()
+                if(result?.flag == "success") {
+                    var data = result.data.get(0)
+                    if(ApplicationClass.prefs.getId() == room.shareUserId) { // 공유자 입장
+                        if(data.state) { // 이미 했으면
+                            showDialog("평가를 완료 하였습니다.\n피공유자에게 종료를 요청하세요!")
+                        } else { // 평가 다이어로그 띄우기
+                            showReturnDialog()
+                        }
+                    } else {
+                        if(data.state) { // 이미 했으면
+                            showDialog("공유가 종료되었습니다.")
+                            var datad = JSONObject()
+                            datad.put("roomId", roomId)
+                            datad.put("fromUserId", ApplicationClass.prefs.getId())
+                            datad.put("toUserId", otherUserId)
+                            datad.put("content", "공유가 종료 되었습니다.")
+                            datad.put("time", System.currentTimeMillis())
+                            datad.put("system",true)
+                            StompClient2.stompClient.send("/recvchat", datad.toString()).subscribe()
+
+                            var data = JSONObject()
+                            data.put("roomId",room.id)
+                            StompClient2.stompClient.send("/recvend",data.toString()).subscribe()
+                        } else {
+                            showDialog("공유자에게 평가를 요청하세요!")
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
     override fun onYesButtonClick() {
         val SDF = SimpleDateFormat ("yyyy-MM-dd")
 
@@ -493,6 +556,29 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
         }
     }
 
+    override fun onYesButtonClick(cnt: Int) {
+        CoroutineScope(Dispatchers.Main).launch {
+            var map = HashMap<String,Int>()
+            map.put("userId",room.notShareUserId)
+            map.put("degree",cnt)
+            val result = ApplicationClass.retrofitUserService.setManner(map).awaitResponse().body()
+            if (result?.flag == "success") {
+                val result = ApplicationClass.retrofitChatService.returnRequest(ReturnRequestDto(roomId)).awaitResponse().body()
+                if(result?.flag == "success") {
+                    var data = JSONObject()
+                    data.put("roomId", roomId)
+                    data.put("fromUserId", ApplicationClass.prefs.getId())
+                    data.put("toUserId", otherUserId)
+                    data.put("content", "반납이 확인됐어요 \uD83D\uDE42")
+                    data.put("time", System.currentTimeMillis())
+                    data.put("system",true)
+                    StompClient2.stompClient.send("/recvchat", data.toString()).subscribe()
+                    itemList.add(ChatlistData(data.getString("content"), 0,"none"))
+                    roomAdapter.notifyDataSetChanged()
+                }
+            }
+        }
+    }
 
 
 }

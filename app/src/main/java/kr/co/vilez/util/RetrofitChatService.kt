@@ -30,6 +30,11 @@ data class RESTSignResult(
     val `data`: List<Sign>,
     val flag: String
 )
+data class bool(val state: Boolean)
+data class RESTReturnResult(
+    val `data`: List<bool>,
+    val flag: String
+)
 
 interface RetrofitChatService {
     @GET("/vilez/appointments/map/{roomId}")
@@ -74,4 +79,13 @@ interface RetrofitChatService {
 
     @DELETE("/vilez/appointments/chat")
     fun closeRoom(@Query("roomId") roomId: Int,@Query("userId") userId: Int): Call<RESTResult>
+
+    @GET("/vilez/returns")
+    fun getReturns(@Query("roomId") roomId: Int): Call<RESTReturnResult>
+
+    @POST("/vilez/returns")
+    fun returnRequest(@Body returnRequestDto: ReturnRequestDto) : Call<RESTResult>
+
+    @POST("/vilez/returns/confirmed")
+    fun returnEnd(@Body returnRequestDto: ReturnRequestDto) : Call<RESTResult>
 }

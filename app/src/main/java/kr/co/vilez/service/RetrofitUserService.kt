@@ -6,6 +6,7 @@ import okhttp3.MultipartBody
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.http.*
+import java.util.Objects
 
 interface RetrofitUserService {
 
@@ -59,5 +60,8 @@ interface RetrofitUserService {
     @GET
     fun getKakaoOAuth()
 
+
+    @POST("/vilez/users/manner")
+    fun setManner(@Body map:HashMap<String,Int>): Call<RESTResult>
 }
 
