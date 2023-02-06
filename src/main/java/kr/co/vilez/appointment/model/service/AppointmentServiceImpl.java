@@ -285,6 +285,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public RoomDto createRoom(RoomDto room) {
+        RoomDto roomDto = appointmentMapper.checkRoom2(room.getBoardId(),room.getType(),room.getShareUserId(),room.getNotShareUserId())
+        if(roomDto != null) {
+            return roomDto;
+        }
         appointmentMapper.createRoom(room);
         long now = System.currentTimeMillis();
         UserEnterVO userEnterVO = new UserEnterVO(room.getId(), room.getShareUserId(),now);
