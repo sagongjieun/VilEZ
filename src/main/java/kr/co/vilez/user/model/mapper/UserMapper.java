@@ -14,7 +14,7 @@ public interface UserMapper {
     void modifyPassword(String email) throws SQLException;
     void setManner(int userId, int degree) throws SQLException;
     void saveLocation(LocationDto locationDto) throws SQLException;
-    void saveLocationMobile(UserDto userDto) throws SQLException;
+    void saveLocationMobile(HashMap<String,Object> map) throws SQLException;
     UserDto checkEmail(String email) throws SQLException;
     UserDto check(String nickname) throws SQLException;
     void modifyUserInfo(HashMap<String,?> user) throws SQLException;
