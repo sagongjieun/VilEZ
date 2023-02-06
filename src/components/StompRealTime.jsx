@@ -21,7 +21,7 @@ import {
   checkShareReturnState,
   checkUserLeaveState,
 } from "../recoil/atom";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 let client;
 
@@ -38,7 +38,6 @@ const StompRealTime = ({
   const scrollRef = useRef();
   const myUserId = localStorage.getItem("id");
   const chatRoomId = roomId;
-  const pathname = useLocation().pathname;
   const navigate = useNavigate();
 
   const [checkShareDate, setCheckShareDate] = useRecoilState(checkShareDateState);
@@ -138,7 +137,29 @@ const StompRealTime = ({
 
   useEffect(() => {
     if (chatRoomId) {
-      console.log(chatRoomId);
+      client = Stomp.over(function () {
+        return new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
+      }); // 웹소켓 클라이언트 생성
+
+      // 웹소켓과 연결됐을 때 동작하는 콜백함수들
+      client.connect({}, () => {
+        // 다른 유저의 채팅을 구독
+        client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
+          setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
+        });
+
+        // 공유지도를 구독
+        client.subscribe(`/sendmap/${chatRoomId}/${myUserId}`, (data) => {
+          data = JSON.parse(data.body);
+
+          // 다른 유저가 움직인 지도의 데이터들
+          setMovedLat(data.lat);
+          setMovedLng(data.lng);
+          setMovedZoomLevel(data.zoomLevel);
+          data.isMarker ? setMovedMarker(true) : setMovedMarker(false);
+        });
+      });
+
       /** 채팅방의 마지막 공유지도 장소 받기 */
       getLatestMapLocation(chatRoomId).then((res) => {
         // 마지막 장소가 있다면
@@ -186,34 +207,6 @@ const StompRealTime = ({
           client.send("/recvchat", {}, JSON.stringify(sendMessage));
         }
       });
-
-      // const sockJS = new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
-      client = Stomp.over(function () {
-        return new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`);
-      }); // 웹소켓 클라이언트 생성
-
-      // 웹소켓과 연결됐을 때 동작하는 콜백함수들
-      client.connect({}, () => {
-        // 다른 유저의 채팅을 구독
-        client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
-          setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
-
-          if (JSON.parse(data.body).content === "예약이 확정됐어요 🙂") {
-            window.location.replace(pathname);
-          }
-        });
-
-        // 공유지도를 구독
-        client.subscribe(`/sendmap/${chatRoomId}/${myUserId}`, (data) => {
-          data = JSON.parse(data.body);
-
-          // 다른 유저가 움직인 지도의 데이터들
-          setMovedLat(data.lat);
-          setMovedLng(data.lng);
-          setMovedZoomLevel(data.zoomLevel);
-          data.isMarker ? setMovedMarker(true) : setMovedMarker(false);
-        });
-      });
     }
   }, [chatRoomId]);
 
@@ -225,9 +218,9 @@ const StompRealTime = ({
     /* state : 0 예약 후, -1 반납 후, -2 예약 후(예약 취소 : 확장), -3 예약 전 */
     if (shareState == -1 || shareState == -2 || roomState == -1) {
       // 소켓 끊기
-      if (client != null) {
-        if (client.connected) client.deactivate();
-      }
+      client.disconnect(() => {
+        client.unsubscribe();
+      });
 
       // 채팅방 막기
       const messageInput = document.getElementById("messageInput");
