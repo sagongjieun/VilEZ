@@ -96,9 +96,10 @@ public class AppointmentDao {
         mongoTemplate.save(mapVO);
     }
 
-    public void deleteRoom(String roomId) {
-        mongoTemplate.remove(Query.query(Criteria.where("roomId").is(roomId)),
-                ChatVO.class);
+    public void deleteRoom(int roomId,int userId) {
+        mongoTemplate.remove(Query.query(
+                Criteria.where("roomId").is(roomId).and("userId").is(userId)),
+                UserEnterVO.class);
     }
 
     public List<ChatVO> loadMsgByRoomId(int roomId) {
