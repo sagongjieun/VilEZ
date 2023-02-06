@@ -7,7 +7,6 @@
             <result column="email" property="email"/>
             <result column="password" property="password"/>
             <result column="nickname" property="nickName"/>
-            <result column="area" property="area"/>
             <result column="point" property="point"/>
             <result column="manner" property="manner"/>
             <result column="profile_img" property="profileImg"/>
