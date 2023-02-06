@@ -120,7 +120,9 @@ public class ShareServiceImpl implements ShareService{
         List<ShareListDto> shareListDtos = shareMapper.loadMyShareList(userId);
         for(ShareListDto shareListDto : shareListDtos){
             shareListDto.setList(shareDao.list(shareListDto.getId()));
+            shareListDto.setBookmarkCnt(shareDao.list(shareListDto.getId()).size());
         }
+
 
         data.add(shareListDtos);
         httpVO.setData(data);
