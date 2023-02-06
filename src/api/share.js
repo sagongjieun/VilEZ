@@ -115,7 +115,7 @@ async function deleteShareArticleByBoardId(boardId) {
 async function putShareArticle(formData) {
   try {
     const { data } = await formdataAxios.put(`/shareboard`, formData);
-    console.log(formData);
+    // console.log(formData);
     if (data.flag === "success") alert("수정되었습니다 😀");
     else alert("공유 글 수정에 실패하였습니다 😥");
   } catch (error) {

@@ -47,7 +47,6 @@ const ProductCategory = ({ isMain, sendCategory, list }) => {
   function onClickCategoryType(type) {
     setCategory(type);
     setOpenCategory(false);
-    sendCategory(type);
   }
 
   useEffect(() => {
