@@ -460,7 +460,7 @@ public class AppointmentController {
         }
         try {
             user = userService.detail2(fromUserId);
-            user2 = userService.detail2(fromUserId);
+            user2 = userService.detail2(toUserId);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
