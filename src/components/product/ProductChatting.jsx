@@ -22,10 +22,12 @@ import ProductReturnModal from "../modal/ProductReturnModal";
 import ShareCompleteModal from "../modal/ShareCompleteModal";
 import ShareCancelAskModal from "../modal/ShareCancelAskModal";
 import ShareCancelModal from "../modal/ShareCancelModal";
+import { useNavigate } from "react-router-dom";
 
 const ProductChatting = () => {
   const { roomId } = useParams();
   const loginUserId = localStorage.getItem("id");
+  const navigate = useNavigate();
 
   const setShareData = useSetRecoilState(shareDataState);
 
@@ -130,6 +132,11 @@ const ProductChatting = () => {
 
         setBoardId(res.boardId);
         setBoardType(res.type);
+
+        if (res.state == -1) {
+          alert("대화가 종료된 채팅방입니다.");
+          navigate(`/product/list/share`);
+        }
 
         // 로그인유저가 공유자면
         if (loginUserId == res.shareUserId) {
@@ -298,7 +305,7 @@ const ProductChatting = () => {
           confirmedEndDate={confirmedEndDate}
         />
       ) : null}
-      {isQuit ? <QuitChattingModal close={setIsQuit} /> : null}
+      {isQuit ? <QuitChattingModal close={setIsQuit} roomId={roomId} /> : null}
       {isOath ? (
         <OathModal close={setIsOath} openLastConfirm={setIsAppointmentComplete} roomId={roomId} readOnly={false} />
       ) : null}

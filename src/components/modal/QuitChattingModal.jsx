@@ -3,19 +3,26 @@ import React from "react";
 import { css } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
 import MiddleWideButton from "../button/MiddleWideButton";
+import { deleteChatRoom } from "../../api/chat";
+import { checkUserLeaveState } from "../../recoil/atom";
+import { useSetRecoilState } from "recoil";
 
-function QuitChattingModal({ close }) {
+function QuitChattingModal({ close, roomId }) {
   const navigate = useNavigate();
-  // const params = useParams();
-  // const boardId = params.boardId;
+  const loginUserId = localStorage.getItem("id");
+  const setCheckUserLeave = useSetRecoilState(checkUserLeaveState);
 
   function onClickCancel() {
     close(false);
   }
 
   function onClickNavigate() {
-    // navigate(`/product/detail/${boardId}`, {});
-    navigate(`/product/detail/55`, {});
+    deleteChatRoom(roomId, loginUserId).then((res) => {
+      if (res) {
+        setCheckUserLeave(true); // stomp로 알리고
+        navigate(`/product/list/share`);
+      }
+    });
   }
 
   return (

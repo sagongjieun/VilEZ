@@ -63,6 +63,11 @@ const checkShareReturnState = atom({
   default: false,
 });
 
+const checkUserLeaveState = atom({
+  key: "checkUserLeaveState",
+  default: false,
+});
+
 export {
   loginUserState,
   shareDataState,
@@ -74,4 +79,5 @@ export {
   checkShareCancelAskState,
   checkShareCancelState,
   checkShareReturnState,
+  checkUserLeaveState,
 };

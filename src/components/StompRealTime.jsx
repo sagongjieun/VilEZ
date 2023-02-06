@@ -19,6 +19,7 @@ import {
   checkShareCancelAskState,
   checkShareCancelState,
   checkShareReturnState,
+  checkUserLeaveState,
 } from "../recoil/atom";
 import { useLocation } from "react-router-dom";
 
@@ -35,6 +36,7 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
   const [checkShareCancelAsk, setCheckShareCancelAsk] = useRecoilState(checkShareCancelAskState);
   const [checkShareCancel, setCheckShareCancel] = useRecoilState(checkShareCancelState);
   const [checkShareReturn, setCheckShareReturn] = useRecoilState(checkShareReturnState);
+  const [checkUserLeave, setCheckUserLeave] = useRecoilState(checkUserLeaveState);
 
   const [chatMessage, setChatMessage] = useState(""); // 클라이언트가 입력하는 메시지
   const [showingMessage, setShowingMessage] = useState([]); // 서버로부터 받는 메시지
@@ -317,7 +319,25 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
     }
 
     // 상대방이 채팅방 나감 -> 대화 종료
-  }, [checkShareDate, checkAppointment, checkShareCancelAsk, checkShareCancel, checkShareReturn]);
+    if (checkUserLeave) {
+      const sendMessage = {
+        roomId: chatRoomId,
+        fromUserId: -1,
+        toUserId: otherUserId,
+        content: "상대방이 채팅방을 나가서 대화가 종료됐어요",
+        system: true,
+        time: new Date().getTime(),
+      };
+
+      console.log("나갈때 보내는메시지 : ", sendMessage);
+
+      setShowingMessage((prev) => [...prev, sendMessage]);
+
+      client.send("/recvchat", {}, JSON.stringify(sendMessage));
+
+      setCheckUserLeave(false);
+    }
+  }, [checkShareDate, checkAppointment, checkShareCancelAsk, checkShareCancel, checkShareReturn, checkUserLeave]);
 
   return (
     <>
@@ -346,6 +366,7 @@ const StompRealTime = ({ roomId, boardId, otherUserId, otherUserNickname, shareU
           <div ref={scrollRef}>
             {showingMessage.map((message, index) => {
               if (message.system) {
+                console.log("###################", message.content);
                 return (
                   <div key={index} css={systemMessageWrapper}>
                     <span>{message.content}</span>

@@ -12,7 +12,9 @@ function ChattingModal() {
   useEffect(() => {
     if (loginUserId) {
       getLatestChattingListByUserId(loginUserId).then((res) => {
-        setChatList(res);
+        if (res) {
+          setChatList(res);
+        }
       });
     }
   }, []);
