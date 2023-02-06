@@ -83,14 +83,15 @@ public class AskController {
 
     @PutMapping
     @ApiOperation(value = "글 수정을 한다. (이미지 필수X)" ,
-            notes = "{\n \t boardId : Number," +
-                    "\n \t category : String," +
-                    "\n \t title : String," +
-                    "\n \t hopeAreaLat : String," +
-                    "\n \t hopeAreaLng : String," +
-                    "\n \t startDay : String," +
-                    "\n \t endDay : String" +
-                    "\n \t }")
+            notes = "{\n\t id : Number," +
+                    "\n\t category : String," +
+                    "\n\t title : String," +
+                    "\n\t content : String" +
+                    "\n\t hopeAreaLat : String," +
+                    "\n\t hopeAreaLng : String," +
+                    "\n\t startDay : String," +
+                    "\n\t endDay : String" +
+                    "\n\t }")
     public ResponseEntity<?> updateAskBoard(@RequestPart(value = "board",required = false) AskDto askDto,
                                             @RequestPart(value = "image", required = false) MultipartFile[] files) throws IOException {
         HttpVO http = new HttpVO();
