@@ -2,51 +2,40 @@ package kr.co.vilez.ui.profile
 
 import android.Manifest
 import android.app.Activity
-import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
-import android.os.Build
 import android.os.Bundle
-import android.text.InputFilter
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import coil.size.Dimension
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
-import kr.co.vilez.data.model.User
-import kr.co.vilez.databinding.FragmentEditAreaBinding
+import kr.co.vilez.databinding.FragmentEditLocationBinding
+import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.ui.dialog.AlertDialog
+import kr.co.vilez.ui.dialog.AlertDialogInterface
+import kr.co.vilez.ui.dialog.AlertDialogWithCallback
 import kr.co.vilez.ui.user.ProfileMenuActivity
 import kr.co.vilez.util.ApplicationClass
-import kr.co.vilez.util.Common
 import kr.co.vilez.util.PermissionUtil
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapReverseGeoCoder
-import net.daum.mf.map.api.MapView
-import org.json.JSONObject
 import retrofit2.awaitResponse
-import java.util.regex.Pattern
-import kotlin.math.log
 
 private const val TAG = "빌리지_EditAreaFragment"
-class EditAreaFragment : Fragment(), MapReverseGeoCoder.ReverseGeoCodingResultListener {
-    private lateinit var binding : FragmentEditAreaBinding
+class EditLocation : Fragment(), MapReverseGeoCoder.ReverseGeoCodingResultListener {
+    private lateinit var binding : FragmentEditLocationBinding
     private lateinit var profileMenuActivity: ProfileMenuActivity
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +48,7 @@ class EditAreaFragment : Fragment(), MapReverseGeoCoder.ReverseGeoCodingResultLi
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_area, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_location, container, false)
         binding.fragment = this
         initToolBar()
         getUserLocation()
@@ -152,11 +141,20 @@ class EditAreaFragment : Fragment(), MapReverseGeoCoder.ReverseGeoCodingResultLi
                 Log.d(TAG, "onAreaSetClick: raw: ${result.raw()} \nbody:${result.body()}\n header: ${result.headers()}")
                 if(result.body()?.flag == "success") {
                     Log.d(TAG, "onAreaSetClick: 동네인증성공")
-                    var dialog = AlertDialog(profileMenuActivity, "동네인증을 성공했습니다.")
+                    val dialog = AlertDialogWithCallback(object :AlertDialogInterface{
+                        override fun onYesButtonClick(id: String) {
+                            val intent = Intent(profileMenuActivity, MainActivity::class.java)
+                            intent.putExtra("target", "홈")
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(intent)
+                        }
+                    }, "동네인증을 성공했습니다.\n등록된 동네의 공유글을 확인해보세요!", "")
+                    dialog.isCancelable = false
                     dialog.show(profileMenuActivity.supportFragmentManager, "UserLocation")
                 } else {
                     Log.d(TAG, "onAreaSetClick: 동네 인증 실패")
-                    var dialog = AlertDialog(profileMenuActivity, "동네 인증을 실패했습니다.\n위치 정보를 가져올 수 있는 곳에서 다시 시도해주세요.")
+                    val dialog = AlertDialog(profileMenuActivity, "동네 인증을 실패했습니다.\n위치 정보를 가져올 수 있는 곳에서 다시 시도해주세요.")
                     dialog.show(profileMenuActivity.supportFragmentManager, "UserLocation")
                 }
             }

@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import kr.co.vilez.R
 import kr.co.vilez.databinding.FragmentEditAccountBinding
-import kr.co.vilez.databinding.FragmentEditAreaBinding
 import kr.co.vilez.ui.user.ProfileMenuActivity
 
 // TODO: Rename parameter arguments, choose names that match

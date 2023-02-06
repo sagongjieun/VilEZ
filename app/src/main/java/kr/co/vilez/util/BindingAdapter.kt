@@ -52,9 +52,9 @@ object BindingAdapter {
     @BindingAdapter("dateToElapsedTime")
     fun elapsedTime(view: TextView, date:String?) {  // 시간을 경과시간으로 바꿔줌!
         if (!date.isNullOrEmpty()) {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             val nowDate: LocalDateTime = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             val formatted = nowDate.format(formatter)
 
             val endDate = dateFormat.parse(formatted.toString()).time

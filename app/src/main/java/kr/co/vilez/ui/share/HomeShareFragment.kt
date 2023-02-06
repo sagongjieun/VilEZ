@@ -23,7 +23,6 @@ import kr.co.vilez.ui.share.*
 import kr.co.vilez.ui.search.category.MenuCategoryActivity
 import kr.co.vilez.ui.share.write.ShareWriteActivity
 import kr.co.vilez.util.ApplicationClass
-import kr.co.vilez.util.Common.Companion.elapsedTime
 import retrofit2.awaitResponse
 import kr.co.vilez.ui.user.ProfileMenuActivity
 import kr.co.vilez.util.Common
@@ -143,7 +142,7 @@ class HomeShareFragment : Fragment() {
                             data.shareListDto.id,
                             if(data.shareListDto.list.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.shareListDto.list[0].path,
                             data.shareListDto.title,
-                            elapsedTime(data.shareListDto.date),
+                            data.shareListDto.date,
                             "구미",
                             data.shareListDto.startDay + "~"
                                     + data.shareListDto.endDay,
@@ -177,7 +176,7 @@ class HomeShareFragment : Fragment() {
                                     data.shareListDto.id,
                                     if(data.shareListDto.list.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.shareListDto.list[0].path,
                                     data.shareListDto.title,
-                                    elapsedTime(data.shareListDto.date),
+                                    data.shareListDto.date,
                                     "구미",
                                     data.shareListDto.startDay + "~"
                                             + data.shareListDto.endDay,
