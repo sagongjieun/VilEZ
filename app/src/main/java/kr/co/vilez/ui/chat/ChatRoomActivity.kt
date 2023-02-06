@@ -45,7 +45,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
     private var otherUserId = 0
     private var nickName = "알수없음"
     private var profile = "https://kr.object.ncloudstorage.com/vilez/basicProfile.png"
-    lateinit var topic : Disposable
+    var topic : Disposable?? =  null
     private var now : Int = 0
     private val itemList = ArrayList<ChatlistData>()
     private val kakaoMapFragment = KakaoMapFragment()
@@ -93,24 +93,29 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
                         }
                     }
                 }
+
+                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+                initView()
+                initAcceptButton()
+                if(room.state == 0) {
+                    kakaoMapFragment.arguments = bundle
+
+
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.frameLayout, kakaoMapFragment)
+                        .commit()
+
+                }
             }
         }
 
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        initView()
-        initAcceptButton()
-        kakaoMapFragment.arguments = bundle
 
-
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.frameLayout, kakaoMapFragment)
-            .commit()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-
-        topic.dispose()
+        if(topic != null)
+        topic!!.dispose()
     }
 
     @SuppressLint("CheckResult")
@@ -125,29 +130,32 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
 
         roomAdapter = ChatAdapter(itemList)
         toolbar_title.text = nickName
-        txt_send.setOnClickListener(
-            View.OnClickListener {
-                if(txt_edit.text.length <= 0)
-                    return@OnClickListener
-                println(txt_edit.text.length)
-                var data = JSONObject()
-                data.put("roomId", roomId)
-                data.put("fromUserId", ApplicationClass.prefs.getId())
-                data.put("toUserId", otherUserId)
-                data.put("content", txt_edit.text)
-                data.put("time", System.currentTimeMillis())
-                data.put("system",false)
-                itemList.add(ChatlistData(data.getString("content"), 2,""))
-                roomAdapter.notifyDataSetChanged()
-                StompClient2.stompClient.send("/recvchat", data.toString()).subscribe()
-                data = JSONObject()
-                data.put("roomId", roomId)
-                data.put("userId", ApplicationClass.prefs.getId())
-                StompClient2.stompClient.send("/room_enter", data.toString()).subscribe()
-                txt_edit.setText("")
-                rv_chat.scrollToPosition(itemList.size - 1)
-            }
-        )
+            txt_send.setOnClickListener(
+                View.OnClickListener {
+                    if(room.state == 0) {
+                        if(txt_edit.text.length <= 0)
+                            return@OnClickListener
+                        println(txt_edit.text.length)
+                        var data = JSONObject()
+                        data.put("roomId", roomId)
+                        data.put("fromUserId", ApplicationClass.prefs.getId())
+                        data.put("toUserId", otherUserId)
+                        data.put("content", txt_edit.text)
+                        data.put("time", System.currentTimeMillis())
+                        data.put("system",false)
+                        itemList.add(ChatlistData(data.getString("content"), 2,""))
+                        roomAdapter.notifyDataSetChanged()
+                        StompClient2.stompClient.send("/recvchat", data.toString()).subscribe()
+                        data = JSONObject()
+                        data.put("roomId", roomId)
+                        data.put("userId", ApplicationClass.prefs.getId())
+                        StompClient2.stompClient.send("/room_enter", data.toString()).subscribe()
+                        txt_edit.setText("")
+                        rv_chat.scrollToPosition(itemList.size - 1)
+                    }
+                }
+            )
+
         btn_back.setOnClickListener(View.OnClickListener {
             finish()
         })
@@ -197,13 +205,13 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
                                 if(result?.flag == "success") {
                                     var data = JSONObject()
                                     data.put("roomId", roomId)
-                                    data.put("fromUserId", "-1")
+                                    data.put("fromUserId", -1)
                                     data.put("toUserId", otherUserId)
                                     data.put("content", "상대방이 채팅방을 나갔습니다")
                                     data.put("time", System.currentTimeMillis())
                                     data.put("system",true)
                                     StompClient2.stompClient.send("/recvchat", data.toString()).subscribe()
-                                    topic.dispose()
+                                    topic!!.dispose()
                                     var index = 0
                                     for(i in 0 until DataState.itemList.size) {
                                         if(roomId==DataState.itemList[i].roomId) {
@@ -254,26 +262,32 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
                 StompClient2.stompClient.send("/room_enter", data.toString()).subscribe()
             }
         }
-
-        topic = StompClient2.stompClient.join("/sendchat/" + roomId + "/" + ApplicationClass.prefs.getId())
-            .subscribe { topicMessage ->
-                run {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        val json = JSONObject(topicMessage)
-                        if(json.getBoolean("system"))
-                            itemList.add(ChatlistData(json.getString("content"), 0,"none"))
-                        else
-                            itemList.add(ChatlistData(json.getString("content"), 1,profile))
-                        roomAdapter.notifyDataSetChanged()
-                        rv_chat.scrollToPosition(itemList.size - 1)
-                        val data = JSONObject()
-                        data.put("roomId", roomId)
-                        data.put("userId", ApplicationClass.prefs.getId())
-                        StompClient2.stompClient.send("/room_enter", data.toString()).subscribe()
+        if(room.state == 0) {
+            topic = StompClient2.stompClient.join("/sendchat/" + roomId + "/" + ApplicationClass.prefs.getId())
+                .subscribe { topicMessage ->
+                    run {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            val json = JSONObject(topicMessage)
+                            if(json.getInt("fromUserId") == -1) {
+                                room.state = -1
+                                topic!!.dispose()
+                            }
+                            if(json.getBoolean("system"))
+                                itemList.add(ChatlistData(json.getString("content"), 0,"none"))
+                            else
+                                itemList.add(ChatlistData(json.getString("content"), 1,profile))
+                            roomAdapter.notifyDataSetChanged()
+                            rv_chat.scrollToPosition(itemList.size - 1)
+                            val data = JSONObject()
+                            data.put("roomId", roomId)
+                            data.put("userId", ApplicationClass.prefs.getId())
+                            StompClient2.stompClient.send("/room_enter", data.toString()).subscribe()
+                        }
                     }
                 }
-            }
 
+
+        }
 
         initScheduleButton()
         initSignButton()
@@ -317,7 +331,10 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
         }
     }
     private fun initAcceptButton() {
-
+        if(room.state != 0) {
+            showDialog("종료된 대화방입니다.")
+            return
+        }
         binding.btnChatAccept.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
                 val result = ApplicationClass.retrofitChatService.getAppointMent(
@@ -417,6 +434,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface {
                 .build()
 
         datePicker.addOnPositiveButtonClickListener {
+            if(room.state != 0) return@addOnPositiveButtonClickListener
             pickedDate = Pair<Long, Long>(it.first!!, it.second!!)
             if(pickedDate == null)
                 return@addOnPositiveButtonClickListener

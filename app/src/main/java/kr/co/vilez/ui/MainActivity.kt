@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
                             RoomlistData(
                                 chatData.getInt("roomId"), chat.getString("nickName"),
                                 chatData.getString("content"),
-                                chat.getString("area"),
+                                "",
                                 if(chatData.getInt("fromUserId") == ApplicationClass.prefs.getId())
                                     chatData.getInt("toUserId")
                                 else
