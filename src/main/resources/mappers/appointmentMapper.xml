@@ -194,8 +194,13 @@
         from
             (select * from room where share_user_id = #{userId} or not_share_user_id = #{userId}) r
         where board_id = #{boardId} and type = #{type}
-
-
     </select>
 
+    <select id="checkRoom2" parameterType="int" resultMap="room">
+        SELECT r.*
+        from room
+        where board_id = #{boardId} and type = #{type}
+            and share_user_id = #{shareUserId} and not_share_user_id = #{notShareUserId}
+            and state = 0
+    </select>
 </mapper>

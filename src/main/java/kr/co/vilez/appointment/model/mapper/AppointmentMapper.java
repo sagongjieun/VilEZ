@@ -35,4 +35,6 @@ public interface AppointmentMapper {
     RoomDto getBoard(int roomId);
 
     RoomDto checkRoom(int userId, int boardId, int type);
+
+    RoomDto checkRoom2(int boardId, int type, int shareUserId, int notShareUserId);
 }
