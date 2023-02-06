@@ -34,6 +34,7 @@ const StompRealTime = ({
   shareState,
   roomState,
   sendShareState,
+  isChatEnd,
 }) => {
   const scrollRef = useRef();
   const myUserId = localStorage.getItem("id");
@@ -155,6 +156,22 @@ const StompRealTime = ({
           }
 
           setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
+        });
+
+        // 공유 종료를 구독
+        client.subscribe(`/sendend/${chatRoomId}`, () => {
+          sendShareState(-1);
+          setShowingMessage((prev) => [
+            ...prev,
+            {
+              roomId: chatRoomId,
+              fromUserId: myUserId,
+              toUserId: otherUserId,
+              content: "공유가 종료되었어요 😊",
+              system: true,
+              time: new Date().getTime(),
+            },
+          ]);
         });
 
         // 공유지도를 구독
@@ -328,10 +345,10 @@ const StompRealTime = ({
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
       setCheckShareReturn(false);
-      sendShareState(-1);
+      // sendShareState(-1);
     }
 
-    // 상대방이 채팅방 나감 -> 대화 종료
+    // 상대방이 채팅방 나감
     if (checkUserLeave) {
       const sendMessage = {
         roomId: chatRoomId,
@@ -349,7 +366,20 @@ const StompRealTime = ({
       setCheckUserLeave(false);
       navigate(`/product/list/share`);
     }
-  }, [checkShareDate, checkAppointment, checkShareCancelAsk, checkShareCancel, checkShareReturn, checkUserLeave]);
+
+    // 공유 종료됨을 알림
+    if (isChatEnd) {
+      client.send("/recvend", {}, JSON.stringify({ roomId: roomId }));
+    }
+  }, [
+    checkShareDate,
+    checkAppointment,
+    checkShareCancelAsk,
+    checkShareCancel,
+    checkShareReturn,
+    checkUserLeave,
+    isChatEnd,
+  ]);
 
   return (
     <>

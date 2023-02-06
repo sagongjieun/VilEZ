@@ -55,6 +55,7 @@ const ProductChatting = () => {
   const [confirmedEndDate, setConfirmedEndDate] = useState("");
   const [shareState, setShareState] = useState(0);
   const [roomState, setRoomState] = useState(0);
+  const [isChatEnd, setIsChatEnd] = useState(false);
 
   // 채팅 나가기
   function onClickQuit() {
@@ -113,7 +114,8 @@ const ProductChatting = () => {
           if (res) {
             // 모달로 공유가 끝났다는 것 알리기
             setIsShareComplete(!isShareComplete);
-            setShareState(-1);
+            // setShareState(-1);
+            setIsChatEnd(true);
           }
         });
       } else {
@@ -162,7 +164,6 @@ const ProductChatting = () => {
     getChattingRoomState(parseInt(roomId)).then((res) => {
       if (res) {
         res = res[0];
-        console.log("###########", res);
         // 공유 전 상태
         if (res == null) {
           setShareState(-3);
@@ -272,6 +273,7 @@ const ProductChatting = () => {
             shareState={shareState}
             roomState={roomState}
             sendShareState={receiveShareState}
+            isChatEnd={isChatEnd}
           />
         )}
       </div>
