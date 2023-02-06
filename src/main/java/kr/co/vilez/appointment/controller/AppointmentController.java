@@ -8,6 +8,7 @@ import kr.co.vilez.appointment.model.dto.RoomDto;
 import kr.co.vilez.appointment.model.dto.SetPeriodDto;
 import kr.co.vilez.appointment.model.service.AppointmentService;
 import kr.co.vilez.appointment.model.vo.*;
+import kr.co.vilez.back.model.service.BackService;
 import kr.co.vilez.data.HttpVO;
 import kr.co.vilez.fcm.model.service.FCMDataService;
 import kr.co.vilez.user.model.dto.UserDto;
@@ -36,6 +37,7 @@ public class AppointmentController {
     private final AppointmentService appointmentService;
     private final UserService userService;
     private final SimpMessageSendingOperations sendingOperations;
+    private final BackService backService;
     @GetMapping("/date")
     @ApiOperation(value = "채팅방 유저간의 약속된 시간을 불러오는 API")
     public ResponseEntity<?> getAppointmentDate(@RequestParam int boardId,
@@ -516,4 +518,17 @@ public class AppointmentController {
         sendingOperations.convertAndSend("/sendmap/"+mapVO.getRoomId()+"/"+toUserId,mapVO);
         return mapVO;
     }
+
+    @MessageMapping("/recvend")
+    public HashMap<String, Integer> mapHandler(HashMap<String, Integer> payload) {
+        int roomId = payload.get("roomId");
+        try {
+            backService.confirmedReturns(roomId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        sendingOperations.convertAndSend("/sendend/"+roomId,payload);
+        return payload;
+    }
+
 }
