@@ -151,7 +151,6 @@ public class ShareController {
     public ResponseEntity<?> myBookmarkList(@PathVariable int userId){
         httpVO = new HttpVO();
         try {
-            System.out.println("ddd");
             httpVO = shareService.myBookmarkList(userId);
         }catch (Exception e){
             e.printStackTrace();
