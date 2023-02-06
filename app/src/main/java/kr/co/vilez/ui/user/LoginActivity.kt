@@ -87,7 +87,7 @@ class LoginActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             val result =
                 ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
-            if (result?.flag == "success") {
+            if (result?.flag == "success" && !result.data.isNullOrEmpty()) {
                 Log.d(TAG, "로그인 성공, 받아온 user = ${result.data[0]}")
                 ApplicationClass.prefs.setUser(result.data[0])
                 ApplicationClass.prefs.setOAuth(user.oauth) //
