@@ -138,6 +138,7 @@ class ChatlistFragment : Fragment() {
                                     json.getInt("fromUserId"),
                                     1,
                                     json.getString("profile")
+
                                 )
                             )
                             roomAdapter.notifyItemInserted(0)
