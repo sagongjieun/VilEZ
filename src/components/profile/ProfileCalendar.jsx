@@ -5,15 +5,20 @@ import { format, addMonths, subMonths } from "date-fns";
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from "date-fns";
 // import { isSameMonth, isSameDay, addDays, parse } from "date-fns";
 import { isSameMonth, isSameDay, addDays } from "date-fns";
+import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 
 const RenderHeader = ({ currentMonth, prevMonth, nextMonth }) => {
   return (
     <div css={headerWrapper}>
-      <button onClick={prevMonth}>이전</button>
+      <button onClick={prevMonth}>
+        <IoIosArrowBack />
+      </button>
       <div>
         <span>{format(currentMonth, "yyyy")}</span>.<span>{format(currentMonth, "M").padStart(2, "0")}</span>
       </div>
-      <button onClick={nextMonth}>다음</button>
+      <button onClick={nextMonth}>
+        <IoIosArrowForward />
+      </button>
     </div>
   );
 };
@@ -160,34 +165,48 @@ const ProfileCalender2 = () => {
   );
 };
 const calendarContainer = css`
-  background-color: aliceblue;
   width: calc(100% - 100px);
   margin: 0 auto;
 `;
 const headerWrapper = css`
-  background-color: red;
+  /* background-color: red; */
+  height: 40px;
+  line-height: 40px;
   display: flex;
   justify-content: center;
+  & > button {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0);
+    width: 30px;
+    border: none;
+  }
 `;
 const daysWrapper = css`
-  background-color: yellow;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  font-size: 14px;
   display: flex;
   > div {
     width: calc(100% / 7);
   }
 `;
 const bodyWrapper = css`
-  background-color: blue;
   > div {
     display: flex;
     > div {
       // 각 날짜
       width: calc(100% / 7);
       height: 110px;
-      border: 1px solid #fff;
+      border-bottom: 1px solid #e8e8e8;
       cursor: pointer;
+      > span {
+        padding: 2px 5px;
+      }
       > div {
         // 각 일정
+        box-sizing: border-box;
+        padding: 0 4px;
         font-size: 14px;
         height: 20px;
         line-height: 20px;
@@ -201,28 +220,29 @@ const notValid = css``;
 // 해당 월의 날짜가 아님
 const disabled = css`
   font-weight: bold;
-  background-color: antiquewhite;
+  background-color: #f9f9f9;
 `;
 // 오늘 날짜
 const selected = css`
-  color: red;
-  background-color: aqua;
+  background-color: #66dd9c11;
 `;
 const valid = css`
-  background-color: beige;
+  background-color: #fff;
 `;
 
 const shareStartDay = css`
-  background-color: aliceblue;
+  background-color: #66dd9c68;
 `;
 const shareEndDay = css`
-  background-color: #76aedf;
+  background-color: #66dd9c;
+  color: #fff;
 `;
 const rentStartDay = css`
-  background-color: #487092;
+  background-color: #8fd2f461;
 `;
 const rentEndDay = css`
-  background-color: #a8c1d6;
+  background-color: #8fd3f4;
+  color: #fff;
 `;
 
 export default ProfileCalender2;
