@@ -29,18 +29,19 @@ const ProfileMyWriting = (props) => {
   }, [props.myWritingType]);
   useEffect(() => {
     props.setWritingDefaultPages(parseInt(myBoard?.length / 3) + 1);
+    console.log(myBoard);
   }, [myBoard]);
   return (
     <div css={cardWrapper(props.writingPages)}>
-      {myBoard?.length > 1 ? (
-        myBoard?.map((share) => (
-          <div key={share.id}>
+      {myBoard?.length > 0 ? (
+        myBoard.map((share, idx) => (
+          <div key={idx}>
             <ProfileCardView
               title={share.title}
               endDay={share.endDay}
               startDay={share.startDay}
               date={share.date}
-              thumbnail={share.list[0]?.path}
+              thumbnail={share.list[0].path}
               boardType={props.myWritingType === 1 ? "share" : props.myWritingType === 2 ? "ask" : null}
               boardId={share.id}
             />

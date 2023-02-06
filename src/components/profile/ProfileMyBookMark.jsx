@@ -19,7 +19,7 @@ const ProfileMyBookMark = (props) => {
   }, [myShareBoard]);
   return (
     <div css={cardWrapper(props.bookMarkPages)}>
-      {myShareBoard?.length > 1 ? (
+      {myShareBoard?.length > 0 ? (
         myShareBoard.map((shareData) => {
           const share = shareData.shareListDto;
 
