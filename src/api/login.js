@@ -9,7 +9,9 @@ async function requestLogin(email, password) {
     const { data } = await jsonAxios.post(`/users/login`, { email, password });
 
     if (data.flag === "success") {
-      if (data.data === !null) {
+      if (!data.data) {
+        alert("이메일 혹은 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+      } else {
         console.log(data);
         const res = data.data[0];
 
@@ -19,8 +21,6 @@ async function requestLogin(email, password) {
         localStorage.setItem("nickName", res.nickName);
 
         return data.data;
-      } else {
-        alert("이메일 혹은 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
       }
     } else {
       alert("이메일 혹은 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
