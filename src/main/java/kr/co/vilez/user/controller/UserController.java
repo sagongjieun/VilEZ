@@ -1,6 +1,8 @@
 package kr.co.vilez.user.controller;
 
 import io.swagger.annotations.ApiOperation;
+import kr.co.vilez.appointment.model.dto.AppointmentDto;
+import kr.co.vilez.appointment.model.service.AppointmentService;
 import kr.co.vilez.data.HttpVO;
 import kr.co.vilez.user.model.dto.LocationDto;
 import kr.co.vilez.user.model.dto.UserDto;
@@ -15,6 +17,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +30,7 @@ import java.util.Map;
 @Log4j2
 public class UserController {
     HttpVO http = null;
-
+    final AppointmentService appointmentService;
     final UserService userService;
 
     @PutMapping("/modify/password")

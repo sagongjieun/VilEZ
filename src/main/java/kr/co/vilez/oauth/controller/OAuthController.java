@@ -2,6 +2,8 @@ package kr.co.vilez.oauth.controller;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.SwaggerDefinition;
+import kr.co.vilez.appointment.model.dao.AppointmentDao;
+import kr.co.vilez.appointment.model.vo.PointVO;
 import kr.co.vilez.data.HttpVO;
 import kr.co.vilez.jwt.JwtProvider;
 import kr.co.vilez.oauth.model.dto.UserInfoDto;
@@ -9,6 +11,7 @@ import kr.co.vilez.oauth.model.dto.OAuthUserDto;
 import kr.co.vilez.oauth.model.service.KakaoOAuthService;
 import kr.co.vilez.oauth.model.service.NaverOAuthService;
 import kr.co.vilez.tool.SHA256;
+import kr.co.vilez.user.model.dto.UserDto;
 import kr.co.vilez.user.model.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +38,8 @@ public class OAuthController {
     JwtProvider jwtProvider;
     @Autowired
     NaverOAuthService naverOAuthService;
+    @Autowired
+    AppointmentDao appointmentDao;
 
     @GetMapping("/code/kakao")
     @ApiOperation(value = "카카오 OAuth 로그인.",
@@ -76,6 +82,15 @@ public class OAuthController {
                 oAuthUser.setProfileImg(kaKaoUserInfoDto.getPath());
 
                 int userId = oAuthService.joinOauth(oAuthUser);
+                PointVO pointVO = new PointVO();
+                pointVO.setBoardId(-1);
+                pointVO.setUserId(userId);
+                pointVO.setPoint(100);
+                pointVO.setType(-1);
+                LocalDate now = LocalDate.now();
+                pointVO.setDate(now.toString());
+                appointmentDao.savePoint(pointVO);
+
                 String accessToken = jwtProvider.createToken(Integer.toString(userId), tempNickName);
                 String refreshToken = jwtProvider.createRefreshToken(Integer.toString(userId), tempNickName);
 
@@ -145,6 +160,16 @@ public class OAuthController {
                 userDto.setProfileImg(userInfoDto.getPath());
 
                 int userId = naverOAuthService.joinOauth(userDto);
+
+                PointVO pointVO = new PointVO();
+                pointVO.setBoardId(-1);
+                pointVO.setUserId(userId);
+                pointVO.setPoint(100);
+                pointVO.setType(-1);
+                LocalDate now = LocalDate.now();
+                pointVO.setDate(now.toString());
+                appointmentDao.savePoint(pointVO);
+
                 String access_Token = jwtProvider.createToken(Integer.toString(userId), tempNickName);
                 String refresh_Token = jwtProvider.createRefreshToken(Integer.toString(userId), tempNickName);
 
