@@ -7,15 +7,14 @@ import StompRealTime from "../StompRealTime";
 import MeetConfirmModal from "../modal/MeetConfirmModal";
 import QuitChattingModal from "../modal/QuitChattingModal";
 import OathModal from "../modal/OathModal";
-import AppointmentCompleteModal from "../modal/AppointmentCompleteModal";
 import { useParams } from "react-router-dom";
-import { getBoardIdByRoomId } from "../../api/chat";
+import { getBoardIdByRoomId, getChattingRoomState } from "../../api/chat";
 import { getAskArticleDetailByBoardId } from "../../api/ask";
 import { getShareArticleByBoardId } from "../../api/share";
 import { getUserDetail } from "../../api/profile";
 import { useSetRecoilState } from "recoil";
 import { shareDataState } from "../../recoil/atom";
-import { getShareDate, getShareState } from "../../api/appointment";
+import { getShareDate } from "../../api/appointment";
 import DateFormat from "../common/DateFormat";
 import { getShareReturnState, postShareEnd } from "../../api/appointment";
 import ProductReturnModal from "../modal/ProductReturnModal";
@@ -32,7 +31,6 @@ const ProductChatting = () => {
   const [isConfirm, setIsConfirm] = useState(false);
   const [isOath, setIsOath] = useState(false);
   const [isQuit, setIsQuit] = useState(false);
-  const [isAppointmentComplete, setIsAppointmentComplete] = useState(false);
   const [isProductReturn, setIsProductReturn] = useState(false);
   const [isShareComplete, setIsShareComplete] = useState(false);
   const [isShareCancel, setIsShareCancel] = useState(false);
@@ -55,8 +53,8 @@ const ProductChatting = () => {
   });
   const [confirmedStartDate, setConfirmedStartDate] = useState("");
   const [confirmedEndDate, setConfirmedEndDate] = useState("");
-  const [shareState, setShareState] = useState("");
-  const [roomState, setRoomState] = useState("");
+  const [shareState, setShareState] = useState(0);
+  const [roomState, setRoomState] = useState(0);
 
   // 채팅 나가기
   function onClickQuit() {
@@ -161,13 +159,22 @@ const ProductChatting = () => {
       });
 
     // 이 채팅방의 예약 상태 얻기
-    getShareState(parseInt(roomId))
-      .then((res) => {
-        setShareState(res.state);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    getChattingRoomState(parseInt(roomId)).then((res) => {
+      if (res) {
+        res = res[0];
+        console.log("###########", res);
+        // 공유 전 상태
+        if (res == null) {
+          setShareState(-3);
+        } else if (res.status == 0) {
+          setShareState(0);
+        } else if (res.status == -1) {
+          setShareState(-1);
+        } else if (res.status == -2) {
+          setShareState(-2);
+        }
+      }
+    });
   }, [roomId]);
 
   useEffect(() => {
@@ -313,10 +320,7 @@ const ProductChatting = () => {
         />
       ) : null}
       {isQuit ? <QuitChattingModal close={setIsQuit} roomId={roomId} /> : null}
-      {isOath ? (
-        <OathModal close={setIsOath} openLastConfirm={setIsAppointmentComplete} roomId={roomId} readOnly={false} />
-      ) : null}
-      {isAppointmentComplete ? <AppointmentCompleteModal close={setIsAppointmentComplete} /> : null}
+      {isOath ? <OathModal close={setIsOath} roomId={roomId} readOnly={false} /> : null}
       {isProductReturn ? (
         <ProductReturnModal
           close={setIsProductReturn}
@@ -325,7 +329,9 @@ const ProductChatting = () => {
           roomId={roomId}
         />
       ) : null}
-      {isShareComplete ? <ShareCompleteModal otherUserNickname={boardDetail.otherUserNickname} /> : null}
+      {isShareComplete ? (
+        <ShareCompleteModal otherUserNickname={boardDetail.otherUserNickname} close={setIsShareComplete} />
+      ) : null}
       {isShareCancel ? (
         <ShareCancelModal close={setIsShareCancel} otherUserNickname={boardDetail.otherUserNickname} roomId={roomId} />
       ) : null}
