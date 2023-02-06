@@ -158,7 +158,9 @@
     <select id="getAppointmentList" parameterType="int" resultMap="appointment">
         SELECT appointment_id, board_id, share_user_id, not_share_user_id, appointment_start, appointment_end
         FROM appointment
-        WHERE board_id = #{boardId} and type = #{type};
+        WHERE board_id = #{boardId}
+          and type = #{type}
+          and state >= 0;
     </select>
 
     <insert id="create" parameterType="appointmentDto">
