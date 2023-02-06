@@ -115,6 +115,7 @@ const ProductChatting = () => {
           if (res) {
             // 모달로 공유가 끝났다는 것 알리기
             setIsShareComplete(!isShareComplete);
+            setShareState(-1);
           }
         });
       } else {
@@ -140,7 +141,6 @@ const ProductChatting = () => {
         if (res.state == -1) {
           console.log("대화가 종료된 채팅방입니다.");
           setRoomState(res.state);
-          // 공유지도랑 채팅 막기
         }
 
         // 로그인유저가 공유자면
