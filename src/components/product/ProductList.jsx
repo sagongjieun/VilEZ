@@ -56,7 +56,9 @@ const ProductList = () => {
   const urlId = pathname.includes("share") ? 2 : 1;
   const [list, setList] = useState("");
   const categoryToUse = category === "전체" ? "" : category;
-
+  useEffect(() => {
+    setCnt(0);
+  }, [urlId]);
   // 무한 스크롤 관련
   useEffect(() => {
     const handleScroll = () => {
@@ -80,13 +82,14 @@ const ProductList = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [cnt, getArticle, search, urlId]);
-  useEffect(() => {
-    console.log(askArticles);
-  }, [askArticles]);
+  // useEffect(() => {
+  //   console.log(askArticles);
+  // }, [askArticles]);
   // 카테고리 변경 후 스크롤을 내렸다가 ,다른 카테고리를 선택했을 때 이전 카테고리 데이터가 쌓여 나옴
   useEffect(() => {
     window.scrollTo(0, 0);
     setCnt(0);
+
     // setOriginalArticle([]);
     setArticles([]);
     setAskArticles([]);
@@ -101,6 +104,7 @@ const ProductList = () => {
           // setOriginalArticle([...originalArticle, ...data[0]]);
           setAskArticles([...askArticles, ...data[0]]);
           setList("물품 요청 목록");
+          console.log(urlId);
           console.log(cnt);
         })
       : // 공유
@@ -114,24 +118,6 @@ const ProductList = () => {
           }
         );
   }, [search, urlId, isAll, cnt, categoryToUse]);
-
-  // 공유가능 목록 보기위해 작성한 useEffect 0일때 공유가능, 1일때 공유 중
-  // useEffect(() => {
-  //   if (isAll) {
-  //     setArticles(originalArticle);
-  //     // console.log(getArticle);
-  //   } else {
-  //     if (urlId === 2) {
-  //       const tempShareArticle = getArticle.filter(
-  //         (article) => article.shareListDto && article.shareListDto.state === 0
-  //       );
-  //       setArticles(tempShareArticle);
-  //     } else {
-  //       const tempShareArticle = getArticle.filter((article) => article.askDto && article.askDto.state === 0);
-  //       setArticles(tempShareArticle);
-  //     }
-  //   }
-  // }, [pathname, isAll, categoryToUse, cnt, search]);
 
   // props에서 받아온 값이 newCategory에 들어감
   // setCategory에 넘어온 값을 입력
@@ -191,6 +177,24 @@ const ProductList = () => {
   function onClicktoRegist() {
     navigate("/product/regist");
   }
+
+  // 공유가능 목록 보기위해 작성한 useEffect 0일때 공유가능, 1일때 공유 중
+  // useEffect(() => {
+  //   if (isAll) {
+  //     setArticles(originalArticle);
+  //     // console.log(getArticle);
+  //   } else {
+  //     if (urlId === 2) {
+  //       const tempShareArticle = getArticle.filter(
+  //         (article) => article.shareListDto && article.shareListDto.state === 0
+  //       );
+  //       setArticles(tempShareArticle);
+  //     } else {
+  //       const tempShareArticle = getArticle.filter((article) => article.askDto && article.askDto.state === 0);
+  //       setArticles(tempShareArticle);
+  //     }
+  //   }
+  // }, [pathname, isAll, categoryToUse, cnt, search]);
   return (
     <div css={topWrap}>
       <div css={contentWrap}>
