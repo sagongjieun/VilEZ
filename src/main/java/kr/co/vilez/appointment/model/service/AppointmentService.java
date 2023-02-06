@@ -36,7 +36,7 @@ public interface AppointmentService {
     List<TotalListVO> getMyAppointmentList(int userId) throws Exception;
     List<AppointmentDto> getAppointmentList(int boardId, int type) throws Exception;
     void create(AppointmentDto appointmentDto) throws Exception;
-    void deleteRoom(int roomId) throws Exception;
+    void deleteRoom(int roomId , int userId) throws Exception;
     void recvMsg(ChatVO chatVO);
     MapVO loadLocationByRoomId(int roomId);
     List<ChatVO> loadMsgByRoomId(int roomId);

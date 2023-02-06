@@ -430,11 +430,10 @@ public class AppointmentController {
     /////////////// //////////// 채팅관련 API ////////////////////////////////
     @DeleteMapping("/chat")
     @ApiOperation(value = "해당하는 채팅을 나가는 API")
-    public ResponseEntity<?> deleteChat(@PathVariable int roomId){
+    public ResponseEntity<?> deleteChat(@RequestParam("roomId") int roomId, @RequestParam("userId") int userId){
         HttpVO http = new HttpVO();
-
         try{
-
+            appointmentService.deleteRoom(roomId, userId);
         } catch (Exception e){
             e.printStackTrace();
         }
