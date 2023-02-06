@@ -10,7 +10,7 @@ import { getUserDetail } from "../../api/profile";
 import { postAppointment } from "../../api/chat";
 
 // https://stackblitz.com/edit/react-signature-canvas-demo?file=index.js
-function OathModal({ close, openLastConfirm, roomId, readOnly, oathSign }) {
+function OathModal({ close, roomId, readOnly, oathSign }) {
   const canvasRef = useRef(null);
   const shareData = useRecoilValue(shareDataState);
   const setCheckAppointment = useSetRecoilState(checkAppointmentState);
@@ -63,7 +63,6 @@ function OathModal({ close, openLastConfirm, roomId, readOnly, oathSign }) {
       }).then((res) => {
         if (res) {
           close(false);
-          openLastConfirm(true);
           setCheckAppointment(true);
         }
       });
@@ -117,7 +116,7 @@ function OathModal({ close, openLastConfirm, roomId, readOnly, oathSign }) {
           <small>상기 내용을 모두 이해하고, 동의하시면 확정을 눌러주세요</small>
           <div css={buttonWrap}>
             <MiddleWideButton text={"아니오"} onclick={onClickNo} cancel={true} />
-            <MiddleWideButton text={"확정"} onclick={onClickCanvas} />
+            <MiddleWideButton text={"예약 확정"} onclick={onClickCanvas} />
           </div>
         </div>
       ) : (

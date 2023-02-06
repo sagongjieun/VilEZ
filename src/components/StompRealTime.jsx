@@ -145,6 +145,15 @@ const StompRealTime = ({
       client.connect({}, () => {
         // 다른 유저의 채팅을 구독
         client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
+          // 시스템 메시지를 받으면
+          if (JSON.parse(data.body).system) {
+            if (JSON.parse(data.body).content == "예약이 확정됐어요 🙂") {
+              sendShareState(0);
+            } else if (JSON.parse(data.body).content == "예약이 취소됐어요") {
+              sendShareState(-2);
+            }
+          }
+
           setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
         });
 
@@ -217,11 +226,6 @@ const StompRealTime = ({
   useEffect(() => {
     /* state : 0 예약 후, -1 반납 후, -2 예약 후(예약 취소 : 확장), -3 예약 전 */
     if (shareState == -1 || shareState == -2 || roomState == -1) {
-      // 소켓 끊기
-      client.disconnect(() => {
-        client.unsubscribe();
-      });
-
       // 채팅방 막기
       const messageInput = document.getElementById("messageInput");
       messageInput.disabled = true;
@@ -352,7 +356,7 @@ const StompRealTime = ({
       <div css={mapWrapper}>
         <span>{hopeLocation}</span>
         <div>
-          {shareState == -1 || roomState == -1 ? (
+          {shareState == -1 || shareState == -2 || roomState == -1 ? (
             // 공유지도 막기
             <Map readOnly={true} disableMapLat={disableMapLat} disableMapLng={disableMapLng} />
           ) : (

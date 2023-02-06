@@ -96,6 +96,17 @@ async function getMyAppointmentList(userId) {
   }
 }
 
+async function getChattingRoomState(roomId) {
+  try {
+    const { data } = await jsonAxios.get(`/returns/${roomId}`);
+
+    if (data.flag === "success") return data.data;
+    else return false;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // POST
 
 async function postChatRoom(body) {
@@ -142,6 +153,7 @@ export {
   getBoardIdByRoomId,
   getCheckMyRoom,
   getMyAppointmentList,
+  getChattingRoomState,
   postChatRoom,
   postAppointment,
   deleteChatRoom,
