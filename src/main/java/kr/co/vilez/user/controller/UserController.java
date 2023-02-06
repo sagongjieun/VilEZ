@@ -85,9 +85,7 @@ public class UserController {
         Map<String, String> map = new HashMap<String, String>();
 
         try{
-
             userService.saveLocation(locationDto);
-
             map.put("url", "https://i8d111.p.ssafy.io/check");
             data.add(map);
             http.setData(data);
