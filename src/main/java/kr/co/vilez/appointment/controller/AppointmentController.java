@@ -284,7 +284,7 @@ public class AppointmentController {
     }
 
     @ResponseBody
-    @GetMapping("/{boardId}")
+    @GetMapping("/{boardId}/{type}")
     @ApiOperation(value = "글 번호에 약속 정보들을 불러온다." ,
             notes = "List에 dto 담아서 리턴")
     public ResponseEntity<?> getAppointmentList(@PathVariable int boardId,
