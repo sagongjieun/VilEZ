@@ -1,3 +1,3 @@
-package kr.co.vilez.ui.chat
+package kr.co.vilez.data.chat
 
 data class NickData(val shareUserNick: String, val notShareUserNick: String)

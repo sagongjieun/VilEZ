@@ -6,13 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.contains
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.databinding.FragmentKakaoMapBinding
-import kr.co.vilez.ui.chat.ChatlistData
+import kr.co.vilez.data.chat.ChatlistData
 import kr.co.vilez.util.ApplicationClass
-import kr.co.vilez.util.StompClient2
+import kr.co.vilez.util.StompHelper
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
@@ -34,7 +35,7 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
     private var zoomLvl: Int? = 0
     private val marker = MapPOIItem()
     private var otherUserId  = 0
-    private val itemList = ArrayList<ChatlistData>()
+    private var topic: Disposable? = null
     private var roomId: Int = 0
     private lateinit var mapView :MapView
     private var binding: FragmentKakaoMapBinding? = null
@@ -60,7 +61,6 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
         binding!!.mapView.addView(mapView)
         subMap(mapView)
         mapView.setMapViewEventListener(this)
-//         Inflate the layout for this fragment
         return binding!!.root
     }
 
@@ -68,6 +68,7 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
         super.onDestroy()
         if(binding!!.mapView.contains(mapView))
             binding!!.mapView.removeView(mapView)
+        topic?.dispose()
     }
 
     fun subMap(mapView : MapView){
@@ -95,7 +96,7 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
             }
         }
 
-        StompClient2.stompClient.join("/sendmap/"+roomId+"/"+ApplicationClass.prefs.getId()).subscribe { topicMessage ->
+        topic = StompHelper.stompClient.join("/sendmap/"+roomId+"/"+ApplicationClass.prefs.getId()).subscribe { topicMessage ->
             run {
                 val json = JSONObject(topicMessage)
                 if(mapView.zoomLevel != json.getInt("zoomLevel")) {
@@ -167,7 +168,7 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
             data.put("zoomLevel", p0.zoomLevel)
             data.put("isMarker",false)
             zoomLvl = p0.zoomLevel
-            StompClient2.stompClient.send("/recvmap", data.toString()).subscribe()
+            StompHelper.stompClient.send("/recvmap", data.toString()).subscribe()
         }
     }
 
@@ -205,7 +206,7 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
             data.put("lng", p1.mapPointGeoCoord.longitude)
             data.put("isMarker",true)
             data.put("zoomLevel", p0.zoomLevel)
-            StompClient2.stompClient.send("/recvmap", data.toString()).subscribe()
+            StompHelper.stompClient.send("/recvmap", data.toString()).subscribe()
             p0.setMapCenterPoint(p1,true)
         }
         p0!!.addPOIItem(marker)
@@ -231,7 +232,7 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
             data.put("isMarker",false)
         }
 
-        StompClient2.stompClient.send("/recvmap", data.toString()).subscribe()
+        StompHelper.stompClient.send("/recvmap", data.toString()).subscribe()
     }
 
     override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {

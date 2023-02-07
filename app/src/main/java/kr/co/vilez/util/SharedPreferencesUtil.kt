@@ -94,6 +94,13 @@ class SharedPreferencesUtil(context: Context) {
         prefs.edit().putString("nickName", name).apply()
     }
 
+    fun setRoomId(id:Int) {
+        prefs.edit().putInt("roomId",id).apply()
+    }
+    fun getRoomId(): Int {
+        return prefs.getInt("roomId",-1)!!
+    }
+
     fun getNickName():String {
         return prefs.getString("nickName", "")!!
     }

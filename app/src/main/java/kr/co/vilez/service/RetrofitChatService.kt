@@ -36,6 +36,13 @@ data class RESTReturnResult(
     val flag: String
 )
 
+data class State(val state: Int)
+data class RESTStateResult(
+    val `data`: List<State>,
+    val flag: String
+)
+
+
 interface RetrofitChatService {
     @GET("/vilez/appointments/map/{roomId}")
     fun loadLocationByRoomId(@Path("roomId") roomId : Int): Call<RESTKakaoResult>
@@ -88,4 +95,7 @@ interface RetrofitChatService {
 
     @POST("/vilez/returns/confirmed")
     fun returnEnd(@Body returnRequestDto: ReturnRequestDto) : Call<RESTResult>
+
+    @GET("/vilez/returns/state")
+    fun getState(@Query("roomId") roomId: Int) : Call<RESTStateResult>
 }

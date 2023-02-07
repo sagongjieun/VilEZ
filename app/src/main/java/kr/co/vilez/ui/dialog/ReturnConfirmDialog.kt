@@ -1,6 +1,5 @@
 package kr.co.vilez.ui.dialog
 
-import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -9,19 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kr.co.vilez.R
-import kr.co.vilez.data.model.AppointDto
-import kr.co.vilez.data.model.Room
-import kr.co.vilez.databinding.DialogAppointConfirmBinding
 import kr.co.vilez.databinding.DialogReturnConfirmBinding
-import kr.co.vilez.ui.chat.ChatlistData
-import kr.co.vilez.util.ApplicationClass
-import kr.co.vilez.util.StompClient2
-import org.json.JSONObject
-import retrofit2.awaitResponse
 
 /***
  * 취소, 확인 버튼 있는 다이얼로그
