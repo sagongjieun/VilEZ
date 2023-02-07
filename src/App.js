@@ -24,8 +24,8 @@ function App() {
         <Route path="/product/*" element={<Product />} />
         <Route path="/profile/*" element={<Profile />} />
         <Route path="/password" element={<FindPassword />} />
-        <Route path="/oauth/kakao/callback" element={<OAuthKakao />} />
         <Route path="/mybox" element={<MyBox />} />
+        <Route path="/oauth/kakao/callback" element={<OAuthKakao />} />
         <Route path="/oauth/naver/callback" element={<OAuthNaver />} />
         {/* <Route path="*" element={<NotFound />}></Route> */}
       </Routes>
