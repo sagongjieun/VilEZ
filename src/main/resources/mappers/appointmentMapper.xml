@@ -41,7 +41,7 @@
     </resultMap>
 
     <select id="getMyAppointmentDateAsk" parameterType="int" resultMap="appointment">
-        select appointment_id, board_id, share_user_id, not_share_user_id, appointment_start, appointment_end, title, type,
+        select appointment_id, board_id, share_user_id, not_share_user_id, appointment_start, appointment_end, s.title, type,
                (
                    case
                        when (appointment_start > now() and now() >= DATE_SUB(appointment_start, INTERVAL 7 DAY)) then "시작일 임박!"
@@ -56,7 +56,7 @@
           and ((appointment_start >= now() and now() >= DATE_SUB(appointment_start, INTERVAL 7 DAY)) or now() >= DATE_SUB(appointment_end, INTERVAL 7 DAY));
     </select>
     <select id="getMyAppointmentDateShare" parameterType="int" resultMap="appointment">
-        select appointment_id, board_id, share_user_id, not_share_user_id, appointment_start, appointment_end, title, type,
+        select appointment_id, board_id, share_user_id, not_share_user_id, appointment_start, appointment_end, s.title, type,
                (
                    case
                        when (appointment_start > now() and now() >= DATE_SUB(appointment_start, INTERVAL 7 DAY)) then "시작일 임박!"
