@@ -13,7 +13,8 @@ import java.util.List;
 
 @Mapper
 public interface AppointmentMapper {
-    BoardInfoVO getBoardInfo(PointVO pointVO) throws Exception;
+    BoardInfoVO getBoardInfoAsk(PointVO pointVO) throws Exception;
+    BoardInfoVO getBoardInfoShare(PointVO pointVO) throws Exception;
     AppointmentDto getAppointmentDate(AppointmentDto appointmentDto) throws Exception;
     void cancelAppointment(AppointmentDto appointmentDto) throws Exception;
     void changePoint(PointVO pointVO) throws Exception;

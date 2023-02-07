@@ -34,6 +34,24 @@
         <result column="share_user_id" property="shareUserId"/>
         <result column="not_share_user_id" property="notShareUserId"/>
     </resultMap>
+
+    <resultMap id="info" type="kr.co.vilez.appointment.model.vo.BoardInfoVO">
+        <result column= "board_id" property="boardId" />
+        <result column= "title" property="title" />
+    </resultMap>
+
+    <select id="getBoardInfoAsk" parameterType="kr.co.vilez.appointment.model.vo.PointVO" resultMap="info">
+        select title, id
+        from ask_view
+        where id = #{boardId}
+    </select>
+
+    <select id="getBoardInfoShare" parameterType="kr.co.vilez.appointment.model.vo.PointVO" resultMap="info">
+        select title, id
+        from sharing_view
+        where id = #{boardId}
+    </select>
+
     <select id="getAppointmentDate" parameterType="appointmentDto" resultMap="appointment">
         select *
         from appointment
