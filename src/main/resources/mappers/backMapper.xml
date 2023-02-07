@@ -8,10 +8,10 @@
         <result column="board_id" property="boardId"/>
         <result column="share_user_id" property="shareUserId"/>
         <result column="not_share_user_id" property="notShareUserId"/>
-        <result column="appointment_end" property="appointmentId"/>
+        <result column="appointment_end" property="appointmentEnd"/>
     </resultMap>
     <select id="getAppointment" parameterType="appointmentVO" resultMap="appointment">
-        select *
+        select board_id, share_user_id, not_share_user_id, appointment_end, type
         from appointment
         where board_id = #{boardId}
         and share_user_id = #{shareUserId}
