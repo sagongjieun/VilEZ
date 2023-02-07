@@ -5,10 +5,10 @@ import { getShareArticleByBoardId, putShareArticle } from "../../api/share";
 import { getAskArticleDetailByBoardId, putAskArticle } from "../../api/ask";
 import DivideLine from "../common/DivideLine";
 import InputBox from "../common/InputBox";
-import ProductCalendar from "./ProductCalendar";
+import PutProductCalendar from "./PutProductCalendar";
 import MiddleWideButton from "../button/MiddleWideButton";
-import ProductCategory from "./ProductCategory";
-import ProductImageSelect from "./ProductImageSelect";
+import PutProductCategory from "./PutProductCategory";
+import PutProductImageSelect from "./PutProductImageSelect";
 import ProductRegistType from "./ProductRegistType";
 import Map from "../common/Map";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -29,10 +29,12 @@ const ProductPut = () => {
   const [imageList, setImageList] = useState([]);
   const pathname = useLocation().pathname;
   const type = pathname.includes("share") ? 2 : 1;
+  // console.log(boardId);
   useEffect(() => {
     type === 2
       ? getShareArticleByBoardId(boardId).then((res) => {
           const data = res[0];
+          // console.log(data);
           setTitle(data.title);
           setCategory(data.category);
           setImageList(data.list);
@@ -42,7 +44,6 @@ const ProductPut = () => {
           setHopeAreaLat(data.hopeAreaLat);
           setHopeAreaLng(data.hopeAreaLng);
           setLocation(data.address);
-          console.log("@@@@@", title, imageList);
         })
       : getAskArticleDetailByBoardId(boardId).then((res) => {
           const data = res[0];
@@ -57,6 +58,7 @@ const ProductPut = () => {
           setLocation(data.address);
         });
   }, []);
+
   function receiveRegistType(registType) {
     setRegistType(registType);
   }
@@ -93,7 +95,7 @@ const ProductPut = () => {
     setHopeAreaLat(lat);
     setHopeAreaLng(lng);
   }
-
+  // console.log("@@@", imageList);
   function onClickRegistButton() {
     // 유효성 검사
     if (registType === "선택해주세요.") {
@@ -128,7 +130,6 @@ const ProductPut = () => {
       formData.append("image", image);
     });
 
-    console.log(imageList);
     formData.append(
       "board",
       new Blob(
@@ -153,7 +154,8 @@ const ProductPut = () => {
       putShareArticle(formData)
         .then((res) => {
           res = res[0];
-          navigate(`/product/detail/share/${res.id}`);
+          console.log(res);
+          navigate(`/`);
         })
         .catch((error) => {
           console.log(error);
@@ -161,8 +163,8 @@ const ProductPut = () => {
     } else if (registType === "물품 요청 등록") {
       putAskArticle(formData)
         .then((res) => {
-          res = res[0];
-          navigate(`/product/detail/ask/${res.id}`);
+          console.log(res);
+          navigate(`/`);
         })
         .catch((error) => {
           console.log(error);
@@ -184,7 +186,7 @@ const ProductPut = () => {
         <h3>
           카테고리 <b>*</b>
         </h3>
-        <ProductCategory isMain={true} sendCategory={receiveCategory} />
+        <PutProductCategory isMain={true} sendCategory={receiveCategory} defaultCategory={category} />
       </div>
       <div css={contentWrapper}>
         <h3>
@@ -206,14 +208,19 @@ const ProductPut = () => {
           <small>(최대 8개)</small>
         </h3>
         <small>물품에 대한 사진을 보여주면, 찾는 사람이 정확하게 볼 수 있어요.</small>
-        <ProductImageSelect sendImageList={receiveImageList} />
+        <PutProductImageSelect sendImageList={receiveImageList} defaultImageList={imageList} />
       </div>
       <div css={hopeDateWrapper}>
         <h3>
           희망 공유 기간 <b>*</b>
         </h3>
         <small>희망 공유기간을 적어주세요. 기간은 대화를 통해 수정할 수 있어요.</small>
-        <ProductCalendar sendStartDate={receiveStartDate} sendEndDate={receiveEndDate} />
+        <PutProductCalendar
+          sendStartDate={receiveStartDate}
+          sendEndDate={receiveEndDate}
+          defaultStartDay={startDay}
+          defaultEndDay={endDay}
+        />
       </div>
       <div css={hopeAreaWrapper}>
         <div css={hopeAreaHeaderWrapper}>

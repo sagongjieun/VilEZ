@@ -38,13 +38,13 @@ function MainBody() {
       getUserDetail(userId).then((res) => {
         if (res) {
           const userData = res;
-          console.log(userData[0].areaLat);
+          // console.log(userData[0].areaLat);
           setLocation({ areaLat: userData[0].areaLat, areaLng: userData[0].areaLng });
         }
       });
-      console.log(location);
+      // console.log(location);
     }
-  }, [userId, setLocation]);
+  }, [location, userId]);
 
   return (
     <div>
