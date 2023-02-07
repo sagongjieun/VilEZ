@@ -73,11 +73,12 @@ class ProfileFragment : Fragment() {
                     Log.d(TAG, "onViewCreated: 데이터 0개")
                 }
                 for (data in result.data[0]) {
+                    if(data.myAppointListVO.title.isNullOrEmpty()) continue;
                     val boardData = BoardData(
                         data.myAppointListVO.id,
                         if (data.imgPathList.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.imgPathList[0].path,
                         data.myAppointListVO.title,
-                        "2023-02-07 13:55:03", // TODO : DATE 넣어줘야함
+                        data.myAppointListVO.date,// TODO : DATE 넣어줘야함
                         data.myAppointListVO.startDay+ " ~ " + data.myAppointListVO.endDay,
                         data.bookmarkCnt.toString(),
                         data.myAppointListVO.userId,
