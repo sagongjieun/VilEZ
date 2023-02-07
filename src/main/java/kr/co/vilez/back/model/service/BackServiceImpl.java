@@ -53,6 +53,7 @@ public class BackServiceImpl implements BackService{
 
         LocalDate appointmentEnd = LocalDate.parse(appointmentVO1.getDate());
         LocalDate now = LocalDate.now();
+        log.info("now() : ", now, "appointmentEnd : " ,appointmentEnd);
         if(appointmentEnd.isAfter(now)){
             PointVO pointVO = new PointVO();
             pointVO.setBoardId(appointmentVO1.getBoardId());
