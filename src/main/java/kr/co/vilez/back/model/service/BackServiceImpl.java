@@ -36,9 +36,11 @@ public class BackServiceImpl implements BackService{
     public AppointmentVO confirmedReturns(int roomId) throws Exception {
         // roomId를 통한 예약 Id 불러오기
         AppointmentVO appointmentVO = backMapper.getAppointmentId(roomId);
+        AppointmentVO appointmentVO1 = backMapper.getAppointment(appointmentVO);
         log.info("appointmentVO : ",appointmentVO);
+        log.info("appointmentVO1 : ",appointmentVO1);
 
-            // 현재 채팅방 상태를 설정한다.
+        // 현재 채팅방 상태를 설정한다.
         // 반납 -1
         backDao.insertRoomStatus(new RoomStatusVO(roomId, -1));
 
@@ -49,10 +51,10 @@ public class BackServiceImpl implements BackService{
         backMapper.setAppointment(appointmentVO);
 
         ///////////////////////////////////////////////////////////////////
-        AppointmentVO appointmentVO1 = backMapper.getAppointment(appointmentVO);
 
         LocalDate appointmentEnd = LocalDate.parse(appointmentVO1.getAppointmentEnd());
         LocalDate now = LocalDate.now();
+        log.info("now() : ", now, "appointmentEnd : " ,appointmentEnd);
         if(appointmentEnd.isAfter(now)){
             PointVO pointVO = new PointVO();
             pointVO.setBoardId(appointmentVO1.getBoardId());
