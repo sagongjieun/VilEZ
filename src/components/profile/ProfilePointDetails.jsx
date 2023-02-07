@@ -46,7 +46,9 @@ const ProfilePointDetails = () => {
                     {data.pointVO.date.slice(0, 4)}.{data.pointVO.date.slice(5, 7)}.{data.pointVO.date.slice(8, 10)}
                   </div>
                   <div css={data.pointVO.point > 0 ? greenText : data.pointVO.reason === 2 ? redText : grayText}>
-                    {data.pointVO.reason === 0
+                    {data.pointVO.type === -1
+                      ? null
+                      : data.pointVO.reason === 0
                       ? data.pointVO.point > 0
                         ? "공유"
                         : "반납"

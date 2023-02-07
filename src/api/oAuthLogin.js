@@ -22,7 +22,7 @@ async function requestKakaoLogin(code) {
 async function requestNaverLogin(code) {
   try {
     console.log(code);
-    const { data } = await jsonAxios.get(`/oauth2/code/kakao?code=${code}`);
+    const { data } = await jsonAxios.get(`/oauth2/code/naver?code=${code}`);
     return data;
   } catch (error) {
     console.log(error);
