@@ -11,8 +11,9 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { shareDataState, checkShareDateState } from "../../recoil/atom";
 import DateFormat from "../common/DateFormat";
 import { putShareDate } from "../../api/appointment";
+import { getAppointmentDate } from "../../api/appointment";
 
-const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
+const CalendarModal = ({ setCalendarModalOpen, boardId, shareState }) => {
   const [shareData, setShareData] = useRecoilState(shareDataState);
   const setCheckShareDate = useSetRecoilState(checkShareDateState);
 
@@ -79,7 +80,21 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
   }, []);
 
   useEffect(() => {
-    if (startDate && endDate) {
+    // readOnly
+    if (shareState != -3) {
+      getAppointmentDate(boardId, shareData.notShareUserId, shareData.shareUserId, shareData.boardType).then((res) => {
+        if (res) {
+          const start = res.appointmentStart; // "yyyy-mm-dd"
+          const end = res.appointmentEnd;
+          setStartDate(new Date(start));
+          setEndDate(new Date(end));
+        }
+      });
+    }
+  }, [shareState]);
+
+  useEffect(() => {
+    if (startDate && endDate && shareState == -3) {
       let flag = false;
 
       // 기존에 공유중이거나 예약중인 기간 클릭 막기
@@ -115,28 +130,52 @@ const CalendarModal = ({ setCalendarModalOpen, boardId }) => {
     <div css={modalWrapper}>
       <div css={calendarModalWrapper}>
         <GrClose onClick={onClickCloseModal} size="20" />
-        <h3>희망 공유 기간 설정</h3>
-        <DatePicker
-          locale={ko}
-          minDate={new Date()} // 과거 날짜 disable
-          onChange={onChange}
-          startDate={startDate}
-          endDate={endDate}
-          excludeDateIntervals={blockDate}
-          selectsRange
-          selectsDisabledDaysInRange
-          inline
-        />
-        {selectedStartDay && selectedEndDay ? (
-          <span>
-            {selectedStartDay} ~ {selectedEndDay}
-          </span>
+        <h3>희망 공유 기간</h3>
+        {shareState == -3 ? (
+          <>
+            <DatePicker
+              locale={ko}
+              minDate={new Date()} // 과거 날짜 disable
+              onChange={onChange}
+              startDate={startDate}
+              endDate={endDate}
+              excludeDateIntervals={blockDate}
+              selectsRange
+              selectsDisabledDaysInRange
+              inline
+            />
+            {selectedStartDay && selectedEndDay ? (
+              <span>
+                {selectedStartDay} ~ {selectedEndDay}
+              </span>
+            ) : (
+              <small>* 이미 공유중이거나 예약 완료된 기간 외로 설정해주세요.</small>
+            )}
+            <div css={buttonWrapper}>
+              <MiddleWideButton text={"기간 확정"} onclick={onClickMakeMeetDate} />
+            </div>
+          </>
         ) : (
-          <small>* 이미 공유중이거나 예약 완료된 기간 외로 설정해주세요.</small>
+          <>
+            <DatePicker
+              locale={ko}
+              minDate={new Date()} // 과거 날짜 disable
+              selected={startDate}
+              startDate={startDate}
+              endDate={endDate}
+              inline
+              readOnly
+            />
+            {startDate && endDate && (
+              <span>
+                {DateFormat(startDate)} ~ {DateFormat(endDate)}
+              </span>
+            )}
+            <div css={buttonWrapper}>
+              <MiddleWideButton text={"확인"} onclick={onClickCloseModal} />
+            </div>
+          </>
         )}
-        <div css={buttonWrapper}>
-          <MiddleWideButton text={"기간 확정"} onclick={onClickMakeMeetDate} />
-        </div>
       </div>
     </div>
   );
