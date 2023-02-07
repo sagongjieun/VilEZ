@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="제목 바꿔야합니다"
+                android:text=""
                 android:textSize="20sp" />
         </com.google.android.material.appbar.MaterialToolbar>
         <!-- TODO: Update blank fragment layout -->
