@@ -37,8 +37,6 @@ public class BackServiceImpl implements BackService{
         // roomId를 통한 예약 Id 불러오기
         AppointmentVO appointmentVO = backMapper.getAppointmentId(roomId);
         AppointmentVO appointmentVO1 = backMapper.getAppointment(appointmentVO);
-        log.info("appointmentVO : ",appointmentVO);
-        log.info("appointmentVO1 : ",appointmentVO1);
 
         // 현재 채팅방 상태를 설정한다.
         // 반납 -1
@@ -55,12 +53,12 @@ public class BackServiceImpl implements BackService{
         LocalDate appointmentEnd = LocalDate.parse(appointmentVO1.getAppointmentEnd());
         LocalDate now = LocalDate.now();
         log.info("now() : ", now, "appointmentEnd : " ,appointmentEnd);
-        if(appointmentEnd.isAfter(now)){
+        if(now.isAfter(appointmentEnd)){
             PointVO pointVO = new PointVO();
             pointVO.setBoardId(appointmentVO1.getBoardId());
             pointVO.setUserId(appointmentVO1.getNotShareUserId());
 
-            Period period = Period.between(now, appointmentEnd);
+            Period period = Period.between(appointmentEnd, now);
             int days = period.getDays();
 
             pointVO.setPoint(-30 * days);
