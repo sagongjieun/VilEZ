@@ -6,6 +6,8 @@ import kr.co.vilez.appointment.model.mapper.AppointmentMapper;
 import kr.co.vilez.appointment.model.vo.ChatVO;
 import kr.co.vilez.appointment.model.vo.MapVO;
 import kr.co.vilez.appointment.model.vo.*;
+import kr.co.vilez.ask.model.dao.AskDao;
+import kr.co.vilez.ask.model.dto.ImgPath2;
 import kr.co.vilez.back.model.dao.BackDao;
 import kr.co.vilez.back.model.vo.RoomStatusVO;
 import kr.co.vilez.share.model.dao.ShareDao;
@@ -30,6 +32,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentMapper appointmentMapper;
     private final ShareDao shareDao;
     private final BackDao backDao;
+    private final AskDao askDao;
 
     @Override
     public AppointmentDto getAppointmentDate(int boardId, int shareUserId, int notShareUserId, int type) throws Exception {
@@ -250,9 +253,19 @@ public class AppointmentServiceImpl implements AppointmentService {
 
             List<BookmarkDto> bookmarkDtos = shareDao.selectBookmarkList(vo.getUserId());
             totalListVO.setBookmarkCnt(bookmarkDtos.size());
+            List<ImgPath> imageList;
+            List<ImgPath2> imageList2;
 
-            List<ImgPath> imageList = shareDao.list(vo.getUserId());
-            totalListVO.setImgPathList(imageList);
+            if(vo.getType() == 1){
+                imageList = shareDao.list(vo.getUserId());
+                totalListVO.setImgPathList(imageList);
+            }
+            else{
+                imageList2 = askDao.list(vo.getUserId());
+                totalListVO.setImgPathList(imageList2);
+            }
+
+
             totalList.add(totalListVO);
         }
 
