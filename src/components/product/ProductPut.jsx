@@ -170,6 +170,7 @@ const ProductPut = () => {
           console.log(error);
         });
     }
+    console.log(startDay);
   }
 
   return (
