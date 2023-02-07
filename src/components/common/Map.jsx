@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useRecoilState } from "recoil";
-import { locationState } from "../../recoil/atom";
-import { getUserDetail } from "../../api/user";
+// import { useRecoilState } from "recoil";
+// import { locationState } from "../../recoil/atom";
+// import { getUserDetail } from "../../api/user";
 
 const { kakao } = window;
 
@@ -30,88 +30,88 @@ const Map = ({
   const [lat, setLat] = useState("");
   const [lng, setLng] = useState("");
   const [zoomLevel, setZoomLevel] = useState(0);
-  const [isMarker, setIsMarker] = useState(true);
-  const [hasMarker, setHasMarker] = useState(true);
+  const [isMarker, setIsMarker] = useState(false);
+  const [hasMarker, setHasMarker] = useState(false);
 
   const [markerLat, setMarkerLat] = useState("");
   const [markerLng, setMarkerLng] = useState("");
   let container, options, map;
   let marker = new kakao.maps.Marker();
-  const userId = localStorage.getItem("id");
-  const [located, setLocated] = useRecoilState(locationState);
-  useEffect(() => {
-    if (userId) {
-      getUserDetail(userId).then((res) => {
-        if (res) {
-          const userData = res;
-          if (userData[0].areaLat === null) {
-            alert("동네인증을 진행해주셔야 해요");
-          }
-          setLocated({ areaLat: userData[0].areaLat, areaLng: userData[0].areaLng });
-        }
-      });
-    }
-  }, []);
+  // const userId = localStorage.getItem("id");
+  // const [located, setLocated] = useRecoilState(locationState);
+  // useEffect(() => {
+  //   if (userId) {
+  //     getUserDetail(userId).then((res) => {
+  //       if (res) {
+  //         const userData = res;
+  //         if (userData[0].areaLat === null) {
+  //           alert("동네인증을 진행해주셔야 해요");
+  //         }
+  //         setLocated({ areaLat: userData[0].areaLat, areaLng: userData[0].areaLng });
+  //       }
+  //     });
+  //   }
+  // }, []);
   function initMap() {
     // 지도를 표시할 공간과 초기 중심좌표, 레벨 세팅
     container = document.getElementById("map");
     options = {
-      center: new kakao.maps.LatLng(33.450701, 126.570667),
+      center: new kakao.maps.LatLng(33.448842, 126.570379),
       level: 4,
     };
 
     map = new kakao.maps.Map(container, options);
     // 인증 유저 좌표로 기준하여 설정
-    const locPosition = new kakao.maps.LatLng(located.areaLat, located.areaLng);
-    marker.setPosition(locPosition);
-    marker.setMap(map);
+    // const locPosition = new kakao.maps.LatLng(33.448842, 126.570379);
+    // marker.setPosition(locPosition);
+    // marker.setMap(map);
 
-    setLat(locPosition.getLat());
-    setLng(locPosition.getLng());
-    setZoomLevel(map.getLevel());
-    setIsMarker(true);
-    setHasMarker(true);
-    setMarkerLat(locPosition.getLat());
-    setMarkerLng(locPosition.getLng());
+    // setLat(locPosition.getLat());
+    // setLng(locPosition.getLng());
+    // setZoomLevel(map.getLevel());
+    // setIsMarker(true);
+    // setHasMarker(true);
+    // setMarkerLat(locPosition.getLat());
+    // setMarkerLng(locPosition.getLng());
 
-    map.panTo(locPosition);
+    // map.panTo(locPosition);
   }
-  function makeRectangle() {
-    console.log(located.areaLat, located.areaLng);
-    var sw = new kakao.maps.LatLng(located.areaLat - 0.03, located.areaLng - 0.03), // 사각형 영역의 남서쪽 좌표
-      ne = new kakao.maps.LatLng(located.areaLat, located.areaLng); // 사각형 영역의 북동쪽 좌표
+  // function makeRectangle() {
+  //   console.log(located.areaLat, located.areaLng);
+  //   var sw = new kakao.maps.LatLng(located.areaLat - 0.03, located.areaLng - 0.03), // 사각형 영역의 남서쪽 좌표
+  //     ne = new kakao.maps.LatLng(located.areaLat, located.areaLng); // 사각형 영역의 북동쪽 좌표
 
-    // 사각형을 구성하는 영역정보를 생성합니다
-    // 사각형을 생성할 때 영역정보는 LatLngBounds 객체로 넘겨줘야 합니다
-    var rectangleBounds = new kakao.maps.LatLngBounds(sw, ne);
+  //   // 사각형을 구성하는 영역정보를 생성합니다
+  //   // 사각형을 생성할 때 영역정보는 LatLngBounds 객체로 넘겨줘야 합니다
+  //   var rectangleBounds = new kakao.maps.LatLngBounds(sw, ne);
 
-    // 지도에 표시할 사각형을 생성합니다
-    var rectangle = new kakao.maps.Rectangle({
-      bounds: rectangleBounds, // 그려질 사각형의 영역정보입니다
-      strokeWeight: 4, // 선의 두께입니다
-      strokeColor: "#FF3DE5", // 선의 색깔입니다
-      strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-      strokeStyle: "shortdashdot", // 선의 스타일입니다
-      fillColor: "#FF8AEF", // 채우기 색깔입니다
-      fillOpacity: 0.8, // 채우기 불투명도 입니다
-    });
+  //   // 지도에 표시할 사각형을 생성합니다
+  //   var rectangle = new kakao.maps.Rectangle({
+  //     bounds: rectangleBounds, // 그려질 사각형의 영역정보입니다
+  //     strokeWeight: 4, // 선의 두께입니다
+  //     strokeColor: "#FF3DE5", // 선의 색깔입니다
+  //     strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+  //     strokeStyle: "shortdashdot", // 선의 스타일입니다
+  //     fillColor: "#FF8AEF", // 채우기 색깔입니다
+  //     fillOpacity: 0.8, // 채우기 불투명도 입니다
+  //   });
 
-    // 지도에 사각형을 표시합니다
-    rectangle.setMap(map);
-  }
+  //   // 지도에 사각형을 표시합니다
+  //   rectangle.setMap(map);
+  // }
 
   function geolocationMap() {
     // 현재 접속위치를 중심좌표로 두기
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function () {
-        // const lat = position.coords.latitude, // 위도
-        //   lon = position.coords.longitude; // 경도
+      navigator.geolocation.getCurrentPosition(function (position) {
+        const lat = position.coords.latitude, // 위도
+          lon = position.coords.longitude; // 경도
 
-        const locPosition = new kakao.maps.LatLng(located.areaLat, located.areaLng);
+        const locPosition = new kakao.maps.LatLng(lat, lon);
         map.setCenter(locPosition);
       });
     } else {
-      const locPosition = new kakao.maps.LatLng(located.areaLat, located.areaLng);
+      const locPosition = new kakao.maps.LatLng(33.450701, 126.570667);
       map.setCenter(locPosition);
     }
   }
@@ -174,7 +174,7 @@ const Map = ({
   useEffect(() => {
     initMap();
     geolocationMap();
-    makeRectangle();
+    // makeRectangle();
     /** readOnly : 지도 제어 가능 */
     if (!readOnly) {
       eventDragEnd();
