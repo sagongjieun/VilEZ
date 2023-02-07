@@ -245,6 +245,18 @@ public class UserController {
     public ResponseEntity<?> detail(@PathVariable int id){
         try {
             http = userService.detail(id);
+
+            log.info("******************************************************");
+            log.info("******************************************************");
+            log.info("******************************************************");
+            log.info("******************************************************");
+            log.info(http);
+            System.out.println(http);
+            log.info("******************************************************");
+            log.info("******************************************************");
+            log.info("******************************************************");
+            log.info("******************************************************");
+            log.info("******************************************************");
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -261,6 +273,7 @@ public class UserController {
         }
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
+
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestBody UserDto userDto){
