@@ -19,5 +19,6 @@ public class AppointmentDto {
     private int state;
     private String date;
     private int type;
+    private String status;
 
 }

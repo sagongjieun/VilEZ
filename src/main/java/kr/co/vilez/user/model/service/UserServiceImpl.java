@@ -269,4 +269,9 @@ public class UserServiceImpl implements UserService {
         http.setData(data);
         return http;
     }
+
+    @Override
+    public void logout(UserDto userDto) throws Exception {
+        userMapper.logout(userDto);
+    }
 }

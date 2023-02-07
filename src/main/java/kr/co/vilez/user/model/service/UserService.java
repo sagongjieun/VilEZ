@@ -27,4 +27,6 @@ public interface UserService {
     UserDto detail2(int id) throws Exception;
 
     void setPoint(int userId, int point);
+
+    void logout(UserDto userDto) throws Exception;
 }

@@ -11,6 +11,7 @@ import java.util.List;
 
 @Mapper
 public interface UserMapper {
+    void logout(UserDto userDto) throws SQLException;
     void modifyPassword(String email) throws SQLException;
     void setManner(int userId, int degree) throws SQLException;
     void saveLocation(LocationDto locationDto) throws SQLException;
