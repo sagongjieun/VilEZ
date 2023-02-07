@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Animated } from "react-animated-css";
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
@@ -9,6 +9,9 @@ import thirdbodyimg from "../assets/images/thirdbodyimg.png";
 import mapimg from "../assets/images/mapimg.png";
 import chatimg from "../assets/images/chatimg.png";
 import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { locationState } from "../recoil/atom";
+import { getUserDetail } from "../api/user";
 
 function MainBody() {
   const [search, setSearch] = useState("");
@@ -28,6 +31,20 @@ function MainBody() {
       mainToProduct();
     }
   };
+  const userId = localStorage.getItem("id");
+  const [location, setLocation] = useRecoilState(locationState);
+  useEffect(() => {
+    if (userId) {
+      getUserDetail(userId).then((res) => {
+        if (res) {
+          const userData = res;
+          console.log(userData[0].areaLat);
+          setLocation({ areaLat: userData[0].areaLat, areaLng: userData[0].areaLng });
+        }
+      });
+      console.log(location);
+    }
+  }, [userId, setLocation]);
 
   return (
     <div>
