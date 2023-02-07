@@ -165,19 +165,7 @@ const StompRealTime = ({
 
         // 공유 종료를 구독
         client.subscribe(`/sendend/${chatRoomId}`, () => {
-          console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@");
           sendShareState(-1);
-          setShowingMessage((prev) => [
-            ...prev,
-            {
-              roomId: chatRoomId,
-              fromUserId: myUserId,
-              toUserId: otherUserId,
-              content: "공유가 종료되었어요 😊",
-              system: true,
-              time: new Date().getTime(),
-            },
-          ]);
         });
 
         // 공유지도를 구독
@@ -374,7 +362,18 @@ const StompRealTime = ({
 
     // 공유 종료됨을 알림
     if (isChatEnd) {
-      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      const sendMessage = {
+        roomId: chatRoomId,
+        fromUserId: myUserId,
+        toUserId: otherUserId,
+        content: "공유가 종료되었어요 😊",
+        system: true,
+        time: new Date().getTime(),
+      };
+
+      setShowingMessage((prev) => [...prev, sendMessage]);
+
+      client.send("/recvchat", {}, JSON.stringify(sendMessage));
       client.send("/recvend", {}, JSON.stringify({ roomId: roomId }));
     }
   }, [
