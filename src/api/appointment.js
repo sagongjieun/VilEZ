@@ -92,6 +92,19 @@ async function getCheckShareCancelRequest(roomId) {
   }
 }
 
+async function getAppointmentDate(boardId, notShareUserId, shareUserId, type) {
+  try {
+    const { data } = await jsonAxios.get(
+      `/appointments/date?boardId=${boardId}&notShareUserId=${notShareUserId}&shareUserId=${shareUserId}&type=${type}`
+    );
+
+    if (data.flag === "success") return data.data[0];
+    else console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // POST
 
 async function postShareDate(body) {
@@ -173,6 +186,7 @@ export {
   getShareListByUserId,
   getNotShareListByUserId,
   getCheckShareCancelRequest,
+  getAppointmentDate,
   postShareDate,
   postShareReturnState,
   postShareEnd,
