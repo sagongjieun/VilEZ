@@ -6,11 +6,7 @@ import { css } from "@emotion/react";
 const MiddleWideButton = ({ text, outline, onClick, cancel, isActive }) => {
   return (
     <button
-      css={
-        ([outline ? outlinedButton : basicButton],
-        [cancel ? cancelButton : basicButton],
-        [isActive ? nonActiveButton : basicButton])
-      }
+      css={[outline ? outlinedButton : cancel ? cancelButton : isActive ? nonActiveButton : basicButton]}
       onClick={onClick}
     >
       {text}

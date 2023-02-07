@@ -1,5 +1,7 @@
 import { atom } from "recoil";
+import { recoilPersist } from "recoil-persist";
 
+const { persistAtom } = recoilPersist();
 const loginUserState = atom({
   key: "loginUserState",
   default: {
@@ -31,6 +33,7 @@ const modalOpenState = atom({
 const locationState = atom({
   key: "locationState",
   default: { areaLat: 0, areaLng: 0 },
+  effects_UNSTABLE: [persistAtom],
 });
 
 const enterChatRoomState = atom({
