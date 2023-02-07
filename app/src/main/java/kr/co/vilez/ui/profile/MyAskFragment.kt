@@ -7,21 +7,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.dto.AskData
+import kr.co.vilez.data.dto.BoardData
 import kr.co.vilez.databinding.FragmentMyAskBinding
 import kr.co.vilez.ui.ask.AskListAdapter
 import kr.co.vilez.ui.user.ProfileMenuActivity
+import kr.co.vilez.util.ApplicationClass
+import kr.co.vilez.util.Common
+import retrofit2.awaitResponse
 
 private const val TAG = "빌리지_프로필_MyAskFragment"
 class MyAskFragment : Fragment() {
     private lateinit var binding : FragmentMyAskBinding
     private lateinit var profileMenuActivity: ProfileMenuActivity
 
+    private lateinit var boardAdapter: BoardListAdapter
+    private lateinit var boardList:ArrayList<BoardData>
     private var index = 0
-    private lateinit var askAdapter: AskListAdapter
-    private lateinit var askList:ArrayList<AskData>
 
     private val STATE_SHARING = 0 // 공유 중인 요청글
     private val STATE_RESERVE = 1  // 공유 예정인 요청글
@@ -69,11 +77,90 @@ class MyAskFragment : Fragment() {
     }
 
     private fun initSharingData() {
+        index = 0
+        boardList = arrayListOf()
+        boardAdapter = BoardListAdapter(boardList)
+        // 리사이클러뷰에 어댑터 등록
+        binding.rvMyAskList.apply {
+            adapter = boardAdapter
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        }
+        CoroutineScope(Dispatchers.Main).launch {
+            val result = ApplicationClass.retrofitAppointmentService.getMyGiveList(
+                ApplicationClass.prefs.getId()).awaitResponse().body()
+            if (result?.flag == "success") {
+                Log.d(TAG, "initShareData: success!!!!! 검색 결과 개수 : ${result.data[0].size}")
 
+                Log.d(TAG, "initList: result: $result")
+                if (result.data.isEmpty()) {
+                    Log.d(TAG, "onViewCreated: 데이터 0개")
+                }
+                for (data in result.data[0]) {
+                    val state = Common.getBoardState(data.myAppointListVO.startDay)
+                    if(state == Common.APPOINTMENT_TYPE_RESERVE) continue // 공유 예정인 것은 skip
+
+                    val boardData = BoardData(
+                        data.myAppointListVO.id,
+                        if (data.imgPathList.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.imgPathList[0].path,
+                        data.myAppointListVO.title,
+                        data.myAppointListVO.date,
+                        data.myAppointListVO.startDay+ " ~ " + data.myAppointListVO.endDay,
+                        data.bookmarkCnt.toString(),
+                        data.myAppointListVO.userId,
+                        data.myAppointListVO.type,
+                        state = Common.APPOINTMENT_TYPE_SHARE, // 공유중인 데이터만 넣을거임
+                        sDay = data.myAppointListVO.startDay,
+                        eDay = data.myAppointListVO.endDay,
+                    )
+                    Log.d(TAG, "추가?: $boardData")
+                    boardList.add(boardData)
+                }
+            }
+            boardAdapter.notifyItemInserted(index - 1)
+        }
     }
 
     private fun initReserveData() {
+        index = 0
+        boardList = arrayListOf()
+        boardAdapter = BoardListAdapter(boardList)
+        // 리사이클러뷰에 어댑터 등록
+        binding.rvMyAskList.apply {
+            adapter = boardAdapter
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        }
+        CoroutineScope(Dispatchers.Main).launch {
+            val result = ApplicationClass.retrofitAppointmentService.getMyGiveList(ApplicationClass.prefs.getId()).awaitResponse().body()
+            if (result?.flag == "success") {
+                Log.d(TAG, "initShareData: success!!!!! 검색 결과 개수 : ${result.data[0].size}")
 
+                Log.d(TAG, "initList: result: $result")
+                if (result.data.isEmpty()) {
+                    Log.d(TAG, "onViewCreated: 데이터 0개")
+                }
+                for (data in result.data[0]) {
+                    val state = Common.getBoardState(data.myAppointListVO.startDay)
+                    if(state == Common.APPOINTMENT_TYPE_SHARE) continue // 공유 중인 것은 skip
+
+                    val boardData = BoardData(
+                        data.myAppointListVO.id,
+                        if (data.imgPathList.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.imgPathList[0].path,
+                        data.myAppointListVO.title,
+                        data.myAppointListVO.date,
+                        data.myAppointListVO.startDay+ " ~ " + data.myAppointListVO.endDay,
+                        data.bookmarkCnt.toString(),
+                        data.myAppointListVO.userId,
+                        data.myAppointListVO.type,
+                        state = Common.APPOINTMENT_TYPE_RESERVE, // 공유 예정인 데이터만 넣을거임
+                        sDay = data.myAppointListVO.startDay,
+                        eDay = data.myAppointListVO.endDay,
+                    )
+                    Log.d(TAG, "추가?: $boardData")
+                    boardList.add(boardData)
+                }
+            }
+            boardAdapter.notifyItemInserted(index - 1)
+        }
     }
 
     private fun initToolBar() {

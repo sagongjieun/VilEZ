@@ -52,7 +52,7 @@
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toEndOf="@id/textView4"
                 app:layout_constraintTop_toBottomOf="@+id/progress_bar_manner"
-                app:srcCompat="@drawable/star" />
+                app:srcCompat="@drawable/ic_profile_point" />
 
             <TextView
                 android:id="@+id/textView6"
@@ -234,7 +234,7 @@
                 android:layout_marginStart="30dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/progress_bar_manner"
-                app:srcCompat="@drawable/location" />
+                app:srcCompat="@drawable/ic_profile_location" />
 
             <TextView
                 android:id="@+id/tv_user_area"

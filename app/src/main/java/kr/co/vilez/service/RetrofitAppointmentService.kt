@@ -35,11 +35,11 @@ data class RESTPointResult(
 )
 interface RetrofitAppointmentService {
 
-    // 나의 공유물품을 조회한다. (완료된 약속을 제외)
+    // 나의 공유물품을 조회한다. (완료된 약속은 제외)
     @GET("/vilez/appointments/my/{userId}")
     fun getMyAppointment(@Path("userId")id:Int): Call<RESTAppointmentResult>
 
-    // 나의 대여물품을 조회한다.  (완료된 약속을 제외)
+    // 나의 대여물품을 조회한다.  (완료된 약속은 제외)
     // type = 1 요청게시글, type = 2 공유 게시글
     @GET("/vilez/appointments/my/give/{userId}")
     fun getMyGiveList(@Path("userId")id:Int): Call<RESTAppointmentResult>
