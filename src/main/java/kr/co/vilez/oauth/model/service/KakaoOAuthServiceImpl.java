@@ -48,7 +48,7 @@ public class KakaoOAuthServiceImpl implements KakaoOAuthService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", clientId);
-        body.add("redirect_uri", "https://i8d111.p.ssafy.io/vilez/oauth2/code/kakao");
+        body.add("redirect_uri", "https://i8d111.p.ssafy.io/oauth/kakao/callback");
 //        body.add("redirect_uri", "http://localhost:3000/oauth/kakao/callback");
         body.add("code", code);
 
