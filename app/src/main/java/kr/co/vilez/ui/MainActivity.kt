@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityMainBinding
-import kr.co.vilez.ui.chat.ChatlistFragment
+import kr.co.vilez.ui.chat.room.ChatlistFragment
 import kr.co.vilez.data.model.RoomlistData
 import kr.co.vilez.ui.ask.AskFragment
 import kr.co.vilez.ui.share.HomeShareFragment
@@ -21,7 +21,7 @@ import kr.co.vilez.ui.user.ProfileFragment
 import kr.co.vilez.ui.user.ProfileMenuActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.DataState
-import kr.co.vilez.util.StompClient2
+import kr.co.vilez.util.StompHelper
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -29,6 +29,8 @@ private const val TAG = "빌리지_MainActivity"
 class MainActivity : AppCompatActivity() {
     private lateinit var binding:ActivityMainBinding
     private var waitTime = 0L
+    var notifyInterface : NotifyInterface?? = null
+    var chatListFragment = ChatlistFragment()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -42,40 +44,93 @@ class MainActivity : AppCompatActivity() {
         } else {
             changeFragment(target)
         }
-        initView()
+        StompHelper.runStomp()
         var data = JSONObject()
         data.put("userId", ApplicationClass.prefs.getId())
-        StompClient2.runStomp()
-        StompClient2.stompClient.join("/send_room_list/"+ ApplicationClass.prefs.getId()).subscribe { topicMessage ->
+
+        StompHelper.stompClient.join("/send_room_list/"+ ApplicationClass.prefs.getId()).subscribe { topicMessage ->
             run {
                 println(topicMessage)
                 val json = JSONArray(topicMessage)
-                CoroutineScope(Dispatchers.Main).launch {
 
-                    DataState.itemList = ArrayList<RoomlistData>()
-                    for (index in 0 until json.length()) {
-                        val chat = JSONObject(json.get(index).toString())
-                        val chatData = chat.getJSONObject("chatData")
-                        DataState.itemList.add(
-                            RoomlistData(
-                                chatData.getInt("roomId"), chat.getString("nickName"),
-                                chatData.getString("content"),
-                                "",
-                                if(chatData.getInt("fromUserId") == ApplicationClass.prefs.getId())
-                                    chatData.getInt("toUserId")
-                                else
-                                    chatData.getInt("fromUserId")
-                                , chat.getInt("noReadCount")
-                                , chat.getString("profile")
-                            )
+                DataState.itemList = ArrayList<RoomlistData>()
+                for (index in 0 until json.length()) {
+                    val chat = JSONObject(json.get(index).toString())
+                    val chatData = chat.getJSONObject("chatData")
+                    DataState.itemList.add(
+                        RoomlistData(
+                            chatData.getInt("roomId"), chat.getString("nickName"),
+                            chatData.getString("content"),
+                            "",
+                            if(chatData.getInt("fromUserId") == ApplicationClass.prefs.getId())
+                                chatData.getInt("toUserId")
+                            else
+                                chatData.getInt("fromUserId")
+                            , chat.getInt("noReadCount")
+                            , chat.getString("profile")
                         )
-                        DataState.set.add(chatData.getInt("roomId"))
-                    }
+                    )
+                    DataState.set.add(chatData.getInt("roomId"))
                 }
             }
         }
 
-        StompClient2.stompClient.send("/room_list", data.toString()).subscribe()
+        StompHelper.stompClient.join("/sendlist/" + ApplicationClass.prefs.getId())
+            .subscribe { topicMessage ->
+                run {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        val json = JSONObject(topicMessage)
+                        val roomId = json.getInt("roomId")
+                        var index = -1;
+                        if (roomId in DataState.set) {
+                            for (i in 0 until DataState.itemList.size) {
+                                if (DataState.itemList[i].roomId == roomId) {
+                                    index = i
+                                    break
+                                }
+                            }
+                            if(ApplicationClass.prefs.getRoomId() != roomId) { // 유저가 어떤 방 들어가있는지 확인
+                                DataState.itemList[index].noReadCnt++
+                            } else {
+                                DataState.itemList[index].noReadCnt = 0
+                            }
+                            DataState.itemList[index].content = json.getString("content")
+
+                            chatListFragment.roomAdapter.notifyItemChanged(index)
+
+                            val item = DataState.itemList.get(index)
+                            if (index != 0) {
+                                DataState.itemList.removeAt(index)
+                                DataState.itemList.add(0, item)
+                            }
+                            chatListFragment.roomAdapter.notifyDataSetChanged()
+                        } else {
+                            DataState.set.add(roomId)
+                            if(json.getString("profile") == null) {
+                                json.put("profile","")
+                            }
+                            DataState.itemList.add(
+                                0, RoomlistData(
+                                    json.getInt("roomId"),
+                                    json.getString("nickName"),
+                                    json.getString("content"),
+                                    "",
+                                    json.getInt("fromUserId"),
+                                    1,
+                                    json.optString("profile","")
+
+                                )
+                            )
+                            chatListFragment.roomAdapter.notifyItemInserted(0)
+                        }
+                    }
+                }
+            }
+
+
+        StompHelper.stompClient.send("/room_list", data.toString()).subscribe()
+        initView()
+
     }
 
     fun checkPermissions() {
@@ -187,9 +242,10 @@ class MainActivity : AppCompatActivity() {
                     findItem(R.id.page_profile).setIcon(R.drawable.user_line)
                 }
 
-                // Fragment 변경
+                this.notifyInterface = chatListFragment
+                // Fragment 변경 인터페이스 넣기
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.frame_layout_main, ChatlistFragment())
+                    .replace(R.id.frame_layout_main, chatListFragment)
                     .commit()
                 return true
             }
@@ -254,4 +310,8 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+}
+
+interface NotifyInterface {
+    fun onNotify() // 확인 버튼 클릭을 처리해줄 인터페이스 (호출한 곳에서 나중에 구현해줘야 합니다!)
 }

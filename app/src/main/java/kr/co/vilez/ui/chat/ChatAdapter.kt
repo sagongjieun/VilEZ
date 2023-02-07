@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import kr.co.vilez.R
+import kr.co.vilez.data.chat.ChatlistData
 
 class ChatAdapter(val itemList: ArrayList<ChatlistData>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

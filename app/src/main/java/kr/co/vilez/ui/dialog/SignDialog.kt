@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.model.Sign
 import kr.co.vilez.databinding.DialogSignBinding
-import kr.co.vilez.ui.chat.NickData
+import kr.co.vilez.data.chat.NickData
 import kr.co.vilez.util.ApplicationClass
 import retrofit2.awaitResponse
 import java.io.ByteArrayOutputStream

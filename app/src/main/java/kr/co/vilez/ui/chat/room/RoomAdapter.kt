@@ -1,4 +1,4 @@
-package kr.co.vilez.ui.chat
+package kr.co.vilez.ui.chat.room
 
 import android.view.LayoutInflater
 import android.view.View

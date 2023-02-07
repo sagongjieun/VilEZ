@@ -17,6 +17,7 @@ import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.ui.dialog.AlertDialog
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.FCMTokenUtil
+import kr.co.vilez.util.StompHelper
 import retrofit2.awaitResponse
 
 private const val TAG = "빌리지_LoginActivity"
@@ -30,7 +31,7 @@ class LoginActivity : AppCompatActivity() {
         binding.activity = this
 
         supportActionBar?.hide() // 액션바 숨김
-
+        StompHelper.dispose()
         val flag = intent.getIntExtra("flag", 1)
         openFragment(flag)  // 가장 첫 화면은 로그인 Fragment로 지정
     }
