@@ -154,8 +154,8 @@ const ProductPut = () => {
       putShareArticle(formData)
         .then((res) => {
           res = res[0];
-          console.log(res);
-          navigate(`/`);
+          // console.log(res);
+          navigate(`/product/detail/share/${res.id}`);
         })
         .catch((error) => {
           console.log(error);
@@ -164,7 +164,7 @@ const ProductPut = () => {
       putAskArticle(formData)
         .then((res) => {
           console.log(res);
-          navigate(`/`);
+          navigate(`/product/detail/ask/${res.id}`);
         })
         .catch((error) => {
           console.log(error);
