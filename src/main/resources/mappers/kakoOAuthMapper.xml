@@ -31,7 +31,7 @@
     </insert>
 
     <select id="getOAuthUser" parameterType="string" resultMap="oauth">
-        SELECT id, email, nickName, area, point, manner, profile_img, date, oauth, access_token, refresh_token
+        SELECT id, email, nickName, point, manner, profile_img, date, oauth, access_token, refresh_token
         FROM user
         WHERE email = #{email}
     </select>
