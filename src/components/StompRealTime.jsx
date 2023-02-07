@@ -254,7 +254,12 @@ const StompRealTime = ({
 
   useEffect(() => {
     /* state : 0 예약 후, -1 반납 후, -2 예약 후(예약 취소 : 확장), -3 예약 전 */
-    if (shareState == -1 || shareState == -2 || roomState == -1) {
+    if (shareState == -1 || shareState == -2 || roomState == -1 || !checkUserLeave) {
+      // stomp연결 해제
+      client.disconnect(function () {
+        console.log("연결이 종료되었습니다.");
+      });
+
       // 채팅방 막기
       const messageInput = document.getElementById("messageInput");
       messageInput.disabled = true;
