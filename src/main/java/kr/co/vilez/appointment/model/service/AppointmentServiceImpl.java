@@ -257,11 +257,11 @@ public class AppointmentServiceImpl implements AppointmentService {
             List<ImgPath2> imageList2;
 
             if(vo.getType() == 1){
-                imageList = shareDao.list(vo.getUserId());
+                imageList = shareDao.list(vo.getId());
                 totalListVO.setImgPathList(imageList);
             }
             else{
-                imageList2 = askDao.list(vo.getUserId());
+                imageList2 = askDao.list(vo.getId());
                 totalListVO.setImgPathList(imageList2);
             }
 
