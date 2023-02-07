@@ -523,14 +523,18 @@ public class AppointmentController {
     public HashMap<String, Integer> mapHandler(HashMap<String, Integer> payload) {
         int roomId = payload.get("roomId");
 
-        log.info("roomId : ", roomId);
+        log.info("roomId : " + roomId);
 
         try {
+        System.out.println("테스트합니다1");
             backService.confirmedReturns(roomId);
+        System.out.println("테스트합니다2");
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+        System.out.println("테스트합니다3");
         sendingOperations.convertAndSend("/sendend/"+roomId,payload);
+        System.out.println("테스트합니다4");
         return payload;
     }
 
