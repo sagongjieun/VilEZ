@@ -47,7 +47,7 @@ public class AppointmentController {
 
         try{
             data.add(appointmentService.getMyAppointmentDate(userId));
-            http.setFlag("sccuess");
+            http.setFlag("success");
             http.setData(data);
         } catch (Exception e){
             e.printStackTrace();
