@@ -20,5 +20,4 @@ public class AppointmentDto {
     private String date;
     private int type;
     private String status;
-
 }
