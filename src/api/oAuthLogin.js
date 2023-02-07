@@ -11,10 +11,12 @@ async function requestKakaoLogin(code) {
       // localStorage.setItem("id", data.data[0].id);
       console.log("SUCCSESS");
       return data.data;
-    } else alert("이메일 혹은 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+    } else {
+      alert("이메일 혹은 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+      console.log(data);
+    }
   } catch (error) {
     console.log(error);
-    console.log("ERROR!!!!!!!!!!");
   }
 }
 

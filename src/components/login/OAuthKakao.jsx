@@ -13,7 +13,7 @@ const OAuthKakao = () => {
   const code = new URL(window.location.href).searchParams.get("code");
   function onKakaoLogin(code) {
     requestKakaoLogin(code).then((response) => {
-      const resData = response.data[0];
+      const resData = response[0];
       console.log("***************");
       localStorage.setItem("accessToken", resData.accessToken);
       localStorage.setItem("refreshToken", resData.refreshToken);
