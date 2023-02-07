@@ -165,6 +165,7 @@ const StompRealTime = ({
 
         // 공유 종료를 구독
         client.subscribe(`/sendend/${chatRoomId}`, () => {
+          console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@");
           sendShareState(-1);
           setShowingMessage((prev) => [
             ...prev,
@@ -373,6 +374,7 @@ const StompRealTime = ({
 
     // 공유 종료됨을 알림
     if (isChatEnd) {
+      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!");
       client.send("/recvend", {}, JSON.stringify({ roomId: roomId }));
     }
   }, [
