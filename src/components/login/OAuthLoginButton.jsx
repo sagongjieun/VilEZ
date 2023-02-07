@@ -4,7 +4,7 @@ import { css } from "@emotion/react";
 
 const OAuthLoginButton = ({ text, src, alt, backgroundColor, color }) => {
   return (
-    <button css={oauthButton} style={{ backgroundColor, color }}>
+    <button type="button" css={oauthButton} style={{ backgroundColor, color }}>
       <div css={socialLogo}>
         <img src={src} alt={alt} />
       </div>
