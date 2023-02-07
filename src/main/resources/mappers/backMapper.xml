@@ -10,7 +10,7 @@
         <result column="not_share_user_id" property="notShareUserId"/>
         <result column="appointment_end" property="appointmentId"/>
     </resultMap>
-    <select id="getAppointment" parameterType="appointmentVO" resultMap="appointment">
+    <select id="getAppointment" parameterType="kr.co.vilez.back.model.vo.AppointmentVO" resultMap="appointment">
         select *
         from appointment
         where board_id = #{boardId}
