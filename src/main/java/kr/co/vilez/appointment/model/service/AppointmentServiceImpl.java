@@ -151,7 +151,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         pointVO.setUserId(appointmentDto.getShareUserId());
         pointVO.setPoint(30);
         pointVO.setType(appointmentDto.getType());
-        pointVO.setDate(appointmentDto.getDate());
+
+        LocalDate now = LocalDate.now();
+        pointVO.setDate(now.toString());
         // 내역 저장
         appointmentDao.savePoint(pointVO);
 
