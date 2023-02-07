@@ -253,7 +253,7 @@ const StompRealTime = ({
   }, [showingMessage]);
 
   useEffect(() => {
-    /* state : 0 예약 후, -1 반납 후, -2 예약 후(예약 취소 : 확장), -3 예약 전 */
+    /* state : 0 예약 후, -1 반납 후, -2 예약 취소 후, -3 예약 전 */
     if (shareState == -1 || shareState == -2 || roomState == -1) {
       // stomp연결 해제
       client.disconnect(function () {
@@ -343,21 +343,24 @@ const StompRealTime = ({
         roomId: chatRoomId,
         fromUserId: myUserId,
         toUserId: otherUserId,
-        content: "예약이 취소됐어요 ✅",
+        content: "예약이 취소되어 대화가 종료됩니다.",
         system: true,
         time: new Date().getTime(),
       };
 
       getCheckShareCancelRequest(chatRoomId).then((res) => {
-        if (res) {
-          setCancelMessage({
-            roomId: chatRoomId,
-            reason: 2,
-          });
-        } else {
+        // res : 공유자가 먼저 예약취소하면 null
+        if (res == null) {
           setCancelMessage({
             roomId: chatRoomId,
             reason: 1,
+          });
+        }
+        // res : 피공유자가 예약취소요청을 했다면 roomId
+        else {
+          setCancelMessage({
+            roomId: chatRoomId,
+            reason: 2,
           });
         }
       });
@@ -389,21 +392,28 @@ const StompRealTime = ({
 
     // 상대방이 채팅방 나감
     if (checkUserLeave) {
-      const sendMessage = {
-        roomId: chatRoomId,
-        fromUserId: -1,
-        toUserId: otherUserId,
-        content: "대화가 종료됐어요 😥",
-        system: true,
-        time: new Date().getTime(),
-      };
+      if (shareState != -1) {
+        const sendMessage = {
+          roomId: chatRoomId,
+          fromUserId: -1,
+          toUserId: otherUserId,
+          content: "대화가 종료됐어요 😥",
+          system: true,
+          time: new Date().getTime(),
+        };
 
-      setShowingMessage((prev) => [...prev, sendMessage]);
+        setShowingMessage((prev) => [...prev, sendMessage]);
 
-      client.send("/recvchat", {}, JSON.stringify(sendMessage));
+        client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
-      setCheckUserLeave(false);
-      navigate(`/product/list/share`);
+        setCheckUserLeave(false);
+        navigate(`/product/list/share`);
+      }
+      // 이미 반납 후 상태면 소켓이 끊어져있음
+      else {
+        setCheckUserLeave(false);
+        navigate(`/product/list/share`);
+      }
     }
 
     // 공유 종료됨을 알림
