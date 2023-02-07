@@ -1,6 +1,8 @@
 package kr.co.vilez.util
 
 import android.annotation.SuppressLint
+import android.graphics.Color
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
@@ -8,9 +10,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import kr.co.vilez.R
+import kr.co.vilez.data.appointment.PointData
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 object BindingAdapter {
     @JvmStatic
@@ -44,6 +48,50 @@ object BindingAdapter {
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .circleCrop()
                 .into(view)
+        }
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    @JvmStatic
+    @BindingAdapter("datetimeToDate")
+    fun datetimeToDate(view: TextView, date: String?) {
+        if(!date.isNullOrEmpty()) {
+            view.text = date
+//            val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+//            val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+//            val d: Date = dateTimeFormat.parse(date)
+//
+//            dateFormat.parse(d.toString())
+//
+//            view.text = dateFormat.parse(d.toString()).toString()
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("getPointReason")
+    fun getPointReason(view:TextView, point: PointData) {
+        if(point.pointVO.type == -1) { // 최초 가입 포인트는 내용 없애기
+            view.visibility = View.GONE
+            return
+        }
+        when(point.pointVO.reason) {
+            0 -> { // 예약에 의해 삭감/증가된 내역
+                if (point.pointVO.point > 0) {
+                    view.text = "공유"
+                    view.setTextColor(Color.parseColor("#66dd9c"))
+                } else { // 대여해서 삭감
+                    view.text=  "대여"
+                    view.setTextColor(Color.parseColor("#8a8a8a"))
+                }
+            }
+            1-> { // 취소에 의해 돌려받은 내역
+                view.text = "예약 취소"
+                view.setTextColor(Color.parseColor("#8a8a8a"))
+            }
+            2-> { // 패널티로 돌려받은 내역
+                view.text = "패널티"
+                view.setTextColor(Color.parseColor("#fc0101"))
+            }
         }
     }
 
