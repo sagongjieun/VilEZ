@@ -22,7 +22,7 @@
     </update>
 
     <select id="getAppointmentId" parameterType="int" resultMap="appointment">
-        select share_user_id, not_share_user_id, board_id, type, appointment_end
+        select share_user_id, not_share_user_id, board_id, type
         from room
         where state >= 0 and id = #{roomId}
     </select>
