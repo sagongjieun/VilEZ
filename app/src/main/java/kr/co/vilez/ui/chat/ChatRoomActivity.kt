@@ -17,7 +17,6 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.chat.ChatlistData
@@ -68,7 +67,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
         val data = JSONObject()
         data.put("roomId", roomId)
         data.put("userId", ApplicationClass.prefs.getId())
-        topic2 = StompHelper.stompClient.join("/sendend/" + roomId )
+        topic2 = StompHelper.stompClient.join("/sendend/$roomId")
             .subscribe { topicMessage ->
                 run {
                     room.state = -1
@@ -221,6 +220,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                                     data.put("content", "상대방이 채팅방을 나갔습니다")
                                     data.put("time", System.currentTimeMillis())
                                     data.put("system",true)
+
                                     if(room.state != -1)
                                         StompHelper.stompClient.send("/recvchat", data.toString()).subscribe()
                                     if(topic!=null)
@@ -330,10 +330,15 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
         binding.btnChatCalendar.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
                 if(ApplicationClass.prefs.getId() == room.shareUserId) {
-                    if(appointDto != null) {
-                        showDialog("예약 일자 : ${appointDto?.appointmentStart} \n~ ${appointDto?.appointmentEnd}")
-                    } else {
-                        onCalendarClick()
+                    var result = ApplicationClass.retrofitChatService.getAppointMent(room.boardId,room.notShareUserId,room.shareUserId,room.type)
+                        .awaitResponse().body()
+                    if(result?.flag == "success") {
+                        appointDto = result.data.get(0)
+                        if(appointDto != null) {
+                            showDialog("예약 일자 : ${appointDto?.appointmentStart} \n~ ${appointDto?.appointmentEnd}")
+                        } else {
+                            onCalendarClick()
+                        }
                     }
                 } else {
                     var result = ApplicationClass.retrofitChatService.getPeriodDto(room.boardId,room.notShareUserId,room.shareUserId,room.type)
@@ -557,26 +562,34 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
 
         var date = SDF.format(Date(System.currentTimeMillis()))
 
-        var appointVO = AppointVO(room.boardId,room.type,"asd",
+        var appointVO = AppointmentDto(room.boardId,room.type,"asd",
                                     room.shareUserId,room.notShareUserId,
                                    setPeriodDto!!.startDay,setPeriodDto!!.endDay,
-                                             date)
-        CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.retrofitChatService.setAppointment(appointVO).awaitResponse().body()
-            if (result?.flag == "success") {
-                var data = JSONObject()
-                data.put("roomId", roomId)
-                data.put("fromUserId", ApplicationClass.prefs.getId())
-                data.put("toUserId", otherUserId)
-                data.put("content", "공유를 시작 했어요")
-                data.put("time", System.currentTimeMillis())
-                data.put("system",true)
-                StompHelper.stompClient.send("/recvchat", data.toString()).subscribe()
-                itemList.add(ChatlistData(data.getString("content"), 0,"none"))
-                roomAdapter.notifyDataSetChanged()
-                rv_chat.scrollToPosition(itemList.size - 1)
-            }
-        }
+                                             date,room.id)
+        var data = JSONObject()
+        data.put("roomId",appointVO.roomId)
+        data.put("appointmentId",0)
+        data.put("boardId",appointVO.boardId)
+        data.put("shareUserId",appointVO.shareUserId)
+        data.put("notShareUserId",appointVO.notShareUserId)
+        data.put("appointmentStart",appointVO.appointmentStart)
+        data.put("appointmentEnd",appointVO.appointmentEnd)
+        data.put("state",0)
+        data.put("date",appointVO.date)
+        data.put("type",appointVO.type)
+        StompHelper.stompClient.send("/recvappoint", data.toString()).subscribe()
+
+        data = JSONObject()
+        data.put("roomId", roomId)
+        data.put("fromUserId", ApplicationClass.prefs.getId())
+        data.put("toUserId", otherUserId)
+        data.put("content", "공유를 시작 했어요")
+        data.put("time", System.currentTimeMillis())
+        data.put("system",true)
+        StompHelper.stompClient.send("/recvchat", data.toString()).subscribe()
+        itemList.add(ChatlistData(data.getString("content"), 0,"none"))
+        roomAdapter.notifyDataSetChanged()
+        rv_chat.scrollToPosition(itemList.size - 1)
     }
 
     override fun onYesButtonClick(cnt: Int) {
