@@ -81,6 +81,7 @@ const ProfileMainProduct = () => {
         <ProfileMyBookMark
           section={section}
           bookMarkPages={bookMarkPages}
+          setBookMarkPages={setBookMarkPages}
           setBookMarkDefaultPages={setBookMarkDefaultPages}
         />
         {bookMarkDefaultPages === 1 ? null : bookMarkPages === bookMarkDefaultPages ? (
