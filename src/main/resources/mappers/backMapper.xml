@@ -37,7 +37,7 @@
     </select>
 
     <select id="getAppointmentState" parameterType="appointmentStateDto" resultType="int">
-        select a.state
+        select a.state, a.share_user_id, a.not_share_user_id, a.board_id, a.type
         from appointment as a
         left join room as r
         on a.board_id = r.board_id and a.share_user_id = r.share_user_id and a.not_share_user_id = r.not_share_user_id
