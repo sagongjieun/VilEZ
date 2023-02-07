@@ -6,7 +6,6 @@ import ProfileSummary from "./ProfileSummary";
 import ProfileLocation from "./ProfileLocation";
 import ProfilePoint from "./ProfilePoint";
 import { getUserDetail } from "../../api/profile";
-// import { set } from "date-fns";
 // const { kakao } = window;
 const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpen, isEditProfileOpen }) => {
   const id = localStorage.getItem("id");
