@@ -35,7 +35,7 @@ public class BackServiceImpl implements BackService{
     public AppointmentVO confirmedReturns(int roomId) throws Exception {
         // roomId를 통한 예약 Id 불러오기
         AppointmentVO appointmentVO = backMapper.getAppointmentId(roomId);
-        log.error("appointmentVO : ",appointmentVO);
+        log.info("appointmentVO : ",appointmentVO);
 
        ///////////////////////////////////////////////////////////////////
         LocalDate appointmentEnd = LocalDate.parse(appointmentVO.getDate());
