@@ -559,7 +559,7 @@ public class AppointmentController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        sendingOperations.convertAndSend("/sendcancel/"+roomId,payload);
+        sendingOperations.convertAndSend("/sendend/"+roomId,payload);
         return payload;
     }
 
