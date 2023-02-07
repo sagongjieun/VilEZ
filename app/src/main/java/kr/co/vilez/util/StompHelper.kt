@@ -29,7 +29,7 @@ class StompHelper {
 
 //          .addInterceptor { it.proceed(it.request().newBuilder().header("Authorization", "bearer 68d20faa-54c4-11e8-8195-98ded0151692").build()) } 헤더값
             val url = "https://i8d111.p.ssafy.io/vilez/chat/websocket"
-            val intervalMillis = 5000L
+            val intervalMillis = 1000L
             val client = OkHttpClient.Builder()
                 .readTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(10, TimeUnit.SECONDS)
