@@ -11,7 +11,7 @@ const ProductRegistType = ({ sendRegistType }) => {
     ? "물품 공유 등록"
     : pathname.includes("ask")
     ? "물품 요청 등록"
-    : "선택해주세요";
+    : "선택해주세요.";
   const [openRegistType, setOpenRegistType] = useState(false);
   const [registType, setRegistType] = useState(type);
 
