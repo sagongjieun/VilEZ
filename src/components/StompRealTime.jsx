@@ -26,7 +26,7 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { getCheckShareCancelRequest } from "../api/appointment";
 
-let client;
+let client = null;
 
 const StompRealTime = ({
   roomId,
@@ -65,6 +65,8 @@ const StompRealTime = ({
   const [disableMapLat, setDisableMapLat] = useState("");
   const [disableMapLng, setDisableMapLng] = useState("");
   const [cancelMessage, setCancelMessage] = useState({});
+
+  const [isSocketConnected, setIsSocketConnected] = useState(false);
 
   function onKeyDownSendMessage(e) {
     if (e.keyCode === 13) {
@@ -152,6 +154,36 @@ const StompRealTime = ({
         return new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
       }); // 웹소켓 클라이언트 생성
 
+      /** 채팅방의 마지막 공유지도 장소 받기 */
+      getLatestMapLocation(chatRoomId).then((res) => {
+        // 마지막 장소가 있다면
+        if (res) {
+          res = res[0];
+
+          setMovedLat(res.lat);
+          setMovedLng(res.lng);
+          setMovedZoomLevel(res.zoomLevel);
+          setMovedMarker(res.isMarker);
+
+          setDisableMapLat(res.lat);
+          setDisableMapLng(res.lng);
+        }
+        // 마지막 장소가 없다면
+        else {
+          // 서울시청 좌표
+          setMovedLat(37.56682870560737);
+          setMovedLng(126.9786409384806);
+          setMovedZoomLevel(3);
+
+          setDisableMapLat(37.56682870560737);
+          setDisableMapLng(126.9786409384806);
+        }
+      });
+    }
+  }, [chatRoomId]);
+
+  useEffect(() => {
+    if (client) {
       // 웹소켓과 연결됐을 때 동작하는 콜백함수들
       client.connect({}, () => {
         // 다른 유저의 채팅을 구독
@@ -184,34 +216,14 @@ const StompRealTime = ({
           setMovedZoomLevel(data.zoomLevel);
           data.isMarker ? setMovedMarker(true) : setMovedMarker(false);
         });
+
+        setIsSocketConnected(true);
       });
+    }
+  }, [client]);
 
-      /** 채팅방의 마지막 공유지도 장소 받기 */
-      getLatestMapLocation(chatRoomId).then((res) => {
-        // 마지막 장소가 있다면
-        if (res) {
-          res = res[0];
-
-          setMovedLat(res.lat);
-          setMovedLng(res.lng);
-          setMovedZoomLevel(res.zoomLevel);
-          setMovedMarker(res.isMarker);
-
-          setDisableMapLat(res.lat);
-          setDisableMapLng(res.lng);
-        }
-        // 마지막 장소가 없다면
-        else {
-          // 서울시청 좌표
-          setMovedLat(37.56682870560737);
-          setMovedLng(126.9786409384806);
-          setMovedZoomLevel(3);
-
-          setDisableMapLat(37.56682870560737);
-          setDisableMapLng(126.9786409384806);
-        }
-      });
-
+  useEffect(() => {
+    if (isSocketConnected) {
       /** 소켓에 연결되면 채팅 내역 보여주기 */
       getChatHistory(chatRoomId).then((res) => {
         if (res.length > 0) {
@@ -234,7 +246,7 @@ const StompRealTime = ({
         }
       });
     }
-  }, [chatRoomId]);
+  }, [isSocketConnected]);
 
   useEffect(() => {
     scrollToBottom();
@@ -242,7 +254,12 @@ const StompRealTime = ({
 
   useEffect(() => {
     /* state : 0 예약 후, -1 반납 후, -2 예약 후(예약 취소 : 확장), -3 예약 전 */
-    if (shareState == -1 || shareState == -2 || roomState == -1) {
+    if (shareState == -1 || shareState == -2 || roomState == -1 || !checkUserLeave) {
+      // stomp연결 해제
+      client.disconnect(function () {
+        console.log("연결이 종료되었습니다.");
+      });
+
       // 채팅방 막기
       const messageInput = document.getElementById("messageInput");
       messageInput.disabled = true;
@@ -300,7 +317,6 @@ const StompRealTime = ({
       client.send("/recvappoint", {}, JSON.stringify(appointMessage));
 
       setCheckAppointment(false);
-      // sendShareState(0);
     }
 
     // 예약 취소 요청
@@ -309,7 +325,7 @@ const StompRealTime = ({
         roomId: chatRoomId,
         fromUserId: myUserId,
         toUserId: otherUserId,
-        content: "피공유자가 예약 취소를 요청했어요",
+        content: "피공유자가 예약 취소를 요청했어요 ",
         system: true,
         time: new Date().getTime(),
       };
@@ -327,7 +343,7 @@ const StompRealTime = ({
         roomId: chatRoomId,
         fromUserId: myUserId,
         toUserId: otherUserId,
-        content: "예약이 취소됐어요",
+        content: "예약이 취소됐어요 ✅",
         system: true,
         time: new Date().getTime(),
       };
@@ -351,7 +367,6 @@ const StompRealTime = ({
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
       setCheckShareCancel(false);
-      // sendShareState(-2);
     }
 
     // 반납 확인
@@ -378,7 +393,7 @@ const StompRealTime = ({
         roomId: chatRoomId,
         fromUserId: -1,
         toUserId: otherUserId,
-        content: "상대방이 채팅방을 나가서 대화가 종료됐어요",
+        content: "대화가 종료됐어요 😥",
         system: true,
         time: new Date().getTime(),
       };

@@ -4,9 +4,8 @@ import { css } from "@emotion/react";
 import MiddleWideButton from "../button/MiddleWideButton";
 import { useSetRecoilState } from "recoil";
 import { checkShareCancelState } from "../../recoil/atom";
-import { getCheckShareCancelRequest, deleteAppointment } from "../../api/appointment";
 
-const ShareCancelModal = ({ close, otherUserNickname, roomId }) => {
+const ShareCancelModal = ({ close, otherUserNickname }) => {
   const setCheckShareCancel = useSetRecoilState(checkShareCancelState);
 
   function onCloseModal() {
@@ -14,28 +13,8 @@ const ShareCancelModal = ({ close, otherUserNickname, roomId }) => {
   }
 
   function onClickShareCancel() {
-    // 피공유자가 예약 취소 요청을 했는지 확인
-    getCheckShareCancelRequest(roomId).then((res) => {
-      // 요청을 했다면 (= 피공유자가 먼저 취소하는 것)
-      if (res) {
-        // 예약 취소하기
-        deleteAppointment(2, roomId).then((res) => {
-          if (res) {
-            setCheckShareCancel(true); // stomp로 전달하기
-            close(false); // 모달 닫기
-          }
-        });
-      }
-      // 안했다면 (= 공유자가 먼저 취소하는 것)
-      else {
-        deleteAppointment(1, roomId).then((res) => {
-          if (res) {
-            setCheckShareCancel(true); // stomp로 전달하기
-            close(false); // 모달 닫기
-          }
-        });
-      }
-    });
+    setCheckShareCancel(true); // stomp로 전달하기
+    close(false); // 모달 닫기
   }
 
   return (

@@ -7,7 +7,6 @@ import MiddleWideButton from "../button/MiddleWideButton";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { shareDataState, checkAppointmentState } from "../../recoil/atom";
 import { getUserDetail } from "../../api/profile";
-import { postAppointment } from "../../api/chat";
 
 // https://stackblitz.com/edit/react-signature-canvas-demo?file=index.js
 function OathModal({ close, roomId, readOnly, oathSign }) {
@@ -53,20 +52,8 @@ function OathModal({ close, roomId, readOnly, oathSign }) {
   useEffect(() => {
     // 서명이 서버로 전송되고 나면 약속 확정
     if (isCanvasAccept) {
-      postAppointment({
-        boardId: shareData.boardId,
-        appointmentStart: shareData.appointmentStart,
-        appointmentEnd: shareData.appointmentEnd,
-        shareUserId: shareData.shareUserId,
-        notShareUserId: shareData.notShareUserId,
-        type: shareData.boardType,
-        roomId: roomId,
-      }).then((res) => {
-        if (res) {
-          close(false);
-          setCheckAppointment(true);
-        }
-      });
+      setCheckAppointment(true);
+      close(false);
     }
   }, [isCanvasAccept]);
 
