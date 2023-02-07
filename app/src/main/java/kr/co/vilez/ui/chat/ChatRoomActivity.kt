@@ -25,6 +25,7 @@ import kr.co.vilez.databinding.ActivityChatRoomBinding
 import kr.co.vilez.ui.chat.map.KakaoMapFragment
 import kr.co.vilez.ui.dialog.*
 import kr.co.vilez.util.ApplicationClass
+import kr.co.vilez.util.CancelAppointmentDto
 import kr.co.vilez.util.DataState
 import kr.co.vilez.util.StompHelper
 import org.json.JSONObject
@@ -106,6 +107,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
                 initView()
                 initAcceptButton()
+                initCancelButton()
             }
         }
 
@@ -217,7 +219,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                                     data.put("roomId", roomId)
                                     data.put("fromUserId", -1)
                                     data.put("toUserId", otherUserId)
-                                    data.put("content", "상대방이 채팅방을 나갔습니다")
+                                    data.put("content", "대화가 종료됐어요 \uD83D\uDE25")
                                     data.put("time", System.currentTimeMillis())
                                     data.put("system",true)
 
@@ -484,7 +486,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                     data.put("roomId", roomId)
                     data.put("fromUserId", ApplicationClass.prefs.getId())
                     data.put("toUserId", otherUserId)
-                    data.put("content", "공유자가 날짜 선택을 완료했어요")
+                    data.put("content", "공유기간이 설정됐어요! 예약 확정을 해주세요 \uD83D\uDE00")
                     data.put("time", System.currentTimeMillis())
                     data.put("system",true)
                     StompHelper.stompClient.send("/recvchat", data.toString()).subscribe()
@@ -524,12 +526,11 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                         }
                     } else {
                         if(data.state) { // 이미 했으면
-                            showDialog("공유가 종료되었습니다.")
                             var datad = JSONObject()
                             datad.put("roomId", roomId)
                             datad.put("fromUserId", ApplicationClass.prefs.getId())
                             datad.put("toUserId", otherUserId)
-                            datad.put("content", "공유가 종료 되었습니다.")
+                            datad.put("content", "공유가 종료되었어요 \uD83D\uDE0A")
                             datad.put("time", System.currentTimeMillis())
                             datad.put("system",true)
                             itemList.add(ChatlistData(datad.getString("content"), 0,"none"))
@@ -549,6 +550,90 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
             }
         }
 
+    }
+    fun initCancelButton() {
+        binding.btnChatCancel.setOnClickListener {
+            CoroutineScope(Dispatchers.Main).launch {
+                val result =
+                    ApplicationClass.retrofitChatService.getState(roomId).awaitResponse().body()
+
+                if(result?.flag == "success") {
+                    if(result.data.size == 0) {
+                        room.state = 0
+                    } else
+                        room.state = result.data.get(0).state
+                    println(result)
+                    println(roomId)
+                    if(room.state == 0) {
+                        val result =
+                            ApplicationClass.retrofitChatService.getNotShareUserCancel(roomId).awaitResponse().body()
+                        if(result?.flag == "success") {
+                            println("ddddddddd" + result.data.size)
+                            var da = result.data.get(0)
+                            if(da == null) { // 피공유자 요청이 없으면
+                                if(ApplicationClass.prefs.getId() == room.shareUserId) { // 공유자 일방 취소
+                                    var datad = JSONObject()
+                                    datad.put("roomId", roomId)
+                                    datad.put("fromUserId", ApplicationClass.prefs.getId())
+                                    datad.put("toUserId", otherUserId)
+                                    datad.put("content", "예약이 취소되어 대화가 종료됩니다.")
+                                    datad.put("time", System.currentTimeMillis())
+                                    datad.put("system",true)
+                                    itemList.add(ChatlistData(datad.getString("content"), 0,"none"))
+                                    roomAdapter.notifyDataSetChanged()
+                                    StompHelper.stompClient.send("/recvchat", datad.toString()).subscribe()
+
+                                    var data = JSONObject()
+                                    data.put("roomId",room.id)
+                                    data.put("reason",1)
+                                    StompHelper.stompClient.send("recvcancel",data.toString()).subscribe()
+
+                                } else { // 피공유자 신청
+                                    val result =
+                                        ApplicationClass.retrofitChatService.notShareUserCancel(
+                                            CancelAppointmentDto(roomId)
+                                        ).awaitResponse().body()
+                                    if(result?.flag == "success") {
+                                        var datad = JSONObject()
+                                        datad.put("roomId", roomId)
+                                        datad.put("fromUserId", ApplicationClass.prefs.getId())
+                                        datad.put("toUserId", otherUserId)
+                                        datad.put("content", "피공유자가 예약 취소를 요청했어요")
+                                        datad.put("time", System.currentTimeMillis())
+                                        datad.put("system",true)
+                                        itemList.add(ChatlistData(datad.getString("content"), 0,"none"))
+                                        roomAdapter.notifyDataSetChanged()
+                                        StompHelper.stompClient.send("/recvchat", datad.toString()).subscribe()
+                                    }
+                                }
+                            } else { // 있는거임
+                                if(ApplicationClass.prefs.getId() == room.shareUserId) {
+                                    var datad = JSONObject()
+                                    datad.put("roomId", roomId)
+                                    datad.put("fromUserId", ApplicationClass.prefs.getId())
+                                    datad.put("toUserId", otherUserId)
+                                    datad.put("content", "예약이 취소되어 대화가 종료됩니다.")
+                                    datad.put("time", System.currentTimeMillis())
+                                    datad.put("system",true)
+                                    itemList.add(ChatlistData(datad.getString("content"), 0,"none"))
+                                    roomAdapter.notifyDataSetChanged()
+                                    StompHelper.stompClient.send("/recvchat", datad.toString()).subscribe()
+
+                                    var data = JSONObject()
+                                    data.put("roomId",room.id)
+                                    data.put("reason",2)
+                                    StompHelper.stompClient.send("recvcancel",data.toString()).subscribe()
+                                } else {
+                                    showDialog("공유자에게 취소를 요청하세요!")
+                                }
+                            }
+                        }
+                    } else {
+                        showDialog("예약된 정보가 없습니다.")
+                    }
+                }
+            }
+        }
     }
 
     override fun onYesButtonClick() {
@@ -583,7 +668,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
         data.put("roomId", roomId)
         data.put("fromUserId", ApplicationClass.prefs.getId())
         data.put("toUserId", otherUserId)
-        data.put("content", "공유를 시작 했어요")
+        data.put("content", "예약이 확정됐어요 \uD83D\uDE42")
         data.put("time", System.currentTimeMillis())
         data.put("system",true)
         StompHelper.stompClient.send("/recvchat", data.toString()).subscribe()
