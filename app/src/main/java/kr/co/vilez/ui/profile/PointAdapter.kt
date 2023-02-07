@@ -3,15 +3,15 @@ package kr.co.vilez.ui.profile
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import kr.co.vilez.data.dto.PointDto
+import kr.co.vilez.data.appointment.PointData
 import kr.co.vilez.databinding.PointRecordItemBinding
 
-class PointAdapter(val list:ArrayList<PointDto>) :
+class PointAdapter(val list:ArrayList<PointData>) :
     RecyclerView.Adapter<PointAdapter.PointHolder>()
 {
     inner class PointHolder(var binding: PointRecordItemBinding):
     RecyclerView.ViewHolder(binding.root) {
-        fun bindingInfo(item: PointDto) {
+        fun bindingInfo(item: PointData) {
             binding.point = item
         }
     }
