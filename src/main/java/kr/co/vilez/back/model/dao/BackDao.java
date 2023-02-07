@@ -15,6 +15,11 @@ public class BackDao {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    public void deleteRoomStatus(int roomId){
+        mongoTemplate.remove(Query.query(Criteria.where("roomId").is(roomId)
+                ),
+                RoomStatusVO.class);
+    }
     public void insertRoomStatus(RoomStatusVO roomStatusVO) {
         mongoTemplate.insert(roomStatusVO);
     }

@@ -38,7 +38,10 @@ public class BackServiceImpl implements BackService{
         AppointmentVO appointmentVO = backMapper.getAppointmentId(roomId);
         AppointmentVO appointmentVO1 = backMapper.getAppointment(appointmentVO);
 
-        // 현재 채팅방 상태를 설정한다.
+        // 룸상태 삭제
+        backDao.deleteRoomStatus(roomId);
+
+        // 현재 채팅방 상태를 변경한다.
         // 반납 -1
         backDao.insertRoomStatus(new RoomStatusVO(roomId, -1));
 
