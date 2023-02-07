@@ -76,7 +76,7 @@ interface RetrofitChatService {
                      ,@Query("shareUserId") shareUserId: Int,@Query("type") type: Int): Call<RESTAppointResult>
 
     @POST("/vilez/appointments/")
-    fun setAppointment(@Body appointDto: AppointVO): Call<RESTResult>
+    fun setAppointment(@Body appointDto: AppointmentDto): Call<RESTResult>
 
     @GET("/vilez/signs/{roomId}")
     fun getSign(@Path("roomId") roomId: Int): Call<RESTSignResult>
