@@ -29,7 +29,6 @@ public class OSUpload {
 
         try {
             naver.putObject(putObjectRequest);
-            System.out.format("Folder %s has been created.\n", folderName);
         } catch (AmazonS3Exception e) {
             e.printStackTrace();
         } catch(SdkClientException e) {
@@ -60,7 +59,6 @@ public class OSUpload {
             DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(this.bucket, fileName);
             //Delete
             naver.deleteObject(deleteObjectRequest);
-            System.out.println(String.format("[%s] deletion complete", fileName));
 
         } catch (AmazonServiceException e) {
             e.printStackTrace();

@@ -15,6 +15,7 @@ public class AppointmentDto {
     private int notShareUserId;
     private String appointmentStart;
     private String appointmentEnd;
+    private String title;
     private int state;
     private String date;
     private int type;
