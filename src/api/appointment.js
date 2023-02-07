@@ -129,17 +129,6 @@ async function postShareReturnState(roomId) {
   }
 }
 
-async function postShareEnd(roomId) {
-  try {
-    const { data } = await jsonAxios.post(`/returns/confirmed`, { roomId });
-
-    if (data.flag === "success") return true;
-    else return false;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 async function postShareCancelRequest(body) {
   try {
     const { data } = await jsonAxios.post(`/appointments/request/cancel`, body);
@@ -189,7 +178,6 @@ export {
   getAppointmentDate,
   postShareDate,
   postShareReturnState,
-  postShareEnd,
   postShareCancelRequest,
   putShareDate,
   deleteAppointment,
