@@ -23,7 +23,7 @@ async function requestNaverLogin(code) {
   try {
     console.log(code);
     const { data } = await jsonAxios.get(`/oauth2/code/naver?code=${code}`);
-    if (data.flag === "login_success") {
+    if (data.flag === "oauth_join_success & login_success") {
       // localStorage.setItem("accessToken", data.data[0].accessToken);
       // localStorage.setItem("refreshToken", data.data[0].refreshToken);
       // localStorage.setItem("id", data.data[0].id);
