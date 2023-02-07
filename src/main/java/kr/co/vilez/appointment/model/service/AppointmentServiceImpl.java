@@ -196,11 +196,19 @@ public class AppointmentServiceImpl implements AppointmentService {
             TotalListVO totalListVO = new TotalListVO();
             totalListVO.setMyAppointListVO(vo);
 
-            List<BookmarkDto> bookmarkDtos = shareDao.selectBookmarkList(vo.getUserId());
-            totalListVO.setBookmarkCnt(bookmarkDtos.size());
+            List<ImgPath> imageList;
+            List<ImgPath2> imageList2;
 
-            List<ImgPath> imageList = shareDao.list(vo.getUserId());
-            totalListVO.setImgPathList(imageList);
+            if(vo.getType() == 1){
+                imageList2 = askDao.list(vo.getId());
+                totalListVO.setImgPathList(imageList2);
+            }
+            else{
+                imageList = shareDao.list(vo.getId());
+                totalListVO.setImgPathList(imageList);
+                List<BookmarkDto> bookmarkDtos = shareDao.selectBookmarkList(vo.getUserId());
+                totalListVO.setBookmarkCnt(bookmarkDtos.size());
+            }
             totalList.add(totalListVO);
         }
 
@@ -249,18 +257,19 @@ public class AppointmentServiceImpl implements AppointmentService {
             TotalListVO totalListVO = new TotalListVO();
             totalListVO.setMyAppointListVO(vo);
 
-            List<BookmarkDto> bookmarkDtos = shareDao.selectBookmarkList(vo.getUserId());
-            totalListVO.setBookmarkCnt(bookmarkDtos.size());
+
             List<ImgPath> imageList;
             List<ImgPath2> imageList2;
 
             if(vo.getType() == 1){
-                imageList = shareDao.list(vo.getId());
-                totalListVO.setImgPathList(imageList);
-            }
-            else{
                 imageList2 = askDao.list(vo.getId());
                 totalListVO.setImgPathList(imageList2);
+            }
+            else{
+                imageList = shareDao.list(vo.getId());
+                totalListVO.setImgPathList(imageList);
+                List<BookmarkDto> bookmarkDtos = shareDao.selectBookmarkList(vo.getUserId());
+                totalListVO.setBookmarkCnt(bookmarkDtos.size());
             }
 
 
