@@ -118,10 +118,15 @@ const StompRealTime = ({
   }
 
   function onClickOpenCalendarModal() {
-    // 공유자만 클릭 가능
-    /** 임시 alert, 피공유자에게는 disable된 달력 띄우기 */
-    if (myUserId == shareUserId) setCalendarModalOpen(true);
-    else alert("공유자만 공유 기간 확정을 할 수 있어요 😀");
+    // 예약 전일때는 공유자만 캘린더 클릭 가능
+    if (shareState == -3) {
+      if (myUserId == shareUserId) setCalendarModalOpen(true);
+      else alert("공유자에게 공유 기간 설정을 요청해주세요 😀");
+    }
+    // 예약 후에는 공유자 피공유자 모두 캘린더 readOnly
+    else {
+      setCalendarModalOpen(true);
+    }
   }
 
   function onClickOpenOath() {
@@ -261,7 +266,7 @@ const StompRealTime = ({
         roomId: chatRoomId,
         fromUserId: myUserId,
         toUserId: otherUserId,
-        content: "공유자가 공유 기간을 설정했어요",
+        content: "공유기간이 설정됐어요! 예약 확정을 해주세요 😀",
         system: true,
         time: new Date().getTime(),
       };
@@ -345,7 +350,6 @@ const StompRealTime = ({
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
       setCheckShareReturn(false);
-      // sendShareState(-1);
     }
 
     // 상대방이 채팅방 나감
@@ -404,7 +408,9 @@ const StompRealTime = ({
       <div>
         <div css={menusWrapper}>
           <img src={selectDateButton} onClick={onClickOpenCalendarModal} />
-          {calendarModalOpen && <CalendarModal setCalendarModalOpen={setCalendarModalOpen} boardId={boardId} />}
+          {calendarModalOpen && (
+            <CalendarModal setCalendarModalOpen={setCalendarModalOpen} boardId={boardId} shareState={shareState} />
+          )}
           <img src={openOathButton} onClick={onClickOpenOath} />
           <img src={recommendLocationButton} />
         </div>
