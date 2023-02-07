@@ -520,22 +520,49 @@ public class AppointmentController {
     }
 
     @MessageMapping("/recvend")
-    public HashMap<String, Integer> mapHandler(HashMap<String, Integer> payload) {
+    public HashMap<String, Integer> recvEnd(HashMap<String, Integer> payload) {
         int roomId = payload.get("roomId");
-
         log.info("roomId : " + roomId);
-
         try {
-        System.out.println("테스트합니다1");
             backService.confirmedReturns(roomId);
-        System.out.println("테스트합니다2");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("테스트합니다3");
         sendingOperations.convertAndSend("/sendend/"+roomId,payload);
-        System.out.println("테스트합니다4");
         return payload;
+    }
+
+    @MessageMapping("/recvcancel")
+    public HashMap<String, Integer> recvCancel(HashMap<String, Integer> payload) {
+        int roomId = payload.get("roomId");
+        log.info("roomId : " + roomId);
+        try {
+            appointmentService.cancelAppointment(payload.get("roomId"),payload.get("reason"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        sendingOperations.convertAndSend("/sendcancel/"+roomId,payload);
+        return payload;
+    }
+
+    @MessageMapping("/recvappoint")
+    public AppointmentDto recvAppoint(AppointmentDto appointmentDto) {
+        log.info("roomId : " + appointmentDto);
+        try {
+
+            appointmentService.deleteCheck(appointmentDto);
+            System.out.println("delete success");
+
+            appointmentService.create(appointmentDto);
+            System.out.println("create appointment success");
+
+            appointmentService.addPoint(appointmentDto);
+            System.out.println("point decrease/increase success");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        sendingOperations.convertAndSend("/sendcancel/"+appointmentDto.getRoomId(),appointmentDto);
+        return appointmentDto;
     }
 
 }
