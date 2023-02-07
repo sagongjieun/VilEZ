@@ -113,7 +113,7 @@
             title , hope_area_lat,
             hope_area_lng, start_day,
             end_day, appointment_id,
-            share_user_id, not_share_user_id
+            share_user_id, not_share_user_id, s.date
         from sharing_view as s
                  right join(
             select *
@@ -142,11 +142,7 @@
 
     <select id="getMyAppointmentListShare" parameterType="int" resultMap="mylist">
         select
-            id, user_id,
-            title , hope_area_lat,
-            hope_area_lng, start_day,
-            end_day, appointment_id,
-            share_user_id, not_share_user_id, s.date
+            *
         from sharing_view as s
         right join(
             select *
@@ -158,12 +154,8 @@
     </select>
     <select id="getMyAppointmentListAsk" parameterType="int" resultMap="mylist">
         select
-            id, user_id,
-            title , hope_area_lat,
-            hope_area_lng, start_day,
-            end_day, appointment_id,
-            share_user_id, not_share_user_id, s.date
-        from sharing_view as s
+            *
+        from ask_view as s
         right join(
             select *
             from appointment
