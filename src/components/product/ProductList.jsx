@@ -12,29 +12,29 @@ import { HiCalendar } from "react-icons/hi";
 import { HiHeart } from "react-icons/hi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getAskArticleList } from "../../api/ask";
-import { useRecoilState } from "recoil";
-import { locationState } from "../../recoil/atom";
-import { getUserDetail } from "../../api/user";
+// import { useRecoilState } from "recoil";
+// import { locationState } from "../../recoil/atom";
+// import { getUserDetail } from "../../api/user";
 import elapsedTime from "./ProductElapsedTime";
 
 const ProductList = () => {
   // detail api에서 userId 받아오면, 동네인증 한 경우 위도 경도가 존재. 이를 recoil에 넣어 상태관리
 
   const userId = localStorage.getItem("id");
-  const [location, setLocation] = useRecoilState(locationState);
-  useEffect(() => {
-    if (userId) {
-      getUserDetail(userId).then((res) => {
-        if (res) {
-          const userData = res;
-          // console.log(userData[0].areaLat);
-          setLocation({ areaLat: userData[0].areaLat, areaLng: userData[0].areaLng }, () => {
-            // console.log("Location state updated: ", location);
-          });
-        }
-      });
-    }
-  }, [userId, location]);
+  // const [location, setLocation] = useRecoilState(locationState);
+  // useEffect(() => {
+  //   if (userId) {
+  //     getUserDetail(userId).then((res) => {
+  //       if (res) {
+  //         const userData = res;
+  //         // console.log(userData[0].areaLat);
+  //         setLocation({ areaLat: userData[0].areaLat, areaLng: userData[0].areaLng }, () => {
+  //           // console.log("Location state updated: ", location);
+  //         });
+  //       }
+  //     });
+  //   }
+  // }, [userId, location]);
 
   // isAll이 새로고침시마다 바껴있어야 공유가능 물품 조건 유지 가능
   const [isAll, setIsAll] = useState(localStorage.getItem("isAll") === "false" ? false : true);
