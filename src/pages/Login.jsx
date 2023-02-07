@@ -17,7 +17,7 @@ const Login = () => {
   // const NAVER_REDIRECT_URI = process.env.REACT_APP_KAKAO_REDIRECT_URI;
   // const NAVER_REST_API_KEY = process.env.REACT_APP_KAKAO_REST_API_KEY;
   // const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_REST_API_KEY}&state=randomtext&redirect_uri=${NAVER_REDIRECT_URI}`;
-  const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=KdnHuDfQRJ8OKSLDdgB6&state=randomtext&redirect_uri=http://i8d111.p.ssafy.io:8082/vilez/oauth2/code/naver`;
+  const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=KdnHuDfQRJ8OKSLDdgB6&state=randomtext&redirect_uri=http://i8d111.p.ssafy.io/oauth2/naver/callback`;
   const onClickKakao = () => {
     navigate(KAKAO_AUTH_URL);
   };
