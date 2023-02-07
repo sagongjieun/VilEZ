@@ -4,24 +4,25 @@ import { css, keyframes } from "@emotion/react";
 import { getUserBookMark } from "../../api/profile";
 import ProfileCardView from "./ProfileCardView";
 
-// const id = localStorage.getItem("id");
-const userId = localStorage.getItem("id");
 const ProfileMyBookMark = (props) => {
-  const [myShareBoard, setMyShareBoard] = useState([]);
+  // const id = localStorage.getItem("id");
+  const userId = localStorage.getItem("id");
+  const [myBookMarkBoard, setMyBookMarkBoard] = useState([]);
   useEffect(() => {
     getUserBookMark(userId).then((response) => {
-      setMyShareBoard(response);
-      props.setBookMarkDefaultPages(parseInt(response?.length / 3) + 1);
+      setMyBookMarkBoard(response);
+      props.setBookMarkPages(1);
+      props.setBookMarkDefaultPages(parseInt((response?.length - 1) / 3) + 1);
     });
   }, []);
   useEffect(() => {
-    props.setBookMarkDefaultPages(parseInt(myShareBoard?.length / 3) + 1);
-  }, [myShareBoard]);
+    props.setBookMarkDefaultPages(parseInt((myBookMarkBoard?.length - 1) / 3) + 1);
+  }, [myBookMarkBoard]);
   return (
     <div css={cardWrapper(props.bookMarkPages)}>
-      {myShareBoard?.length > 0 ? (
-        myShareBoard.map((shareData) => {
-          const share = shareData.shareListDto;
+      {myBookMarkBoard?.length > 0 ? (
+        myBookMarkBoard.map((bookMarkData) => {
+          const share = bookMarkData.shareListDto;
 
           return (
             <div key={share.id}>
