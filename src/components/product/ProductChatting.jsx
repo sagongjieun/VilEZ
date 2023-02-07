@@ -236,10 +236,6 @@ const ProductChatting = () => {
   }, [boardId, boardType]);
 
   useEffect(() => {
-    console.log("shareState : ", shareState);
-  }, [shareState]);
-
-  useEffect(() => {
     if (boardId && boardType && shareUserId && notShareUserId) {
       // recoil에 현재 예약하려는 데이터 담기
       setShareData((prev) => {
