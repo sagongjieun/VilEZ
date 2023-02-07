@@ -1,5 +1,6 @@
 package kr.co.vilez.ui.profile
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -14,7 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
-import kr.co.vilez.data.dto.PointDto
+import kr.co.vilez.data.appointment.PointData
 import kr.co.vilez.databinding.FragmentPointBinding
 import kr.co.vilez.ui.user.ProfileMenuActivity
 import kr.co.vilez.util.ApplicationClass
@@ -26,7 +27,7 @@ class PointFragment : Fragment() {
     private lateinit var activity: ProfileMenuActivity
 
     private lateinit var pointAdapter: PointAdapter
-    private lateinit var pointList: ArrayList<PointDto>
+    private lateinit var pointList: ArrayList<PointData>
 
 
     private var pointPlusSum = 0
@@ -50,46 +51,40 @@ class PointFragment : Fragment() {
         binding.fragment = this
 
         initToolBar()
-        initData()
+
         initView()
+        initData()
 
         binding.pointSum = ApplicationClass.prefs.getPoint() // 현재 있는 포인트
-        binding.savePoint = pointPlusSum // 적립 포인트
-        binding.usedPoint = pointMinusSum // 차감 포인트
-        pointMinusSum = 120
-        Log.d(TAG, "onCreateView: 현재 포인트: ${ApplicationClass.prefs.getPoint()}")
-        Log.d(TAG, "onCreateView: minussum:$pointMinusSum")
-        val tmp = pointMinusSum.toDouble() / ApplicationClass.prefs.getPoint().toDouble()
-        Log.d(TAG, "onCreateView: tmp: ${tmp}")
-        val progress = 100 - (tmp*100)
-        binding.progressBar.progress = progress.toInt()
-        Log.d(TAG, "onCreateView: ${progress}")
 
         return binding.root
     }
 
-    fun initData() {
-        // test용 데이터
-       /* pointList.add(PointDto(7, 6, 4, "안녕하세요",
-            "2023-02-05", 1, true))
-        pointList.add(PointDto(7, 6, 4, "안녕하세요2",
-            "2023-02-05", 1, false))*/
+    @SuppressLint("NotifyDataSetChanged")
+    private fun initData() {
         CoroutineScope(Dispatchers.Main).launch {
             val result = ApplicationClass.retrofitAppointmentService.getPointList(ApplicationClass.prefs.getId()).awaitResponse().body()
+            Log.d(TAG, "initData: result : $result")
+            Log.d(TAG, "initData: 포인트 리스트 개수 : ${result?.data?.get(0)?.size}")
             if(result?.flag=="success") {
-                val data = result.data[0]
-                // point 차감액, 적립액 구하기
-                /*for(i in 0 until pointList.size) {
-                    if (pointList[i].isIncrease) pointPlusSum+=10
-                    else pointMinusSum += 10
-                }*/
+                for( i in 0 until result.data[0].size) {
+                    val data = result.data[0][i]
+                    if (data.pointVO.point > 0) { // 적립한 포인트 총합
+                        pointPlusSum += data.pointVO.point
+                    } else { // 사용한 포인트 총합
+                        pointMinusSum += -data.pointVO.point
+                    }
+                    Log.d(TAG, "initData: 포인트 :  $data")
+                    pointList.add(data)
+                }
+                pointAdapter.notifyDataSetChanged()
+                binding.savePoint = pointPlusSum // 적립 포인트
+                binding.usedPoint = pointMinusSum // 차감 포인트
+                binding.progressBar.progress = (pointPlusSum/(pointPlusSum+pointMinusSum))*100
             } else {
-
+                Log.d(TAG, "initData: 포인트 불러오기 실패")
             }
         }
-
-
-
     }
 
     fun initView() {
