@@ -8,7 +8,7 @@
         <result column="board_id" property="boardId"/>
         <result column="share_user_id" property="shareUserId"/>
         <result column="not_share_user_id" property="notShareUserId"/>
-        <result column="appointment_end" property="appointmentId"/>
+        <result column="appointment_end" property="appointmentEnd"/>
     </resultMap>
     <select id="getAppointment" parameterType="kr.co.vilez.back.model.vo.AppointmentVO" resultMap="appointment">
         select *
