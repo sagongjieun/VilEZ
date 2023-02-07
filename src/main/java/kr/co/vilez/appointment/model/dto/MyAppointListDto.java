@@ -8,15 +8,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MyAppointListDto {
-private int id;
-private int userId;
-String title;
-String hopeAreaLat;
-String hopeAreaLng;
-String startDay;
-String endDay;
-String appointmentId;
-String shareUserId;
-String notShareUserId;
-int type;
+    private int id;
+    private int userId;
+    private String title;
+    private String hopeAreaLat;
+    private String hopeAreaLng;
+    private String startDay;
+    private String endDay;
+    private String appointmentId;
+    private String shareUserId;
+    private String notShareUserId;
+    private int type;
+    private String date;
 }
