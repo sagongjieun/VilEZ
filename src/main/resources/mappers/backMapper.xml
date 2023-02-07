@@ -11,7 +11,7 @@
         <result column="appointment_end" property="appointmentEnd"/>
     </resultMap>
     <select id="getAppointment" parameterType="kr.co.vilez.back.model.vo.AppointmentVO" resultMap="appointment">
-        select *
+        select board_id, share_user_id, not_share_user_id, appointment_end, type
         from appointment
         where board_id = #{boardId}
         and share_user_id = #{shareUserId}
