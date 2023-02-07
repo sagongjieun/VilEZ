@@ -4,17 +4,17 @@ const jsonAxios = jsonInstance();
 
 async function requestKakaoLogin(code) {
   try {
-    console.log(code);
     const { data } = await jsonAxios.get(`/oauth2/code/kakao?code=${code}`);
-    // if (data.flag === "success") {
-    //   localStorage.setItem("accessToken", data.data[0].accessToken);
-    //   localStorage.setItem("refreshToken", data.data[0].refreshToken);
-    //   localStorage.setItem("id", data.data[0].id);
-    //   return data.data;
-    // } else alert("이메일 혹은 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
-    return data;
+    if (data.flag === "success") {
+      // localStorage.setItem("accessToken", data.data[0].accessToken);
+      // localStorage.setItem("refreshToken", data.data[0].refreshToken);
+      // localStorage.setItem("id", data.data[0].id);
+      console.log("SUCCSESS");
+      return data.data;
+    } else alert("이메일 혹은 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
   } catch (error) {
     console.log(error);
+    console.log("ERROR!!!!!!!!!!");
   }
 }
 

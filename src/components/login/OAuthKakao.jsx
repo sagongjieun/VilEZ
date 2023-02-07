@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
@@ -10,33 +10,34 @@ import { loginUserState } from "../../recoil/atom";
 const OAuthKakao = () => {
   const setLoginUser = useSetRecoilState(loginUserState);
   const navigate = useNavigate();
-  const [code, setCode] = useState("");
-  function onKakaoLogin() {
+  const code = new URL(window.location.href).searchParams.get("code");
+  function onKakaoLogin(code) {
     requestKakaoLogin(code).then((response) => {
-      const data = response.data[0];
+      const resData = response.data[0];
       console.log("***************");
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
-      localStorage.setItem("id", data.id);
-      localStorage.setItem("nickName", data.nickName);
+      localStorage.setItem("accessToken", resData.accessToken);
+      localStorage.setItem("refreshToken", resData.refreshToken);
+      localStorage.setItem("id", resData.id);
+      localStorage.setItem("nickName", resData.nickName);
       setLoginUser((prev) => {
         return {
           ...prev,
-          id: data.id,
-          nickName: data.nickName,
-          manner: data.manner,
-          point: data.point,
-          profileImg: data.profileImg,
+          id: resData.id,
+          nickName: resData.nickName,
+          manner: resData.manner,
+          point: resData.point,
+          profileImg: resData.profileImg,
         };
       });
     });
   }
   useEffect(() => {
-    setCode(new URL(window.location.href).searchParams.get("code"));
+    // setCode(new URL(window.location.href).searchParams.get("code"));
+    onKakaoLogin(code);
   }, []);
-  useEffect(() => {
-    onKakaoLogin();
-  }, [code]);
+  // useEffect(() => {
+  //   onKakaoLogin();
+  // }, [code]);
   setTimeout(() => {
     navigate("/");
   }, 1500);
