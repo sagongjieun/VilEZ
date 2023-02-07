@@ -238,16 +238,16 @@ class EditProfileFragment : Fragment() {
 
                 if(resultModify?.flag == "success") {
                     Toast.makeText(mContext, "비밀번호 수정이 완료되었습니다.\n재로그인 해주세요", Toast.LENGTH_SHORT).show()
-                    ApplicationClass.prefs.removeAll() // Shared Preference 삭제
                     Log.d(TAG, "logout: 로그아웃 성공")
 
                     // 로그아웃 후 로그인 화면이동
+                    ApplicationClass.prefs.removeAll() // Shared Preference 삭제
                     val intent = Intent(mContext, LoginActivity::class.java)
                     intent.addFlags(FLAG_ACTIVITY_CLEAR_TASK)
                     intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
                     intent.addFlags(FLAG_ACTIVITY_NO_ANIMATION)
-
                     startActivity(intent)
+
                 } else {
                     Toast.makeText(mContext, "비밀번호 수정을 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
                 }

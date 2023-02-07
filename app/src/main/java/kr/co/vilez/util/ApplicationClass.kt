@@ -156,6 +156,7 @@ class ApplicationClass: Application(), LifecycleObserver {
             if (response.code == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 Log.d(TAG, "intercept: @@@@@@권한없음 토큰 갱신 필요")
                 if (!refreshToken()) { // 갱신 실패한 경우
+
                     // 로그아웃 하고 로그인 화면으로 이동
                     prefs.removeAll() // Shared Preference 삭제
                     val intent = Intent(this@ApplicationClass, LoginActivity::class.java)

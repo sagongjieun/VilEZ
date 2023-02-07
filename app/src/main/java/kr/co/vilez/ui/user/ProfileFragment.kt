@@ -147,10 +147,9 @@ class ProfileFragment : Fragment() {
             divider = null
             adapter = accountSimpleAdapter
             setOnItemClickListener { _, view, i, _ ->
-                if(i == 1) { //로그아웃
+                if(i == 0) { //로그아웃
+                    Log.d(TAG, "initMenus: 로그아웃 버튼 클릭~")
                     logout(view)
-                } else {
-                    moveEditActivity(accountMenuName[i])
                 }
             }
         }
@@ -163,7 +162,6 @@ class ProfileFragment : Fragment() {
 
 
     fun login(view:View) {
-        Log.d(TAG, "login: adf")
         CoroutineScope(Dispatchers.Main).launch {
             val user = User("test@naver.com", "12345")
             val result = ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
@@ -186,13 +184,12 @@ class ProfileFragment : Fragment() {
     private fun logout(view: View){ // 로그아웃 preference 지우기
         val dialog = ConfirmDialog(object: ConfirmDialogInterface {
             override fun onYesButtonClick(id: String) {
-                ApplicationClass.prefs.removeAll() // Shared Preference 삭제
                 Log.d(TAG, "logout: 로그아웃 성공")
                 // 로그아웃 후 로그인 화면이동
+                ApplicationClass.prefs.removeAll() // Shared Preference 삭제
                 val intent = Intent(mainActivity, LoginActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
                 startActivity(intent)
             }
         }, "정말로 로그아웃 하시겠습니까?", "")

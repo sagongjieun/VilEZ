@@ -57,13 +57,10 @@ object BindingAdapter {
     fun datetimeToDate(view: TextView, date: String?) {
         if(!date.isNullOrEmpty()) {
             view.text = date
-//            val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-//            val dateFormat = SimpleDateFormat("yyyy-MM-dd")
-//            val d: Date = dateTimeFormat.parse(date)
-//
-//            dateFormat.parse(d.toString())
-//
-//            view.text = dateFormat.parse(d.toString()).toString()
+            val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+            val d: Date = dateTimeFormat.parse(date) as Date
+            view.text = dateFormat.format(d).toString()
         }
     }
 
