@@ -14,4 +14,5 @@ public class AppointmentVO {
     private int notShareUserId;
     private int type;
     private String date;
+    private String appointmentEnd;
 }
