@@ -261,4 +261,17 @@ public class UserController {
         }
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestBody UserDto userDto){
+        HttpVO http = new HttpVO();
+
+        try{
+            userService.logout(userDto);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
 }

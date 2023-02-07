@@ -121,5 +121,10 @@
         SET refresh_token = #{token}
         WHERE id = #{userId};
     </update>
+    <update id="logout" parameterType="userDto">
+        UPDATE user
+        SET refresh_token = ""
+        WHERE id = #{id};
+    </update>
 
 </mapper>

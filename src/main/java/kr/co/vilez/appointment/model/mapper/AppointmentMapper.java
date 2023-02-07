@@ -13,17 +13,20 @@ import java.util.List;
 
 @Mapper
 public interface AppointmentMapper {
-    BoardInfoVO getBoardInfoAsk(PointVO pointVO) throws Exception;
-    BoardInfoVO getBoardInfoShare(PointVO pointVO) throws Exception;
-    AppointmentDto getAppointmentDate(AppointmentDto appointmentDto) throws Exception;
-    void cancelAppointment(AppointmentDto appointmentDto) throws Exception;
-    void changePoint(PointVO pointVO) throws Exception;
+    List<AppointmentDto> getMyAppointmentDateShare(int userId) throws SQLException;
+    List<AppointmentDto> getMyAppointmentDateAsk(int userId) throws SQLException;
+
+    BoardInfoVO getBoardInfoAsk(PointVO pointVO) throws SQLException;
+    BoardInfoVO getBoardInfoShare(PointVO pointVO) throws SQLException;
+    AppointmentDto getAppointmentDate(AppointmentDto appointmentDto) throws SQLException;
+    void cancelAppointment(AppointmentDto appointmentDto) throws SQLException;
+    void changePoint(PointVO pointVO) throws SQLException;
 
     //////////////////////////////////////////////////////////
-    List<MyAppointListDto> getGiveListShare(int userId) throws Exception;
-    List<MyAppointListDto> getGiveListAsk(int userId) throws Exception;
-    List<AppointmentDto> getMyAppointmentCalendarListShare(int userId) throws Exception;
-    List<AppointmentDto> getMyAppointmentCalendarListAsk(int userId) throws Exception;
+    List<MyAppointListDto> getGiveListShare(int userId) throws SQLException;
+    List<MyAppointListDto> getGiveListAsk(int userId) throws SQLException;
+    List<AppointmentDto> getMyAppointmentCalendarListShare(int userId) throws SQLException;
+    List<AppointmentDto> getMyAppointmentCalendarListAsk(int userId) throws SQLException;
     public BoardStateVO getBoardState(int boardId) throws SQLException;
     public List<MyAppointListDto> getMyAppointmentListShare(int userId) throws SQLException;
     public List<MyAppointListDto> getMyAppointmentListAsk(int userId) throws SQLException;

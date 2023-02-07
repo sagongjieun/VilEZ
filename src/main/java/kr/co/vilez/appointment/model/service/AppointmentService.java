@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 public interface AppointmentService {
+    Object getMyAppointmentDate(int userId) throws Exception;
     AppointmentDto getAppointmentDate(int boardId,
                                       int shareUserId,
                                       int notShareUserId,

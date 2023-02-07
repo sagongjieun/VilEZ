@@ -38,6 +38,24 @@ public class AppointmentController {
     private final UserService userService;
     private final SimpMessageSendingOperations sendingOperations;
     private final BackService backService;
+
+    @GetMapping("/my/date/{userId}")
+    @ApiOperation(value = "7일 이내 시작되는 예약내역과 7일 이내 반납해야하는 내역들을 보여주는 API")
+    public ResponseEntity<?> getMyAppointmentDate(@PathVariable int userId){
+        HttpVO http = new HttpVO();
+        ArrayList<Object> data = new ArrayList<>();
+
+        try{
+            data.add(appointmentService.getMyAppointmentDate(userId));
+            http.setFlag("sccuess");
+            http.setData(data);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
+
     @GetMapping("/date")
     @ApiOperation(value = "채팅방 유저간의 약속된 시간을 불러오는 API")
     public ResponseEntity<?> getAppointmentDate(@RequestParam int boardId,
