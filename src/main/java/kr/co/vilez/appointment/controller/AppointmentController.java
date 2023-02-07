@@ -522,6 +522,9 @@ public class AppointmentController {
     @MessageMapping("/recvend")
     public HashMap<String, Integer> mapHandler(HashMap<String, Integer> payload) {
         int roomId = payload.get("roomId");
+
+        log.info("roomId : ", roomId);
+
         try {
             backService.confirmedReturns(roomId);
         } catch (Exception e) {
