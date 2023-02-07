@@ -4,6 +4,7 @@ import kr.co.vilez.appointment.model.dao.AppointmentDao;
 import kr.co.vilez.appointment.model.mapper.AppointmentMapper;
 import kr.co.vilez.appointment.model.vo.PointVO;
 import kr.co.vilez.back.model.dao.BackDao;
+import kr.co.vilez.back.model.dto.AppointmentStateDto;
 import kr.co.vilez.back.model.dto.ReturnRequestDto;
 import kr.co.vilez.back.model.mapper.BackMapper;
 import kr.co.vilez.back.model.vo.AppointmentVO;
@@ -37,29 +38,6 @@ public class BackServiceImpl implements BackService{
         AppointmentVO appointmentVO = backMapper.getAppointmentId(roomId);
         log.info("appointmentVO : ",appointmentVO);
 
-       ///////////////////////////////////////////////////////////////////
-        LocalDate appointmentEnd = LocalDate.parse(appointmentVO.getDate());
-        LocalDate now = LocalDate.now();
-        if(appointmentEnd.isAfter(now)){
-            PointVO pointVO = new PointVO();
-            pointVO.setBoardId(appointmentVO.getBoardId());
-            pointVO.setUserId(appointmentVO.getNotShareUserId());
-
-            Period period = Period.between(now, appointmentEnd);
-            int days = period.getDays();
-
-            pointVO.setPoint(-30 * days);
-            pointVO.setType(appointmentVO.getType());
-            pointVO.setDate(appointmentVO.getDate());
-
-            // 내역 저장
-            appointmentDao.savePoint(pointVO);
-            // 피공유자 포인트 변동
-            appointmentMapper.changePoint(pointVO);
-
-            System.out.println("반납기한을 넘겨 반납하셨습니다.");
-        }
-
             // 현재 채팅방 상태를 설정한다.
         // 반납 -1
         backDao.insertRoomStatus(new RoomStatusVO(roomId, -1));
@@ -70,7 +48,30 @@ public class BackServiceImpl implements BackService{
         // 에약 내역 -1 변경
         backMapper.setAppointment(appointmentVO);
 
+        ///////////////////////////////////////////////////////////////////
+        AppointmentVO appointmentVO1 = backMapper.getAppointment(appointmentVO);
 
+        LocalDate appointmentEnd = LocalDate.parse(appointmentVO1.getDate());
+        LocalDate now = LocalDate.now();
+        if(appointmentEnd.isAfter(now)){
+            PointVO pointVO = new PointVO();
+            pointVO.setBoardId(appointmentVO1.getBoardId());
+            pointVO.setUserId(appointmentVO1.getNotShareUserId());
+
+            Period period = Period.between(now, appointmentEnd);
+            int days = period.getDays();
+
+            pointVO.setPoint(-30 * days);
+            pointVO.setType(appointmentVO1.getType());
+            pointVO.setDate(appointmentVO1.getDate());
+
+            // 내역 저장
+            appointmentDao.savePoint(pointVO);
+            // 피공유자 포인트 변동
+            appointmentMapper.changePoint(pointVO);
+
+            System.out.println("반납기한을 넘겨 반납하셨습니다.");
+        }
 
         return appointmentVO;
     }

@@ -10,6 +10,15 @@
         <result column="not_share_user_id" property="notShareUserId"/>
         <result column="appointment_end" property="appointmentId"/>
     </resultMap>
+    <select id="getAppointment" parameterType="appointmentVO" resultMap="appointment">
+        select *
+        from appointment
+        where board_id = #{boardId}
+        and share_user_id = #{shareUserId}
+        and not_share_user_id = #{notShareUserId}
+        and type = #{type}
+        and state >= 0
+    </select>
 
     <update id="setAppointment" parameterType="int">
         update appointment
