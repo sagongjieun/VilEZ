@@ -34,6 +34,7 @@ class StompHelper {
                 .readTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(10, TimeUnit.SECONDS)
                 .connectTimeout(10, TimeUnit.SECONDS)
+                .pingInterval(10L,TimeUnit.SECONDS)
                 .build()
 
             stompClient = StompClient(client, intervalMillis).apply { this@apply.url = url }

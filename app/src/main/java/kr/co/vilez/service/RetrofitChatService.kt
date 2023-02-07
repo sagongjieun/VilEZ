@@ -42,6 +42,13 @@ data class RESTStateResult(
     val flag: String
 )
 
+data class CancelAppointmentDto(val roomId: Int)
+data class RESTCancelResult(
+    val `data`: List<CancelAppointmentDto>,
+    val flag: String
+)
+
+
 
 interface RetrofitChatService {
     @GET("/vilez/appointments/map/{roomId}")
@@ -98,4 +105,10 @@ interface RetrofitChatService {
 
     @GET("/vilez/returns/state")
     fun getState(@Query("roomId") roomId: Int) : Call<RESTStateResult>
+
+    @POST("/vilez/appointments/request/cancel")
+    fun notShareUserCancel(@Body cancelAppointmentDto: CancelAppointmentDto) : Call<RESTResult>
+
+    @GET("/vilez/appointments/request/cancel/{roomId}")
+    fun getNotShareUserCancel(@Path("roomId") roomId: Int) : Call<RESTCancelResult>
 }
