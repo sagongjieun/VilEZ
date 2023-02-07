@@ -561,7 +561,7 @@ public class AppointmentController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        sendingOperations.convertAndSend("/sendcancel/"+appointmentDto.getRoomId(),appointmentDto);
+        sendingOperations.convertAndSend("/sendappoint/"+appointmentDto.getRoomId(),appointmentDto);
         return appointmentDto;
     }
 
