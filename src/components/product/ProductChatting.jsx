@@ -175,6 +175,10 @@ const ProductChatting = () => {
   }, [roomId]);
 
   useEffect(() => {
+    console.log("shareState : ", shareState);
+  }, [shareState]);
+
+  useEffect(() => {
     if (otherUserId) {
       // 상대방 nickname 얻기
       getUserDetail(otherUserId).then((res) => {
