@@ -79,7 +79,7 @@ class PointFragment : Fragment() {
                 pointAdapter.notifyDataSetChanged()
                 binding.savePoint = pointPlusSum // 적립 포인트
                 binding.usedPoint = pointMinusSum // 차감 포인트
-                binding.progressBar.progress = (pointPlusSum/(pointPlusSum+pointMinusSum))*100
+                binding.progressBar.progress = ((pointPlusSum.toDouble()/(pointPlusSum.toDouble()+pointMinusSum.toDouble())).toDouble()*100.0).toInt()
             } else {
                 Log.d(TAG, "initData: 포인트 불러오기 실패")
             }
@@ -92,7 +92,7 @@ class PointFragment : Fragment() {
         // 리사이클러뷰에 어댑터 등록
         binding.rvPointRecord.apply {
             adapter = pointAdapter
-            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, true) // 최신순으로
             addItemDecoration(DividerItemDecoration(context, LinearLayout.VERTICAL))
         }
     }

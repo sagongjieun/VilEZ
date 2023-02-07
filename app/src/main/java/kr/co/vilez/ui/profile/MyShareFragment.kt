@@ -13,14 +13,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
-import kr.co.vilez.data.dto.AskData
 import kr.co.vilez.data.dto.BoardData
 import kr.co.vilez.databinding.FragmentMyShareBinding
 import kr.co.vilez.ui.user.ProfileMenuActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
-import kr.co.vilez.util.Common.Companion.BOARD_TYPE_ASK
-import kr.co.vilez.util.Common.Companion.SHARE_STATE_SHARING
+import kr.co.vilez.util.Common.Companion.APPOINTMENT_TYPE_RESERVE
+import kr.co.vilez.util.Common.Companion.APPOINTMENT_TYPE_SHARE
+import kr.co.vilez.util.Common.Companion.getBoardState
 import retrofit2.awaitResponse
 
 private const val TAG = "빌리지_프로필_MyShareFragment"
@@ -86,7 +86,7 @@ class MyShareFragment : Fragment() { // 내가 빌려주는것들 목록
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         }
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.retrofitAppointmentService.getMyGiveList(ApplicationClass.prefs.getId()).awaitResponse().body()
+            val result = ApplicationClass.retrofitAppointmentService.getMyAppointment(ApplicationClass.prefs.getId()).awaitResponse().body()
             if (result?.flag == "success") {
                 Log.d(TAG, "initShareData: success!!!!! 검색 결과 개수 : ${result.data[0].size}")
 
@@ -95,15 +95,21 @@ class MyShareFragment : Fragment() { // 내가 빌려주는것들 목록
                     Log.d(TAG, "onViewCreated: 데이터 0개")
                 }
                 for (data in result.data[0]) {
+                    val state = getBoardState(data.myAppointListVO.startDay)
+                    if(state == APPOINTMENT_TYPE_RESERVE) continue // 공유 예정인 것은 skip
+
                     val boardData = BoardData(
                         data.myAppointListVO.id,
                         if (data.imgPathList.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.imgPathList[0].path,
                         data.myAppointListVO.title,
-                        "2023-02-07 13:55:03", // TODO : DATE 넣어줘야함
+                        data.myAppointListVO.date,
                         data.myAppointListVO.startDay+ " ~ " + data.myAppointListVO.endDay,
                         data.bookmarkCnt.toString(),
                         data.myAppointListVO.userId,
-                        data.myAppointListVO.type
+                        data.myAppointListVO.type,
+                        state = APPOINTMENT_TYPE_SHARE, // 공유중인 데이터만 넣을거임
+                        sDay = data.myAppointListVO.startDay,
+                        eDay = data.myAppointListVO.endDay,
                     )
                     Log.d(TAG, "추가?: $boardData")
                     boardList.add(boardData)
@@ -123,7 +129,7 @@ class MyShareFragment : Fragment() { // 내가 빌려주는것들 목록
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         }
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.retrofitAppointmentService.getMyReserveList(ApplicationClass.prefs.getId()).awaitResponse().body()
+            val result = ApplicationClass.retrofitAppointmentService.getMyAppointment(ApplicationClass.prefs.getId()).awaitResponse().body()
             if (result?.flag == "success") {
                 Log.d(TAG, "initShareData: success!!!!! 검색 결과 개수 : ${result.data[0].size}")
 
@@ -132,15 +138,21 @@ class MyShareFragment : Fragment() { // 내가 빌려주는것들 목록
                     Log.d(TAG, "onViewCreated: 데이터 0개")
                 }
                 for (data in result.data[0]) {
+                    val state = getBoardState(data.myAppointListVO.startDay)
+                    if(state == APPOINTMENT_TYPE_SHARE) continue // 공유 중인 것은 skip
+
                     val boardData = BoardData(
                         data.myAppointListVO.id,
                         if (data.imgPathList.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.imgPathList[0].path,
                         data.myAppointListVO.title,
-                        "2023-02-07 13:55:03", // TODO : DATE 넣어줘야함
+                        data.myAppointListVO.date,
                         data.myAppointListVO.startDay+ " ~ " + data.myAppointListVO.endDay,
                         data.bookmarkCnt.toString(),
                         data.myAppointListVO.userId,
-                        data.myAppointListVO.type
+                        data.myAppointListVO.type,
+                        state = APPOINTMENT_TYPE_RESERVE, // 공유 예정인 데이터만 넣을거임
+                        sDay = data.myAppointListVO.startDay,
+                        eDay = data.myAppointListVO.endDay,
                     )
                     Log.d(TAG, "추가?: $boardData")
                     boardList.add(boardData)

@@ -1,5 +1,6 @@
 package kr.co.vilez.util
 
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import kr.co.vilez.ui.dialog.AlertDialog
 import java.security.MessageDigest
@@ -7,6 +8,7 @@ import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 class Common {
 
@@ -19,6 +21,9 @@ class Common {
 
         const val SHARE_STATE_DEFAULT = 0 // 공유가능
         const val SHARE_STATE_SHARING = 1 // 공유중
+
+        const val APPOINTMENT_TYPE_SHARE = 1 // 공유중인것
+        const val APPOINTMENT_TYPE_RESERVE = 2 // 예약중인것
 
 
         fun showAlertDialog(context: AppCompatActivity, title:String, tag:String) {
@@ -101,6 +106,24 @@ class Common {
                 }
             }
             return "방금 전"
+        }
+        
+        fun getBoardState(startDay: String):Int {
+            val SDF = SimpleDateFormat ("yyyy-MM-dd")
+            val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
+            SDF.timeZone = TimeZone.getTimeZone("Asia/Seoul")
+            SDF.calendar = calendar
+            val today = SDF.format(Date(System.currentTimeMillis()))
+            val todayDate = SDF.parse(today)
+            val startDate = SDF.parse(startDay)
+            var calcuDate = (startDate.time - todayDate.time) / (60 * 60 * 24 * 1000) //날짜 셋팅
+
+            Log.d("test: 날짜!!", "$calcuDate 일 차이남!!")
+            return if(calcuDate > 0) { // 예약한 것
+                APPOINTMENT_TYPE_RESERVE
+            } else { // 이미 공유중인것
+                APPOINTMENT_TYPE_SHARE
+            }
         }
 
 

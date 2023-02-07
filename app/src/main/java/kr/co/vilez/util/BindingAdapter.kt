@@ -2,6 +2,7 @@ package kr.co.vilez.util
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -11,6 +12,9 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import kr.co.vilez.R
 import kr.co.vilez.data.appointment.PointData
+import kr.co.vilez.data.dto.BoardData
+import kr.co.vilez.util.Common.Companion.APPOINTMENT_TYPE_RESERVE
+import kr.co.vilez.util.Common.Companion.APPOINTMENT_TYPE_SHARE
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -51,7 +55,7 @@ object BindingAdapter {
         }
     }
 
-    @SuppressLint("SimpleDateFormat")
+/*    @SuppressLint("SimpleDateFormat")
     @JvmStatic
     @BindingAdapter("datetimeToDate")
     fun datetimeToDate(view: TextView, date: String?) {
@@ -62,7 +66,40 @@ object BindingAdapter {
             val d: Date = dateTimeFormat.parse(date) as Date
             view.text = dateFormat.format(d).toString()
         }
+    }*/
+
+
+    @SuppressLint("SetTextI18n", "SimpleDateFormat")
+    @JvmStatic
+    @BindingAdapter("boardData", "state")
+    fun getDDay(view:TextView, board: BoardData, state:Int?) {
+        val SDF = SimpleDateFormat ("yyyy-MM-dd")
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
+        SDF.timeZone = TimeZone.getTimeZone("Asia/Seoul")
+        SDF.calendar = calendar
+        val today = SDF.format(Date(System.currentTimeMillis()))
+        val todayDate = SDF.parse(today)
+
+        when(state) {
+            APPOINTMENT_TYPE_SHARE -> { // 공유 디데이는 공유 끝나는날짜까지의 남은 시간
+                if(!board.eDay.isNullOrEmpty()) {
+                    val endDate = SDF.parse(board.eDay)
+                    var calcuDate = (endDate.time - todayDate.time) / (60 * 60 * 24 * 1000) //날짜 셋팅
+                    Log.d("test: 날짜!!", "$calcuDate 일 차이남!!")
+                    view.text = "D-$calcuDate"
+                }
+            }
+            APPOINTMENT_TYPE_RESERVE -> {  // 예약 디데이는 공유 시작 날짜 까지의 남은 시간
+                if(!board.sDay.isNullOrEmpty()) {
+                    val startDate = SDF.parse(board.sDay)
+                    var calcuDate = (startDate.time - todayDate.time) / (60 * 60 * 24 * 1000) //날짜 셋팅
+                    Log.d("test: 날짜!!", "$calcuDate 일 차이남!!")
+                    view.text = "D-$calcuDate"
+                }
+            }
+        }
     }
+
 
     @JvmStatic
     @BindingAdapter("getPointReason")
