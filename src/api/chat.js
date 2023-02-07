@@ -137,7 +137,7 @@ async function postAppointment(body) {
 async function deleteChatRoom(roomId, userId) {
   try {
     const { data } = await jsonAxios.delete(`/appointments/chat?roomId=${roomId}&userId=${userId}`);
-    console.log(data);
+
     if (data.flag === "success") return true;
     else return false;
   } catch (error) {
