@@ -33,6 +33,8 @@
         <result column="appointment_id" property="appointmentId"/>
         <result column="share_user_id" property="shareUserId"/>
         <result column="not_share_user_id" property="notShareUserId"/>
+        <result column="appointment_start" property="appointmentStart"/>
+        <result column="appointment_end" property="appointmentEnd"/>
     </resultMap>
 
     <resultMap id="info" type="kr.co.vilez.appointment.model.vo.BoardInfoVO">
