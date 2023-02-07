@@ -37,7 +37,8 @@ public class BackServiceImpl implements BackService{
         // roomId를 통한 예약 Id 불러오기
         AppointmentVO appointmentVO = backMapper.getAppointmentId(roomId);
         AppointmentVO appointmentVO1 = backMapper.getAppointment(appointmentVO);
-
+        System.out.println("appointmentVO = " + appointmentVO);
+        
         // 룸상태 삭제
         backDao.deleteRoomStatus(roomId);
 
