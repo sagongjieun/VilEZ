@@ -132,7 +132,10 @@ public class AppointmentServiceImpl implements AppointmentService {
             if(pointVO.getBoardId() == -1) {
                 boardInfoVO.setTitle("기본 포인트");
             } else {
-                boardInfoVO = appointmentMapper.getBoardInfo(pointVO);
+                if(pointVO.getType() == 2)
+                    boardInfoVO = appointmentMapper.getBoardInfoShare(pointVO);
+                else
+                    boardInfoVO = appointmentMapper.getBoardInfoAsk(pointVO);
             }
             list.add(new PointListVO(pointVO, boardInfoVO));
         }
