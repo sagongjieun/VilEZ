@@ -51,7 +51,7 @@ public class BackServiceImpl implements BackService{
         ///////////////////////////////////////////////////////////////////
         AppointmentVO appointmentVO1 = backMapper.getAppointment(appointmentVO);
 
-        LocalDate appointmentEnd = LocalDate.parse(appointmentVO1.getDate());
+        LocalDate appointmentEnd = LocalDate.parse(appointmentVO1.getAppointmentEnd());
         LocalDate now = LocalDate.now();
         if(appointmentEnd.isAfter(now)){
             PointVO pointVO = new PointVO();
