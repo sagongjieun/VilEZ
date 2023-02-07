@@ -16,7 +16,7 @@ import { useSetRecoilState } from "recoil";
 import { shareDataState } from "../../recoil/atom";
 import { getShareDate } from "../../api/appointment";
 import DateFormat from "../common/DateFormat";
-import { getShareReturnState, postShareEnd } from "../../api/appointment";
+import { getShareReturnState } from "../../api/appointment";
 import ProductReturnModal from "../modal/ProductReturnModal";
 import ShareCompleteModal from "../modal/ShareCompleteModal";
 import ShareCancelAskModal from "../modal/ShareCancelAskModal";
@@ -110,13 +110,9 @@ const ProductChatting = () => {
     // 공유자가 반납 확인을 눌렀는지 확인
     getShareReturnState(roomId).then((res) => {
       if (res == "true") {
-        postShareEnd(roomId).then((res) => {
-          if (res) {
-            // 모달로 공유가 끝났다는 것 알리기
-            setIsShareComplete(!isShareComplete);
-            setIsChatEnd(true);
-          }
-        });
+        // 모달로 공유가 끝났다는 것 알리기
+        setIsShareComplete(!isShareComplete);
+        setIsChatEnd(true);
       } else {
         alert("공유자가 물품에 대해 확인중입니다. 공유자에게 반납 확인 요청을 해주세요. 🙂");
       }
