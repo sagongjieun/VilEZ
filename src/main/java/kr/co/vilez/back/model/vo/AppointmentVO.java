@@ -13,4 +13,5 @@ public class AppointmentVO {
     private int shareUserId;
     private int notShareUserId;
     private int type;
+    private String date;
 }
