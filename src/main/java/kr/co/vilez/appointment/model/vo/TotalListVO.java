@@ -14,5 +14,5 @@ import java.util.List;
 public class TotalListVO {
     MyAppointListDto myAppointListVO;
     int bookmarkCnt;
-    List<ImgPath> imgPathList;
+    Object imgPathList;
 }
