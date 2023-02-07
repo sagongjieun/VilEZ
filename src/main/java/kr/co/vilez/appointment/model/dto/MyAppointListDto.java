@@ -20,4 +20,6 @@ public class MyAppointListDto {
     private String notShareUserId;
     private int type;
     private String date;
+    private String appointmentStart;
+    private String appointmentEnd;
 }
