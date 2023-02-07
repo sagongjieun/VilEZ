@@ -60,6 +60,7 @@ function OathModal({ close, roomId, readOnly, oathSign }) {
         shareUserId: shareData.shareUserId,
         notShareUserId: shareData.notShareUserId,
         type: shareData.boardType,
+        roomId: roomId,
       }).then((res) => {
         if (res) {
           close(false);

@@ -114,7 +114,6 @@ const ProductChatting = () => {
           if (res) {
             // 모달로 공유가 끝났다는 것 알리기
             setIsShareComplete(!isShareComplete);
-            // setShareState(-1);
             setIsChatEnd(true);
           }
         });
@@ -164,6 +163,7 @@ const ProductChatting = () => {
     getChattingRoomState(parseInt(roomId)).then((res) => {
       if (res) {
         res = res[0];
+
         // 공유 전 상태
         if (res == null) {
           setShareState(-3);
@@ -238,6 +238,10 @@ const ProductChatting = () => {
             });
     }
   }, [boardId, boardType]);
+
+  useEffect(() => {
+    console.log("shareState : ", shareState);
+  }, [shareState]);
 
   useEffect(() => {
     if (boardId && boardType && shareUserId && notShareUserId) {
