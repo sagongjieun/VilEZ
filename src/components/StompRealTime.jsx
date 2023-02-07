@@ -20,8 +20,11 @@ import {
   checkShareCancelState,
   checkShareReturnState,
   checkUserLeaveState,
+  shareDataState,
 } from "../recoil/atom";
 import { useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { getCheckShareCancelRequest } from "../api/appointment";
 
 let client;
 
@@ -40,6 +43,7 @@ const StompRealTime = ({
   const myUserId = localStorage.getItem("id");
   const chatRoomId = roomId;
   const navigate = useNavigate();
+  const shareData = useRecoilValue(shareDataState);
 
   const [checkShareDate, setCheckShareDate] = useRecoilState(checkShareDateState);
   const [checkAppointment, setCheckAppointment] = useRecoilState(checkAppointmentState);
@@ -60,6 +64,7 @@ const StompRealTime = ({
   const [oathSign, setOathSign] = useState("");
   const [disableMapLat, setDisableMapLat] = useState("");
   const [disableMapLng, setDisableMapLng] = useState("");
+  const [cancelMessage, setCancelMessage] = useState({});
 
   function onKeyDownSendMessage(e) {
     if (e.keyCode === 13) {
@@ -151,33 +156,22 @@ const StompRealTime = ({
       client.connect({}, () => {
         // 다른 유저의 채팅을 구독
         client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
-          // 시스템 메시지를 받으면
-          if (JSON.parse(data.body).system) {
-            if (JSON.parse(data.body).content == "예약이 확정됐어요 🙂") {
-              sendShareState(0);
-            } else if (JSON.parse(data.body).content == "예약이 취소됐어요") {
-              sendShareState(-2);
-            }
-          }
-
           setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
+        });
+
+        // 예약 확정을 구독
+        client.subscribe(`/sendappoint/${chatRoomId}`, () => {
+          sendShareState(0);
+        });
+
+        // 예약 취소를 구독
+        client.subscribe(`/sendcancel/${chatRoomId}`, () => {
+          sendShareState(-2);
         });
 
         // 공유 종료를 구독
         client.subscribe(`/sendend/${chatRoomId}`, () => {
-          console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@");
           sendShareState(-1);
-          setShowingMessage((prev) => [
-            ...prev,
-            {
-              roomId: chatRoomId,
-              fromUserId: myUserId,
-              toUserId: otherUserId,
-              content: "공유가 종료되었어요 😊",
-              system: true,
-              time: new Date().getTime(),
-            },
-          ]);
         });
 
         // 공유지도를 구독
@@ -290,12 +284,23 @@ const StompRealTime = ({
         time: new Date().getTime(),
       };
 
+      const appointMessage = {
+        boardId: shareData.boardId,
+        appointmentStart: shareData.appointmentStart,
+        appointmentEnd: shareData.appointmentEnd,
+        shareUserId: shareData.shareUserId,
+        notShareUserId: shareData.notShareUserId,
+        type: shareData.boardType,
+        roomId: chatRoomId,
+      };
+
       setShowingMessage((prev) => [...prev, sendMessage]);
 
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
+      client.send("/recvappoint", {}, JSON.stringify(appointMessage));
 
       setCheckAppointment(false);
-      sendShareState(0);
+      // sendShareState(0);
     }
 
     // 예약 취소 요청
@@ -327,12 +332,26 @@ const StompRealTime = ({
         time: new Date().getTime(),
       };
 
+      getCheckShareCancelRequest(chatRoomId).then((res) => {
+        if (res) {
+          setCancelMessage({
+            roomId: chatRoomId,
+            reason: 2,
+          });
+        } else {
+          setCancelMessage({
+            roomId: chatRoomId,
+            reason: 1,
+          });
+        }
+      });
+
       setShowingMessage((prev) => [...prev, sendMessage]);
 
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
       setCheckShareCancel(false);
-      sendShareState(-2);
+      // sendShareState(-2);
     }
 
     // 반납 확인
@@ -374,7 +393,18 @@ const StompRealTime = ({
 
     // 공유 종료됨을 알림
     if (isChatEnd) {
-      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      const sendMessage = {
+        roomId: chatRoomId,
+        fromUserId: myUserId,
+        toUserId: otherUserId,
+        content: "공유가 종료되었어요 😊",
+        system: true,
+        time: new Date().getTime(),
+      };
+
+      setShowingMessage((prev) => [...prev, sendMessage]);
+
+      client.send("/recvchat", {}, JSON.stringify(sendMessage));
       client.send("/recvend", {}, JSON.stringify({ roomId: roomId }));
     }
   }, [
@@ -386,6 +416,12 @@ const StompRealTime = ({
     checkUserLeave,
     isChatEnd,
   ]);
+
+  useEffect(() => {
+    if (cancelMessage.roomId && cancelMessage.reason) {
+      client.send("/recvcancel", {}, JSON.stringify(cancelMessage));
+    }
+  }, [cancelMessage]);
 
   return (
     <>
