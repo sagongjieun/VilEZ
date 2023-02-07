@@ -15,9 +15,11 @@ import { getAskArticleList } from "../../api/ask";
 import { useRecoilState } from "recoil";
 import { locationState } from "../../recoil/atom";
 import { getUserDetail } from "../../api/user";
+import elapsedTime from "./ProductElapsedTime";
 
 const ProductList = () => {
   // detail api에서 userId 받아오면, 동네인증 한 경우 위도 경도가 존재. 이를 recoil에 넣어 상태관리
+
   const userId = localStorage.getItem("id");
   const [location, setLocation] = useRecoilState(locationState);
   useEffect(() => {
@@ -25,14 +27,14 @@ const ProductList = () => {
       getUserDetail(userId).then((res) => {
         if (res) {
           const userData = res;
-          if (userData[0].areaLat === null) {
-            alert("동네인증을 진행해주셔야 해요");
-          }
-          setLocation({ areaLat: userData[0].areaLat, areaLng: userData[0].areaLng });
+          console.log(userData[0].areaLat);
+          setLocation({ areaLat: userData[0].areaLat, areaLng: userData[0].areaLng }, () => {
+            console.log("Location state updated: ", location);
+          });
         }
       });
     }
-  }, [userId]);
+  }, [userId, location]);
 
   // isAll이 새로고침시마다 바껴있어야 공유가능 물품 조건 유지 가능
   const [isAll, setIsAll] = useState(localStorage.getItem("isAll") === "false" ? false : true);
@@ -102,6 +104,7 @@ const ProductList = () => {
           const data = res;
           // setOriginalArticle([...originalArticle, ...data[0]]);
           setAskArticles([...askArticles, ...data[0]]);
+
           setList("물품 요청 목록");
           // console.log(urlId);
           // console.log(cnt);
@@ -242,7 +245,7 @@ const ProductList = () => {
                 <div css={infoWrapper}>
                   <div>
                     <span>{article.shareListDto?.title}</span>
-                    <small>1시간 전</small>
+                    <small>{elapsedTime(article.shareListDto?.date)}</small>
                   </div>
                   <div>
                     <small>
@@ -268,7 +271,7 @@ const ProductList = () => {
                 <div css={infoWrapper}>
                   <div>
                     <span>{article?.askDto?.title}</span>
-                    <small>1시간 전</small>
+                    <small>{elapsedTime(article.askDto?.date)}</small>
                   </div>
                   <div>
                     <small>
