@@ -27,9 +27,9 @@ const ProductList = () => {
       getUserDetail(userId).then((res) => {
         if (res) {
           const userData = res;
-          console.log(userData[0].areaLat);
+          // console.log(userData[0].areaLat);
           setLocation({ areaLat: userData[0].areaLat, areaLng: userData[0].areaLng }, () => {
-            console.log("Location state updated: ", location);
+            // console.log("Location state updated: ", location);
           });
         }
       });
@@ -38,7 +38,7 @@ const ProductList = () => {
 
   // isAll이 새로고침시마다 바껴있어야 공유가능 물품 조건 유지 가능
   const [isAll, setIsAll] = useState(localStorage.getItem("isAll") === "false" ? false : true);
-  console.log(isAll);
+  // console.log(isAll);
   useEffect(() => {
     localStorage.setItem("isAll", isAll);
   }, [isAll]);
