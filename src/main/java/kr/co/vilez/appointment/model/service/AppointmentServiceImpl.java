@@ -57,6 +57,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         // 해당하는 roomId의 확인 요청 데이터를 삭제한다.
         appointmentDao.deleteRequest(roomId);
 
+        // 예약 취소
+        // 룸상태 삭제
+        backDao.deleteRoomStatus(roomId);
+
         // 현재 채팅방 상태를 설정한다.
         // 예약취소 -2
         backDao.insertRoomStatus(new RoomStatusVO(roomId, -2));
