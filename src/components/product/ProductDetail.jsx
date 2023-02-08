@@ -50,9 +50,11 @@ const ProductDetail = () => {
     if (isBookmarked) {
       deleteBookmark(boardId, loginUserId);
       setIsBookmarked(false);
+      setBookmarkCnt(bookmarkCnt - 1);
     } else {
       postBookmark(boardId, loginUserId);
       setIsBookmarked(true);
+      setBookmarkCnt(bookmarkCnt + 1);
     }
   }
 
