@@ -85,17 +85,17 @@ function EditProfile({ setIsEditProfileOpen }) {
   }
   function onSubmit() {
     if ((isNickNameAvailable || !isNickNameOpen) && !passwordError && !password2Error) {
-      // const userIdJson = {userId : }
       const formData = new FormData();
       formData.append("image", imageList[0]);
-      console.log(imageList[0], "******");
       formData.append("userId", new Blob([JSON.stringify(userId)], { type: "application/json" }));
-      putUserProfileImage(formData);
-      console.log(userId, nickName, password);
       putUserPasswordNickName(userId, nickName, password).then((response) => {
-        console.log(response);
-
-        setIsEditProfileOpen(false);
+        if (response) {
+          console.log(response);
+          putUserProfileImage(formData).then((response) => {
+            console.log(response);
+            setIsEditProfileOpen(false);
+          });
+        }
       });
     } else if (!isNickNameAvailable) {
       setNickNameError("중복 확인을 진행해주세요.");
