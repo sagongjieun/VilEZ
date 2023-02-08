@@ -272,6 +272,7 @@ public class UserController {
 
         try{
             userService.logout(userDto);
+            http.setFlag("success");
         } catch (Exception e){
             e.printStackTrace();
         }
