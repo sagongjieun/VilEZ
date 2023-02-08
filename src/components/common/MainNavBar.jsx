@@ -8,10 +8,12 @@ import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { loginUserState } from "../../recoil/atom";
+import { requsetLogout } from "../../api/login";
 
 function MainNavBar() {
   const navigate = useNavigate();
   const [loginUser, setLoginUser] = useRecoilState(loginUserState);
+  const userId = localStorage.getItem("id");
 
   const menus = [
     { name: "물품 공유 목록", path: "/product/list/share" },
@@ -43,8 +45,14 @@ function MainNavBar() {
   }
 
   function onClickLogout() {
+    requsetLogout({
+      // accessToken: localStorage.getItem("assesToken"),
+      // refreshToken: localStorage.getItem("refreshToken"),
+      id: userId,
+    }).then((response) => {
+      console.log(response);
+    });
     localStorage.clear();
-
     setLoginUser(null);
   }
 

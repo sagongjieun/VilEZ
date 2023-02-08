@@ -11,10 +11,18 @@ const ProfilePointDetails = () => {
   const [pointList, setPointList] = useState([]);
   const [filteredPointList, setFilteredPointList] = useState([]);
   const [category, setCategory] = useState("");
+  // 적립 날짜 반대로 정렬하는 함수
+  function sortDate(a, b) {
+    if (a.pointVO.date > b.pointVO.date) {
+      return 1;
+    } else if (a.pointVO.date < b.pointVO.date) {
+      return -1;
+    } else return 0;
+  }
   useEffect(() => {
     getPointListByUserId(userId).then((response) => {
-      setPointList(response[0]);
-      setFilteredPointList(response[0]);
+      setPointList(response[0].sort(sortDate));
+      setFilteredPointList(response[0].sort(sortDate));
     });
   }, []);
   useEffect(() => {

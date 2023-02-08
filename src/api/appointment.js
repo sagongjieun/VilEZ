@@ -105,6 +105,17 @@ async function getAppointmentDate(boardId, notShareUserId, shareUserId, type) {
   }
 }
 
+async function getAppointmentsWithinAWeek(userId) {
+  try {
+    const { data } = await jsonAxios.get(`/appointments/date/${userId}`);
+
+    if (data.flag === "success") return data.data[0];
+    else console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // POST
 
 async function postShareDate(body) {
@@ -176,6 +187,7 @@ export {
   getNotShareListByUserId,
   getCheckShareCancelRequest,
   getAppointmentDate,
+  getAppointmentsWithinAWeek,
   postShareDate,
   postShareReturnState,
   postShareCancelRequest,

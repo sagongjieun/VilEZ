@@ -2,11 +2,11 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-const ProfileDday = (props) => {
+const ProfilePoint = (props) => {
   return (
     <div css={ddayWrapper}>
       <div>
-        <h4>내 보유 포인트</h4>
+        <h4>보유 포인트</h4>
         <div css={myPointWrapper}>
           <div> {props.point}</div>
           <span>p</span>
@@ -38,4 +38,4 @@ const myPointWrapper = css`
     font-weight: bold;
   }
 `;
-export default ProfileDday;
+export default ProfilePoint;

@@ -5,8 +5,9 @@ import ProfileEditButton from "./ProfileEditButton";
 import ProfileSummary from "./ProfileSummary";
 import ProfileLocation from "./ProfileLocation";
 import ProfilePoint from "./ProfilePoint";
+import ProfileDday from "./ProfileDday";
 import { getUserDetail } from "../../api/profile";
-// import { set } from "date-fns";
+
 // const { kakao } = window;
 const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpen, isEditProfileOpen }) => {
   const id = localStorage.getItem("id");
@@ -61,7 +62,7 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
         `}
       >
         <ProfilePoint point={point} />
-        {/* <ProfileDday /> */}
+        <ProfileDday />
       </div>
     </div>
   );

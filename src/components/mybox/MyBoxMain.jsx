@@ -4,8 +4,6 @@ import { css } from "@emotion/react";
 import MyBoxHeader from "./MyBoxHeader";
 // import { Routes, Route } from "react-router-dom";
 import { getAppointmentsByUserId, getShareListByUserId, getNotShareListByUserId } from "../../api/appointment";
-import MyBoxShare from "./MyBoxShare";
-import MyBoxRent from "./MyBoxRent";
 import MyBoxBody from "./MyBoxBody";
 
 const MyBoxMain = () => {
@@ -35,14 +33,6 @@ const MyBoxMain = () => {
         <h2>나의 공유박스</h2>
       </div>
       <MyBoxHeader />
-      <div css={appointContainer}>
-        {/* <h3>나의 공유 물품</h3> */}
-        <MyBoxShare />
-      </div>
-      <div css={appointContainer}>
-        {/* <h3>나의 대여 물품</h3> */}
-        <MyBoxRent />
-      </div>
       <MyBoxBody />
     </div>
   );
@@ -91,6 +81,6 @@ const mainWrapper = css`
 //   border-radius: 20px;
 // `;
 
-const appointContainer = css``;
+// const appointContainer = css``;
 
 export default MyBoxMain;

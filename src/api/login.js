@@ -31,6 +31,21 @@ async function requestLogin(email, password) {
   }
 }
 
+async function requsetLogout(userInfo) {
+  try {
+    const { data } = await jsonAxios.post("users/logout", userInfo);
+    if (data.flag === "success") {
+      alert("로그아웃이 완료되었습니다.");
+      console.log(data);
+    } else {
+      alert("로그아웃이 정상적으로 완료되지 않았습니다.");
+      console.log(data);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 async function refreshAccessToken() {
   try {
     const refresh_token = localStorage.getItem("refreshToken");
@@ -44,4 +59,4 @@ async function refreshAccessToken() {
   }
 }
 
-export { requestLogin, refreshAccessToken };
+export { requestLogin, requsetLogout, refreshAccessToken };

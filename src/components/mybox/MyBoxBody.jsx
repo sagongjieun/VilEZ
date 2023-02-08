@@ -1,46 +1,54 @@
 import React, { useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import ProfileMyWriting from "../profile/ProfileMyWriting";
-import ProfileMyBookMark from "../profile/ProfileMyBookMark";
+import MyBoxShare from "./MyBoxShare";
+import MyBoxRent from "./MyBoxRent";
 import { useEffect } from "react";
 
 // const id = localStorage.getItem("id");
 const MyBoxBody = () => {
   const [section, setSection] = useState("");
-  const [myWritingType, setMyWritingType] = useState(1);
-  const [writingDefaultPages, setWritingDefaultPages] = useState(1);
-  const [bookMarkDefaultPages, setBookMarkDefaultPages] = useState(1);
-  const [writingPages, setWritingPages] = useState(1);
-  const [bookMarkPages, setBookMarkPages] = useState(1);
-  function onClickChangeType() {
-    if (myWritingType === 1) {
-      setMyWritingType(2);
+  const [myShareType, setMyShareType] = useState(1);
+  const [myRentType, setMyRentType] = useState(1);
+  const [shareDefaultPages, setShareDefaultPages] = useState(1);
+  const [rentDefaultPages, setRentDefaultPages] = useState(1);
+  const [sharePages, setSharePages] = useState(1);
+  const [rentPages, setRentPages] = useState(1);
+  function onClickChangeShareType() {
+    if (myShareType === 1) {
+      setMyShareType(2);
     } else {
-      setMyWritingType(1);
+      setMyShareType(1);
     }
   }
-  function onClickWritingMore() {
-    if (writingDefaultPages > writingPages) {
-      setWritingPages((prev) => prev + 1);
+  function onClickChangeRentType() {
+    if (myRentType === 1) {
+      setMyRentType(2);
     } else {
-      setWritingPages(1);
+      setMyRentType(1);
     }
-    setSection("writing");
   }
-  function onClickBookMarkMore() {
-    if (bookMarkDefaultPages > bookMarkPages) {
-      setBookMarkPages((prev) => prev + 1);
+  function onClickShareMore() {
+    if (shareDefaultPages > sharePages) {
+      setSharePages((prev) => prev + 1);
     } else {
-      setBookMarkPages(1);
+      setSharePages(1);
+    }
+    setSection("share");
+  }
+  function onClickRentMore() {
+    if (rentDefaultPages > rentPages) {
+      setRentPages((prev) => prev + 1);
+    } else {
+      setRentPages(1);
     }
     setSection("product");
   }
   useEffect(() => {
-    if (section === "writing") {
-      setBookMarkPages(1);
+    if (section === "share") {
+      setRentPages(1);
     } else if (section === "product") {
-      setWritingPages(1);
+      setSharePages(1);
     }
   }, [section]);
   return (
@@ -49,28 +57,28 @@ const MyBoxBody = () => {
         <div>
           <h3>나의 공유 물품</h3>
           <div>
-            <button css={myWritingType === 1 ? basic : bordered} onClick={onClickChangeType}>
+            <button css={myShareType === 1 ? basic : bordered} onClick={onClickChangeShareType}>
               공유 중
             </button>
-            <button css={myWritingType === 2 ? basic : bordered} onClick={onClickChangeType}>
+            <button css={myShareType === 2 ? basic : bordered} onClick={onClickChangeShareType}>
               공유 예정
             </button>
           </div>
         </div>
-        <ProfileMyWriting
+        <MyBoxShare
           section={section}
-          writingPages={writingPages}
-          setWritingPages={setWritingPages}
-          setWritingDefaultPages={setWritingDefaultPages}
-          myWritingType={myWritingType}
+          sharePages={sharePages}
+          setSharePages={setSharePages}
+          setShareDefaultPages={setShareDefaultPages}
+          myShareType={myShareType}
         />
-        {writingDefaultPages === 1 ? null : writingPages === writingDefaultPages ? (
-          <button onClick={onClickBookMarkMore} css={moreWrapper}>
+        {shareDefaultPages === 1 ? null : sharePages === shareDefaultPages ? (
+          <button onClick={onClickShareMore} css={moreWrapper}>
             접기
           </button>
         ) : (
-          <button onClick={onClickWritingMore} css={moreWrapper}>
-            더보기 {writingPages} / {writingDefaultPages}
+          <button onClick={onClickShareMore} css={moreWrapper}>
+            더보기 {sharePages} / {shareDefaultPages}
           </button>
         )}
       </div>
@@ -78,26 +86,28 @@ const MyBoxBody = () => {
         <div>
           <h3>나의 대여 물품</h3>
           <div>
-            <button css={myWritingType === 1 ? basic : bordered} onClick={onClickChangeType}>
-              대여 중
+            <button css={myRentType === 1 ? basic : bordered} onClick={onClickChangeRentType}>
+              공유 중
             </button>
-            <button css={myWritingType === 2 ? basic : bordered} onClick={onClickChangeType}>
-              대여 예정
+            <button css={myRentType === 2 ? basic : bordered} onClick={onClickChangeRentType}>
+              공유 예정
             </button>
           </div>
         </div>
-        <ProfileMyBookMark
+        <MyBoxRent
           section={section}
-          bookMarkPages={bookMarkPages}
-          setBookMarkDefaultPages={setBookMarkDefaultPages}
+          rentPages={rentPages}
+          setRentPages={setRentPages}
+          setRentDefaultPages={setRentDefaultPages}
+          myRentType={myRentType}
         />
-        {bookMarkDefaultPages === 1 ? null : bookMarkPages === bookMarkDefaultPages ? (
-          <button onClick={onClickBookMarkMore} css={moreWrapper}>
+        {rentDefaultPages === 1 ? null : rentPages === rentDefaultPages ? (
+          <button onClick={onClickRentMore} css={moreWrapper}>
             접기
           </button>
         ) : (
-          <button onClick={onClickBookMarkMore} css={moreWrapper}>
-            더보기 {bookMarkPages} / {bookMarkDefaultPages}
+          <button onClick={onClickRentMore} css={moreWrapper}>
+            더보기 {rentPages} / {rentDefaultPages}
           </button>
         )}
       </div>
