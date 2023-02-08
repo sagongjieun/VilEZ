@@ -195,10 +195,7 @@ const ProductDetail = () => {
         <div css={nickNameAndChatWrapper}>
           <div css={nickNameWrapper}>
             <img src={writerProfile} alt="writerProfileImage" />
-            <div>
-              <span>{writerNickname}</span>
-              {/* {writerArea ? <span>{writerArea}</span> : <span>동네 미인증</span>} */}
-            </div>
+            <span>{writerNickname}</span>
             <span>{writerManner}</span>
           </div>
           <div css={chatWrapper}>
@@ -297,19 +294,13 @@ const nickNameWrapper = css`
     margin-right: 20px;
   }
 
-  & > div {
-    display: flex;
-    flex-direction: column;
-    margin-right: 20px;
-  }
-
-  & > div > span:nth-of-type(1) {
-    margin-bottom: 10px;
-    font-weight: bold;
-  }
-
   & > span {
-    font-size: 25px;
+    font-size: 20px;
+  }
+
+  & > span:nth-of-type(1) {
+    font-weight: bold;
+    margin-right: 20px;
   }
 `;
 
