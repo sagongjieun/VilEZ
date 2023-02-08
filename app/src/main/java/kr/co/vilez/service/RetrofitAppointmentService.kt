@@ -1,5 +1,6 @@
 package kr.co.vilez.service
 
+import kr.co.vilez.data.dto.MyAppointmentData
 import kr.co.vilez.data.model.CalendarData
 import kr.co.vilez.data.model.ImminentData
 import kr.co.vilez.data.model.PointData
@@ -43,20 +44,24 @@ data class RESTCalendarResult(
     val `data`: List<List<CalendarData>>,
     val flag: String
 )
+data class RESTMyShareAskResult( // 나의 공유박스 (나의 공유내역, 나의 요청내역)
+    val `data`: List<List<MyAppointmentData>>,
+    val flag: String
+)
 interface RetrofitAppointmentService {
 
     // 공유 예정 시작 기간, 반납 기간이 7일 미만 남은 데이터들을 반환한다.
     @GET("/vilez/appointments/my/date/{userId}")
     fun getMyImminent(@Path("userId")id:Int): Call<RESTImminentResult>
 
-    // 나의 공유물품을 조회한다. (완료된 약속은 제외)
+    // [나의 공유박스] 나의 공유물품을 조회한다. (완료된 약속은 제외)
     @GET("/vilez/appointments/my/{userId}")
-    fun getMyAppointment(@Path("userId")id:Int): Call<RESTAppointmentResult>
+    fun getMyAppointment(@Path("userId")id:Int): Call<RESTMyShareAskResult>
 
-    // 나의 대여물품을 조회한다.  (완료된 약속은 제외)
+    // [나의 공유박스] 나의 대여물품을 조회한다.  (완료된 약속은 제외)
     // type = 1 요청게시글, type = 2 공유 게시글
     @GET("/vilez/appointments/my/give/{userId}")
-    fun getMyGiveList(@Path("userId")id:Int): Call<RESTAppointmentResult>
+    fun getMyGiveList(@Path("userId")id:Int): Call<RESTMyShareAskResult>
 
 
     // 캘린더에 이용할 내 약속 정보 내역

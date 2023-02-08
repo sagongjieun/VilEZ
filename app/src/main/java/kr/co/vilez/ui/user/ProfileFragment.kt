@@ -10,6 +10,10 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.kakao.sdk.user.UserApiClient
+import com.navercorp.nid.NaverIdLoginSDK
+import com.navercorp.nid.oauth.NidOAuthLogin
+import com.navercorp.nid.oauth.OAuthLoginCallback
 import kotlinx.coroutines.*
 import kr.co.vilez.R
 import kr.co.vilez.data.dto.BoardData
@@ -17,7 +21,7 @@ import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentProfileBinding
 import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.ui.dialog.*
-import kr.co.vilez.ui.profile.BoardListAdapter
+import kr.co.vilez.ui.profile.ImminentAdapter
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
 import retrofit2.awaitResponse
@@ -27,7 +31,7 @@ class ProfileFragment : Fragment() {
     private lateinit var binding:FragmentProfileBinding
     private lateinit var mainActivity: MainActivity
 
-    private lateinit var myAdapter: BoardListAdapter
+    private lateinit var myAdapter: ImminentAdapter
     private lateinit var myList:ArrayList<BoardData>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +56,7 @@ class ProfileFragment : Fragment() {
     
     private fun initData() {
         myList = arrayListOf()
-        myAdapter = BoardListAdapter(myList)
+        myAdapter = ImminentAdapter(myList)
         binding.rvImminentList.apply {
             adapter = myAdapter
             layoutManager =
@@ -73,7 +77,10 @@ class ProfileFragment : Fragment() {
                 }
                 for (data in result.data[0]) {
                     Log.d(TAG, "initData: data: $data")
-                    if(data.appointmentDto.title.isNullOrEmpty()) continue;
+                    if(data.appointmentDto.title.isNullOrEmpty()) {
+                        Log.d(TAG, "initData: 타이틀 널이라 스킵")
+                        continue
+                    };
                     val boardData = BoardData(
                         data.appointmentDto.boardId,
                         if (data.imgPath.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.imgPath[0].path,
@@ -84,16 +91,18 @@ class ProfileFragment : Fragment() {
                         data.appointmentDto.shareUserId, // TODO : 내꺼냐 남꺼냐에 따라서 id 바꿔서 넣어줘야함
                         data.appointmentDto.type,
                         sDay = data.appointmentDto.appointmentStart,
-                        eDay = data.appointmentDto.appointmentEnd
+                        eDay = data.appointmentDto.appointmentEnd,
+                        status = data.appointmentDto.status // 시작일 임박! or 종료일 임박!
                     )
                     Log.d(TAG, "추가?: $boardData")
                     myList.add(boardData)
+                    myAdapter.notifyItemInserted(myList.size)
                 }
             } else {
                 Log.d(TAG, "initData: 실패!!")
             }
             Log.d(TAG, "추가완료: myList: $myList")
-            myAdapter.notifyItemInserted(index - 1)
+            //myAdapter.notifyItemInserted(index - 1)
         }
     }
 
@@ -187,6 +196,39 @@ class ProfileFragment : Fragment() {
     private fun logout(view: View){ // 로그아웃 preference 지우기
         val dialog = ConfirmDialog(object: ConfirmDialogInterface {
             override fun onYesButtonClick(id: String) {
+                when(ApplicationClass.prefs.getOAuth()) {
+                    "kakao" -> {  // 카카오인 경우 로그아웃
+//                        UserApiClient.instance.unlink { error ->
+//                            if (error != null) {
+//                                Log.e(TAG, "연결 끊기 실패", error)
+//                            }
+//                            else {
+//                                Log.i(TAG, "연결 끊기 성공. SDK에서 토큰 삭제 됨")
+//                            }
+//                        }
+                    }
+                    "naver" -> {  // 네이버 연동 해제
+                        NaverIdLoginSDK.logout()
+                        NidOAuthLogin().callDeleteTokenApi(mainActivity, object :
+                            OAuthLoginCallback {
+                            override fun onSuccess() {
+                                //서버에서 토큰 삭제에 성공한 상태입니다.
+                                Log.d(TAG, "onSuccess: 서버에 토큰 삭제 [연동 해제 완료]")
+                            }
+                            override fun onFailure(httpStatus: Int, message: String) {
+                                // 서버에서 토큰 삭제에 실패했어도 클라이언트에 있는 토큰은 삭제되어 로그아웃된 상태입니다.
+                                // 클라이언트에 토큰 정보가 없기 때문에 추가로 처리할 수 있는 작업은 없습니다.
+                                Log.d(TAG, "errorCode: ${NaverIdLoginSDK.getLastErrorCode().code}")
+                                Log.d(TAG, "errorDesc: ${NaverIdLoginSDK.getLastErrorDescription()}")
+                            }
+                            override fun onError(errorCode: Int, message: String) {
+                                // 서버에서 토큰 삭제에 실패했어도 클라이언트에 있는 토큰은 삭제되어 로그아웃된 상태입니다.
+                                // 클라이언트에 토큰 정보가 없기 때문에 추가로 처리할 수 있는 작업은 없습니다.
+                                onFailure(errorCode, message)
+                            }
+                        })
+                    }
+                }
 
                 CoroutineScope(Dispatchers.Main).launch {
                     val result = ApplicationClass.retrofitUserService.postLogout(ApplicationClass.prefs.getUser()).awaitResponse().body()

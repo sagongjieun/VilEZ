@@ -55,6 +55,42 @@ object BindingAdapter {
         }
     }
 
+
+    @JvmStatic
+    @BindingAdapter("getMannerLevel")
+    fun bindMannerLevel(view: TextView, manner:Int) {
+        if(manner <= 10) {
+            view.text = " Lv.1 "
+        } else if (manner <= 20) {
+            view.text =" Lv.2 "
+        } else if (manner <= 30) {
+            view.text =" Lv.3 "
+        } else if (manner <= 40) {
+            view.text =" Lv.4 "
+        } else {
+            view.text =" Lv.5 "
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("getMannerIcon")
+    fun bindMannerIcon(view: ImageView, manner:Int) {
+        if(manner <= 10) {
+            view.setImageResource(R.drawable.ic_manner_1)
+        } else if (manner <= 20) {
+            view.setImageResource(R.drawable.ic_manner_2)
+        } else if (manner <= 30) {
+            view.setImageResource(R.drawable.ic_manner_3)
+        } else if (manner <= 40) {
+            view.setImageResource(R.drawable.ic_manner_4)
+        } else {
+            view.setImageResource(R.drawable.ic_manner_5)
+        }
+
+
+
+    }
+
 /*    @SuppressLint("SimpleDateFormat")
     @JvmStatic
     @BindingAdapter("datetimeToDate")
@@ -80,7 +116,22 @@ object BindingAdapter {
         val today = SDF.format(Date(System.currentTimeMillis()))
         val todayDate = SDF.parse(today)
 
-        when(state) {
+        if(board.status == "시작일 임박!") {
+            if(!board.sDay.isNullOrEmpty()) {
+                val startDate = SDF.parse(board.sDay)
+                var calcuDate = (startDate.time - todayDate.time) / (60 * 60 * 24 * 1000) //날짜 셋팅
+                Log.d("test: 날짜!!", "$calcuDate 일 차이남!!")
+                view.text = "D-$calcuDate"
+            }
+        } else { // 종료일 임박
+            if(!board.eDay.isNullOrEmpty()) {
+                val endDate = SDF.parse(board.eDay)
+                var calcuDate = (endDate.time - todayDate.time) / (60 * 60 * 24 * 1000) //날짜 셋팅
+                Log.d("test: 날짜!!", "$calcuDate 일 차이남!!")
+                view.text = "D-$calcuDate"
+            }
+        }
+        /*when(state) {
             APPOINTMENT_TYPE_SHARE -> { // 공유 디데이는 공유 끝나는날짜까지의 남은 시간
                 if(!board.eDay.isNullOrEmpty()) {
                     val endDate = SDF.parse(board.eDay)
@@ -97,7 +148,7 @@ object BindingAdapter {
                     view.text = "D-$calcuDate"
                 }
             }
-        }
+        }*/
     }
 
 

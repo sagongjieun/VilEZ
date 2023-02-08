@@ -84,7 +84,6 @@ class LoginFragment : Fragment() {
         // 카카오계정으로 로그인
         UserApiClient.instance.loginWithKakaoAccount(loginActivity) { token, error ->
             if (token != null) {
-
                 Log.i(TAG, "로그인 성공 ${token.accessToken}")
                 // 사용자 정보 요청 (기본)
                 UserApiClient.instance.me { user, error ->
@@ -129,34 +128,34 @@ class LoginFragment : Fragment() {
     fun cancelAuth(view: View) {
         // 카카오 연동 해제 (테스트용)
         // 연결 끊기
-        UserApiClient.instance.unlink { error ->
-            if (error != null) {
-                Log.e(TAG, "연결 끊기 실패", error)
-            }
-            else {
-                Log.i(TAG, "연결 끊기 성공. SDK에서 토큰 삭제 됨")
-            }
-        }
+//        UserApiClient.instance.unlink { error ->
+//            if (error != null) {
+//                Log.e(TAG, "연결 끊기 실패", error)
+//            }
+//            else {
+//                Log.i(TAG, "연결 끊기 성공. SDK에서 토큰 삭제 됨")
+//            }
+//        }
 
         // 네이버 연동 해제 (삭제 테스트용)
-        NaverIdLoginSDK.logout()
-        NidOAuthLogin().callDeleteTokenApi(loginActivity, object : OAuthLoginCallback {
-            override fun onSuccess() {
-                //서버에서 토큰 삭제에 성공한 상태입니다.
-                Log.d(TAG, "onSuccess: 서버에 토큰 삭제 [연동 해제 완료]")
-            }
-            override fun onFailure(httpStatus: Int, message: String) {
-                // 서버에서 토큰 삭제에 실패했어도 클라이언트에 있는 토큰은 삭제되어 로그아웃된 상태입니다.
-                // 클라이언트에 토큰 정보가 없기 때문에 추가로 처리할 수 있는 작업은 없습니다.
-                Log.d(TAG, "errorCode: ${NaverIdLoginSDK.getLastErrorCode().code}")
-                Log.d(TAG, "errorDesc: ${NaverIdLoginSDK.getLastErrorDescription()}")
-            }
-            override fun onError(errorCode: Int, message: String) {
-                // 서버에서 토큰 삭제에 실패했어도 클라이언트에 있는 토큰은 삭제되어 로그아웃된 상태입니다.
-                // 클라이언트에 토큰 정보가 없기 때문에 추가로 처리할 수 있는 작업은 없습니다.
-                onFailure(errorCode, message)
-            }
-        })
+//        NaverIdLoginSDK.logout()
+//        NidOAuthLogin().callDeleteTokenApi(loginActivity, object : OAuthLoginCallback {
+//            override fun onSuccess() {
+//                //서버에서 토큰 삭제에 성공한 상태입니다.
+//                Log.d(TAG, "onSuccess: 서버에 토큰 삭제 [연동 해제 완료]")
+//            }
+//            override fun onFailure(httpStatus: Int, message: String) {
+//                // 서버에서 토큰 삭제에 실패했어도 클라이언트에 있는 토큰은 삭제되어 로그아웃된 상태입니다.
+//                // 클라이언트에 토큰 정보가 없기 때문에 추가로 처리할 수 있는 작업은 없습니다.
+//                Log.d(TAG, "errorCode: ${NaverIdLoginSDK.getLastErrorCode().code}")
+//                Log.d(TAG, "errorDesc: ${NaverIdLoginSDK.getLastErrorDescription()}")
+//            }
+//            override fun onError(errorCode: Int, message: String) {
+//                // 서버에서 토큰 삭제에 실패했어도 클라이언트에 있는 토큰은 삭제되어 로그아웃된 상태입니다.
+//                // 클라이언트에 토큰 정보가 없기 때문에 추가로 처리할 수 있는 작업은 없습니다.
+//                onFailure(errorCode, message)
+//            }
+//        })
     }
 
 
