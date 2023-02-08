@@ -61,12 +61,6 @@
                 android:text="안녕하세요 반갑습니다 계시나요?" />
         </LinearLayout>
     </LinearLayout>
-    <ImageView
-        android:id="@+id/item"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="fitXY"
-        android:src="@drawable/sample_img"/>
 
 </LinearLayout>
 

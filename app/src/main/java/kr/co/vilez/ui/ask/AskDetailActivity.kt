@@ -29,7 +29,9 @@ import kr.co.vilez.ui.share.write.ShareWriteActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common.Companion.BOARD_TYPE_ASK
 import kr.co.vilez.util.DataState
+import kr.co.vilez.util.StompHelper
 import me.relex.circleindicator.CircleIndicator3
+import org.json.JSONObject
 import retrofit2.awaitResponse
 
 private const val TAG = "빌리지_요청_AskDetailActivity"
@@ -113,19 +115,7 @@ class AskDetailActivity : AppCompatActivity() {
                         intent.putExtra("nickName", binding.writer!!.nickName)
                         intent.putExtra("profile", binding.writer!!.profile_img)
                         intent.putExtra("type", BOARD_TYPE_ASK)
-                        DataState.set.add(result.data[0].id)
-
-                        DataState.itemList.add(
-                            0, RoomlistData(
-                                result.data[0].id,
-                                binding.writer!!.nickName,
-                                "",
-                                "",
-                                ApplicationClass.prefs.getId(),
-                                1,
-                                binding.writer!!.profile_img
-                            )
-                        )
+                        intent.putExtra("init",1)
                         startActivity(intent)
                     } else {
                         Toast.makeText(this@AskDetailActivity, "채팅방 생성을 실패했습니다.", Toast.LENGTH_SHORT).show()

@@ -1,19 +1,19 @@
 package kr.co.vilez.ui.chat
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.datepicker.CalendarConstraints
-import com.google.android.material.datepicker.DateValidatorPointForward
-import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.datepicker.*
+import com.google.android.material.datepicker.CalendarConstraints.DateValidator
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,18 +22,15 @@ import kr.co.vilez.R
 import kr.co.vilez.data.chat.ChatlistData
 import kr.co.vilez.data.model.*
 import kr.co.vilez.databinding.ActivityChatRoomBinding
+import kr.co.vilez.ui.ask.AskDetailActivity
 import kr.co.vilez.ui.chat.map.KakaoMapFragment
 import kr.co.vilez.ui.dialog.*
-import kr.co.vilez.util.ApplicationClass
-import kr.co.vilez.util.CancelAppointmentDto
-import kr.co.vilez.util.DataState
-import kr.co.vilez.util.StompHelper
+import kr.co.vilez.ui.share.ShareDetailActivity
+import kr.co.vilez.util.*
 import org.json.JSONObject
 import retrofit2.awaitResponse
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 private const val TAG = "빌리지_채팅_ChatRoomActivity"
 class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
@@ -43,8 +40,11 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
     private var otherUserId = 0
     private var nickName = "알수없음"
     private var profile = "https://kr.object.ncloudstorage.com/vilez/basicProfile.png"
+    var boardStart = ""
+    var boardEnd = ""
     var topic : Disposable?? =  null
     var topic2 : Disposable?? =  null
+    var init = 0
 
     private var now : Int = 0
     private val itemList = ArrayList<ChatlistData>()
@@ -58,13 +58,14 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
+        init = intent.getIntExtra("init",0)
+        intent.removeExtra("init")
         binding = DataBindingUtil.setContentView(this, R.layout.activity_chat_room)
         roomId = intent.getIntExtra("roomId", 0)
         otherUserId = intent.getIntExtra("otherUserId", 0)
         nickName = intent.getStringExtra("nickName")!!
         profile = intent.getStringExtra("profile")!!
-
+        println(otherUserId)
         val data = JSONObject()
         data.put("roomId", roomId)
         data.put("userId", ApplicationClass.prefs.getId())
@@ -103,8 +104,20 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                         }
                     }
                 }
-
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+                if(room.type == 2) {
+                    var result = ApplicationClass.retrofitShareService.getBoardDetail(room.boardId).awaitResponse().body()
+                    if(result?.flag == "success") {
+                        boardStart = result.data.get(0).startDay
+                        boardEnd = result.data.get(0).endDay
+                    }
+                } else {
+                    var result = ApplicationClass.retrofitAskService.getBoardDetail(room.boardId).awaitResponse().body()
+                    if(result?.flag == "success") {
+                        boardStart = result.data.get(0).startDay
+                        boardEnd = result.data.get(0).endDay
+                    }
+                }
                 initView()
                 initAcceptButton()
                 initCancelButton()
@@ -145,7 +158,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                         data.put("content", txt_edit.text)
                         data.put("time", System.currentTimeMillis())
                         data.put("system",false)
-                        itemList.add(ChatlistData(data.getString("content"), 2,""))
+                        itemList.add(ChatlistData(data.getString("content"), 2,"",ApplicationClass.prefs.getId()))
                         roomAdapter.notifyDataSetChanged()
                         StompHelper.stompClient.send("/recvchat", data.toString()).subscribe()
                         data = JSONObject()
@@ -199,9 +212,27 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
         rv_chat.adapter = roomAdapter
         rv_chat.layoutManager = LinearLayoutManager(this)
 
-
-        //나가기 버튼 처리
         binding.toolbar.menu.get(0).setOnMenuItemClickListener { item ->
+            when(item.itemId) {
+                R.id.board -> {
+                    var intent: Intent? = null
+                    when(room.type) {
+                        Common.BOARD_TYPE_SHARE -> {
+                            intent = Intent(this, ShareDetailActivity::class.java)
+                        }
+                        Common.BOARD_TYPE_ASK -> {
+                            intent = Intent(this, AskDetailActivity::class.java)
+                        }
+                    }
+                    intent?.putExtra("userId", ApplicationClass.prefs.getId())
+                    intent?.putExtra("boardId", room.boardId)
+                    startActivity(intent)
+                }
+            }
+            true
+        }
+        //나가기 버튼 처리
+        binding.toolbar.menu.get(1).setOnMenuItemClickListener { item ->
             when(item.itemId) {
                 R.id.close_room -> {
                     CoroutineScope(Dispatchers.Main).launch {
@@ -259,19 +290,15 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                 for (i in 0 until result.data.size) {
                     var chat = result.data.get(i)
                     if (chat.system) {
-                        itemList.add(ChatlistData(chat.content, 0,null))
+                        itemList.add(ChatlistData(chat.content, 0,null,otherUserId))
                         prev_type = 0;
                     } else {
                         if (chat.fromUserId == ApplicationClass.prefs.getId()) {
-                            itemList.add(ChatlistData(chat.content, 2,null))
+                            itemList.add(ChatlistData(chat.content, 2,null,ApplicationClass.prefs.getId()))
                             prev_type = 2
                         }
                         else {
-                            if(prev_type == 1)
-                                itemList.add(ChatlistData(chat.content, 1,null))
-                            else
-                                itemList.add(ChatlistData(chat.content, 1,profile))
-                            prev_type = 1
+                            itemList.add(ChatlistData(chat.content, 1,profile,otherUserId))
                         }
                     }
                 }
@@ -283,6 +310,20 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                 StompHelper.stompClient.send("/room_enter", data.toString()).subscribe()
             }
         }
+
+        if (init == 1) {
+            var data = JSONObject()
+            data.put("roomId", room.id)
+            data.put("fromUserId", ApplicationClass.prefs.getId())
+            data.put("toUserId", otherUserId)
+            data.put("content", "대화를 시작해보세요 \uD83D\uDE0A")
+            data.put("time", System.currentTimeMillis())
+            data.put("system",true)
+            StompHelper.stompClient.send("/recvchat", data.toString()).subscribe()
+            init = 0
+
+        }
+
         if(room.state == 0) {
             topic = StompHelper.stompClient.join("/sendchat/" + roomId + "/" + ApplicationClass.prefs.getId())
                 .subscribe { topicMessage ->
@@ -294,15 +335,29 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                                 topic!!.dispose()
                             }
                             if(json.getBoolean("system"))
-                                itemList.add(ChatlistData(json.getString("content"), 0,"none"))
-                            else
-                                itemList.add(ChatlistData(json.getString("content"), 1,profile))
-                            roomAdapter.notifyDataSetChanged()
+                                itemList.add(ChatlistData(json.getString("content"), 0,"none",otherUserId))
+                            else{
+//                                if(itemList.size == 0) {
+//                                    itemList.add(ChatlistData(json.getString("content"), 1,profile,otherUserId))
+//                                } else {
+//                                    println("로그가 짱이야 "+ itemList[itemList.size-1].profile)
+//                                    if(itemList[itemList.size-1].viewType == 1) {
+//                                        itemList.add(ChatlistData(json.getString("content"), 1,null))
+//                                    } else {
+//
+//                                    }
+//                                }
+                                itemList.add(ChatlistData(json.getString("content"), 1,profile,otherUserId))
+                            }
+                            roomAdapter.notifyItemInserted(itemList.size-1)
                             rv_chat.scrollToPosition(itemList.size - 1)
-                            val data = JSONObject()
+                            var data = JSONObject()
                             data.put("roomId", roomId)
                             data.put("userId", ApplicationClass.prefs.getId())
                             StompHelper.stompClient.send("/room_enter", data.toString()).subscribe()
+                            println("ㅇㅇㅇㅇㅇㅇㅇㅇ "+init + " 입니다")
+
+
                         }
                     }
                 }
@@ -317,14 +372,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
 
     private fun initSignButton() {
         binding.btnChatSign.setOnClickListener {
-            showSignDialog("피공유자 ")
-//            if(ApplicationClass.prefs.getId() == room.shareUserId) {
-//
-//                showDialog("피공유자에게 서명을 요청하세요!!")
-//            } else {
-//                // 서명이 없다면
-//
-//            }
+            showSignDialog()
         }
     }
 
@@ -337,7 +385,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                     if(result?.flag == "success") {
                         appointDto = result.data.get(0)
                         if(appointDto != null) {
-                            showDialog("예약 일자 : ${appointDto?.appointmentStart} \n~ ${appointDto?.appointmentEnd}")
+                            showDialog("예약 일자\n${appointDto?.appointmentStart} \n~ ${appointDto?.appointmentEnd}")
                         } else {
                             onCalendarClick()
                         }
@@ -417,7 +465,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
         dialog.show(this.supportFragmentManager, "Appoint")
     }
 
-    fun showSignDialog(msg: String) {
+    fun showSignDialog() {
         var dialog = SignDialog(this, room.id, room.notShareUserId, nickName)
         dialog.show(this.supportFragmentManager, "Appoint")
     }
@@ -442,9 +490,13 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
         SDF.timeZone = TimeZone.getTimeZone("Asia/Seoul")
         SDF.calendar = calendar
+        var realStart = SDF.parse(boardStart).time + 32400000
         if(setPeriodDto == null) {
             calendar.time = Date()
             startDay = calendar.timeInMillis
+            if(startDay < realStart) {
+                startDay = realStart
+            }
             calendar.add(Calendar.DATE, 1) // 디폴트 end날짜 : 내일
             endDay = calendar.timeInMillis
         } else {
@@ -454,13 +506,19 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
             date = SDF.parse(setPeriodDto?.endDay)
             calendar.time = date
             endDay = calendar.timeInMillis + 32400000
+
         }
 
-
+        val listValidators = ArrayList<DateValidator>()
+        listValidators.add(DateValidatorPointForward.from(realStart))
+        listValidators.add(DateValidatorPointBackward.before(SDF.parse(boardEnd).time + 32400000))
         // Build constraints.
+
+
         val constraintsBuilder =
             CalendarConstraints.Builder()
-                .setStart(Date().time).setValidator(DateValidatorPointForward.now())
+                .setStart(Date().time)
+                .setValidator(CompositeDateValidator.allOf(listValidators))
 
         val datePicker =
             MaterialDatePicker.Builder.dateRangePicker()
@@ -490,7 +548,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                     data.put("time", System.currentTimeMillis())
                     data.put("system",true)
                     StompHelper.stompClient.send("/recvchat", data.toString()).subscribe()
-                    itemList.add(ChatlistData(data.getString("content"), 0,"none"))
+                    itemList.add(ChatlistData(data.getString("content"), 0,"none",otherUserId))
                     roomAdapter.notifyDataSetChanged()
                     rv_chat.scrollToPosition(itemList.size - 1)
                 }
@@ -533,7 +591,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                             datad.put("content", "공유가 종료되었어요 \uD83D\uDE0A")
                             datad.put("time", System.currentTimeMillis())
                             datad.put("system",true)
-                            itemList.add(ChatlistData(datad.getString("content"), 0,"none"))
+                            itemList.add(ChatlistData(datad.getString("content"), 0,"none",otherUserId))
 
                             roomAdapter.notifyDataSetChanged()
                             StompHelper.stompClient.send("/recvchat", datad.toString()).subscribe()
@@ -579,7 +637,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                                     datad.put("content", "예약이 취소되어 대화가 종료됩니다.")
                                     datad.put("time", System.currentTimeMillis())
                                     datad.put("system",true)
-                                    itemList.add(ChatlistData(datad.getString("content"), 0,"none"))
+                                    itemList.add(ChatlistData(datad.getString("content"), 0,"none",otherUserId))
                                     roomAdapter.notifyDataSetChanged()
                                     StompHelper.stompClient.send("/recvchat", datad.toString()).subscribe()
 
@@ -601,7 +659,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                                         datad.put("content", "피공유자가 예약 취소를 요청했어요")
                                         datad.put("time", System.currentTimeMillis())
                                         datad.put("system",true)
-                                        itemList.add(ChatlistData(datad.getString("content"), 0,"none"))
+                                        itemList.add(ChatlistData(datad.getString("content"), 0,"none",otherUserId))
                                         roomAdapter.notifyDataSetChanged()
                                         StompHelper.stompClient.send("/recvchat", datad.toString()).subscribe()
                                     }
@@ -615,7 +673,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                                     datad.put("content", "예약이 취소되어 대화가 종료됩니다.")
                                     datad.put("time", System.currentTimeMillis())
                                     datad.put("system",true)
-                                    itemList.add(ChatlistData(datad.getString("content"), 0,"none"))
+                                    itemList.add(ChatlistData(datad.getString("content"), 0,"none",otherUserId))
                                     roomAdapter.notifyDataSetChanged()
                                     StompHelper.stompClient.send("/recvchat", datad.toString()).subscribe()
 
@@ -672,7 +730,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
         data.put("time", System.currentTimeMillis())
         data.put("system",true)
         StompHelper.stompClient.send("/recvchat", data.toString()).subscribe()
-        itemList.add(ChatlistData(data.getString("content"), 0,"none"))
+        itemList.add(ChatlistData(data.getString("content"), 0,"none",otherUserId))
         roomAdapter.notifyDataSetChanged()
         rv_chat.scrollToPosition(itemList.size - 1)
     }
@@ -694,7 +752,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                     data.put("time", System.currentTimeMillis())
                     data.put("system",true)
                     StompHelper.stompClient.send("/recvchat", data.toString()).subscribe()
-                    itemList.add(ChatlistData(data.getString("content"), 0,"none"))
+                    itemList.add(ChatlistData(data.getString("content"), 0,"none",otherUserId))
                     roomAdapter.notifyDataSetChanged()
                     rv_chat.scrollToPosition(itemList.size - 1)
                 }
