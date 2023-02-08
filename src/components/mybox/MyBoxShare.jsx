@@ -47,8 +47,10 @@ const MyBoxShare = (props) => {
             />
           </div>
         ))
+      ) : props.myShareType === 1 ? (
+        <div css={noCards}>현재 공유중인 물품이 없습니다.</div>
       ) : (
-        <div css={noCards}>작성한 글이 없습니다.</div>
+        <div css={noCards}>공유 예정인 물품이 없습니다.</div>
       )}
     </div>
   );
