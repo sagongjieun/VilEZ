@@ -254,6 +254,8 @@
     </select>
 
     <select id="getRoomListByBoardId" parameterType="int" resultType="list">
-        SELECT * from room where type = #{type} and board_id = #{boardId}
+        SELECT id, type, board_id boardId,share_user_id shareUserId, not_share_user_id notShareUserId, state
+        from room
+        where type = #{type} and board_id = #{boardId} and state = 0
     </select>
 </mapper>
