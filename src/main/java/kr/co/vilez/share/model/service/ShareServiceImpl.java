@@ -177,7 +177,6 @@ public class ShareServiceImpl implements ShareService{
 
     // 생각보다 복잡함
     // 연관된 채팅방 모두 종료
-    String BASE_PROFILE = "https://kr.object.ncloudstorage.com/vilez/basicProfile.png";
     @Override
     public HttpVO delete(@RequestParam int boardId) throws Exception {
         httpVO = new HttpVO();
@@ -185,6 +184,7 @@ public class ShareServiceImpl implements ShareService{
         shareMapper.delete(boardId);
 
         List<RoomDto> roomDtoList = appointmentService.getRoomListByBoardId(boardId, 2);
+        String BASE_PROFILE = "https://kr.object.ncloudstorage.com/vilez/basicProfile.png";
 
         for(RoomDto room : roomDtoList) {
             ChatVO chatVO = new ChatVO();
