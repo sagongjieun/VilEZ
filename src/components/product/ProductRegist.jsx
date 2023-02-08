@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { postShareArticle } from "../../api/share";
@@ -11,13 +11,15 @@ import ProductCategory from "./ProductCategory";
 import ProductImageSelect from "./ProductImageSelect";
 import ProductRegistType from "./ProductRegistType";
 import Map from "../common/Map";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const ProductRegist = () => {
   const loginUserId = localStorage.getItem("id");
   const navigate = useNavigate();
+  const loc = useLocation();
 
   const [registType, setRegistType] = useState("");
+  const [sendType, setSendType] = useState("");
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [content, setContent] = useState("");
@@ -144,9 +146,21 @@ const ProductRegist = () => {
     }
   }
 
+  useEffect(() => {
+    if (loc.state) {
+      if (loc.state.type == 2) {
+        setRegistType("물품 공유 등록");
+        setSendType("물품 공유 등록");
+      } else {
+        setRegistType("물품 요청 등록");
+        setSendType("물품 요청 등록");
+      }
+    }
+  }, []);
+
   return (
     <div css={wrapper}>
-      <ProductRegistType sendRegistType={receiveRegistType} />
+      <ProductRegistType sendRegistType={receiveRegistType} sendType={sendType} />
       <DivideLine />
       <div css={titleWrapper}>
         <h3>
