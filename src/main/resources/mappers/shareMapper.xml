@@ -41,8 +41,8 @@
         select id, user_id, category, title, content, date, hope_area_lat, hope_area_lng, start_day, end_day, nickname, manner,
             (
             CASE
-            WHEN now() >= a.appointment_start and a.appointment_end >= now() then 1
-            else 0
+                WHEN now() >= a.appointment_start and a.appointment_end >= now() then 1
+                else 0
             END
             ) as state
         from sharing_view as s
@@ -58,6 +58,7 @@
             ANY_VALUE(state) as  state
             from appointment
             WHERE now() >= appointment_start and appointment_end >= now()
+            and state >= 0
             group by board_id
             )
             as a
@@ -93,6 +94,7 @@
         ANY_VALUE(state) as  state
         from appointment
         WHERE now() >= appointment_start and appointment_end >= now()
+        and state >= 0
         group by board_id
         )
         as a
@@ -126,8 +128,8 @@
         select id, user_id, category, title, content, date, hope_area_lat, hope_area_lng, start_day, end_day, nickname, manner,
             (
             CASE
-            WHEN now() >= a.appointment_start and a.appointment_end >= now() then 1
-            else 0
+                WHEN now() >= a.appointment_start and a.appointment_end >= now() then 1
+                else 0
             END
             ) as state
             from sharing_view as s
@@ -143,6 +145,7 @@
             ANY_VALUE(state) as  state
             from appointment
             WHERE now() >= appointment_start and appointment_end >= now()
+            and state >= 0
             group by board_id
             )
             as a
