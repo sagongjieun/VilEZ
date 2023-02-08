@@ -188,6 +188,11 @@ const StompRealTime = ({
       client.connect({}, () => {
         // 다른 유저의 채팅을 구독
         client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
+          // 상대방이 채팅방을 나갔다면
+          if (JSON.parse(data.body).fromUserId == -1) {
+            console.log("######### 여기서 sharestate, roomstate : ", shareState, roomState);
+            sendShareState(-1);
+          }
           setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
         });
 
@@ -393,28 +398,21 @@ const StompRealTime = ({
 
     // 상대방이 채팅방 나감
     if (checkUserLeave) {
-      if (shareState != -1) {
-        const sendMessage = {
-          roomId: chatRoomId,
-          fromUserId: -1,
-          toUserId: otherUserId,
-          content: "대화가 종료됐어요 😥",
-          system: true,
-          time: new Date().getTime(),
-        };
+      const sendMessage = {
+        roomId: chatRoomId,
+        fromUserId: -1,
+        toUserId: otherUserId,
+        content: "대화가 종료됐어요 😥",
+        system: true,
+        time: new Date().getTime(),
+      };
 
-        setShowingMessage((prev) => [...prev, sendMessage]);
+      setShowingMessage((prev) => [...prev, sendMessage]);
 
-        client.send("/recvchat", {}, JSON.stringify(sendMessage));
+      client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
-        setCheckUserLeave(false);
-        navigate(`/product/list/share`);
-      }
-      // 이미 반납 후 상태면 소켓이 끊어져있음
-      else {
-        setCheckUserLeave(false);
-        navigate(`/product/list/share`);
-      }
+      setCheckUserLeave(false);
+      navigate(`/product/list/share`);
     }
 
     // 공유 종료됨을 알림
