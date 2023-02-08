@@ -85,17 +85,24 @@ function EditProfile({ setIsEditProfileOpen }) {
   }
   function onSubmit() {
     if ((isNickNameAvailable || !isNickNameOpen) && !passwordError && !password2Error) {
-      // const userIdJson = {userId : }
-      const formData = new FormData();
-      formData.append("image", imageList[0]);
-      console.log(imageList[0], "******");
-      formData.append("userId", new Blob([JSON.stringify(userId)], { type: "application/json" }));
-      putUserProfileImage(formData);
-      console.log(userId, nickName, password);
       putUserPasswordNickName(userId, nickName, password).then((response) => {
-        console.log(response);
-
-        setIsEditProfileOpen(false);
+        if (response) {
+          if (imageList) {
+            const formData = new FormData();
+            formData.append("image", imageList[0]);
+            formData.append("userId", new Blob([JSON.stringify(userId)], { type: "application/json" }));
+            putUserProfileImage(formData).then((response) => {
+              if (response) {
+                setIsEditProfileOpen(false);
+              } else {
+                return;
+              }
+            });
+          }
+          alert("프로필 정보가 변경되었습니다.");
+          setIsEditProfileOpen(false);
+          return;
+        }
       });
     } else if (!isNickNameAvailable) {
       setNickNameError("중복 확인을 진행해주세요.");
@@ -105,7 +112,6 @@ function EditProfile({ setIsEditProfileOpen }) {
     getUserDetail(userId).then((response) => {
       setUserNickName(response[0].nickName);
       setUserProfileImage(response[0].profile_img);
-      setImageList([response[0].profile_img]);
     });
   }, []);
   useEffect(() => {
