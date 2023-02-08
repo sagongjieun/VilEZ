@@ -73,7 +73,7 @@ async function putUserProfileImage(formData) {
   try {
     const { data } = await formDataAxios.put("/users/profile", formData);
     if (data.flag === "success") {
-      alert("프로필 정보가 변경되었습니다.");
+      return data;
     } else alert("프로필 변경에 실패했습니다. 다시 시도해주세요.");
   } catch (error) {
     console.log(error);

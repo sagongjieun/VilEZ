@@ -85,16 +85,23 @@ function EditProfile({ setIsEditProfileOpen }) {
   }
   function onSubmit() {
     if ((isNickNameAvailable || !isNickNameOpen) && !passwordError && !password2Error) {
-      const formData = new FormData();
-      formData.append("image", imageList[0]);
-      formData.append("userId", new Blob([JSON.stringify(userId)], { type: "application/json" }));
       putUserPasswordNickName(userId, nickName, password).then((response) => {
         if (response) {
-          console.log(response);
-          putUserProfileImage(formData).then((response) => {
-            console.log(response);
-            setIsEditProfileOpen(false);
-          });
+          if (imageList) {
+            const formData = new FormData();
+            formData.append("image", imageList[0]);
+            formData.append("userId", new Blob([JSON.stringify(userId)], { type: "application/json" }));
+            putUserProfileImage(formData).then((response) => {
+              if (response) {
+                setIsEditProfileOpen(false);
+              } else {
+                return;
+              }
+            });
+          }
+          alert("프로필 정보가 변경되었습니다.");
+          setIsEditProfileOpen(false);
+          return;
         }
       });
     } else if (!isNickNameAvailable) {
@@ -105,7 +112,6 @@ function EditProfile({ setIsEditProfileOpen }) {
     getUserDetail(userId).then((response) => {
       setUserNickName(response[0].nickName);
       setUserProfileImage(response[0].profile_img);
-      setImageList([response[0].profile_img]);
     });
   }, []);
   useEffect(() => {
