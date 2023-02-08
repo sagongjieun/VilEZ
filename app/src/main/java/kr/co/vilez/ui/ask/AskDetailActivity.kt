@@ -22,7 +22,7 @@ import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.ui.board.BoardImagePagerAdapter
 import kr.co.vilez.ui.board.BoardMapFragment
 import kr.co.vilez.ui.chat.ChatRoomActivity
-import kr.co.vilez.ui.dialog.AlertDialog
+import kr.co.vilez.ui.dialog.MyAlertDialog
 import kr.co.vilez.ui.dialog.ConfirmDialog
 import kr.co.vilez.ui.dialog.ConfirmDialogInterface
 import kr.co.vilez.ui.share.write.ShareWriteActivity
@@ -135,7 +135,7 @@ class AskDetailActivity : AppCompatActivity() {
                 }
             }
         } else {
-            val dialog = AlertDialog(this@AskDetailActivity, "요청자가 물건을 대여중입니다.")
+            val dialog = MyAlertDialog(this@AskDetailActivity, "요청자가 물건을 대여중입니다.")
             dialog.isCancelable = true
             dialog.show(supportFragmentManager, "ASK_CHAT_FAILED")
         }

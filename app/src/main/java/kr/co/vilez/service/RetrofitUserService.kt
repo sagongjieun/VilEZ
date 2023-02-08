@@ -17,6 +17,9 @@ interface RetrofitUserService {
     @POST("/vilez/users/login")
     fun getLoginResult(@Body user: User): Call<RESTUserResult>
 
+    @POST("/vilez/users/logout")
+    fun postLogout(@Body user:User): Call<RESTUserResult>
+
     @GET("/vilez/users/check")
     fun isUsedUserNickName(@Query("nickname") nickname : String):Call<RESTResult>
 

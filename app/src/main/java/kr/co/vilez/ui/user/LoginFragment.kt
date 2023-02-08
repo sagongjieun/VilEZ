@@ -1,7 +1,5 @@
 package kr.co.vilez.ui.user
 
-import android.app.Application
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,8 +9,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.ktx.messaging
 import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthLogin
@@ -25,9 +21,8 @@ import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentLoginBinding
-import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.util.ApplicationClass
-import kr.co.vilez.ui.dialog.AlertDialog
+import kr.co.vilez.ui.dialog.MyAlertDialog
 import kr.co.vilez.util.*
 import retrofit2.awaitResponse
 
@@ -66,7 +61,7 @@ class LoginFragment : Fragment() {
         Log.d(TAG, "login: email : $email, password: $password")
 
         if(email == "" || password == "") {
-            val dialog = AlertDialog(loginActivity, "아이디 비밀번호를 확인해주세요.")
+            val dialog = MyAlertDialog(loginActivity, "아이디 비밀번호를 확인해주세요.")
             dialog.show(loginActivity.supportFragmentManager, "NaverRegisterFailed")
         } else {
             loginActivity.login(User(email, password))
@@ -125,7 +120,7 @@ class LoginFragment : Fragment() {
                 }
             } else {
                 Log.d(TAG, "kakaoLogin: 카카오 로그인 실패 에러 : : $error")
-                val dialog = AlertDialog(loginActivity, "카카오 로그인을 실패했습니다.")
+                val dialog = MyAlertDialog(loginActivity, "카카오 로그인을 실패했습니다.")
                 dialog.show(loginActivity.supportFragmentManager, "KakaoLoginFailed")
             }
         }

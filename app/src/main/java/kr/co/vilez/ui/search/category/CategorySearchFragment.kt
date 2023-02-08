@@ -14,12 +14,11 @@ import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.dto.AskData
 import kr.co.vilez.databinding.FragmentCategorySearchBinding
-import kr.co.vilez.data.dto.ShareData
+import kr.co.vilez.data.dto.ShareDto
 import kr.co.vilez.ui.ask.AskListAdapter
 import kr.co.vilez.ui.share.ShareListAdapter
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
-import kr.co.vilez.util.Common.Companion.BOARD_TYPE_ASK
 import kr.co.vilez.util.Common.Companion.BOARD_TYPE_SHARE
 import retrofit2.awaitResponse
 
@@ -34,7 +33,7 @@ class CategorySearchFragment : Fragment() {
     private lateinit var activity: MenuCategoryActivity
 
     private lateinit var shareAdapter: ShareListAdapter
-    private lateinit var shareDatas: ArrayList<ShareData>
+    private lateinit var shareDatas: ArrayList<ShareDto>
     private lateinit var askAdapter: AskListAdapter
     private lateinit var askDatas: ArrayList<AskData>
     
@@ -211,10 +210,10 @@ class CategorySearchFragment : Fragment() {
                     binding.tvWarnNoResult.visibility = View.GONE
                 }
                 for (data in result.data) {
-                    var shareData: ShareData
+                    var shareData: ShareDto
                     if(filtered && data.shareListDto.state == 1) continue // 공유가능만 보기인데 공유중인 글은 skip
                     if (data.shareListDto.list.isEmpty() ) { // 이미지 없는거 테스트용
-                        shareData = ShareData(
+                        shareData = ShareDto(
                             data.shareListDto.id,
                             "https://kr.object.ncloudstorage.com/vilez/basicProfile.png",
                             data.shareListDto.title,
@@ -227,7 +226,7 @@ class CategorySearchFragment : Fragment() {
                             data.shareListDto.userId
                         );
                     } else {
-                        shareData = ShareData(
+                        shareData = ShareDto(
                             data.shareListDto.id,
                             data.shareListDto.list[0].path,
                             data.shareListDto.title,
@@ -267,9 +266,9 @@ class CategorySearchFragment : Fragment() {
                             Log.d(TAG, "initShareData: success!!!!!")
                             for (data in result.data) {
                                 if(filtered && data.shareListDto.state == 1) continue // 공유가능만 보기인데 공유중인 글은 skip
-                                var shareData: ShareData
+                                var shareDto: ShareDto
                                 if (data.shareListDto.list.size == 0) {
-                                    shareData = ShareData(
+                                    shareDto = ShareDto(
                                         data.shareListDto.id,
                                         "https://kr.object.ncloudstorage.com/vilez/basicProfile.png",
                                         data.shareListDto.title,
@@ -282,7 +281,7 @@ class CategorySearchFragment : Fragment() {
                                         data.shareListDto.userId,
                                     );
                                 } else {
-                                    shareData = ShareData(
+                                    shareDto = ShareDto(
                                         data.shareListDto.id,
                                         data.shareListDto.list[0].path,
                                         data.shareListDto.title,
@@ -295,7 +294,7 @@ class CategorySearchFragment : Fragment() {
                                         data.shareListDto.userId,
                                     );
                                 }
-                                shareDatas.add(shareData)
+                                shareDatas.add(shareDto)
                             }
                         }
                         shareAdapter.notifyItemInserted(index - 1)

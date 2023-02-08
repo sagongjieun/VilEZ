@@ -3,7 +3,7 @@ package kr.co.vilez.ui.profile
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import kr.co.vilez.data.appointment.PointData
+import kr.co.vilez.data.model.PointData
 import kr.co.vilez.databinding.PointRecordItemBinding
 
 class PointAdapter(val list:ArrayList<PointData>) :

@@ -15,10 +15,9 @@ import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentRegisterOauthBinding
-import kr.co.vilez.ui.dialog.AlertDialog
+import kr.co.vilez.ui.dialog.MyAlertDialog
 import kr.co.vilez.ui.dialog.AlertDialogInterface
 import kr.co.vilez.ui.dialog.AlertDialogWithCallback
-import kr.co.vilez.ui.profile.PointFragment
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
 import retrofit2.awaitResponse
@@ -143,7 +142,7 @@ class RegisterOauthFragment : Fragment() {
                 dialog.show(loginActivity.supportFragmentManager, "NaverRegisterSucceeded")
             } else {
                 Log.d(TAG, "register: 회원가입 POST 요청 실패")
-                val dialog = AlertDialog(loginActivity, "네이버 로그인에 실패했습니다.\n다시 시도 해주세요")
+                val dialog = MyAlertDialog(loginActivity, "네이버 로그인에 실패했습니다.\n다시 시도 해주세요")
                 dialog.show(loginActivity.supportFragmentManager, "NaverRegisterFailed")
             }
         }
@@ -171,7 +170,7 @@ class RegisterOauthFragment : Fragment() {
                     }
                 } else {
                     Log.d(TAG, "onSuccess: email check 실패, result:$result")
-                    val dialog = AlertDialog(loginActivity, "로그인에 실패했습니다.\n다시 시도 해주세요")
+                    val dialog = MyAlertDialog(loginActivity, "로그인에 실패했습니다.\n다시 시도 해주세요")
                     dialog.show(loginActivity.supportFragmentManager, "OAuthRegisterFailed")
                 }
             }

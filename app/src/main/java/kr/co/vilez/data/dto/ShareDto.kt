@@ -1,6 +1,6 @@
 package kr.co.vilez.data.dto
 
-class ShareData(
+class ShareDto(
     var boardId : Int,
     var image: String,
     var title: String,

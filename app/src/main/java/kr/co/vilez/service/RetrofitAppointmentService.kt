@@ -1,7 +1,9 @@
 package kr.co.vilez.service
 
-import kr.co.vilez.data.appointment.PointData
-import kr.co.vilez.data.appointment.MyShare
+import kr.co.vilez.data.model.CalendarData
+import kr.co.vilez.data.model.ImminentData
+import kr.co.vilez.data.model.PointData
+import kr.co.vilez.data.dto.MyShare
 import kr.co.vilez.data.model.*
 import retrofit2.Call
 import retrofit2.http.*
@@ -33,7 +35,19 @@ data class RESTPointResult(
     val `data`: List<List<PointData>>,
     val flag: String
 )
+data class RESTImminentResult(
+    val `data`: List<List<ImminentData>>,
+    val flag: String
+)
+data class RESTCalendarResult(
+    val `data`: List<List<CalendarData>>,
+    val flag: String
+)
 interface RetrofitAppointmentService {
+
+    // 공유 예정 시작 기간, 반납 기간이 7일 미만 남은 데이터들을 반환한다.
+    @GET("/vilez/appointments/my/date/{userId}")
+    fun getMyImminent(@Path("userId")id:Int): Call<RESTImminentResult>
 
     // 나의 공유물품을 조회한다. (완료된 약속은 제외)
     @GET("/vilez/appointments/my/{userId}")
@@ -48,7 +62,7 @@ interface RetrofitAppointmentService {
     // 캘린더에 이용할 내 약속 정보 내역
     // 내 약속 정보 (공유 예정) 내역을 조회한다. type = 1 요청, type = 2 공유
     @GET("/vilez/appointments/my/appointlist/{userId}")
-    fun getMyReserveList(@Path("userId")id:Int): Call<RESTAppointmentResult>
+    fun getMyCalendar(@Path("userId")id:Int): Call<RESTCalendarResult>
 
 
 

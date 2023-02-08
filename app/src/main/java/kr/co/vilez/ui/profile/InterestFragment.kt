@@ -12,7 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
-import kr.co.vilez.data.dto.ShareData
+import kr.co.vilez.data.dto.ShareDto
 import kr.co.vilez.databinding.FragmentInterestBinding
 import kr.co.vilez.ui.share.ShareListAdapter
 import kr.co.vilez.ui.user.ProfileMenuActivity
@@ -28,7 +28,7 @@ class InterestFragment : Fragment() {
     private lateinit var activity: ProfileMenuActivity
 
     private lateinit var shareAdapter: ShareListAdapter
-    private lateinit var shareList:ArrayList<ShareData>
+    private lateinit var shareList:ArrayList<ShareDto>
     private var index = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,7 +69,7 @@ class InterestFragment : Fragment() {
                     Log.d(TAG, "onViewCreated: 데이터 0개")
                 }
                 for (data in result.data) {
-                    val shareData = ShareData(
+                    val shareData = ShareDto(
                         data.shareListDto.id,
                         if (data.shareListDto.list.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.shareListDto.list[0].path,
                         data.shareListDto.title,

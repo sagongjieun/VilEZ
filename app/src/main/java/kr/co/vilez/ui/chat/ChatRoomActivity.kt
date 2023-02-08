@@ -426,7 +426,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
     }
 
     fun showDialog(msg: String) {
-        var dialog = AlertDialog(this, msg)
+        var dialog = MyAlertDialog(this, msg)
         dialog.show(this.supportFragmentManager, "Appoint")
     }
 

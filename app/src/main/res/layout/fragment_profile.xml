@@ -245,14 +245,29 @@
                 app:layout_constraintStart_toStartOf="@+id/textView4"
                 app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
+
+            <TextView
+                android:id="@+id/tv_reminder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="잊지 마세요!!"
+                android:textColor="@color/text_black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_user_point"
+                android:layout_marginTop="20dp"
+
+                />
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_appointment_list"
+                android:id="@+id/rv_imminent_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_user_point"/>
+                app:layout_constraintTop_toBottomOf="@+id/tv_reminder"/>
 
             <TextView
                 android:id="@+id/textView9"
@@ -265,7 +280,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rv_appointment_list" />
+                app:layout_constraintTop_toBottomOf="@+id/rv_imminent_list" />
 
             <ListView
                 android:id="@+id/lv_menu_share"
