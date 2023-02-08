@@ -155,17 +155,29 @@ class ShareDetailActivity : AppCompatActivity(){
                 )
                 val result = ApplicationClass.retrofitChatService.createChatroom(chatRoom).awaitResponse().body()
                 if(result?.flag == "success") {
-
                     val fragment = supportFragmentManager.findFragmentById(R.id.share_detail_map)
                     if(fragment != null)
                         supportFragmentManager.beginTransaction().remove(fragment!!).commitNow()
                     val intent = Intent(this@ShareDetailActivity, ChatRoomActivity::class.java)
                     intent.putExtra("roomId", result.data[0].id)
-                    intent.putExtra("otherUserId", userId!!)
+                    intent.putExtra("otherUserId", result.data.get(0).shareUserId)
                     intent.putExtra("nickName", binding.writer!!.nickName)
                     intent.putExtra("profile", binding.writer!!.profile_img)
                     intent.putExtra("type", Common.BOARD_TYPE_SHARE)
                     intent.putExtra("init",1)
+                    DataState.set.add(result.data[0].id)
+                    DataState.itemList.add(
+                                0, RoomlistData(
+                            result.data[0].id,
+                            binding.writer!!.nickName,
+                                    "대화를 시작해보세요 \uD83D\uDE0A",
+                                    "",
+                            result.data.get(0).shareUserId,
+                                    1,
+                            binding.writer!!.profile_img,
+                            System.currentTimeMillis()
+                                )
+                            )
                     startActivity(intent)
 
                 }
