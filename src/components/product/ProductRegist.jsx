@@ -98,7 +98,10 @@ const ProductRegist = () => {
     imageList.forEach((image) => {
       formData.append("image", image);
     });
-
+    if (imageList) {
+      alert("사진을 첨부해주시겠어요?");
+      return;
+    }
     formData.append(
       "board",
       new Blob(

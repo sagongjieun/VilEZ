@@ -2,12 +2,20 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import bookmark from "../../assets/images/bookmark.png";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
+import { deleteShareArticleByBoardId } from "../../api/share";
+import { deleteAskArticleByBoardId } from "../../api/ask";
 
 const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
   const pathname = useLocation().pathname;
   const boardId = parseInt(useParams().boardId);
   const type = pathname.includes("share") ? 2 : 1;
+
+  function onClickDelete() {
+    const navigate = useNavigate();
+    type === 2 ? deleteAskArticleByBoardId(boardId) : deleteShareArticleByBoardId(boardId);
+    navigate(`/product/list/share`);
+  }
   return (
     <div css={headerWrapper}>
       <div css={headerLeftSectionWrapper}>
@@ -25,6 +33,9 @@ const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
             <Link to={`/product/edit/ask/${boardId}`}>
               <span css={optionWrap}>수정</span>
             </Link>
+            <span css={optionWrap} onClick={onClickDelete}>
+              삭제
+            </span>
           </div>
         ) : (
           <div>
@@ -34,6 +45,9 @@ const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
             <Link to={`/product/edit/share/${boardId}`}>
               <span css={optionWrap}>수정</span>
             </Link>
+            <span css={optionWrap} onClick={onClickDelete}>
+              삭제
+            </span>
           </div>
         )}
 
@@ -76,7 +90,7 @@ const headerLeftSectionWrapper = css`
 const headerRightSectionWrapper = css`
   display: flex;
   flex-direction: row;
-  & > a {
+  & > span {
     color: #8a8a8a;
     cursor: pointer;
   }

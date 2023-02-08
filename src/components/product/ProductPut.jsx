@@ -29,15 +29,21 @@ const ProductPut = () => {
   const [imageList, setImageList] = useState([]);
   const pathname = useLocation().pathname;
   const type = pathname.includes("share") ? 2 : 1;
+  const [tempSday, setTempSday] = useState("");
+  const [tempEday, setTempEday] = useState("");
   // console.log(boardId);
   useEffect(() => {
     type === 2
       ? getShareArticleByBoardId(boardId).then((res) => {
           const data = res[0];
           // console.log(data);
+          if (data.list.length === 0) {
+            setImageList(data.list);
+          }
+          console.log(imageList);
+
           setTitle(data.title);
           setCategory(data.category);
-          setImageList(data.list);
           setContent(data.content);
           setStartDay(data.startDay);
           setEndDay(data.endDay);
@@ -58,6 +64,20 @@ const ProductPut = () => {
           setLocation(data.address);
         });
   }, []);
+  function isValidDate(dateStr) {
+    const date = new Date(dateStr);
+    return !isNaN(date.getTime());
+  }
+
+  useEffect(() => {
+    if (!isValidDate(startDay) || !isValidDate(endDay)) {
+      return;
+    }
+    const startDayStr = new Date(startDay).toISOString();
+    const endDayStr = new Date(endDay).toISOString();
+    setTempSday(new Date(startDayStr));
+    setTempEday(new Date(endDayStr));
+  }, [startDay, endDay]);
 
   function receiveRegistType(registType) {
     setRegistType(registType);
@@ -95,6 +115,7 @@ const ProductPut = () => {
     setHopeAreaLat(lat);
     setHopeAreaLng(lng);
   }
+
   // console.log("@@@", imageList);
   function onClickRegistButton() {
     // 유효성 검사
@@ -170,7 +191,6 @@ const ProductPut = () => {
           console.log(error);
         });
     }
-    console.log(startDay);
   }
 
   return (
@@ -219,8 +239,8 @@ const ProductPut = () => {
         <PutProductCalendar
           sendStartDate={receiveStartDate}
           sendEndDate={receiveEndDate}
-          defaultStartDay={startDay}
-          defaultEndDay={endDay}
+          defaultStartDay={tempSday}
+          defaultEndDay={tempEday}
         />
       </div>
       <div css={hopeAreaWrapper}>
