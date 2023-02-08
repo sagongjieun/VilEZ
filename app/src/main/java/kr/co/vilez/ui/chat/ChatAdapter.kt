@@ -10,15 +10,16 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import kr.co.vilez.R
 import kr.co.vilez.data.chat.ChatlistData
+import kr.co.vilez.util.ApplicationClass
 
 class ChatAdapter(val itemList: ArrayList<ChatlistData>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         var view = LayoutInflater.from(parent.context).inflate(R.layout.chat_left_item, parent, false)
 
-        if(viewType == 1){
+        if(itemList[viewType].viewType == 1){
             return LeftViewHolder(view);
-        } else if(viewType == 0) {
+        } else if(itemList[viewType].viewType == 0) {
             view = LayoutInflater.from(parent.context).inflate(R.layout.chat_center_item, parent, false)
             return CenterViewHolder(view);
         }
@@ -29,8 +30,12 @@ class ChatAdapter(val itemList: ArrayList<ChatlistData>) : RecyclerView.Adapter<
 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+
         if(holder is LeftViewHolder) {
-            if(itemList[position].profile != null) {
+            if(itemList[position-1].viewType != 0 && itemList[position].userId == itemList[position-1].userId) {
+                itemList[position].profile = null
+            }
+            if(!itemList[position].profile.isNullOrEmpty()) {
                 Glide.with(holder.itemView)
                     .load(itemList[position].profile)
                     .transition(DrawableTransitionOptions.withCrossFade())
@@ -44,9 +49,9 @@ class ChatAdapter(val itemList: ArrayList<ChatlistData>) : RecyclerView.Adapter<
             holder.content.text = itemList[position].content
         }
     }
-
+    //itemList[position].viewType
     override fun getItemViewType(position: Int): Int {
-        return itemList[position].viewType
+        return position
     }
 
     override fun getItemCount(): Int {

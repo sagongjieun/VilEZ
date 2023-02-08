@@ -17,6 +17,7 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import kr.co.vilez.R
+import kr.co.vilez.data.chat.ChatlistData
 import kr.co.vilez.data.model.Bookmark
 import kr.co.vilez.data.model.Chatroom
 import kr.co.vilez.data.model.RoomlistData
@@ -37,7 +38,9 @@ import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
 import kr.co.vilez.util.Common.Companion.BOARD_TYPE_SHARE
 import kr.co.vilez.util.DataState
+import kr.co.vilez.util.StompHelper
 import me.relex.circleindicator.CircleIndicator3
+import org.json.JSONObject
 import retrofit2.awaitResponse
 
 
@@ -135,7 +138,6 @@ class ShareDetailActivity : AppCompatActivity(){
                 val fragment = supportFragmentManager.findFragmentById(R.id.share_detail_map)
                 if(fragment != null)
                     supportFragmentManager.beginTransaction().remove(fragment!!).commitNow()
-                //todo 확인할 필요있음!!!!!! 서버도 봅시다
                 val intent = Intent(this@ShareDetailActivity, ChatRoomActivity::class.java)
                 Log.d(TAG, "otherUserId $userId")
                 intent.putExtra("roomId", isExist.data[0].id)
@@ -157,27 +159,15 @@ class ShareDetailActivity : AppCompatActivity(){
                     val fragment = supportFragmentManager.findFragmentById(R.id.share_detail_map)
                     if(fragment != null)
                         supportFragmentManager.beginTransaction().remove(fragment!!).commitNow()
-
                     val intent = Intent(this@ShareDetailActivity, ChatRoomActivity::class.java)
                     intent.putExtra("roomId", result.data[0].id)
                     intent.putExtra("otherUserId", userId!!)
                     intent.putExtra("nickName", binding.writer!!.nickName)
                     intent.putExtra("profile", binding.writer!!.profile_img)
                     intent.putExtra("type", Common.BOARD_TYPE_SHARE)
-                    DataState.set.add(result.data[0].id)
-
-                    DataState.itemList.add(
-                        0, RoomlistData(
-                            result.data[0].id,
-                            binding.writer!!.nickName,
-                            "대화가 시작 되었습니다.",
-                            "",
-                             userId!!,
-                            1,
-                            binding.writer!!.profile_img
-                        )
-                    )
+                    intent.putExtra("init",1)
                     startActivity(intent)
+
                 }
             } else {
                 Toast.makeText(this@ShareDetailActivity, "채팅방 생성을 실패했습니다.", Toast.LENGTH_SHORT).show()

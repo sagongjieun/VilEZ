@@ -67,7 +67,8 @@ class MainActivity : AppCompatActivity() {
                             else
                                 chatData.getInt("fromUserId")
                             , chat.getInt("noReadCount")
-                            , chat.getString("profile")
+                            , chat.getString("profile"),
+                            chatData.getLong("time")
                         )
                     )
                     DataState.set.add(chatData.getInt("roomId"))
@@ -95,7 +96,7 @@ class MainActivity : AppCompatActivity() {
                                 DataState.itemList[index].noReadCnt = 0
                             }
                             DataState.itemList[index].content = json.getString("content")
-
+                            DataState.itemList[index].time = System.currentTimeMillis()
                             chatListFragment.roomAdapter.notifyItemChanged(index)
 
                             val item = DataState.itemList.get(index)
@@ -117,7 +118,8 @@ class MainActivity : AppCompatActivity() {
                                     "",
                                     json.getInt("fromUserId"),
                                     1,
-                                    json.optString("profile","")
+                                    json.optString("profile",""),
+                                    json.getLong("time")
 
                                 )
                             )
