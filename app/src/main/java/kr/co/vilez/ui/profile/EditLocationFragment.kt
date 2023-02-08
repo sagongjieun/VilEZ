@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.databinding.FragmentEditLocationBinding
 import kr.co.vilez.ui.MainActivity
-import kr.co.vilez.ui.dialog.AlertDialog
+import kr.co.vilez.ui.dialog.MyAlertDialog
 import kr.co.vilez.ui.dialog.AlertDialogInterface
 import kr.co.vilez.ui.dialog.AlertDialogWithCallback
 import kr.co.vilez.ui.user.ProfileMenuActivity
@@ -154,7 +154,7 @@ class EditLocation : Fragment(), MapReverseGeoCoder.ReverseGeoCodingResultListen
                     dialog.show(profileMenuActivity.supportFragmentManager, "UserLocation")
                 } else {
                     Log.d(TAG, "onAreaSetClick: 동네 인증 실패")
-                    val dialog = AlertDialog(profileMenuActivity, "동네 인증을 실패했습니다.\n위치 정보를 가져올 수 있는 곳에서 다시 시도해주세요.")
+                    val dialog = MyAlertDialog(profileMenuActivity, "동네 인증을 실패했습니다.\n위치 정보를 가져올 수 있는 곳에서 다시 시도해주세요.")
                     dialog.show(profileMenuActivity.supportFragmentManager, "UserLocation")
                 }
             }

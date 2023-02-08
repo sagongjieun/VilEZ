@@ -8,20 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.*
 import kr.co.vilez.R
-import kr.co.vilez.data.dto.AskData
 import kr.co.vilez.data.dto.BoardData
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentProfileBinding
 import kr.co.vilez.ui.MainActivity
-import kr.co.vilez.ui.ask.AskListAdapter
 import kr.co.vilez.ui.dialog.*
 import kr.co.vilez.ui.profile.BoardListAdapter
-import kr.co.vilez.ui.share.ShareListAdapter
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
 import retrofit2.awaitResponse
@@ -57,7 +53,7 @@ class ProfileFragment : Fragment() {
     private fun initData() {
         myList = arrayListOf()
         myAdapter = BoardListAdapter(myList)
-        binding.rvAppointmentList.apply {
+        binding.rvImminentList.apply {
             adapter = myAdapter
             layoutManager =
                 LinearLayoutManager(mainActivity, LinearLayoutManager.HORIZONTAL, false)
@@ -65,24 +61,30 @@ class ProfileFragment : Fragment() {
 
         var index = 0
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.retrofitAppointmentService.getMyAppointment(ApplicationClass.prefs.getId()).awaitResponse().body()
+            val result = ApplicationClass.retrofitAppointmentService.getMyImminent(ApplicationClass.prefs.getId()).awaitResponse().body()
             Log.d(TAG, "initData: result: $result")
             if (result?.flag == "success") {
                 Log.d(TAG, "initList: success!!!!!  검색 결과 : ${result.data[0].size}  result: $result")
-                if (result.data.isEmpty()) {
+                if (result.data.isEmpty() || result.data[0].isEmpty()) {
                     Log.d(TAG, "onViewCreated: 데이터 0개")
+                    binding.tvReminder.visibility = View.GONE // 잊지마세요!! 문구 안보이게 하기
+                } else {
+                    binding.tvReminder.visibility = View.VISIBLE
                 }
                 for (data in result.data[0]) {
-                    if(data.myAppointListVO.title.isNullOrEmpty()) continue;
+                    Log.d(TAG, "initData: data: $data")
+                    if(data.appointmentDto.title.isNullOrEmpty()) continue;
                     val boardData = BoardData(
-                        data.myAppointListVO.id,
-                        if (data.imgPathList.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.imgPathList[0].path,
-                        data.myAppointListVO.title,
-                        data.myAppointListVO.date,// TODO : DATE 넣어줘야함
-                        data.myAppointListVO.startDay+ " ~ " + data.myAppointListVO.endDay,
+                        data.appointmentDto.boardId,
+                        if (data.imgPath.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.imgPath[0].path,
+                        data.appointmentDto.title,
+                        "", // date는 필요없음
+                        data.appointmentDto.appointmentStart+ " ~ " + data.appointmentDto.appointmentEnd,
                         data.bookmarkCnt.toString(),
-                        data.myAppointListVO.userId,
-                        data.myAppointListVO.type
+                        data.appointmentDto.shareUserId, // TODO : 내꺼냐 남꺼냐에 따라서 id 바꿔서 넣어줘야함
+                        data.appointmentDto.type,
+                        sDay = data.appointmentDto.appointmentStart,
+                        eDay = data.appointmentDto.appointmentEnd
                     )
                     Log.d(TAG, "추가?: $boardData")
                     myList.add(boardData)
@@ -157,7 +159,7 @@ class ProfileFragment : Fragment() {
     }
 
     fun mannerHelp(view: View) { // 매너 지수 클릭했을 때 알림 메시지
-        val dialog = AlertDialog(mainActivity, "매너점수는 빌리지 사용자로부터 받은 후기,\n운영자 제재 등을 종합해서 만든 매너 지표입니다.")
+        val dialog = MyAlertDialog(mainActivity, "매너점수는 빌리지 사용자로부터 받은 후기,\n운영자 제재 등을 종합해서 만든 매너 지표입니다.")
         dialog.show(mainActivity.supportFragmentManager, "MannerHelp")
     }
 
@@ -185,16 +187,30 @@ class ProfileFragment : Fragment() {
     private fun logout(view: View){ // 로그아웃 preference 지우기
         val dialog = ConfirmDialog(object: ConfirmDialogInterface {
             override fun onYesButtonClick(id: String) {
-                Log.d(TAG, "logout: 로그아웃 성공")
-                // 로그아웃 후 로그인 화면이동
-                ApplicationClass.prefs.removeAll() // Shared Preference 삭제
-                val intent = Intent(mainActivity, LoginActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
+
+                CoroutineScope(Dispatchers.Main).launch {
+                    val result = ApplicationClass.retrofitUserService.postLogout(ApplicationClass.prefs.getUser()).awaitResponse().body()
+                    if(result?.flag == "success") {
+                        Log.d(TAG, "logout: 로그아웃 성공")
+                        // 로그아웃 후 로그인 화면이동
+                        ApplicationClass.prefs.removeAll() // Shared Preference 삭제
+                        val intent = Intent(mainActivity, LoginActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                    } else {
+                        val networkDialog = MyAlertDialog(mainActivity,"네트워크에 접속할 수 없습니다.\n네트워크 연결상태를 확인해주세요.")
+                        networkDialog.show(mainActivity.supportFragmentManager, "NetworkFail")
+                        Log.d(TAG, "onYesButtonClick: 네트워크 없어서 로그아웃 실패함. 그래도 일단 시켜주기.")
+                        ApplicationClass.prefs.removeAll() // Shared Preference 삭제
+                        val intent = Intent(mainActivity, LoginActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                    }
+                }
             }
         }, "정말로 로그아웃 하시겠습니까?", "")
-
         dialog.isCancelable = false // 알림창이 띄워져있는 동안 배경 클릭 막기
         dialog.show(mainActivity.supportFragmentManager, "Logout")
     }

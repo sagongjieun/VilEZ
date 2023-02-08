@@ -1,4 +1,4 @@
-package kr.co.vilez.data.appointment
+package kr.co.vilez.data.dto
 
 import kr.co.vilez.data.model.ImgPath
 

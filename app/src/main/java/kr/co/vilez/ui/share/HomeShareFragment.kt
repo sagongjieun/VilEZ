@@ -15,7 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
-import kr.co.vilez.data.dto.ShareData
+import kr.co.vilez.data.dto.ShareDto
 import kr.co.vilez.databinding.FragmentHomeShareBinding
 import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.ui.search.SearchActivity
@@ -24,7 +24,6 @@ import kr.co.vilez.ui.search.category.MenuCategoryActivity
 import kr.co.vilez.ui.share.write.ShareWriteActivity
 import kr.co.vilez.util.ApplicationClass
 import retrofit2.awaitResponse
-import kr.co.vilez.ui.user.ProfileMenuActivity
 import kr.co.vilez.util.Common
 import kr.co.vilez.util.Common.Companion.BOARD_TYPE_SHARE
 
@@ -35,7 +34,7 @@ class HomeShareFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
 
     private lateinit var shareAdapter: ShareListAdapter
-    private lateinit var shareDatas: ArrayList<ShareData>
+    private lateinit var shareDatas: ArrayList<ShareDto>
     private var index = 0
 
 
@@ -138,7 +137,7 @@ class HomeShareFragment : Fragment() {
                     binding.tvNoArticleMsg.visibility = View.VISIBLE
                 }
                 for (data in result.data) {
-                    var shareData = ShareData(
+                    var shareData = ShareDto(
                             data.shareListDto.id,
                             if(data.shareListDto.list.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.shareListDto.list[0].path,
                             data.shareListDto.title,
@@ -172,7 +171,7 @@ class HomeShareFragment : Fragment() {
                     if (result?.data?.size != 0) {
                         if (result?.flag == "success") {
                             for (data in result.data) {
-                                var shareData = ShareData(
+                                var shareData = ShareDto(
                                     data.shareListDto.id,
                                     if(data.shareListDto.list.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.shareListDto.list[0].path,
                                     data.shareListDto.title,

@@ -4,7 +4,7 @@
     <data>
         <variable
             name="point"
-            type="kr.co.vilez.data.appointment.PointData" />
+            type="kr.co.vilez.data.model.PointData" />
     </data>
     
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

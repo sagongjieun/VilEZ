@@ -2,7 +2,7 @@ package kr.co.vilez.util
 
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import kr.co.vilez.ui.dialog.AlertDialog
+import kr.co.vilez.ui.dialog.MyAlertDialog
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
@@ -25,9 +25,12 @@ class Common {
         const val APPOINTMENT_TYPE_SHARE = 1 // 공유중인것
         const val APPOINTMENT_TYPE_RESERVE = 2 // 예약중인것
 
+        const val APPOINTMENT_STATE_SHARE = 1 // 내가 공유자
+        const val APPOINTMENT_STATE_ASK = 0 // 내가 피공유자
+
 
         fun showAlertDialog(context: AppCompatActivity, title:String, tag:String) {
-            val dialog = AlertDialog(context, title)
+            val dialog = MyAlertDialog(context, title)
             // 알림창이 띄워져있는 동안 배경 클릭 막기
             dialog.isCancelable = false
             dialog.show(context.supportFragmentManager, tag)

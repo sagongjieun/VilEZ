@@ -16,8 +16,8 @@ import kr.co.vilez.databinding.DialogAlertBinding
 /***
  * 취소 없이 확인 버튼만 있는 다이얼로그
  */
-class AlertDialog(
-    context:Context,
+class MyAlertDialog(
+    context: Context,
     message: String
 ) : DialogFragment() {
 

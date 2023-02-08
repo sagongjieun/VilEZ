@@ -37,7 +37,7 @@ RecyclerView.Adapter<BoardListAdapter.ShareHolder>(){
                     Intent(binding.root.context, AskDetailActivity::class.java)
                 }
                 intent.putExtra("boardId", item.boardId)
-                intent.putExtra("userId", item.userId)
+                intent.putExtra("userId", item.boardWriterId)
                 binding.root.context.startActivity(intent)
             }
         }

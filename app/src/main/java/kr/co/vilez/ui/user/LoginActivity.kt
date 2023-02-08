@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import kotlinx.coroutines.CoroutineScope
@@ -14,7 +13,7 @@ import kr.co.vilez.R
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.ActivityLoginBinding
 import kr.co.vilez.ui.MainActivity
-import kr.co.vilez.ui.dialog.AlertDialog
+import kr.co.vilez.ui.dialog.MyAlertDialog
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.FCMTokenUtil
 import kr.co.vilez.util.StompHelper
@@ -108,7 +107,7 @@ class LoginActivity : AppCompatActivity() {
                 startActivity(intent)
             } else {
                 Log.d(TAG, "login: 로그인 실패, result:$result")
-                val dialog = AlertDialog(this@LoginActivity, "로그인에 실패했습니다.\n다시 시도 해주세요")
+                val dialog = MyAlertDialog(this@LoginActivity, "로그인에 실패했습니다.\n다시 시도 해주세요")
                 dialog.show(supportFragmentManager, "NaverRegisterFailed")
             }
         }

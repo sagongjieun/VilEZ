@@ -1,4 +1,4 @@
-package kr.co.vilez.data.appointment
+package kr.co.vilez.data.dto
 
 data class PointVO(
     val boardId: Int,
