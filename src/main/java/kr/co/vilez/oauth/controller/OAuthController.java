@@ -78,7 +78,7 @@ public class OAuthController {
                 oAuthUser.setOauth("kakao");
                 oAuthUser.setEmail(kaKaoUserInfoDto.getId());
                 oAuthUser.setNickName(tempNickName);
-                oAuthUser.setPassword(Math.random()+sha256.encrypt(kaKaoUserInfoDto.getAccount()));
+                oAuthUser.setPassword(sha256.encrypt(kaKaoUserInfoDto.getId()));
                 oAuthUser.setProfileImg(kaKaoUserInfoDto.getPath().replaceAll("\"", ""));
 
                 int userId = oAuthService.joinOauth(oAuthUser);
@@ -156,9 +156,10 @@ public class OAuthController {
                 userDto.setOauth("naver");
                 userDto.setEmail(userInfoDto.getId());
                 userDto.setNickName(tempNickName);
-                userDto.setPassword(Math.random()+sha256.encrypt(userInfoDto.getAccount()));
+                userDto.setPassword(sha256.encrypt(userInfoDto.getId()));
                 userDto.setProfileImg(userInfoDto.getPath().replaceAll("\"", ""));
-
+                System.out.println("userInfoDto.getId() = " + userInfoDto.getId());
+                
                 int userId = naverOAuthService.joinOauth(userDto);
 
                 PointVO pointVO = new PointVO();
