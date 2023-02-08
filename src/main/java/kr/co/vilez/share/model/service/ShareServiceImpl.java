@@ -1,5 +1,8 @@
 package kr.co.vilez.share.model.service;
 
+import kr.co.vilez.appointment.model.dto.RoomDto;
+import kr.co.vilez.appointment.model.service.AppointmentService;
+import kr.co.vilez.appointment.model.vo.ChatVO;
 import kr.co.vilez.ask.model.dto.ImgPath2;
 import kr.co.vilez.data.HttpVO;
 import kr.co.vilez.share.model.dto.*;
@@ -15,6 +18,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.ObjectError;
@@ -22,11 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-
+import java.util.*;
 
 
 @Service
@@ -36,9 +36,12 @@ public class ShareServiceImpl implements ShareService{
 
     final ShareDao shareDao;
     final ShareMapper shareMapper;
+    final AppointmentService appointmentService;
     final OSUpload osUpload;
     final UserMapper userMapper;
     final String bucketName = "vilez";
+
+    private final SimpMessageSendingOperations sendingOperations;
 
     @Override
     public HttpVO getBestList(String category, int uesrId, int boardId) throws Exception {
@@ -172,11 +175,40 @@ public class ShareServiceImpl implements ShareService{
         return shareDto;
     }
 
+    // 생각보다 복잡함
+    // 연관된 채팅방 모두 종료
+    String BASE_PROFILE = "https://kr.object.ncloudstorage.com/vilez/basicProfile.png";
     @Override
     public HttpVO delete(@RequestParam int boardId) throws Exception {
         httpVO = new HttpVO();
 
         shareMapper.delete(boardId);
+
+        List<RoomDto> roomDtoList = appointmentService.getRoomListByBoardId(boardId, 2);
+
+        for(RoomDto room : roomDtoList) {
+            ChatVO chatVO = new ChatVO();
+            chatVO.setRoomId(room.getId());
+            chatVO.setFromUserId(room.getShareUserId());
+            chatVO.setToUserId(-1);
+            chatVO.setContent("글이 삭제되어 채팅이 종료됩니다.");
+            chatVO.setTime(System.currentTimeMillis());
+            appointmentService.recvMsg(chatVO);
+
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("nickName","삭제된 글방유저");
+            map.put("content", chatVO.getContent());
+            map.put("roomId",chatVO.getRoomId());
+            map.put("fromUserId",chatVO.getFromUserId());
+            map.put("profile",BASE_PROFILE);
+            map.put("time",chatVO.getTime());
+            sendingOperations.convertAndSend("/sendlist/"+chatVO.getToUserId(),map);
+            sendingOperations.convertAndSend("/sendlist/"+chatVO.getFromUserId(),map);
+            sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+chatVO.getToUserId(),chatVO);
+            sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+chatVO.getFromUserId(),chatVO);
+        }
+
+
 
         return httpVO;
     }
