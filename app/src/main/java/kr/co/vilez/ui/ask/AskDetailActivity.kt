@@ -12,6 +12,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.gmail.bishoybasily.stomp.lib.StompClient
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import kr.co.vilez.R
@@ -262,6 +263,10 @@ class AskDetailActivity : AppCompatActivity() {
                                 intent.putExtra("target", "공유 요청")
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                var data = JSONObject()
+                                data.put("boardId",boardId!!)
+                                data.put("type",1)
+                                StompHelper.stompClient.send("/recvdelete",data.toString()).subscribe()
                                 startActivity(intent)
                                 finish()
                             } else {
