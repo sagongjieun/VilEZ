@@ -7,8 +7,8 @@ import StompRealTime from "../StompRealTime";
 import MeetConfirmModal from "../modal/MeetConfirmModal";
 import QuitChattingModal from "../modal/QuitChattingModal";
 import OathModal from "../modal/OathModal";
-import { useParams } from "react-router-dom";
-import { getBoardIdByRoomId, getChattingRoomState } from "../../api/chat";
+import { useParams, useNavigate } from "react-router-dom";
+import { deleteChatRoom, getBoardIdByRoomId, getChattingRoomState } from "../../api/chat";
 import { getAskArticleDetailByBoardId } from "../../api/ask";
 import { getShareArticleByBoardId } from "../../api/share";
 import { getUserDetail } from "../../api/profile";
@@ -25,6 +25,7 @@ import ShareCancelModal from "../modal/ShareCancelModal";
 const ProductChatting = () => {
   const { roomId } = useParams();
   const loginUserId = localStorage.getItem("id");
+  const navigate = useNavigate();
 
   const setShareData = useSetRecoilState(shareDataState);
 
@@ -56,10 +57,27 @@ const ProductChatting = () => {
   const [shareState, setShareState] = useState(0);
   const [roomState, setRoomState] = useState(0);
   const [isChatEnd, setIsChatEnd] = useState(false);
+  const [isOtherLeave, setIsOtherLeave] = useState(false);
 
   // 채팅 나가기
   function onClickQuit() {
-    setIsQuit(true);
+    // 상대방이 이미 나갔다면 그냥 나가기
+    if (isOtherLeave) {
+      deleteChatRoom(roomId, loginUserId).then((res) => {
+        if (res) {
+          navigate(`/product/list/share`);
+        }
+      });
+    }
+    // 내가 먼저 나가는거면 stomp로
+    else {
+      setIsQuit(true);
+    }
+  }
+
+  function receiveOtherLeave(flag) {
+    // 상대방이 나갔다면
+    if (flag) setIsOtherLeave(true);
   }
 
   // 예약(약속) 확정
@@ -274,6 +292,7 @@ const ProductChatting = () => {
             roomState={roomState}
             sendShareState={receiveShareState}
             isChatEnd={isChatEnd}
+            sendOtherLeave={receiveOtherLeave}
           />
         )}
       </div>
