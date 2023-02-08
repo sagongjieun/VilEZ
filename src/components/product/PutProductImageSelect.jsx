@@ -3,22 +3,21 @@ import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import { AiOutlineClose } from "react-icons/ai";
 import MiddleWideButton from "../button/MiddleWideButton";
-import { useLocation, useParams } from "react-router-dom";
-import { getShareArticleByBoardId } from "../../api/share";
-import { getAskArticleDetailByBoardId } from "../../api/ask";
-const ProductImageSelect = ({ sendImageList, defaultImageList }) => {
+import { useLocation } from "react-router-dom";
+
+const ProductImageSelect = ({ sendImageList }) => {
   const pathname = useLocation().pathname;
-  const boardId = parseInt(useParams().boardId);
+
   const type = pathname.includes("regist") ? 100 : pathname.includes("edit") ? 3 : 102;
-  const listType = pathname.includes("share") ? 2 : 1;
+
   const [imageList, setImageList] = useState([]);
-  // console.log(imageList);
-  useEffect(() => {
-    if (imageList) {
-      setImageList(defaultImageList);
-      // console.log(imageList);
-    }
-  }, []);
+  console.log("자식컴포넌트", imageList);
+  // useEffect(() => {
+  //   if (imageList) {
+  //     setImageList(defaultImageList);
+  //     console.log("IF");
+  //   }
+  // }, []);
 
   function onClickFileUpload() {
     const fileInput = document.getElementById("file-input");
@@ -46,19 +45,6 @@ const ProductImageSelect = ({ sendImageList, defaultImageList }) => {
   useEffect(() => {
     sendImageList(imageList);
   }, [imageList]);
-  useEffect(() => {
-    listType === 2
-      ? getShareArticleByBoardId(boardId).then((res) => {
-          const data = res[0].list;
-          //   console.log("@@@@@@", data[0]);
-          setImageList(data);
-        })
-      : getAskArticleDetailByBoardId(boardId).then((res) => {
-          const data = res[0].list;
-          // console.log("@@@@@@", data);
-          setImageList(data);
-        });
-  }, []);
 
   return (
     <div css={imageWrapper}>
