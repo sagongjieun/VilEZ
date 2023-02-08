@@ -11,10 +11,12 @@ import FindPassword from "./components/signup/FindPassword";
 import OAuthKakao from "./components/login/OAuthKakao";
 import OAuthNaver from "./components/login/OAuthNaver";
 import MyBox from "./pages/MyBox";
+import ScrollToTop from "./components/common/ScrollToTop";
 
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <MainNavBar />
       <ChatOpenIcon />
       <Routes>
