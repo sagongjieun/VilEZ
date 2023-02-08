@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
-import { getUserShare, getUserAsk } from "../../api/profile";
+// import { getUserShare, getUserAsk } from "../../api/profile";
 import ProfileCardView from "./MyBoxCardView";
+import { getMyShareAppointments } from "../../api/appointment";
 
 // const id = localStorage.getItem("id");
 const MyBoxShare = (props) => {
@@ -11,12 +12,11 @@ const MyBoxShare = (props) => {
   const [mySharingBoard, setMySharingBoard] = useState([]);
   const [myToBeSharedBoard, setMyToBeSharedBoard] = useState([]);
   useEffect(() => {
-    getUserShare(userId).then((response) => {
-      setMyBoard(response);
-      setMySharingBoard(response);
-    });
-    getUserAsk(userId).then((response) => {
-      setMyToBeSharedBoard(response);
+    getMyShareAppointments(userId).then((response) => {
+      setMyBoard(response.filter((res) => new Date(res.myAppointListVO.startDay) < new Date()));
+      setMySharingBoard(response.filter((res) => new Date(res.myAppointListVO.startDay) < new Date()));
+      setMyToBeSharedBoard(response.filter((res) => new Date(res.myAppointListVO.startDay) >= new Date()));
+      console.log(response[0].myAppointListVO.startDay);
     });
   }, []);
   useEffect(() => {
@@ -29,7 +29,6 @@ const MyBoxShare = (props) => {
   }, [props.myShareType]);
   useEffect(() => {
     props.setShareDefaultPages(parseInt((myBoard?.length - 1) / 3) + 1);
-    console.log(myBoard);
   }, [myBoard]);
   return (
     <div css={cardWrapper(props.sharePages)}>
@@ -37,13 +36,14 @@ const MyBoxShare = (props) => {
         myBoard.map((share, idx) => (
           <div key={idx}>
             <ProfileCardView
-              title={share.title}
-              endDay={share.endDay}
-              startDay={share.startDay}
-              date={share.date}
-              thumbnail={share.list[0]?.path}
-              boardType={props.myShareType === 1 ? "share" : props.myShareType === 2 ? "ask" : null}
-              boardId={share.id}
+              title={share.myAppointListVO.title}
+              endDay={share.myAppointListVO.endDay}
+              startDay={share.myAppointListVO.startDay}
+              date={share.myAppointListVO.date}
+              thumbnail={share.imgPathList[0]?.path}
+              boardType={1}
+              boardId={share.imgPathList[0].boradId}
+              // dDay={share.}
             />
           </div>
         ))
