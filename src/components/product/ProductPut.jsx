@@ -245,7 +245,13 @@ const ProductPut = () => {
           </h3>
           <span>{location}</span>
         </div>
-        <Map readOnly={false} sendLocation={receiveLocation} />
+        <Map
+          readOnly={false}
+          sendLocation={receiveLocation}
+          path={"modify"}
+          hopeAreaLat={hopeAreaLat}
+          hopeAreaLng={hopeAreaLng}
+        />
       </div>
       <div css={registButtonWrapper}>
         <div>

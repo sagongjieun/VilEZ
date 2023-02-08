@@ -8,7 +8,6 @@ import ProductDeatilHeader from "./ProductDeatilHeader";
 import Map from "../common/Map";
 import ImageSlide from "../common/ImageSlide";
 import ProductDetailFooter from "./ProductDetailFooter";
-// import ProductCardView from "./ProductCardView";
 import { getShareArticleByBoardId, getBookmarkStateByUserId, postBookmark, deleteBookmark } from "../../api/share";
 import elapsedTime from "./ProductElapsedTime";
 import bookmarkCancel from "../../assets/images/bookmarkCancel.png";
@@ -18,7 +17,6 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { postChatRoom } from "../../api/chat";
 import { getAskArticleDetailByBoardId } from "../../api/ask";
 import { getCheckMyRoom } from "../../api/chat";
-// import { getRelatedShareArticle } from "../../api/share";
 
 const ProductDetail = () => {
   const navigate = useNavigate();
@@ -43,7 +41,6 @@ const ProductDetail = () => {
   const [state, setState] = useState(0); // 0 : 일반, 1 : 공유중
   const [writerProfile, setWriterProfile] = useState("");
   const [writerNickname, setWriterNickname] = useState("");
-  // const [writerArea, setWriterArea] = useState("");
   const [writerManner, setWriterManner] = useState("");
   const [isBookmarked, setIsBookmarked] = useState(false);
 
@@ -240,19 +237,6 @@ const ProductDetail = () => {
           <Map readOnly={true} selectedLat={hopeAreaLat} selectedLng={hopeAreaLng} />
         </div>
       </div>
-
-      {/* <DivideLine />
-
-      <div css={relatedProductWrapper}>
-        <div>
-          <h3>관련 인기 게시글</h3>
-        </div>
-        <div>
-          <ProductCardView />
-          <ProductCardView />
-          <ProductCardView />
-        </div>
-      </div> */}
 
       <DivideLine />
 

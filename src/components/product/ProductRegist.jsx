@@ -10,7 +10,6 @@ import MiddleWideButton from "../button/MiddleWideButton";
 import ProductCategory from "./ProductCategory";
 import ProductImageSelect from "./ProductImageSelect";
 import ProductRegistType from "./ProductRegistType";
-// import MapExperiment from "../common/MapExperiment";
 import { useNavigate, useLocation } from "react-router-dom";
 import Map from "./../common/Map";
 
@@ -210,8 +209,7 @@ const ProductRegist = () => {
           </h3>
           <span>{location}</span>
         </div>
-        <Map readOnly={false} sendLocation={receiveLocation} />
-        {/* <MapExperiment readOnly={false} sendLocation={receiveLocation} /> */}
+        <Map readOnly={false} sendLocation={receiveLocation} path={"regist"} />
       </div>
       <div css={registButtonWrapper}>
         <div>
