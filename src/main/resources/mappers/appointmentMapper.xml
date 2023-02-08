@@ -117,7 +117,8 @@
         from appointment as a
         left join sharing_board as s
         on a.board_id = s.id
-        where not_share_user_id = #{userId} or share_user_id = #{userId};
+        where not_share_user_id = #{userId} or share_user_id = #{userId}
+        and s.type = 2;
     </select>
 
     <select id="getMyAppointmentCalendarListAsk" parameterType="int" resultMap="appointment">
@@ -132,7 +133,8 @@
         left join ask_board as s
         on a.board_id = s.id
         where (not_share_user_id = #{userId} or share_user_id = #{userId})
-        and a.state >= 0;
+        and a.state >= 0
+        and s.type = 1;
     </select>
 
     <select id="getBoardState" parameterType="int" resultType="kr.co.vilez.appointment.model.vo.BoardStateVO">
