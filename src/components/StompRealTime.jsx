@@ -38,6 +38,7 @@ const StompRealTime = ({
   roomState,
   sendShareState,
   isChatEnd,
+  sendOtherLeave,
 }) => {
   const scrollRef = useRef();
   const myUserId = localStorage.getItem("id");
@@ -190,7 +191,7 @@ const StompRealTime = ({
         client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
           // 상대방이 채팅방을 나갔다면
           if (JSON.parse(data.body).fromUserId == -1) {
-            console.log("######### 여기서 sharestate, roomstate : ", shareState, roomState);
+            sendOtherLeave(true);
             sendShareState(-1);
           }
           setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
