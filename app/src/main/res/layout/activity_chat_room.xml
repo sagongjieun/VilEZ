@@ -40,7 +40,6 @@
                 android:text=""
                 android:textSize="20sp" />
         </com.google.android.material.appbar.MaterialToolbar>
-        <!-- TODO: Update blank fragment layout -->
         <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"

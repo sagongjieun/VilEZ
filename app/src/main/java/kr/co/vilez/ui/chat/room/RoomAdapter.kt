@@ -33,9 +33,19 @@ class RoomAdapter(val itemList: ArrayList<RoomlistData>) : RecyclerView.Adapter<
             .circleCrop()
             .into(holder.profile)
 
+
         holder.itemView.setOnClickListener {
             holder.noRead.visibility = View.GONE
             itemClickListener.onClick(it, position)
+        }
+        var time = System.currentTimeMillis() - itemList[position].time
+        time = time / 1000 // 1초 단위 // 이게 1시간 보다 작으면 방금 전
+        if(time < 3600) {
+            holder.time.text = "방금 전"
+        } else if(time<86400) {
+            holder.time.text = (time/3600).toInt().toString() + "시간 전"
+        } else {
+            holder.time.text = (time/86400).toInt().toString() + "일 전"
         }
     }
 
@@ -61,6 +71,7 @@ class RoomAdapter(val itemList: ArrayList<RoomlistData>) : RecyclerView.Adapter<
         val content = itemView.findViewById<TextView>(R.id.chat_content)
         val noRead = itemView.findViewById<ImageView>(R.id.no_read)
         val profile = itemView.findViewById<ImageView>(R.id.profile)
+        val time = itemView.findViewById<TextView>(R.id.chat_time)
     }
 
 
