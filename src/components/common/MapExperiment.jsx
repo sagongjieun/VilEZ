@@ -188,7 +188,7 @@ const Map = ({
     if (!readOnly) {
       sendLocation(location, lat, lng, zoomLevel, isMarker);
     }
-  }, [location, lat, lng, zoomLevel, isMarker]);
+  }, [location, lat, lng, zoomLevel]);
 
   /** 실시간 공유 지도 데이터 받기 */
   useEffect(() => {

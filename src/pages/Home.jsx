@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Animated } from "react-animated-css";
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
@@ -9,9 +9,9 @@ import thirdbodyimg from "../assets/images/thirdbodyimg.png";
 import mapimg from "../assets/images/mapimg.png";
 import chatimg from "../assets/images/chatimg.png";
 import { useNavigate } from "react-router-dom";
-// import { useRecoilState } from "recoil";
-// import { locationState } from "../recoil/atom";
-// import { getUserDetail } from "../api/user";
+import { useSetRecoilState } from "recoil";
+import { locationState } from "../recoil/atom";
+import { getUserDetail } from "../api/user";
 
 function MainBody() {
   const [search, setSearch] = useState("");
@@ -31,20 +31,22 @@ function MainBody() {
       mainToProduct();
     }
   };
-  // const userId = localStorage.getItem("id");
-  // const [location, setLocation] = useRecoilState(locationState);
-  // useEffect(() => {
-  //   if (userId) {
-  //     getUserDetail(userId).then((res) => {
-  //       if (res) {
-  //         const userData = res;
-  //         // console.log(userData[0].areaLat);
-  //         setLocation({ areaLat: userData[0].areaLat, areaLng: userData[0].areaLng });
-  //       }
-  //     });
-  //     // console.log(location);
-  //   }
-  // }, [userId]);
+  const userId = localStorage.getItem("id");
+  // 어떤 변수가 상태를 담을 수 있는 그릇을 만들어 줌
+  const setLocation = useSetRecoilState(locationState);
+  // 상태의 값을 불러 올 수 있음
+  // const value = useRecoilValue(locationState);
+  useEffect(() => {
+    if (userId) {
+      getUserDetail(userId).then((res) => {
+        if (res) {
+          const userData = res;
+          setLocation({ areaLat: userData[0].areaLat, areaLng: userData[0].areaLng });
+        }
+      });
+    }
+  }, []);
+  // console.log(value);
 
   return (
     <div>
