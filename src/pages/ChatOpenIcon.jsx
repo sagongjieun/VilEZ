@@ -15,6 +15,7 @@ function ChatOpenIcon() {
   const [modalOpen, setModalOpen] = useRecoilState(modalOpenState);
   const [isNewMessage, setIsNewMessage] = useState(false);
   const [enterChatRoom, setEnterChatRoom] = useRecoilState(enterChatRoomState);
+  const [isSocketConnected, setIsSocketConnected] = useState(false);
 
   const onClickOpenChat = () => {
     if (!modalOpen) setIsNewMessage(false); // 새로운메시지를 확인했다면 알림 지우기
@@ -36,22 +37,25 @@ function ChatOpenIcon() {
             setIsNewMessage(true);
           }
         });
+
+        setIsSocketConnected(true);
       });
     }
   }, []);
 
   useEffect(() => {
-    if (enterChatRoom && loginUserId) {
+    if (enterChatRoom && loginUserId && isSocketConnected) {
       // 해당 방으로 들어갔다는 소켓 send
       const data = {
         roomId: enterChatRoom,
         userId: loginUserId,
       };
 
+      console.log("여기 문제??????????????");
       client.send("/room_enter", {}, JSON.stringify(data));
       setEnterChatRoom(null);
     }
-  }, [enterChatRoom, loginUserId]);
+  }, [enterChatRoom, loginUserId, isSocketConnected]);
 
   return (
     <>
