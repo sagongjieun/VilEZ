@@ -104,8 +104,9 @@ async function deleteBookmark(boardId, userId) {
   try {
     const { data } = await jsonAxios.delete(`/shareboard/bookmark/${boardId}/${userId}`);
 
-    if (data.flag === "success") alert("북마크를 취소하였습니다. 😀");
-    else alert("북마크 취소에 실패하였습니다 😥");
+    if (data.flag === "success") {
+      alert("북마크를 취소하였습니다. 😀");
+    } else alert("북마크 취소에 실패하였습니다 😥");
   } catch (error) {
     console.log(error);
   }
@@ -128,8 +129,10 @@ async function putShareArticle(formData) {
   try {
     const { data } = await formdataAxios.put(`/shareboard`, formData);
     // console.log(formData);
-    if (data.flag === "success") alert("수정되었습니다 😀");
-    else alert("공유 글 수정에 실패하였습니다 😥");
+    if (data.flag === "success") {
+      alert("수정되었습니다 😀");
+      return data.data;
+    } else alert("공유 글 수정에 실패하였습니다 😥");
   } catch (error) {
     console.log(error);
   }

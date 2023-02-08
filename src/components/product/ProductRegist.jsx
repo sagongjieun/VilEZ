@@ -70,7 +70,7 @@ const ProductRegist = () => {
   function onClickRegistButton() {
     // 유효성 검사
     if (registType === "선택해주세요.") {
-      alert("글 등록 타입을 선택해주세요.");
+      alert("공유할 지 요청할 지 선택해주셔야해요.");
       return;
     }
 
@@ -84,12 +84,12 @@ const ProductRegist = () => {
       !startDay ||
       !title
     ) {
-      alert("필수 항목을 모두 채워주세요.");
+      alert("필수 항목을 모두 채워주셔야해요.");
       return;
     }
 
     if (content.length > 300) {
-      alert("물품에 대한 설명은 최대 300자 입력 가능합니다.");
+      alert("물품에 대한 설명은 최대 300자 입력 가능해요.");
       return;
     }
 
@@ -102,7 +102,7 @@ const ProductRegist = () => {
     });
 
     if (!imageList.length) {
-      alert("사진을 첨부해주시겠어요?");
+      alert("사진을 첨부해주시겠어요? 빌리지는 사진첨부가 필수에요");
       return;
     }
 

@@ -37,13 +37,9 @@ const ProductPut = () => {
       ? getShareArticleByBoardId(boardId).then((res) => {
           const data = res[0];
           // console.log(data);
-          if (data.list.length === 0) {
-            setImageList(data.list);
-          }
-          console.log(imageList);
-
           setTitle(data.title);
           setCategory(data.category);
+          setImageList(data.list);
           setContent(data.content);
           setStartDay(data.startDay);
           setEndDay(data.endDay);
@@ -55,7 +51,7 @@ const ProductPut = () => {
           const data = res[0];
           setTitle(data.title);
           setCategory(data.category);
-          setImageList(data.list);
+
           setContent(data.content);
           setStartDay(data.startDay);
           setEndDay(data.endDay);
@@ -68,7 +64,6 @@ const ProductPut = () => {
     const date = new Date(dateStr);
     return !isNaN(date.getTime());
   }
-
   useEffect(() => {
     if (!isValidDate(startDay) || !isValidDate(endDay)) {
       return;
@@ -175,7 +170,7 @@ const ProductPut = () => {
       putShareArticle(formData)
         .then((res) => {
           res = res[0];
-          // console.log(res);
+          console.log(res);
           navigate(`/product/detail/share/${res.id}`);
         })
         .catch((error) => {
@@ -184,7 +179,7 @@ const ProductPut = () => {
     } else if (registType === "물품 요청 등록") {
       putAskArticle(formData)
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           navigate(`/product/detail/ask/${res.id}`);
         })
         .catch((error) => {
