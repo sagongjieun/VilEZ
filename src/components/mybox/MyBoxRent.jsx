@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
-import { getUserShare, getUserAsk } from "../../api/profile";
 import ProfileCardView from "./MyBoxCardView";
+import { getMyRentAppointments } from "../../api/appointment";
 
 // const id = localStorage.getItem("id");
 const MyBoxRent = (props) => {
@@ -11,13 +11,10 @@ const MyBoxRent = (props) => {
   const [myBeingRentedBoard, setMyBeingRentedBoard] = useState([]);
   const [myToBeRentedBoard, setMyToBeRentedBoard] = useState([]);
   useEffect(() => {
-    getUserShare(userId).then((response) => {
-      setMyBoard(response);
-      setMyBeingRentedBoard(response);
-      console.log("rentPage", response);
-    });
-    getUserAsk(userId).then((response) => {
-      setMyToBeRentedBoard(response);
+    getMyRentAppointments(userId).then((response) => {
+      setMyBoard(response.filter((res) => new Date(res.myAppointListVO.startDay) < new Date()));
+      setMyBeingRentedBoard(response.filter((res) => new Date(res.myAppointListVO.startDay) < new Date()));
+      setMyToBeRentedBoard(response.filter((res) => new Date(res.myAppointListVO.startDay) >= new Date()));
     });
   }, []);
   useEffect(() => {
@@ -30,21 +27,20 @@ const MyBoxRent = (props) => {
   }, [props.myRentType]);
   useEffect(() => {
     props.setRentDefaultPages(parseInt((myBoard?.length - 1) / 3) + 1);
-    console.log(myBoard);
   }, [myBoard]);
   return (
     <div css={cardWrapper(props.rentPages)}>
       {myBoard?.length > 0 ? (
-        myBoard.map((share, idx) => (
+        myBoard.map((rent, idx) => (
           <div key={idx}>
             <ProfileCardView
-              title={share.title}
-              endDay={share.endDay}
-              startDay={share.startDay}
-              date={share.date}
-              thumbnail={share.list[0]?.path}
-              boardType={1}
-              boardId={share.id}
+              title={rent.myAppointListVO.title}
+              endDay={rent.myAppointListVO.endDay}
+              startDay={rent.myAppointListVO.startDay}
+              date={rent.myAppointListVO.date}
+              thumbnail={rent.imgPathList[0]?.path}
+              boardType={2}
+              boardId={rent.imgPathList[0].boradId}
             />
           </div>
         ))

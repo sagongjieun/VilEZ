@@ -107,7 +107,27 @@ async function getAppointmentDate(boardId, notShareUserId, shareUserId, type) {
 
 async function getAppointmentsWithinAWeek(userId) {
   try {
-    const { data } = await jsonAxios.get(`/appointments/date/${userId}`);
+    const { data } = await jsonAxios.get(`/appointments/my/date/${userId}`);
+    if (data.flag === "success") return data.data[0];
+    else console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getMyShareAppointments(userId) {
+  try {
+    const { data } = await jsonAxios.get(`/appointments/my/give/${userId}`);
+
+    if (data.flag === "success") return data.data[0];
+    else console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+async function getMyRentAppointments(userId) {
+  try {
+    const { data } = await jsonAxios.get(`/appointments/my/${userId}`);
 
     if (data.flag === "success") return data.data[0];
     else console.log(data);
@@ -188,6 +208,8 @@ export {
   getCheckShareCancelRequest,
   getAppointmentDate,
   getAppointmentsWithinAWeek,
+  getMyShareAppointments,
+  getMyRentAppointments,
   postShareDate,
   postShareReturnState,
   postShareCancelRequest,

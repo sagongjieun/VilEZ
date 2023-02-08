@@ -1,32 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import MyBoxHeader from "./MyBoxHeader";
 // import { Routes, Route } from "react-router-dom";
-import { getAppointmentsByUserId, getShareListByUserId, getNotShareListByUserId } from "../../api/appointment";
+// import { getAppointmentsByUserId } from "../../api/appointment";
 import MyBoxBody from "./MyBoxBody";
 
 const MyBoxMain = () => {
-  const userId = localStorage.getItem("id");
-  const [myShareList, setMyShareList] = useState([]);
-  const [myRentList, setMyRentList] = useState([]);
-  const [myAppointList, setMyAppointList] = useState([]);
-  console.log(myShareList, myRentList, myAppointList);
+  // const userId = localStorage.getItem("id");
+  // const [myShareList, setMyShareList] = useState([]);
+  // const [myRentList, setMyRentList] = useState([]);
+  // const [myAppointList, setMyAppointList] = useState([]);
+  // console.log(myShareList, myRentList, myAppointList);
 
-  useEffect(() => {
-    getAppointmentsByUserId(userId).then((response) => {
-      setMyAppointList([]);
-      console.log(response);
-    });
-    getShareListByUserId(userId).then((response) => {
-      console.log(response);
-      setMyShareList([]);
-    });
-    getNotShareListByUserId(userId).then((response) => {
-      console.log(response);
-      setMyRentList([]);
-    });
-  }, []);
+  // useEffect(() => {
+  //   getAppointmentsByUserId(userId).then((response) => {
+  //     setMyAppointList([]);
+  //     console.log(response);
+  //   });
+  //   getShareListByUserId(userId).then((response) => {
+  //     console.log(response);
+  //     setMyShareList([]);
+  //   });
+  //   getNotShareListByUserId(userId).then((response) => {
+  //     console.log(response);
+  //     setMyRentList([]);
+  //   });
+  // }, []);
   return (
     <div css={mainWrapper}>
       <div>

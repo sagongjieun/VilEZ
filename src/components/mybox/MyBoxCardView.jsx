@@ -6,7 +6,7 @@ import { HiCalendar, HiHeart } from "react-icons/hi";
 // import image from "../../assets/images/product_thumbnail.png";
 import elapsedTime from "../product/ProductElapsedTime";
 
-const MyBoxCardView = ({ title, endDay, startDay, date, thumbnail, boardType, boardId }) => {
+const MyBoxCardView = ({ title, endDay, startDay, date, thumbnail, boardType, boardId, dDay }) => {
   const endDayDotted = endDay.slice(0, 4) + "." + endDay.slice(5, 7) + "." + endDay.slice(8, 10);
   const startDayDotted = startDay.slice(0, 4) + "." + startDay.slice(5, 7) + "." + startDay.slice(8, 10);
   return (
@@ -18,6 +18,7 @@ const MyBoxCardView = ({ title, endDay, startDay, date, thumbnail, boardType, bo
     >
       <div css={relatedProductWrapper}>
         <div css={thumbnailWrapper}>
+          <div>D-{dDay}</div>
           <img src={thumbnail} />
         </div>
         <div css={infoWrapper}>
@@ -60,10 +61,21 @@ const relatedProductWrapper = css`
 `;
 
 const thumbnailWrapper = css`
+  position: relative;
   height: 170px;
   background: #d9d9d9;
   border-radius: 10px 10px 0 0;
-
+  & > div {
+    position: absolute;
+    background-color: #66dd9c;
+    right: 10px;
+    top: 10px;
+    border-radius: 5px;
+    min-width: 45px;
+    padding: 2px 8px;
+    text-align: center;
+    color: #fff;
+  }
   & > img {
     width: 100%;
     height: 170px;
