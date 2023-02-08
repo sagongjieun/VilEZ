@@ -181,7 +181,11 @@ public class AskServiceImpl implements AskService{
             chatVO.setContent("글이 삭제되어 채팅이 종료됩니다.");
             chatVO.setTime(System.currentTimeMillis());
             appointmentService.recvMsg(chatVO);
-
+            try {
+                appointmentService.deleteRoom(chatVO.getRoomId());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             HashMap<String, Object> map = new HashMap<>();
             map.put("nickName","삭제된 글방유저");
             map.put("content", chatVO.getContent());
@@ -193,6 +197,7 @@ public class AskServiceImpl implements AskService{
             sendingOperations.convertAndSend("/sendlist/"+chatVO.getFromUserId(),map);
             sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+chatVO.getToUserId(),chatVO);
             sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+chatVO.getFromUserId(),chatVO);
+            sendingOperations.convertAndSend("/sendend/"+chatVO.getRoomId(),map);
         }
     }
 
