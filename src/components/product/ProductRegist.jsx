@@ -67,7 +67,7 @@ const ProductRegist = () => {
 
   function onClickRegistButton() {
     // 유효성 검사
-    if (registType === "선택해주세요") {
+    if (registType === "선택해주세요.") {
       alert("글 등록 타입을 선택해주세요.");
       return;
     }
@@ -98,7 +98,10 @@ const ProductRegist = () => {
     imageList.forEach((image) => {
       formData.append("image", image);
     });
-
+    if (imageList) {
+      alert("사진을 첨부해주시겠어요?");
+      return;
+    }
     formData.append(
       "board",
       new Blob(
