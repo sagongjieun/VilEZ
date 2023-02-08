@@ -119,7 +119,7 @@
         on a.board_id = s.id
         where (not_share_user_id = #{userId} or share_user_id = #{userId})
         and a.state >= -1
-        and s.type = 2;
+        and a.type = 2;
     </select>
 
     <select id="getMyAppointmentCalendarListAsk" parameterType="int" resultMap="appointment">
@@ -135,7 +135,7 @@
         on a.board_id = s.id
         where (not_share_user_id = #{userId} or share_user_id = #{userId})
         and a.state >= -1
-        and s.type = 1;
+        and a.type = 1;
     </select>
 
     <select id="getBoardState" parameterType="int" resultType="kr.co.vilez.appointment.model.vo.BoardStateVO">
