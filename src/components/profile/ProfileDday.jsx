@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { getAppointmentsWithinAWeek } from "../../api/appointment";
+import ProfileDdaySlide from "./ProfileDdaySlide";
 
 const ProfileDday = () => {
   const userId = localStorage.getItem("id");
@@ -16,19 +17,15 @@ const ProfileDday = () => {
   return (
     <div css={ddayWrapper}>
       <div>
-        <h4>잊지 마세요</h4>
+        {/* <h4>잊지 마세요</h4> */}
+        <ProfileDdaySlide ddaySlideList={appointmentsWithinAWeek} />
       </div>
     </div>
   );
 };
 
 const ddayWrapper = css`
-  height: 50%;
-  padding: 6px 0px;
-  & > div {
-    padding: 10px;
-    & > h4 {
-    }
-  }
+  position: relative;
+  height: 60%;
 `;
 export default ProfileDday;

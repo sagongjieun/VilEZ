@@ -44,8 +44,10 @@ const MyBoxRent = (props) => {
             />
           </div>
         ))
+      ) : props.myRentType === 1 ? (
+        <div css={noCards}>현재 대여중인 물품이 없습니다.</div>
       ) : (
-        <div css={noCards}>작성한 글이 없습니다.</div>
+        <div css={noCards}>대여 예정인 물품이 없습니다.</div>
       )}
     </div>
   );
