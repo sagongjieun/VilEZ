@@ -18,6 +18,8 @@ const Map = ({
   disableMapLat,
   disableMapLng,
   path,
+  hopeAreaLat,
+  hopeAreaLng,
 }) => {
   const [location, setLocation] = useState("마우스 우클릭으로 장소를 선택해주시면 돼요");
   const [lat, setLat] = useState("");
@@ -37,7 +39,7 @@ const Map = ({
     // 지도를 표시할 공간과 초기 중심좌표, 레벨 세팅
     container = document.getElementById("map");
 
-    if (path === "regist") {
+    if (path === "regist" || path === "modify") {
       options = {
         center: new kakao.maps.LatLng(certifiedLocation.areaLat, certifiedLocation.areaLng),
         level: 7,
@@ -98,7 +100,7 @@ const Map = ({
       const latlng = mouseEvent.latLng;
       let failToSelect = false;
 
-      if (path === "regist") {
+      if (path === "regist" || path === "modify") {
         if (
           latlng.getLat() > parseFloat(certifiedLocation.areaLat) - 0.03 &&
           latlng.getLat() < parseFloat(certifiedLocation.areaLat) + 0.03 &&
@@ -178,6 +180,18 @@ const Map = ({
   }
 
   useEffect(() => {
+    if (hopeAreaLat && hopeAreaLng) {
+      initMap();
+      makeRectangle();
+      const latlng = new kakao.maps.LatLng(hopeAreaLat, hopeAreaLng);
+      console.log(latlng);
+
+      marker.setPosition(latlng);
+      marker.setMap(map);
+    }
+  }, [hopeAreaLat, hopeAreaLng]);
+
+  useEffect(() => {
     initMap();
     // geolocationMap();
     if (path === "regist") {
@@ -195,7 +209,6 @@ const Map = ({
   /** 지도 데이터 보내기 */
   useEffect(() => {
     if (!readOnly) {
-      console.log("이걸 두번 보내나");
       sendLocation(location, lat, lng, zoomLevel, isMarker);
     }
   }, [lat, lng, zoomLevel, isMarker]);
