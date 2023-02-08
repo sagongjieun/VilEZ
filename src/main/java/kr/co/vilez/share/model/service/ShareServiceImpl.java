@@ -70,7 +70,13 @@ public class ShareServiceImpl implements ShareService{
 
         Collections.sort(data);
 
-        httpVO.setData(data.subList(0, 3));
+        if(data.size() <= 2){
+            httpVO.setData(data.subList(0, data.size()));
+        } else{
+            httpVO.setData(data.subList(0, 3));
+        }
+
+        httpVO.setData(data);
         return httpVO;
     }
 
