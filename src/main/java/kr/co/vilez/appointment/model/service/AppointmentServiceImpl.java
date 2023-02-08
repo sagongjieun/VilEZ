@@ -329,6 +329,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public void deleteRoom(int roomId) throws Exception {
+        appointmentMapper.deleteRoom(roomId);
+    }
+
+    @Override
     public void recvMsg(ChatVO chatVO) {
         long now = System.currentTimeMillis();
         chatVO.setTime(now);
