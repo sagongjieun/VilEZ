@@ -490,6 +490,7 @@ public class AppointmentController {
         map.put("roomId",chatVO.getRoomId());
         map.put("fromUserId",chatVO.getFromUserId());
         map.put("profile",user.getProfileImg());
+        map.put("time",chatVO.getTime());
         sendingOperations.convertAndSend("/sendlist/"+chatVO.getToUserId(),map);
 
         map.put("nickName",user2.getNickName());
