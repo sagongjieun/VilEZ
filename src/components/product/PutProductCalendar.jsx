@@ -6,16 +6,26 @@ import { css } from "@emotion/react";
 // import { useLocation, useParams } from "react-router-dom";
 // import { getShareArticleByBoardId } from "../../api/share";
 
-const ProductCalendar = ({ sendStartDate, sendEndDate }) => {
+const ProductCalendar = ({ sendStartDate, sendEndDate, defaultStartDay, defaultEndDay }) => {
+  // console.log("=======1=======");
+  // console.log(defaultStartDay);
+  // console.log(defaultEndDay);
+  //
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
+  // console.log(typeof defaultStartDay);
+  // invalid day...
+  useEffect(() => {
+    if (defaultStartDay && defaultEndDay) {
+      setDateRange([defaultStartDay, defaultEndDay]);
+    }
+  }, [defaultStartDay, defaultEndDay]);
 
   useEffect(() => {
     if (startDate) {
       sendStartDate(startDate);
     }
   }, [startDate]);
-
   useEffect(() => {
     if (endDate) {
       sendEndDate(endDate);

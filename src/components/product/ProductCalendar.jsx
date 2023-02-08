@@ -24,6 +24,7 @@ const ProductCalendar = ({ sendStartDate, sendEndDate }) => {
       sendEndDate(endDate);
     }
   }, [endDate]);
+  // console.log("@@@@@", startDate, endDate);
   // useEffect(() => {
   //   type === 2
   //     ? getShareArticleByBoardId(boardId).then((res) => {

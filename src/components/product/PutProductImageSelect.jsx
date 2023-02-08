@@ -11,13 +11,15 @@ const ProductImageSelect = ({ sendImageList, defaultImageList }) => {
   const boardId = parseInt(useParams().boardId);
   const type = pathname.includes("regist") ? 100 : pathname.includes("edit") ? 3 : 102;
   const listType = pathname.includes("share") ? 2 : 1;
-  // console.log(type);
-  // console.log(type);
   const [imageList, setImageList] = useState([]);
+  // console.log(imageList);
   useEffect(() => {
-    setImageList(defaultImageList);
-    // console.log(imageList);
+    if (imageList) {
+      setImageList(defaultImageList);
+      // console.log(imageList);
+    }
   }, []);
+
   function onClickFileUpload() {
     const fileInput = document.getElementById("file-input");
     fileInput.click();
