@@ -10,8 +10,9 @@ import MiddleWideButton from "../button/MiddleWideButton";
 import ProductCategory from "./ProductCategory";
 import ProductImageSelect from "./ProductImageSelect";
 import ProductRegistType from "./ProductRegistType";
-import Map from "../common/Map";
+// import MapExperiment from "../common/MapExperiment";
 import { useNavigate, useLocation } from "react-router-dom";
+import Map from "./../common/Map";
 
 const ProductRegist = () => {
   const loginUserId = localStorage.getItem("id");
@@ -210,6 +211,7 @@ const ProductRegist = () => {
           <span>{location}</span>
         </div>
         <Map readOnly={false} sendLocation={receiveLocation} />
+        {/* <MapExperiment readOnly={false} sendLocation={receiveLocation} /> */}
       </div>
       <div css={registButtonWrapper}>
         <div>
