@@ -17,7 +17,7 @@ const ProfilePoint = (props) => {
 };
 
 const ddayWrapper = css`
-  height: 50%;
+  height: 42%;
   border-bottom: 1px solid #d8d8d8;
   & > div {
     padding: 10px;
@@ -26,7 +26,7 @@ const ddayWrapper = css`
 const myPointWrapper = css`
   display: flex;
   width: 100%;
-  height: 80px;
+  height: 60px;
   align-items: center;
   justify-content: center;
   font-size: 40px;

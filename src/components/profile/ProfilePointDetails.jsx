@@ -59,7 +59,7 @@ const ProfilePointDetails = () => {
                       : data.pointVO.reason === 0
                       ? data.pointVO.point > 0
                         ? "공유"
-                        : "반납"
+                        : "대여"
                       : data.pointVO.reason === 1
                       ? "예약 취소"
                       : "패널티"}

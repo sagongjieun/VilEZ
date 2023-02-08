@@ -214,7 +214,7 @@ const bodyWrapper = css`
         box-sizing: border-box;
         padding: 0 4px;
         font-size: 14px;
-        height: 20px;
+        /* height: 20px; */
         line-height: 20px;
         overflow: hidden;
       }
@@ -230,7 +230,7 @@ const disabled = css`
 `;
 // 오늘 날짜
 const selected = css`
-  background-color: #65df9c26;
+  background-color: #65df9c20;
 `;
 const valid = css`
   background-color: #fff;
@@ -240,15 +240,15 @@ const shareStartDay = css`
   background-color: #66dd9c68;
 `;
 const shareEndDay = css`
-  background-color: #66dd9c;
-  color: #fff;
+  background-color: #66dd9c68;
+  /* color: #fff; */
 `;
 const rentStartDay = css`
   background-color: #8fd2f461;
 `;
 const rentEndDay = css`
-  background-color: #8fd3f4;
-  color: #fff;
+  background-color: #8fd2f461;
+  /* color: #fff; */
 `;
 
 export default ProfileCalender2;
