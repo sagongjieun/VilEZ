@@ -45,7 +45,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
     var topic : Disposable?? =  null
     var topic2 : Disposable?? =  null
     var init = 0
-
+    var chatSizeCheck = false
     private var now : Int = 0
     private val itemList = ArrayList<ChatlistData>()
     private var kakaoMapFragment : KakaoMapFragment?? = null
@@ -104,7 +104,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                         }
                     }
                 }
-                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
                 if(room.type == 2) {
                     var result = ApplicationClass.retrofitShareService.getBoardDetail(room.boardId).awaitResponse().body()
                     if(result?.flag == "success") {
@@ -167,6 +167,10 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                         StompHelper.stompClient.send("/room_enter", data.toString()).subscribe()
                         txt_edit.setText("")
                         rv_chat.scrollToPosition(itemList.size - 1)
+                        if(itemList.size>=5 && !chatSizeCheck) {
+                            chatSizeCheck = true
+                            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+                        }
                     }
                 }
             )
@@ -304,6 +308,12 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                 }
                 roomAdapter.notifyDataSetChanged()
                 rv_chat.scrollToPosition(itemList.size - 1)
+                if(itemList.size <=4) {
+                    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+                } else {
+                        chatSizeCheck = true
+                        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+                }
                 val data = JSONObject()
                 data.put("roomId", roomId)
                 data.put("userId", ApplicationClass.prefs.getId())
@@ -321,7 +331,6 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
             data.put("roomId", room.id)
             data.put("fromUserId", ApplicationClass.prefs.getId())
             data.put("toUserId", otherUserId)
-            println(otherUserId)
             data.put("content", "대화를 시작해보세요 \uD83D\uDE0A")
             data.put("time", System.currentTimeMillis())
             data.put("system",true)
@@ -342,16 +351,6 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                             if(json.getBoolean("system"))
                                 itemList.add(ChatlistData(json.getString("content"), 0,"none",otherUserId))
                             else{
-//                                if(itemList.size == 0) {
-//                                    itemList.add(ChatlistData(json.getString("content"), 1,profile,otherUserId))
-//                                } else {
-//                                    println("로그가 짱이야 "+ itemList[itemList.size-1].profile)
-//                                    if(itemList[itemList.size-1].viewType == 1) {
-//                                        itemList.add(ChatlistData(json.getString("content"), 1,null))
-//                                    } else {
-//
-//                                    }
-//                                }
                                 itemList.add(ChatlistData(json.getString("content"), 1,profile,otherUserId))
                             }
                             roomAdapter.notifyItemInserted(itemList.size-1)
@@ -360,9 +359,10 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                             data.put("roomId", roomId)
                             data.put("userId", ApplicationClass.prefs.getId())
                             StompHelper.stompClient.send("/room_enter", data.toString()).subscribe()
-                            println("ㅇㅇㅇㅇㅇㅇㅇㅇ "+init + " 입니다")
-
-
+                            if(itemList.size>=5 && !chatSizeCheck) {
+                                chatSizeCheck = true
+                                window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+                            }
                         }
                     }
                 }
