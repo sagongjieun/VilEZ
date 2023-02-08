@@ -162,7 +162,7 @@ public class AskServiceImpl implements AskService{
             }
         }
     }
-    String BASE_PROFILE = "https://kr.object.ncloudstorage.com/vilez/basicProfile.png";
+
     @Override
     public void deleteArticle(int boardId) {
         try {
@@ -170,7 +170,7 @@ public class AskServiceImpl implements AskService{
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
+        String BASE_PROFILE = "https://kr.object.ncloudstorage.com/vilez/basicProfile.png";
         List<RoomDto> roomDtoList = appointmentService.getRoomListByBoardId(boardId, 1);
 
         for(RoomDto room : roomDtoList) {
