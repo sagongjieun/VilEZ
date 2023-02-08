@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import kr.co.vilez.R
-import kr.co.vilez.data.appointment.PointData
+import kr.co.vilez.data.model.PointData
 import kr.co.vilez.data.dto.BoardData
 import kr.co.vilez.util.Common.Companion.APPOINTMENT_TYPE_RESERVE
 import kr.co.vilez.util.Common.Companion.APPOINTMENT_TYPE_SHARE

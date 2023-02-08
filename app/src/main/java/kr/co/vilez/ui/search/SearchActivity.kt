@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.Toast
 import androidx.core.view.children
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,15 +17,14 @@ import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.dto.AskData
 import kr.co.vilez.databinding.ActivityShareSearchBinding
-import kr.co.vilez.ui.dialog.AlertDialog
-import kr.co.vilez.data.dto.ShareData
+import kr.co.vilez.ui.dialog.MyAlertDialog
+import kr.co.vilez.data.dto.ShareDto
 import kr.co.vilez.ui.ask.AskListAdapter
 import kr.co.vilez.ui.share.ShareListAdapter
 import kr.co.vilez.ui.user.ProfileMenuActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
 import kr.co.vilez.util.Common.Companion.BOARD_TYPE_ASK
-import kr.co.vilez.util.Common.Companion.BOARD_TYPE_SHARE
 import retrofit2.awaitResponse
 
 private const val TAG = "빌리지_SearchActivity"
@@ -35,7 +33,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivityShareSearchBinding
 
     private lateinit var shareAdapter: ShareListAdapter
-    private lateinit var shareDatas: ArrayList<ShareData>
+    private lateinit var shareDatas: ArrayList<ShareDto>
     private lateinit var askAdapter: AskListAdapter
     private lateinit var askDatas: ArrayList<AskData>
     private var index = 0
@@ -132,7 +130,7 @@ class SearchActivity : AppCompatActivity() {
         val keyword = binding.etSearch.text.toString()
         Log.d(TAG, "initSearchBtn: 선택된 탭: ${binding.searchTabLayout.selectedTabPosition}, 엔터 눌러서 검색함 : $keyword ")
         if (keyword.isEmpty()) {
-            val dialog = AlertDialog(this@SearchActivity, "1글자 이상 입력해주세요.")
+            val dialog = MyAlertDialog(this@SearchActivity, "1글자 이상 입력해주세요.")
             dialog.show(supportFragmentManager, "SearchFailed")
         } else { // 카테고리 검색은 있으니까 무조건 검색어 입력해야함
             when (flag) {
@@ -204,7 +202,7 @@ class SearchActivity : AppCompatActivity() {
                     binding.tvWarnNoResult.visibility = View.GONE
                 }
                 for (data in result.data) {
-                    var shareData = ShareData(
+                    var shareData = ShareDto(
                         data.shareListDto.id,
                         if (data.shareListDto.list.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.shareListDto.list[0].path,
                         data.shareListDto.title,
@@ -237,7 +235,7 @@ class SearchActivity : AppCompatActivity() {
                         if (result?.flag == "success") {
                             Log.d(TAG, "initShareData: success!!!!! 검색 결과 : ${result.data.size}")
                             for (data in result.data) {
-                                var shareData = ShareData(
+                                var shareData = ShareDto(
                                     data.shareListDto.id,
                                     if (data.shareListDto.list.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.shareListDto.list[0].path,
                                     data.shareListDto.title,

@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import kr.co.vilez.data.dto.ShareData
+import kr.co.vilez.data.dto.ShareDto
 import kr.co.vilez.databinding.HomeBoardListItemBinding
 
-class ShareListAdapter(val list: MutableList<ShareData>):
+class ShareListAdapter(val list: MutableList<ShareDto>):
 RecyclerView.Adapter<ShareListAdapter.ShareHolder>(){
 
     var pos = -1
@@ -24,7 +24,7 @@ RecyclerView.Adapter<ShareListAdapter.ShareHolder>(){
     inner class ShareHolder(var binding: HomeBoardListItemBinding):
     RecyclerView.ViewHolder(binding.root) {
 
-        fun bindingInfo(item: ShareData) {
+        fun bindingInfo(item: ShareDto) {
             binding.shareData = item
             binding.root.setOnClickListener {
                 //itemClickListener.onClick(it, layoutPosition)

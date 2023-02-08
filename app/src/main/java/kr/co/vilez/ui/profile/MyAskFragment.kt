@@ -96,21 +96,21 @@ class MyAskFragment : Fragment() {
                     Log.d(TAG, "onViewCreated: 데이터 0개")
                 }
                 for (data in result.data[0]) {
-                    val state = Common.getBoardState(data.myAppointListVO.startDay)
+                    val state = Common.getBoardState(data.myAppointListVO.appointmentStart)
                     if(state == Common.APPOINTMENT_TYPE_RESERVE) continue // 공유 예정인 것은 skip
-
+                    Log.d(TAG, "initReserveData: 이 약속 data: $data")
                     val boardData = BoardData(
-                        data.myAppointListVO.id,
+                        data.myAppointListVO.boardId,
                         if (data.imgPathList.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.imgPathList[0].path,
                         data.myAppointListVO.title,
                         data.myAppointListVO.date,
-                        data.myAppointListVO.startDay+ " ~ " + data.myAppointListVO.endDay,
+                        data.myAppointListVO.appointmentStart+ " ~ " + data.myAppointListVO.appointmentEnd,
                         data.bookmarkCnt.toString(),
-                        data.myAppointListVO.userId,
+                        data.myAppointListVO.shareUserId, // TODO : notShareUserId 중 구분해서 넣어야함
                         data.myAppointListVO.type,
                         state = Common.APPOINTMENT_TYPE_SHARE, // 공유중인 데이터만 넣을거임
-                        sDay = data.myAppointListVO.startDay,
-                        eDay = data.myAppointListVO.endDay,
+                        sDay = data.myAppointListVO.appointmentStart,
+                        eDay = data.myAppointListVO.appointmentEnd,
                     )
                     Log.d(TAG, "추가?: $boardData")
                     boardList.add(boardData)
@@ -139,21 +139,21 @@ class MyAskFragment : Fragment() {
                     Log.d(TAG, "onViewCreated: 데이터 0개")
                 }
                 for (data in result.data[0]) {
-                    val state = Common.getBoardState(data.myAppointListVO.startDay)
+                    val state = Common.getBoardState(data.myAppointListVO.appointmentStart)
                     if(state == Common.APPOINTMENT_TYPE_SHARE) continue // 공유 중인 것은 skip
-
+                    Log.d(TAG, "initReserveData: 이 약속 data: $data")
                     val boardData = BoardData(
-                        data.myAppointListVO.id,
+                        data.myAppointListVO.boardId,
                         if (data.imgPathList.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.imgPathList[0].path,
                         data.myAppointListVO.title,
                         data.myAppointListVO.date,
-                        data.myAppointListVO.startDay+ " ~ " + data.myAppointListVO.endDay,
+                        data.myAppointListVO.appointmentStart+ " ~ " + data.myAppointListVO.appointmentEnd,
                         data.bookmarkCnt.toString(),
-                        data.myAppointListVO.userId,
+                        data.myAppointListVO.shareUserId, // TODO : notShareUserId 중 구분해서 넣어야함
                         data.myAppointListVO.type,
                         state = Common.APPOINTMENT_TYPE_RESERVE, // 공유 예정인 데이터만 넣을거임
-                        sDay = data.myAppointListVO.startDay,
-                        eDay = data.myAppointListVO.endDay,
+                        sDay = data.myAppointListVO.appointmentStart,
+                        eDay = data.myAppointListVO.appointmentEnd,
                     )
                     Log.d(TAG, "추가?: $boardData")
                     boardList.add(boardData)

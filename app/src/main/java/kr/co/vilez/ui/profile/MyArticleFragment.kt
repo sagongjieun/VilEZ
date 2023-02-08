@@ -14,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.dto.AskData
-import kr.co.vilez.data.dto.ShareData
+import kr.co.vilez.data.dto.ShareDto
 import kr.co.vilez.databinding.FragmentSharedListBinding
 import kr.co.vilez.ui.ask.AskListAdapter
 import kr.co.vilez.ui.share.ShareListAdapter
@@ -33,7 +33,7 @@ class MyArticleFragment : Fragment() {
     private val MY_ASK_ARTICLE = 1
 
     private lateinit var shareAdapter:ShareListAdapter
-    private lateinit var shareList:ArrayList<ShareData>
+    private lateinit var shareList:ArrayList<ShareDto>
     private lateinit var askAdapter:AskListAdapter
     private lateinit var askList:ArrayList<AskData>
     private var index = 0
@@ -137,7 +137,7 @@ class MyArticleFragment : Fragment() {
                     Log.d(TAG, "onViewCreated: 데이터 0개")
                 } 
                 for (data in result.data[0]) {
-                    val shareData = ShareData(
+                    val shareData = ShareDto(
                         data.id,
                         if (data.list.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.list[0].path,
                         data.title,

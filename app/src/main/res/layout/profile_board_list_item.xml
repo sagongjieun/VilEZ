@@ -3,7 +3,7 @@
     <data>
         <variable
             name="shareData"
-            type="kr.co.vilez.data.dto.ShareData" />
+            type="kr.co.vilez.data.dto.ShareDto" />
     </data>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"

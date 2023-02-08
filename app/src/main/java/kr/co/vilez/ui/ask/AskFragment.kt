@@ -1,6 +1,5 @@
 package kr.co.vilez.ui.ask
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -14,13 +13,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.dto.AskData
-import kr.co.vilez.data.dto.ShareData
 import kr.co.vilez.databinding.FragmentAskBinding
 import kr.co.vilez.ui.MainActivity
-import kr.co.vilez.ui.ask.write.AskWriteActivity
 import kr.co.vilez.ui.search.SearchActivity
 import kr.co.vilez.ui.search.category.MenuCategoryActivity
-import kr.co.vilez.ui.share.ShareListAdapter
 import kr.co.vilez.ui.share.write.ShareWriteActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
