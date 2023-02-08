@@ -15,7 +15,6 @@ const ChattingModalItem = ({ chat }) => {
     // 방에 들어갔다는 알림을 주기위한 recoil 데이터 저장
     setEnterChatRoom(roomId);
     setModalOpen(!modalOpen);
-    console.log("navigate 전??????????????");
     navigate(`/product/chat/${roomId}`);
   }
 
@@ -26,7 +25,6 @@ const ChattingModalItem = ({ chat }) => {
       <div css={chatInfoWrap}>
         <div>
           <span>{chat.nickName}</span>
-          {chat.area ? <small>{chat.area}</small> : <small>지역 미인증</small>}
           <small>{elapsedTime(chat.chatData.time)}</small>
         </div>
         {chat.chatData.content ? (
