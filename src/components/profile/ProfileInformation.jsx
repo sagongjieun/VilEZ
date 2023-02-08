@@ -7,11 +7,13 @@ import ProfileLocation from "./ProfileLocation";
 import ProfilePoint from "./ProfilePoint";
 import ProfileDday from "./ProfileDday";
 import { getUserDetail } from "../../api/profile";
+import { useSetRecoilState } from "recoil";
+import { loginUserState } from "../../recoil/atom";
 
 // const { kakao } = window;
 const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpen, isEditProfileOpen }) => {
   const id = localStorage.getItem("id");
-  // const id = 28;
+  const setLoginUser = useSetRecoilState(loginUserState);
   const [areaLng, setAreaLng] = useState("");
   const [areaLat, setAreaLat] = useState("");
   const [location, setLocation] = useState("");
@@ -43,6 +45,12 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
       setNickName(response.nickName);
       setManner(response.manner);
       setPoint(response.point);
+      setLoginUser((prev) => {
+        return {
+          ...prev,
+          profileImg: response.profile_img,
+        };
+      });
     });
   }, [isQrCodeOpen, isEditProfileOpen]);
   useEffect(() => {

@@ -4,6 +4,7 @@ import { css, keyframes } from "@emotion/react";
 // import { getUserShare, getUserAsk } from "../../api/profile";
 import ProfileCardView from "./MyBoxCardView";
 import { getMyShareAppointments } from "../../api/appointment";
+import MyBoxDDay from "./MyBoxDDay";
 
 // const id = localStorage.getItem("id");
 const MyBoxShare = (props) => {
@@ -13,10 +14,10 @@ const MyBoxShare = (props) => {
   const [myToBeSharedBoard, setMyToBeSharedBoard] = useState([]);
   useEffect(() => {
     getMyShareAppointments(userId).then((response) => {
-      setMyBoard(response.filter((res) => new Date(res.myAppointListVO.startDay) < new Date()));
-      setMySharingBoard(response.filter((res) => new Date(res.myAppointListVO.startDay) < new Date()));
-      setMyToBeSharedBoard(response.filter((res) => new Date(res.myAppointListVO.startDay) >= new Date()));
-      console.log(response[0].myAppointListVO.startDay);
+      // setMyBoard(response.filter((res) => new Date(res.myAppointListVO.startDay) < new Date()));
+      setMyBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.startDay) <= 0));
+      setMySharingBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.startDay) <= 0));
+      setMyToBeSharedBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.startDay) > 0));
     });
   }, []);
   useEffect(() => {
@@ -42,8 +43,12 @@ const MyBoxShare = (props) => {
               date={share.myAppointListVO.date}
               thumbnail={share.imgPathList[0]?.path}
               boardType={1}
-              boardId={share.imgPathList[0].boradId}
-              // dDay={share.}
+              boardId={share.imgPathList[0]?.boradId}
+              dDay={
+                share.myRentType === 1
+                  ? MyBoxDDay(share.myAppointListVO.endDay)
+                  : MyBoxDDay(share.myAppointListVO.startDay)
+              }
             />
           </div>
         ))

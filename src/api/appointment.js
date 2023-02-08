@@ -59,27 +59,27 @@ async function getShareReturnState(roomId) {
   }
 }
 
-async function getShareListByUserId(userId) {
-  try {
-    const { data } = await jsonAxios.get(`/appointments/my/give/${userId}`);
+// async function getShareListByUserId(userId) {
+//   try {
+//     const { data } = await jsonAxios.get(`/appointments/my/give/${userId}`);
 
-    if (data.flag === "success") return data.data[0].state;
-    else console.log(data);
-  } catch (error) {
-    console.log(error);
-  }
-}
+//     if (data.flag === "success") return data.data[0].state;
+//     else console.log(data);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
-async function getNotShareListByUserId(userId) {
-  try {
-    const { data } = await jsonAxios.get(`/appointments/my/${userId}`);
+// async function getNotShareListByUserId(userId) {
+//   try {
+//     const { data } = await jsonAxios.get(`/appointments/my/${userId}`);
 
-    if (data.flag === "success") return data.data[0].state;
-    else console.log(data);
-  } catch (error) {
-    console.log(error);
-  }
-}
+//     if (data.flag === "success") return data.data[0].state;
+//     else console.log(data);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
 async function getCheckShareCancelRequest(roomId) {
   try {
@@ -203,8 +203,8 @@ export {
   getShareDate,
   getShareState,
   getShareReturnState,
-  getShareListByUserId,
-  getNotShareListByUserId,
+  // getShareListByUserId,
+  // getNotShareListByUserId,
   getCheckShareCancelRequest,
   getAppointmentDate,
   getAppointmentsWithinAWeek,
