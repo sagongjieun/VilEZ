@@ -110,10 +110,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         LocalDate now = LocalDate.now();
         System.out.println("***** now = " + now);
         pointVO.setDate(now.toString());
-
         pointVO.setType(appointmentDto.getType());
-        pointVO.setDate(appointmentDto.getDate());
-
         System.out.println("***** pointVO = " + pointVO);
 
         // 내역 저장
