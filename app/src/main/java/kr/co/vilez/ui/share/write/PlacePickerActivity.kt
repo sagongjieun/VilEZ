@@ -15,8 +15,17 @@ class PlacePickerActivity : AppCompatActivity(), HopePlaceInterface {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_place_picker)
 
-        fragment = HopePlaceFragment().apply {
-            this.listener = this@PlacePickerActivity
+        val lat = intent.getDoubleExtra("lat", 0.0)
+        val lng = intent.getDoubleExtra("lng", 0.0)
+
+        if(lat!=0.0 && lng != 0.0) { // 수정 모드일경우 기존 위/경도 가져오기
+            fragment = HopePlaceFragment.newInstance(lat,lng).apply {
+                this.listener = this@PlacePickerActivity
+            }
+        } else {
+            fragment = HopePlaceFragment().apply {
+                this.listener = this@PlacePickerActivity
+            }
         }
 
         supportFragmentManager.beginTransaction()

@@ -11,12 +11,15 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.applandeo.materialcalendarview.CalendarDay
 import com.applandeo.materialcalendarview.EventDay
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener
 import com.applandeo.materialcalendarview.utils.isEqual
+import com.applandeo.materialcalendarview.utils.setSelectedDayColors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kr.co.vilez.R
 import kr.co.vilez.data.dto.CalendarDto
 import kr.co.vilez.databinding.FragmentCalendarBinding
 import kr.co.vilez.ui.user.ProfileMenuActivity
@@ -73,7 +76,7 @@ class CalendarFragment : Fragment() {
                     val eyear = st.nextToken().toInt()
                     val emonth = st.nextToken().toInt()-1
                     val eday = st.nextToken().toInt()
-                    val start = Calendar.getInstance().also{it.set(syear, smonth, sday)}
+                    val start = Calendar.getInstance().also{it.set(syear, smonth, sday) }
                     val end = Calendar.getInstance().also{it.set(eyear, emonth, eday)}
 
                     val calendar = CalendarDto(
@@ -82,8 +85,8 @@ class CalendarFragment : Fragment() {
                         element.appointmentEnd,
                         element.state,
                         element.type,
-                        start,
-                        end
+                        startCalendar = start,
+                        endCalendar = end,
                     )
                     itemList.add(calendar)
                 }
@@ -93,40 +96,11 @@ class CalendarFragment : Fragment() {
             }
         }
     }
-    private fun getCalendarDtoByDate(calendar:Calendar) {
-        calendarList = arrayListOf()
-        calendarAdapter = CalendarAdapter(calendarList)
-        binding.rvCalendar.apply {
-            adapter = calendarAdapter
-            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-            //            addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
-        }
-        // 날짜 클릭시마다 어댑터 초기화
-        calendarList = arrayListOf()
-        calendarAdapter.notifyDataSetChanged()
-        for(element in itemList) {
-            if(element.startCalendar == calendar) {
-                // 시작 날짜인 데이터 넣기
-                calendarList.add(element)
-            } else if (element.endCalendar == calendar) {
-                // 종료 날짜
-                calendarList.add(element)
-            }
-        }
-        calendarAdapter.notifyDataSetChanged()
-    }
-    
-    
-    private fun initCalendar() {
-       /* calendarList = arrayListOf()
-        calendarAdapter = CalendarAdapter(calendarList)
-        binding.rvCalendar.apply {
-            adapter = calendarAdapter
-            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-            //            addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
-        }*/
-        val events: MutableList<EventDay> = ArrayList()
 
+    private fun initCalendar() {
+        binding.calendarView.setDate(Date(System.currentTimeMillis())) // 디폴트 : 오늘
+
+        val events: MutableList<EventDay> = ArrayList()
         for(element in itemList) {
             // state 1 : 내가 공유자 (공유 -> 초록색)
             // state 0 : 내가 피공유자 (대여 -> 파란색)
@@ -141,8 +115,12 @@ class CalendarFragment : Fragment() {
             // 이 날짜에 클릭 이벤트 주기
         }
         binding.calendarView.setEvents(events)
+
+
+
         binding.calendarView.setOnDayClickListener(object:OnDayClickListener {
             override fun onDayClick(eventDay: EventDay) {
+
                 val selectedYear = eventDay.calendar.get(1)
                 val selectedMonth = eventDay.calendar.get(2)+1
                 val selectedDay = eventDay.calendar.get(5)
