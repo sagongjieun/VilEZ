@@ -62,6 +62,18 @@ async function getMyShareArticle(userId) {
   }
 }
 
+async function getRelatedShareArticle(boardId, category, userId) {
+  try {
+    const { data } = await jsonAxios.get(`/shareboard/best/${boardId}/${category}/${userId}`);
+    console.log(data);
+
+    if (data.flag === "success") return data.data;
+    else return false;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // POST
 
 async function postShareArticle(formData) {
@@ -132,6 +144,7 @@ export {
   getShareArticleList,
   getBookmarkListByBoardId,
   getMyShareArticle,
+  getRelatedShareArticle,
   postShareArticle,
   postBookmark,
   deleteBookmark,

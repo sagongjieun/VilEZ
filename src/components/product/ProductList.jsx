@@ -180,7 +180,8 @@ const ProductList = () => {
     }
   }
   function onClicktoRegist() {
-    navigate("/product/regist");
+    // urlid
+    navigate("/product/regist", { state: { type: urlId } });
   }
 
   // 공유가능 목록 보기위해 작성한 useEffect 0일때 공유가능, 1일때 공유 중
