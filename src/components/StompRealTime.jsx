@@ -5,7 +5,6 @@ import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import baseProfile from "../assets/images/baseProfile.png";
 import Map from "./common/Map";
-import recommendLocationButton from "../assets/images/recommendLocationButton.png";
 import selectDateButton from "../assets/images/selectDateButton.png";
 import openOathButton from "../assets/images/openOathButton.png";
 import { getLatestMapLocation, getChatHistory } from "../api/chat";
@@ -487,13 +486,18 @@ const StompRealTime = ({
       </div>
       <div>
         <div css={menusWrapper}>
-          <img src={selectDateButton} onClick={onClickOpenCalendarModal} />
-          {calendarModalOpen && (
-            <CalendarModal setCalendarModalOpen={setCalendarModalOpen} boardId={boardId} shareState={shareState} />
-          )}
-          <img src={openOathButton} onClick={onClickOpenOath} />
-          <img src={recommendLocationButton} />
+          <div onClick={onClickOpenCalendarModal}>
+            <img src={selectDateButton} />
+            <span>공유 기간 확정</span>
+          </div>
+          <div onClick={onClickOpenOath}>
+            <img src={openOathButton} />
+            <span>서약서 확인</span>
+          </div>
         </div>
+        {calendarModalOpen && (
+          <CalendarModal setCalendarModalOpen={setCalendarModalOpen} boardId={boardId} shareState={shareState} />
+        )}
         <div css={chatWrapper}>
           <div ref={scrollRef}>
             {showingMessage.map((message, index) => {
@@ -564,11 +568,17 @@ const menusWrapper = css`
   justify-content: space-between;
   margin-bottom: 10px;
 
-  & > img {
+  & > div {
     cursor: pointer;
-    width: 60px;
-    height: 60px;
-    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    & > img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
   }
 `;
 

@@ -50,9 +50,11 @@ const ProductDetail = () => {
     if (isBookmarked) {
       deleteBookmark(boardId, loginUserId);
       setIsBookmarked(false);
+      setBookmarkCnt(bookmarkCnt - 1);
     } else {
       postBookmark(boardId, loginUserId);
       setIsBookmarked(true);
+      setBookmarkCnt(bookmarkCnt + 1);
     }
   }
 
@@ -195,11 +197,8 @@ const ProductDetail = () => {
         <div css={nickNameAndChatWrapper}>
           <div css={nickNameWrapper}>
             <img src={writerProfile} alt="writerProfileImage" />
-            <div>
-              <span>{writerNickname}</span>
-              {/* {writerArea ? <span>{writerArea}</span> : <span>동네 미인증</span>} */}
-            </div>
-            <span>{writerManner}</span>
+            <span>{writerNickname}</span>
+            <img src={writerManner} alt="writerMannerPoint" />
           </div>
           <div css={chatWrapper}>
             {isBookmarked ? (
@@ -291,25 +290,22 @@ const nickNameWrapper = css`
   flex-direction: row;
   align-items: center;
 
-  & img {
+  & > img:nth-of-type(1) {
     width: 90px;
     height: 90px;
     margin-right: 20px;
-  }
-
-  & > div {
-    display: flex;
-    flex-direction: column;
-    margin-right: 20px;
-  }
-
-  & > div > span:nth-of-type(1) {
-    margin-bottom: 10px;
-    font-weight: bold;
+    border-radius: 100%;
   }
 
   & > span {
-    font-size: 25px;
+    font-size: 20px;
+    font-weight: bold;
+    margin-right: 10px;
+  }
+
+  & > img:nth-of-type(2) {
+    width: 40px;
+    height: 40px;
   }
 `;
 
