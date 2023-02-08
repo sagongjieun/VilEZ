@@ -106,8 +106,11 @@ public class AppointmentServiceImpl implements AppointmentService {
         pointVO.setUserId(appointmentDto.getShareUserId());
         pointVO.setPoint(-30);
         pointVO.setReason(1);
+
         LocalDate now = LocalDate.now();
+        System.out.println("***** now = " + now);
         pointVO.setDate(now.toString());
+
         pointVO.setType(appointmentDto.getType());
         pointVO.setDate(appointmentDto.getDate());
 
