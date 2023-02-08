@@ -10,6 +10,9 @@ import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import kr.co.vilez.appointment.model.dto.RoomDto;
+import kr.co.vilez.appointment.model.service.AppointmentService;
+import kr.co.vilez.appointment.model.vo.ChatVO;
 import kr.co.vilez.ask.model.dao.AskDao;
 import kr.co.vilez.ask.model.dto.AskDto;
 import kr.co.vilez.ask.model.dto.AskList;
@@ -23,6 +26,7 @@ import kr.co.vilez.user.model.mapper.UserMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +39,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +51,9 @@ public class AskServiceImpl implements AskService{
     final OSUpload osUpload;
     final String bucketName = "vilez";
     final UserMapper userMapper;
+    final AppointmentService appointmentService;
 
+    final SimpMessageSendingOperations sendingOperations;
     @Override
     public ArrayList<AskList> loadAskList(PageNavigator pageNavigator) throws Exception{
         List<AskDto> askDtoList = new ArrayList<>();
@@ -155,13 +162,37 @@ public class AskServiceImpl implements AskService{
             }
         }
     }
-
+    String BASE_PROFILE = "https://kr.object.ncloudstorage.com/vilez/basicProfile.png";
     @Override
     public void deleteArticle(int boardId) {
         try {
             askMapper.deleteArticle(boardId);
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+
+        List<RoomDto> roomDtoList = appointmentService.getRoomListByBoardId(boardId, 1);
+
+        for(RoomDto room : roomDtoList) {
+            ChatVO chatVO = new ChatVO();
+            chatVO.setRoomId(room.getId());
+            chatVO.setFromUserId(room.getShareUserId());
+            chatVO.setToUserId(-1);
+            chatVO.setContent("글이 삭제되어 채팅이 종료됩니다.");
+            chatVO.setTime(System.currentTimeMillis());
+            appointmentService.recvMsg(chatVO);
+
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("nickName","삭제된 글방유저");
+            map.put("content", chatVO.getContent());
+            map.put("roomId",chatVO.getRoomId());
+            map.put("fromUserId",chatVO.getFromUserId());
+            map.put("profile",BASE_PROFILE);
+            map.put("time",chatVO.getTime());
+            sendingOperations.convertAndSend("/sendlist/"+chatVO.getToUserId(),map);
+            sendingOperations.convertAndSend("/sendlist/"+chatVO.getFromUserId(),map);
+            sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+chatVO.getToUserId(),chatVO);
+            sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+chatVO.getFromUserId(),chatVO);
         }
     }
 

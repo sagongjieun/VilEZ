@@ -496,9 +496,6 @@ public class AppointmentController {
         map.put("nickName",user2.getNickName());
         map.put("profile",user2.getProfileImg());
         sendingOperations.convertAndSend("/sendlist/"+chatVO.getFromUserId(),map);
-//        sendingOperations.convertAndSend("/sendmy/"+chatVO.getRoomId()+"/"+chatVO.getFromUserId(),chatVO);
-        System.out.println(chatVO);
-        System.out.println(chatVO.getToUserId());
         sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+chatVO.getToUserId(),chatVO);
 
         // send FCM
