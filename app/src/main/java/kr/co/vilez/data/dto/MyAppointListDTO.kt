@@ -1,9 +1,9 @@
 package kr.co.vilez.data.dto
 
-data class MyAppointListVO(
-    var appointmentEnd: String,
+data class MyAppointListDTO(
+    val appointmentEnd: String,
     val appointmentId: String,
-    var appointmentStart: String,
+    val appointmentStart: String,
     val date: String,
     val endDay: String,
     val hopeAreaLat: String,

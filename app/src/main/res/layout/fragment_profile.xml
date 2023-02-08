@@ -137,6 +137,7 @@
                 android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toStartOf="@id/view_manner_helper"
                 android:onClick="@{fragment.mannerHelp}">
+
                 <TextView
                     android:id="@+id/tv_maner_title"
                     android:layout_width="wrap_content"
@@ -156,24 +157,23 @@
                     android:text="@{fragment.getMannerLevel(userDetail.manner)}"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_maner_title"
-                    app:layout_constraintEnd_toStartOf="@+id/tv_manner_emoji"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_manner_emoji"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/tv_maner_title"
                     app:layout_constraintTop_toTopOf="@+id/tv_maner_title"
                     app:layout_constraintVertical_bias="0.0" />
 
-                <TextView
-                    android:id="@+id/tv_manner_emoji"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:id="@+id/iv_manner_emoji"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_marginEnd="4dp"
-                    android:text="😊"
+                    app:getMannerIcon="@{userDetail.manner}"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_manner_level"
                     app:layout_constraintEnd_toStartOf="@+id/iv_manner_help"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/tv_manner_level"
-                    app:layout_constraintTop_toTopOf="@+id/tv_manner_level"
-                    app:layout_constraintVertical_bias="1.0" />
+                    app:layout_constraintTop_toTopOf="@+id/tv_manner_level" />
 
                 <ImageView
                     android:id="@+id/iv_manner_help"
@@ -181,9 +181,9 @@
                     android:layout_height="8dp"
                     android:layout_marginStart="2dp"
                     android:background="@drawable/question_mark"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_manner_emoji"
-                    app:layout_constraintStart_toEndOf="@+id/tv_manner_emoji"
-                    app:layout_constraintTop_toTopOf="@+id/tv_manner_emoji" />
+                    app:layout_constraintBottom_toBottomOf="@+id/iv_manner_emoji"
+                    app:layout_constraintStart_toEndOf="@+id/iv_manner_emoji"
+                    app:layout_constraintTop_toTopOf="@+id/iv_manner_emoji" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
