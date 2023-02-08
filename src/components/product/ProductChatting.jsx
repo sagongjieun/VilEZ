@@ -110,12 +110,26 @@ const ProductChatting = () => {
 
   // 예약취소 요청 (피공유자에 의해)
   function onClickAskCancelShare() {
-    setIsShareCancelAsk(!isShareCancelAsk);
+    getShareReturnState(roomId).then((res) => {
+      // 반납 확인을 안 눌렀을 때만 예약 취소요청이 가능하게
+      if (res != "true") {
+        setIsShareCancelAsk(!isShareCancelAsk);
+      } else {
+        alert("예약 취소 요청이 불가능합니다.");
+      }
+    });
   }
 
   // 예약 취소 (공유자에 의해)
   function onClickCancelShare() {
-    setIsShareCancel(!isShareCancel);
+    getShareReturnState(roomId).then((res) => {
+      // 반납 확인을 안 눌렀을 때만 예약 취소가 가능하게
+      if (res != "true") {
+        setIsShareCancel(!isShareCancel);
+      } else {
+        alert("예약 취소가 불가능합니다.");
+      }
+    });
   }
 
   // 반납 확인 (공유자에 의해)
