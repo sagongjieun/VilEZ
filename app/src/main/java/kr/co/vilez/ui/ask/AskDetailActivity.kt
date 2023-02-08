@@ -93,7 +93,18 @@ class AskDetailActivity : AppCompatActivity() {
                     intent.putExtra("nickName", binding.writer!!.nickName)
                     intent.putExtra("profile", binding.writer!!.profile_img)
                     intent.putExtra("type", BOARD_TYPE_ASK)
-
+                    DataState.itemList.add(
+                        0, RoomlistData(
+                            isExist.data[0].id,
+                            binding.writer!!.nickName,
+                            "대화를 시작해보세요 \uD83D\uDE0A",
+                            "",
+                            isExist.data.get(0).notShareUserId,
+                            1,
+                            binding.writer!!.profile_img,
+                            System.currentTimeMillis()
+                        )
+                    )
                     DataState.set.add(isExist.data[0].id)
                     startActivity(intent)
 
@@ -111,7 +122,7 @@ class AskDetailActivity : AppCompatActivity() {
 
                         val intent = Intent(this@AskDetailActivity, ChatRoomActivity::class.java)
                         intent.putExtra("roomId", result.data[0].id)
-                        intent.putExtra("otherUserId", writerId!!)
+                        intent.putExtra("otherUserId", result.data.get(0).notShareUserId)
                         intent.putExtra("nickName", binding.writer!!.nickName)
                         intent.putExtra("profile", binding.writer!!.profile_img)
                         intent.putExtra("type", BOARD_TYPE_ASK)

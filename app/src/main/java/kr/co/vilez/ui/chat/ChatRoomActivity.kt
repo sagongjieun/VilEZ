@@ -312,16 +312,21 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
         }
 
         if (init == 1) {
+            if(room.notShareUserId == ApplicationClass.prefs.getId()) {
+                otherUserId = room.shareUserId
+            } else {
+                otherUserId = room.notShareUserId
+            }
             var data = JSONObject()
             data.put("roomId", room.id)
             data.put("fromUserId", ApplicationClass.prefs.getId())
             data.put("toUserId", otherUserId)
+            println(otherUserId)
             data.put("content", "대화를 시작해보세요 \uD83D\uDE0A")
             data.put("time", System.currentTimeMillis())
             data.put("system",true)
             StompHelper.stompClient.send("/recvchat", data.toString()).subscribe()
             init = 0
-
         }
 
         if(room.state == 0) {
