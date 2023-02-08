@@ -185,12 +185,15 @@ public class ShareServiceImpl implements ShareService{
     public HttpVO update(ShareDto shareDto, List<MultipartFile> multipartFiles) throws Exception {
         httpVO = new HttpVO();
         shareDto.setList(new ArrayList<>());
+
         shareMapper.update(shareDto);
         shareDao.delete(shareDto.getId());
+
         shareDto.setList(new ArrayList<>());
         if(!multipartFiles.get(0).getOriginalFilename().equals("")) {
             shareDto = saveFiles(shareDto, multipartFiles);
         }
+
         httpVO.setFlag("success");
         List<ShareDto> data = new ArrayList<>();
         data.add(shareDto);
