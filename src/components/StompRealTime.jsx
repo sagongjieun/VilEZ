@@ -242,6 +242,7 @@ const StompRealTime = ({
 
           setShowingMessage([sendMessage]);
 
+          console.log("채팅방 최초 send 전??????????????");
           client.send("/recvchat", {}, JSON.stringify(sendMessage));
         }
       });
