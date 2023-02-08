@@ -253,8 +253,8 @@
             and state = 0
     </select>
 
-    <select id="getRoomListByBoardId" parameterType="int" resultType="list">
-        SELECT id, type, board_id boardId,share_user_id shareUserId, not_share_user_id notShareUserId, state
+    <select id="getRoomListByBoardId" parameterType="int" resultMap="room">
+        SELECT *
         from room
         where type = #{type} and board_id = #{boardId} and state = 0
     </select>
