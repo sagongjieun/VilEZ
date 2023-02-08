@@ -62,6 +62,18 @@ async function getMyShareArticle(userId) {
   }
 }
 
+async function getRelatedShareArticle(boardId, category, userId) {
+  try {
+    const { data } = await jsonAxios.get(`/shareboard/best/${boardId}/${category}/${userId}`);
+    console.log(data);
+
+    if (data.flag === "success") return data.data;
+    else return false;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // POST
 
 async function postShareArticle(formData) {
@@ -92,8 +104,9 @@ async function deleteBookmark(boardId, userId) {
   try {
     const { data } = await jsonAxios.delete(`/shareboard/bookmark/${boardId}/${userId}`);
 
-    if (data.flag === "success") alert("북마크를 취소하였습니다. 😀");
-    else alert("북마크 취소에 실패하였습니다 😥");
+    if (data.flag === "success") {
+      alert("북마크를 취소하였습니다. 😀");
+    } else alert("북마크 취소에 실패하였습니다 😥");
   } catch (error) {
     console.log(error);
   }
@@ -116,8 +129,10 @@ async function putShareArticle(formData) {
   try {
     const { data } = await formdataAxios.put(`/shareboard`, formData);
     // console.log(formData);
-    if (data.flag === "success") alert("수정되었습니다 😀");
-    else alert("공유 글 수정에 실패하였습니다 😥");
+    if (data.flag === "success") {
+      alert("수정되었습니다 😀");
+      return data.data;
+    } else alert("공유 글 수정에 실패하였습니다 😥");
   } catch (error) {
     console.log(error);
   }
@@ -129,6 +144,7 @@ export {
   getShareArticleList,
   getBookmarkListByBoardId,
   getMyShareArticle,
+  getRelatedShareArticle,
   postShareArticle,
   postBookmark,
   deleteBookmark,

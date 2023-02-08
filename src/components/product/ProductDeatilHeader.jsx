@@ -10,11 +10,17 @@ const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
   const pathname = useLocation().pathname;
   const boardId = parseInt(useParams().boardId);
   const type = pathname.includes("share") ? 2 : 1;
+  const navigate = useNavigate();
+  // console.log(boardId);
 
   function onClickDelete() {
-    const navigate = useNavigate();
-    type === 2 ? deleteAskArticleByBoardId(boardId) : deleteShareArticleByBoardId(boardId);
-    navigate(`/product/list/share`);
+    type === 2
+      ? deleteShareArticleByBoardId(boardId).then(() => {
+          navigate(`/product/list/share`);
+        })
+      : deleteAskArticleByBoardId(boardId).then(() => {
+          navigate(`/product/list/ask`);
+        });
   }
   return (
     <div css={headerWrapper}>
@@ -112,6 +118,7 @@ const headerRightSectionWrapper = css`
 const optionWrap = css`
   margin-right: 10px;
   color: black;
+  cursor: pointer;
 `;
 
 export default ProductDeatilHeader;

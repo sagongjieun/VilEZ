@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { postShareArticle } from "../../api/share";
@@ -11,13 +11,15 @@ import ProductCategory from "./ProductCategory";
 import ProductImageSelect from "./ProductImageSelect";
 import ProductRegistType from "./ProductRegistType";
 import Map from "../common/Map";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const ProductRegist = () => {
   const loginUserId = localStorage.getItem("id");
   const navigate = useNavigate();
+  const loc = useLocation();
 
   const [registType, setRegistType] = useState("");
+  const [sendType, setSendType] = useState("");
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [content, setContent] = useState("");
@@ -68,7 +70,7 @@ const ProductRegist = () => {
   function onClickRegistButton() {
     // 유효성 검사
     if (registType === "선택해주세요.") {
-      alert("글 등록 타입을 선택해주세요.");
+      alert("공유할 지 요청할 지 선택해주셔야해요.");
       return;
     }
 
@@ -82,12 +84,12 @@ const ProductRegist = () => {
       !startDay ||
       !title
     ) {
-      alert("필수 항목을 모두 채워주세요.");
+      alert("필수 항목을 모두 채워주셔야해요.");
       return;
     }
 
     if (content.length > 300) {
-      alert("물품에 대한 설명은 최대 300자 입력 가능합니다.");
+      alert("물품에 대한 설명은 최대 300자 입력 가능해요.");
       return;
     }
 
@@ -98,10 +100,12 @@ const ProductRegist = () => {
     imageList.forEach((image) => {
       formData.append("image", image);
     });
-    if (imageList) {
-      alert("사진을 첨부해주시겠어요?");
+
+    if (!imageList.length) {
+      alert("사진을 첨부해주시겠어요? 빌리지는 사진첨부가 필수에요");
       return;
     }
+
     formData.append(
       "board",
       new Blob(
@@ -144,9 +148,21 @@ const ProductRegist = () => {
     }
   }
 
+  useEffect(() => {
+    if (loc.state) {
+      if (loc.state.type == 2) {
+        setRegistType("물품 공유 등록");
+        setSendType("물품 공유 등록");
+      } else {
+        setRegistType("물품 요청 등록");
+        setSendType("물품 요청 등록");
+      }
+    }
+  }, []);
+
   return (
     <div css={wrapper}>
-      <ProductRegistType sendRegistType={receiveRegistType} />
+      <ProductRegistType sendRegistType={receiveRegistType} sendType={sendType} />
       <DivideLine />
       <div css={titleWrapper}>
         <h3>

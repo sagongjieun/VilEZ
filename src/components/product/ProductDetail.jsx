@@ -8,7 +8,7 @@ import ProductDeatilHeader from "./ProductDeatilHeader";
 import Map from "../common/Map";
 import ImageSlide from "../common/ImageSlide";
 import ProductDetailFooter from "./ProductDetailFooter";
-import ProductCardView from "./ProductCardView";
+// import ProductCardView from "./ProductCardView";
 import { getShareArticleByBoardId, getBookmarkStateByUserId, postBookmark, deleteBookmark } from "../../api/share";
 import elapsedTime from "./ProductElapsedTime";
 import bookmarkCancel from "../../assets/images/bookmarkCancel.png";
@@ -18,6 +18,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { postChatRoom } from "../../api/chat";
 import { getAskArticleDetailByBoardId } from "../../api/ask";
 import { getCheckMyRoom } from "../../api/chat";
+// import { getRelatedShareArticle } from "../../api/share";
 
 const ProductDetail = () => {
   const navigate = useNavigate();
@@ -50,9 +51,11 @@ const ProductDetail = () => {
     if (isBookmarked) {
       deleteBookmark(boardId, loginUserId);
       setIsBookmarked(false);
+      setBookmarkCnt(bookmarkCnt - 1);
     } else {
       postBookmark(boardId, loginUserId);
       setIsBookmarked(true);
+      setBookmarkCnt(bookmarkCnt + 1);
     }
   }
 
@@ -195,11 +198,8 @@ const ProductDetail = () => {
         <div css={nickNameAndChatWrapper}>
           <div css={nickNameWrapper}>
             <img src={writerProfile} alt="writerProfileImage" />
-            <div>
-              <span>{writerNickname}</span>
-              {/* {writerArea ? <span>{writerArea}</span> : <span>동네 미인증</span>} */}
-            </div>
-            <span>{writerManner}</span>
+            <span>{writerNickname}</span>
+            <img src={writerManner} alt="writerMannerPoint" />
           </div>
           <div css={chatWrapper}>
             {isBookmarked ? (
@@ -243,19 +243,18 @@ const ProductDetail = () => {
         </div>
       </div>
 
-      <DivideLine />
+      {/* <DivideLine />
 
       <div css={relatedProductWrapper}>
         <div>
           <h3>관련 인기 게시글</h3>
         </div>
         <div>
-          {/* 카테고리별 북마크 많은 거 3개 */}
           <ProductCardView />
           <ProductCardView />
           <ProductCardView />
         </div>
-      </div>
+      </div> */}
 
       <DivideLine />
 
@@ -291,25 +290,22 @@ const nickNameWrapper = css`
   flex-direction: row;
   align-items: center;
 
-  & img {
+  & > img:nth-of-type(1) {
     width: 90px;
     height: 90px;
     margin-right: 20px;
-  }
-
-  & > div {
-    display: flex;
-    flex-direction: column;
-    margin-right: 20px;
-  }
-
-  & > div > span:nth-of-type(1) {
-    margin-bottom: 10px;
-    font-weight: bold;
+    border-radius: 100%;
   }
 
   & > span {
-    font-size: 25px;
+    font-size: 20px;
+    font-weight: bold;
+    margin-right: 10px;
+  }
+
+  & > img:nth-of-type(2) {
+    width: 40px;
+    height: 40px;
   }
 `;
 
@@ -398,26 +394,26 @@ const hopeAreaWrapper = css`
   }
 `;
 
-const relatedProductWrapper = css`
-  margin: 50px 0;
-  display: flex;
-  flex-direction: column;
+// const relatedProductWrapper = css`
+//   margin: 50px 0;
+//   display: flex;
+//   flex-direction: column;
 
-  & > div {
-    display: flex;
-    flex-direction: row;
-  }
+//   & > div {
+//     display: flex;
+//     flex-direction: row;
+//   }
 
-  & > div:nth-of-type(1) {
-    margin-bottom: 30px;
-    justify-content: space-between;
-    align-items: flex-end;
+//   & > div:nth-of-type(1) {
+//     margin-bottom: 30px;
+//     justify-content: space-between;
+//     align-items: flex-end;
 
-    & > a {
-      cursor: pointer;
-      font-size: 18px;
-    }
-  }
-`;
+//     & > a {
+//       cursor: pointer;
+//       font-size: 18px;
+//     }
+//   }
+// `;
 
 export default ProductDetail;

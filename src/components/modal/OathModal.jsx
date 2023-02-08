@@ -18,6 +18,7 @@ function OathModal({ close, roomId, readOnly, oathSign }) {
   const [receiver, setReceiver] = useState("");
   const [isSign, setIsSign] = useState(false);
   const [isCanvasAccept, setIsCanvasAccept] = useState(false);
+  const [flag, setFlag] = useState(false);
 
   function onClickNo() {
     close(false);
@@ -41,13 +42,19 @@ function OathModal({ close, roomId, readOnly, oathSign }) {
   }
 
   useEffect(() => {
-    getUserDetail(shareData.shareUserId).then((res) => {
+    getUserDetail(parseInt(shareData.shareUserId)).then((res) => {
       setGiver(res.nickName);
+      setFlag(true);
     });
-    getUserDetail(shareData.notShareUserId).then((res) => {
-      setReceiver(res.nickName);
-    });
-  }, []);
+  }, [shareData.shareUserId]);
+
+  useEffect(() => {
+    if (flag) {
+      getUserDetail(shareData.notShareUserId).then((res) => {
+        setReceiver(res.nickName);
+      });
+    }
+  }, [shareData.notShareUserId, flag]);
 
   useEffect(() => {
     // 서명이 서버로 전송되고 나면 약속 확정
@@ -128,7 +135,7 @@ function OathModal({ close, roomId, readOnly, oathSign }) {
             <img css={signImage} src={oathSign} />
           </div>
           <div css={buttonReadOnlyWrap}>
-            <MiddleWideButton text={"닫기"} onclick={onClickNo} cancel={true} />
+            <MiddleWideButton text={"닫기"} onclick={onClickNo} />
           </div>
         </div>
       )}
