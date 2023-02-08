@@ -5,7 +5,7 @@ import { HiChevronDown, HiChevronUp } from "react-icons/hi2";
 import DivideLine from "./../common/DivideLine";
 import { useLocation } from "react-router-dom";
 
-const ProductRegistType = ({ sendRegistType }) => {
+const ProductRegistType = ({ sendRegistType, sendType }) => {
   const pathname = useLocation().pathname;
   const type = pathname.includes("share")
     ? "물품 공유 등록"
@@ -39,6 +39,12 @@ const ProductRegistType = ({ sendRegistType }) => {
   useEffect(() => {
     sendRegistType(registType);
   }, [registType]);
+
+  useEffect(() => {
+    if (sendType) {
+      setRegistType(sendType);
+    }
+  }, [sendType]);
 
   return (
     <div css={registTypeWrapper}>
