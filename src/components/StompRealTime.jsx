@@ -100,6 +100,7 @@ const StompRealTime = ({
 
     setShowingMessage((prev) => [...prev, sendMessage]);
 
+    console.log("StompRealTime send12 오류");
     client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
     setChatMessage("");
@@ -121,6 +122,7 @@ const StompRealTime = ({
         isMarker: isMarker,
       };
 
+      console.log("StompRealTime send13 오류");
       client.send("/recvmap", {}, JSON.stringify(sendMapData));
     }
   }
@@ -188,6 +190,7 @@ const StompRealTime = ({
       // 웹소켓과 연결됐을 때 동작하는 콜백함수들
       client.connect({}, () => {
         // 다른 유저의 채팅을 구독
+        console.log("StompRealTime subscribe1 오류");
         client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
           // 상대방이 채팅방을 나갔다면
           if (JSON.parse(data.body).fromUserId == -1) {
@@ -198,21 +201,25 @@ const StompRealTime = ({
         });
 
         // 예약 확정을 구독
+        console.log("StompRealTime subscribe2 오류");
         client.subscribe(`/sendappoint/${chatRoomId}`, () => {
           sendShareState(0);
         });
 
         // 예약 취소를 구독
+        console.log("StompRealTime subscribe3 오류");
         client.subscribe(`/sendcancel/${chatRoomId}`, () => {
           sendShareState(-2);
         });
 
         // 공유 종료를 구독
+        console.log("StompRealTime subscribe4 오류");
         client.subscribe(`/sendend/${chatRoomId}`, () => {
           sendShareState(-1);
         });
 
         // 공유지도를 구독
+        console.log("StompRealTime subscribe5 오류");
         client.subscribe(`/sendmap/${chatRoomId}/${myUserId}`, (data) => {
           data = JSON.parse(data.body);
 
@@ -248,7 +255,7 @@ const StompRealTime = ({
 
           setShowingMessage([sendMessage]);
 
-          console.log("채팅방 최초 send 전??????????????");
+          console.log("StompRealTime send1 오류");
           client.send("/recvchat", {}, JSON.stringify(sendMessage));
         }
       });
@@ -292,6 +299,7 @@ const StompRealTime = ({
 
       setShowingMessage((prev) => [...prev, sendMessage]);
 
+      console.log("StompRealTime send2 오류");
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
       setCheckShareDate(false);
@@ -320,7 +328,9 @@ const StompRealTime = ({
 
       setShowingMessage((prev) => [...prev, sendMessage]);
 
+      console.log("StompRealTime send3 오류");
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
+      console.log("StompRealTime send4 오류");
       client.send("/recvappoint", {}, JSON.stringify(appointMessage));
 
       setCheckAppointment(false);
@@ -339,6 +349,7 @@ const StompRealTime = ({
 
       setShowingMessage((prev) => [...prev, sendMessage]);
 
+      console.log("StompRealTime send5 오류");
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
       setCheckShareCancelAsk(false);
@@ -374,6 +385,7 @@ const StompRealTime = ({
 
       setShowingMessage((prev) => [...prev, sendMessage]);
 
+      console.log("StompRealTime send6 오류");
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
       setCheckShareCancel(false);
@@ -392,6 +404,7 @@ const StompRealTime = ({
 
       setShowingMessage((prev) => [...prev, sendMessage]);
 
+      console.log("StompRealTime send7 오류");
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
       setCheckShareReturn(false);
@@ -410,6 +423,7 @@ const StompRealTime = ({
 
       setShowingMessage((prev) => [...prev, sendMessage]);
 
+      console.log("StompRealTime send8 오류");
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
       setCheckUserLeave(false);
@@ -429,7 +443,9 @@ const StompRealTime = ({
 
       setShowingMessage((prev) => [...prev, sendMessage]);
 
+      console.log("StompRealTime send9 오류");
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
+      console.log("StompRealTime send10 오류");
       client.send("/recvend", {}, JSON.stringify({ roomId: roomId }));
     }
   }, [
@@ -444,6 +460,7 @@ const StompRealTime = ({
 
   useEffect(() => {
     if (cancelMessage.roomId && cancelMessage.reason) {
+      console.log("StompRealTime send11 오류");
       client.send("/recvcancel", {}, JSON.stringify(cancelMessage));
     }
   }, [cancelMessage]);
