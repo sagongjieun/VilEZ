@@ -27,11 +27,11 @@ const ProfileMyBookMark = (props) => {
           return (
             <div key={share.id}>
               <ProfileCardView
-                title={share.title}
+                title={share?.title}
                 endDay={share.endDay}
                 startDay={share.startDay}
                 date={share.date}
-                thumbnail={share.list[0].path}
+                thumbnail={share.list[0]?.path}
                 boardType={"share"}
                 boardId={share.id}
               />

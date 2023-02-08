@@ -6,6 +6,7 @@ import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from "date-fns";
 // import { isSameMonth, isSameDay, addDays, parse } from "date-fns";
 import { isSameMonth, isSameDay, addDays } from "date-fns";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
+import { getAppointmentsByUserId } from "../../api/appointment";
 
 const RenderHeader = ({ currentMonth, prevMonth, nextMonth }) => {
   return (
@@ -40,6 +41,7 @@ const RenderCells = ({ currentMonth, selectedDate }) => {
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart);
   const endDate = endOfWeek(monthEnd);
+  const userId = localStorage.getItem("id");
 
   const rows = [];
   let days = [];
@@ -70,37 +72,41 @@ const RenderCells = ({ currentMonth, selectedDate }) => {
     return filteredAppointments;
   }
   useEffect(() => {
-    const dummyData = [
-      {
-        appointmentId: 1,
-        appointmentStart: "2023-02-05",
-        appointmentEnd: "2023-02-07",
-        state: 1,
-        title: "내가 공유함",
-      },
-      {
-        appointmentId: 1,
-        appointmentStart: "2023-02-06",
-        appointmentEnd: "2023-02-10",
-        state: 1,
-        title: "내가 공유함 전동드리힐힐힐",
-      },
-      {
-        appointmentId: 1,
-        appointmentStart: "2023-02-12",
-        appointmentEnd: "2023-02-14",
-        state: 2,
-        title: "내가 대여함",
-      },
-      {
-        appointmentId: 1,
-        appointmentStart: "2023-02-15",
-        appointmentEnd: "2023-02-17",
-        state: 2,
-        title: "내가 대여함",
-      },
-    ];
-    setAppointList(dummyData);
+    getAppointmentsByUserId(userId).then((response) => {
+      setAppointList(response[0]);
+      console.log(response[0]);
+    });
+    // const dummyData = [
+    //   {
+    //     appointmentId: 1,
+    //     appointmentStart: "2023-02-05",
+    //     appointmentEnd: "2023-02-07",
+    //     state: 1,
+    //     title: "내가 공유함",
+    //   },
+    //   {
+    //     appointmentId: 1,
+    //     appointmentStart: "2023-02-06",
+    //     appointmentEnd: "2023-02-10",
+    //     state: 1,
+    //     title: "내가 공유함 전동드리힐힐힐",
+    //   },
+    //   {
+    //     appointmentId: 1,
+    //     appointmentStart: "2023-02-12",
+    //     appointmentEnd: "2023-02-14",
+    //     state: 2,
+    //     title: "내가 대여함",
+    //   },
+    //   {
+    //     appointmentId: 1,
+    //     appointmentStart: "2023-02-15",
+    //     appointmentEnd: "2023-02-17",
+    //     state: 2,
+    //     title: "내가 대여함",
+    //   },
+    // ];
+    // setAppointList(dummyData);
   }, []);
 
   while (day <= endDate) {
@@ -224,7 +230,7 @@ const disabled = css`
 `;
 // 오늘 날짜
 const selected = css`
-  background-color: #66dd9c11;
+  background-color: #65df9c26;
 `;
 const valid = css`
   background-color: #fff;
