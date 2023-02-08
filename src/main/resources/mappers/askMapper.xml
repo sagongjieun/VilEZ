@@ -39,6 +39,7 @@
             (CAST(hope_area_lat as Double) >= (#{areaLat} - 0.03) and (#{areaLat} + 0.03) >= CAST(hope_area_lat as Double))
             AND
             (CAST(hope_area_lng as Double) >= (#{areaLng} - 0.03) and (#{areaLng} + 0.03) >= CAST(hope_area_lng as Double))
+            and (now() >= start_day and end_day >= now())
             <if test ="word != null and word != ''">
                 AND (title like #{word} OR content like #{word})
             </if>

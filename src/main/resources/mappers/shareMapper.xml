@@ -65,7 +65,7 @@
         <where>
             OR (CAST(hope_area_lat as Double) >= (#{areaLat} - 0.03) and (#{areaLat} + 0.03) >= CAST(hope_area_lat as Double))
             and (CAST(hope_area_lng as Double) >= (#{areaLng} - 0.03) and (#{areaLng} + 0.03) >= CAST(hope_area_lng as Double))
-
+            and (now() >= start_day and end_day >= now())
             <if test="category != null and category != ''">
                 AND category = #{category}
             </if>
@@ -101,13 +101,14 @@
             (CAST(hope_area_lat as Double) >= (#{areaLat} - 0.03) and (#{areaLat} + 0.03) >= CAST(hope_area_lat as Double))
             AND
             (CAST(hope_area_lng as Double) >= (#{areaLng} - 0.03) and (#{areaLng} + 0.03) >= CAST(hope_area_lng as Double))
+            and (now() >= start_day and end_day >= now())
             <if test ="word != null and word != ''">
                 AND (title like #{word} OR content like #{word})
             </if>
-        <if test="category != null and category != ''">
-            AND category = #{category}
-        </if>
-    </where>
+            <if test="category != null and category != ''">
+                AND category = #{category}
+            </if>
+        </where>
         ORDER BY date DESC
         LIMIT #{low}
         OFFSET #{high};
@@ -129,9 +130,7 @@
             else 0
             END
             ) as state
-
-        from sharing_view as s
-
+            from sharing_view as s
             left join
             (
             select
@@ -147,7 +146,7 @@
             group by board_id
             )
             as a
-        on s.id = a.board_id;
+            on s.id = a.board_id;
     </select>
 
     <update id="delete" parameterType="int">
