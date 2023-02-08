@@ -448,4 +448,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     }
 
+    @Override
+    public List<RoomDto> getRoomListByBoardId(int boardId, int type) {
+        return appointmentMapper.getRoomListByBoardId(boardId, type);
+    }
+
 }

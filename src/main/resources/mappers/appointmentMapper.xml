@@ -252,4 +252,8 @@
             and share_user_id = #{shareUserId} and not_share_user_id = #{notShareUserId}
             and state = 0
     </select>
+
+    <select id="getRoomListByBoardId" parameterType="int" resultType="list">
+        SELECT * from room where type = #{type} and board_id = #{boardId}
+    </select>
 </mapper>
