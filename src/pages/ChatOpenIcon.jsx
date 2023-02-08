@@ -30,6 +30,7 @@ function ChatOpenIcon() {
 
       // 웹소켓과 연결됐을 때 동작하는 콜백함수들
       client.connect({}, () => {
+        console.log("ChatOpenIcon subscribe1 오류");
         client.subscribe(`/sendlist/${loginUserId}`, (data) => {
           data = JSON.parse(data.body);
           // 상대방이 메시지 보낼 때만 새로운 메시지 알림
@@ -51,7 +52,7 @@ function ChatOpenIcon() {
         userId: loginUserId,
       };
 
-      console.log("여기 문제??????????????");
+      console.log("ChatOpenIcon send1 오류");
       client.send("/room_enter", {}, JSON.stringify(data));
       setEnterChatRoom(null);
     }
