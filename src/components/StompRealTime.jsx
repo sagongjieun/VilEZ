@@ -26,6 +26,7 @@ import { useRecoilValue } from "recoil";
 import { getCheckShareCancelRequest } from "../api/appointment";
 
 let client = null;
+const { kakao } = window;
 
 const StompRealTime = ({
   roomId,
@@ -105,11 +106,18 @@ const StompRealTime = ({
     setChatMessage("");
   }
 
+  function searchDetailAddrFromCoords(lat, lng, callback) {
+    const geocoder = new kakao.maps.services.Geocoder();
+    geocoder.coord2Address(lng, lat, callback);
+  }
+
   // Map에서 받은 데이터로 서버에 전송
   function receiveLocation(location, lat, lng, zoomLevel, isMarker) {
-    setHopeLocation(location);
-
-    /** 마커찍을때만 내가 받은 걸 다시 send하게 돼서 문제 생김 */
+    searchDetailAddrFromCoords(lat, lng, function (result, status) {
+      if (status === kakao.maps.services.Status.OK) {
+        setHopeLocation(result[0].address.address_name);
+      }
+    });
 
     if (lat && lng && zoomLevel) {
       const sendMapData = {
@@ -169,6 +177,12 @@ const StompRealTime = ({
 
           setDisableMapLat(res.lat);
           setDisableMapLng(res.lng);
+
+          searchDetailAddrFromCoords(res.lat, res.lng, function (result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+              setHopeLocation(result[0].address.address_name);
+            }
+          });
         }
         // 마지막 장소가 없다면
         else {
@@ -221,10 +235,16 @@ const StompRealTime = ({
         console.log("StompRealTime subscribe5 오류");
         client.subscribe(`/sendmap/${chatRoomId}/${myUserId}`, (data) => {
           data = JSON.parse(data.body);
+          console.log("오류테스트 sendmap : ", data);
 
           // 다른 유저가 움직인 지도의 데이터들
           setMovedLat(data.lat);
           setMovedLng(data.lng);
+          searchDetailAddrFromCoords(data.lat, data.lng, function (result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+              setHopeLocation(result[0].address.address_name);
+            }
+          });
           setMovedZoomLevel(data.zoomLevel);
           data.isMarker ? setMovedMarker(true) : setMovedMarker(false);
         });
