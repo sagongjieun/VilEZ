@@ -38,7 +38,7 @@ const locationState = atom({
 
 const enterChatRoomState = atom({
   key: "enterChatRoomState",
-  default: null,
+  default: 0,
 });
 
 const checkShareDateState = atom({
