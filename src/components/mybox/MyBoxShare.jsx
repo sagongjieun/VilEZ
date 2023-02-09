@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
 import MyBoxCardView2 from "./MyBoxCardView2";
-import { getMyShareAppointments } from "../../api/appointment";
 import MyBoxDDay from "./MyBoxDDay";
+import { getMyShareAppointments } from "../../api/appointment";
 
 const MyBoxShare = (props) => {
   const userId = localStorage.getItem("id");

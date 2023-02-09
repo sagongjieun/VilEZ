@@ -4,7 +4,7 @@ import { css } from "@emotion/react";
 import { Link } from "react-router-dom";
 import { FiSearch } from "react-icons/fi";
 import { HiArchiveBox } from "react-icons/hi2";
-import { CgProfile } from "react-icons/cg";
+// import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { loginUserState } from "../../recoil/atom";
@@ -12,8 +12,10 @@ import { requsetLogout } from "../../api/user";
 
 function MainNavBar() {
   const navigate = useNavigate();
-  const [loginUser, setLoginUser] = useRecoilState(loginUserState);
   const userId = localStorage.getItem("id");
+  const nickName = localStorage.getItem("nickName");
+  const profileImg = localStorage.getItem("profileImg");
+  const [loginUser, setLoginUser] = useRecoilState(loginUserState);
 
   const menus = [
     { name: "물품 공유 목록", path: "/product/list/share" },
@@ -95,7 +97,18 @@ function MainNavBar() {
                 <div css={midrightWrap}>
                   <FiSearch onClick={onClickMoveSearchPage} />
                   <HiArchiveBox onClick={onClickMoveMyBox} />
-                  <CgProfile onClick={onClickMoveMyPage} />
+                  <div onClick={onClickMoveMyPage}>
+                    <div>
+                      <img src={profileImg} />
+                    </div>
+                    <div>
+                      <div>
+                        <img src={profileImg} />
+                      </div>
+                      <div>{nickName}</div>
+                    </div>
+                  </div>
+                  {/* <CgProfile onClick={onClickMoveMyPage} /> */}
                 </div>
                 <span onClick={onClickLogout}>로그아웃</span>
               </div>
@@ -219,13 +232,78 @@ const midrightWrap = css`
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-right: 10px;
+  margin-right: 20px;
 
   & > svg {
     font-size: 25px;
     margin-right: 15px;
     color: #66dd9c;
     cursor: pointer;
+  }
+
+  // 프로필 사진
+  & > div {
+    position: relative;
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+
+    // 프로필 사진 동그라미
+    & > div:nth-of-type(1) {
+      box-sizing: border-box;
+      width: 100%;
+      height: 100%;
+      border-radius: 100%;
+      overflow: hidden;
+      border: 2px solid #fff;
+      transition: all 0.3s;
+      :hover {
+        border: 2px solid #66dd9c;
+      }
+      & > img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+    :hover > div:nth-of-type(2) {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    // hover시 나오는 닉네임 + 프로필 사진
+    & > div:nth-of-type(2) {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      box-sizing: border-box;
+      top: 36px;
+      left: -25px;
+      width: 80px;
+      padding: 10px;
+      font-size: 14px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s;
+      & > div:nth-of-type(1) {
+        width: 50px;
+        height: 50px;
+        margin: 0 auto;
+        border-radius: 50%;
+        overflow: hidden;
+        & > img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+      & > div:nth-of-type(2) {
+        text-align: center;
+        margin-top: 10px;
+        font-size: 12px;
+      }
+    }
   }
 `;
 

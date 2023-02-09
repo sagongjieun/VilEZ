@@ -50,6 +50,8 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
         ...loginUser,
         profileImg: response.profile_img,
       });
+      localStorage.setItem("profileImg", response.profile_img);
+      localStorage.setItem("nickName", response.nickName);
     });
   }, [isQrCodeOpen, isEditProfileOpen]);
   useEffect(() => {

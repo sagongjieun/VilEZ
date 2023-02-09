@@ -1,5 +1,5 @@
 import axios from "axios";
-import { postRefreshToken } from "./user";
+// import { postRefreshToken } from "./user";
 
 /**
  * 인증이 필요없는 기본 요청
@@ -55,51 +55,51 @@ export const authFormDataAxios = authFormDataInstance();
 // 액세스가 만료되면 401 error, 조작되면 false
 // 리프레쉬가 올바르게 들어오면 access_token, 만료되면 false, 조작되면 false;
 
-authJsonAxios.interceptors.request.use(function (config) {
-  config.headers["access-token"] = localStorage.getItem("accessToken") ? localStorage.getItem("accessToken") : "";
+// authJsonAxios.interceptors.request.use(function (config) {
+//   config.headers["access-token"] = localStorage.getItem("accessToken") ? localStorage.getItem("accessToken") : "";
 
-  return config;
-});
+//   return config;
+// });
 
-authJsonAxios.interceptors.response.use(
-  function (response) {
-    console.log("interceptor response enter !!");
-    console.log("response : ", response);
+// authJsonAxios.interceptors.response.use(
+//   function (response) {
+//     console.log("interceptor response enter !!");
+//     console.log("response : ", response);
 
-    if (!response) {
-      // 액세스토큰이 조작된경우
-      console.log("액세스 토큰이 조작된 경우 : ", response);
-    }
+//     if (!response) {
+//       // 액세스토큰이 조작된경우
+//       console.log("액세스 토큰이 조작된 경우 : ", response);
+//     }
 
-    return response;
-  },
-  function (error) {
-    console.log("accesstoken : ", localStorage.getItem("accessToken"));
-    console.log("interceptor error enter !!");
-    console.log("error : ", error);
+//     return response;
+//   },
+//   function (error) {
+//     console.log("accesstoken : ", localStorage.getItem("accessToken"));
+//     console.log("interceptor error enter !!");
+//     console.log("error : ", error);
 
-    const originalRequest = error.config;
-    console.log("원래의 요청 : ", originalRequest);
+//     const originalRequest = error.config;
+//     console.log("원래의 요청 : ", originalRequest);
 
-    // 액세스 토큰 만료된 경우
-    if (error.response.status === 401) {
-      let newAccessToken = "";
+//     // 액세스 토큰 만료된 경우
+//     if (error.response.status === 401) {
+//       let newAccessToken = "";
 
-      postRefreshToken().then((res) => {
-        if (res) {
-          newAccessToken = res;
-        }
-      });
-      console.log("newAccessToken : ", newAccessToken);
+//       postRefreshToken().then((res) => {
+//         if (res) {
+//           newAccessToken = res;
+//         }
+//       });
+//       console.log("newAccessToken : ", newAccessToken);
 
-      if (newAccessToken) {
-        localStorage.setItem("accessToken", newAccessToken);
+//       if (newAccessToken) {
+//         localStorage.setItem("accessToken", newAccessToken);
 
-        authJsonAxios.defaults.headers.common["access_token"] = `${newAccessToken}`;
+//         authJsonAxios.defaults.headers.common["access_token"] = `${newAccessToken}`;
 
-        // 원래 요청 진행
-        return authJsonAxios(originalRequest);
-      }
-    }
-  }
-);
+//         // 원래 요청 진행
+//         return authJsonAxios(originalRequest);
+//       }
+//     }
+//   }
+// );
