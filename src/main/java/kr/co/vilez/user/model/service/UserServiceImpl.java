@@ -232,7 +232,7 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public HttpVO loginFake(UserDto userDto) throws Exception {
-        UserDto user = userMapper.login(userDto);
+        UserDto user = userMapper.loginFake(userDto);
         http = new HttpVO();
         data = new ArrayList<>();
 
