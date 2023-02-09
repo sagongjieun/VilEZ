@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
-import ProfileCardView from "./MyBoxCardView";
+import MyBoxCardView2 from "./MyBoxCardView2";
 import { getMyShareAppointments } from "../../api/appointment";
 import MyBoxDDay from "./MyBoxDDay";
 
@@ -13,9 +13,9 @@ const MyBoxShare = (props) => {
   useEffect(() => {
     getMyShareAppointments(userId).then((response) => {
       // setMyBoard(response.filter((res) => new Date(res.myAppointListVO.startDay) < new Date()));
-      setMyBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.startDay) <= 0));
-      setMySharingBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.startDay) <= 0));
-      setMyToBeSharedBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.startDay) > 0));
+      setMyBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.appointmentStart) <= 0));
+      setMySharingBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.appointmentStart) <= 0));
+      setMyToBeSharedBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.appointmentStart) > 0));
     });
   }, []);
   useEffect(() => {
@@ -34,18 +34,19 @@ const MyBoxShare = (props) => {
       {myBoard?.length > 0 ? (
         myBoard.map((share, idx) => (
           <div key={idx}>
-            <ProfileCardView
+            <MyBoxCardView2
+              appId={share.myAppointListVO.id}
               title={share.myAppointListVO.title}
-              endDay={share.myAppointListVO.endDay}
-              startDay={share.myAppointListVO.startDay}
+              type={share.myAppointListVO.type}
+              startDay={share.myAppointListVO.appointmentStart}
+              endDay={share.myAppointListVO.appointmentEnd}
               date={share.myAppointListVO.date}
-              thumbnail={share.imgPathList[0]?.path}
-              boardType={1}
-              boardId={share.imgPathList[0]?.boradId}
+              thumbnail={share.imgPathList[0].path}
+              boardId={share.imgPathList[0].boardId}
               dDay={
                 share.myRentType === 1
-                  ? MyBoxDDay(share.myAppointListVO.endDay)
-                  : MyBoxDDay(share.myAppointListVO.startDay)
+                  ? MyBoxDDay(share.myAppointListVO.appointmentEnd)
+                  : MyBoxDDay(share.myAppointListVO.appointmentStart)
               }
             />
           </div>

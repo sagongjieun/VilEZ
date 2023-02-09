@@ -28,7 +28,7 @@ const ProfileMyWriting = (props) => {
     }
   }, [props.myWritingType]);
   useEffect(() => {
-    props.setWritingDefaultPages(parseInt((myBoard?.length - 1) / 3) + 1);
+    props.setWritingDefaultPages(myBoard ? parseInt((myBoard?.length - 1) / 3) + 1 : 1);
     console.log(myBoard);
   }, [myBoard]);
   return (

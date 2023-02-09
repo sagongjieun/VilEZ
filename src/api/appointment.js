@@ -59,28 +59,6 @@ async function getShareReturnState(roomId) {
   }
 }
 
-// async function getShareListByUserId(userId) {
-//   try {
-//     const { data } = await jsonAxios.get(`/appointments/my/give/${userId}`);
-
-//     if (data.flag === "success") return data.data[0].state;
-//     else console.log(data);
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
-
-// async function getNotShareListByUserId(userId) {
-//   try {
-//     const { data } = await jsonAxios.get(`/appointments/my/${userId}`);
-
-//     if (data.flag === "success") return data.data[0].state;
-//     else console.log(data);
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
-
 async function getCheckShareCancelRequest(roomId) {
   try {
     const { data } = await jsonAxios.get(`/appointments/request/cancel/${roomId}`);
@@ -125,10 +103,23 @@ async function getMyShareAppointments(userId) {
     console.log(error);
   }
 }
+
 async function getMyRentAppointments(userId) {
   try {
     const { data } = await jsonAxios.get(`/appointments/my/${userId}`);
 
+    if (data.flag === "success") return data.data[0];
+    else console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getMyChatRoomByBoardTypeUserId(boardId, type, userId) {
+  try {
+    const { data } = await jsonAxios.get(
+      `/appointments/board/checkroom?boardId=${boardId}&type=${type}&userId=${userId}`
+    );
     if (data.flag === "success") return data.data[0];
     else console.log(data);
   } catch (error) {
@@ -203,13 +194,12 @@ export {
   getShareDate,
   getShareState,
   getShareReturnState,
-  // getShareListByUserId,
-  // getNotShareListByUserId,
   getCheckShareCancelRequest,
   getAppointmentDate,
   getAppointmentsWithinAWeek,
   getMyShareAppointments,
   getMyRentAppointments,
+  getMyChatRoomByBoardTypeUserId,
   postShareDate,
   postShareReturnState,
   postShareCancelRequest,
