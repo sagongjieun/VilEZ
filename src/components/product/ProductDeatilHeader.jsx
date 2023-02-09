@@ -56,7 +56,9 @@ const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
               </span>
             </div>
           ) : (
-            <div>하이요</div>
+            <Link to={"/product/list/ask"}>
+              <span css={optionWrap}>목록</span>
+            </Link>
           )
         ) : parseInt(userId) === parseInt(ThisboardUserId) ? (
           <div>
