@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { HiCalendar, HiHeart } from "react-icons/hi";
-// import image from "../../assets/images/product_thumbnail.png";
 import elapsedTime from "../product/ProductElapsedTime";
 import { getCheckMyRoom } from "../../api/appointment";
 
@@ -14,7 +13,7 @@ const MyBoxCardView = ({ title, endDay, startDay, date, thumbnail, boardId, dDay
   const [myRoomId, setMyRoomId] = useState(0);
   useEffect(() => {
     getCheckMyRoom(boardId, type, userId).then((response) => {
-      setMyRoomId(response.id);
+      setMyRoomId(response[0].id);
     });
   }, [appId]);
   return (
