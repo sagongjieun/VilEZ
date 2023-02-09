@@ -10,7 +10,7 @@ const ProfileDday = () => {
   useEffect(() => {
     getAppointmentsWithinAWeek(userId).then((response) => {
       setAppointmentsWithinAWeek(response);
-      console.log(response);
+      // console.log(response);
       // console.log(appointmentsWithinAWeek);
     });
   }, []);
