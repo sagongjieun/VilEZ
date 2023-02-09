@@ -1,5 +1,6 @@
 package kr.co.vilez.user.controller;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiOperation;
 import kr.co.vilez.appointment.model.dto.AppointmentDto;
 import kr.co.vilez.appointment.model.service.AppointmentService;
@@ -140,6 +141,7 @@ public class UserController {
     }
 
     // access 토큰 갱신
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @PostMapping("/refresh")
     @ApiOperation(value = "access토큰을 갱신한다.", notes = "{\n refresh_token : String \n}")
     public ResponseEntity<?> refresh(@RequestBody String refresh_token){
