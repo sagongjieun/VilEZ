@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FiSearch } from "react-icons/fi";
 import { HiArchiveBox } from "react-icons/hi2";
 // import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { loginUserState } from "../../recoil/atom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { locationState, loginUserState } from "../../recoil/atom";
 import { requsetLogout } from "../../api/user";
 
 function MainNavBar() {
@@ -23,6 +23,18 @@ function MainNavBar() {
     { name: "글 등록하기", path: "/product/regist" },
   ];
 
+  // 동네인증 안할 시 프로필페이지로 가서 동네인증하게.
+  const userId = localStorage.getItem("id");
+  const pathname = useLocation().pathname;
+  const located = useRecoilValue(locationState);
+  useEffect(() => {
+    // console.log(located);
+
+    if (located.areaLat === null) {
+      alert("빌리지를 이용하시려면 동네 인증을 해주셔야해요");
+      // navigate(`/profile/product`);
+    }
+  }, [pathname]);
   const [isMenu, setIsMenu] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
 
