@@ -7,10 +7,10 @@ import ProfilePointCategory from "./ProfilePointCategory";
 
 const ProfilePointDetails = () => {
   const userId = localStorage.getItem("id");
-  // const userId = 10;
   const [pointList, setPointList] = useState([]);
   const [filteredPointList, setFilteredPointList] = useState([]);
   const [category, setCategory] = useState("");
+
   // 적립 날짜 반대로 정렬하는 함수
   function sortDate(a, b) {
     if (a.pointVO.date > b.pointVO.date) {
@@ -19,12 +19,18 @@ const ProfilePointDetails = () => {
       return -1;
     } else return 0;
   }
+
   useEffect(() => {
-    getPointListByUserId(userId).then((response) => {
-      setPointList(response[0].sort(sortDate));
-      setFilteredPointList(response[0].sort(sortDate));
-    });
+    getPointListByUserId(userId)
+      .then((response) => {
+        setPointList(response[0].sort(sortDate));
+        setFilteredPointList(response[0].sort(sortDate));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
+
   useEffect(() => {
     if (category === "전체") {
       setFilteredPointList(pointList);

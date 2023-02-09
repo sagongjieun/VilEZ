@@ -1,5 +1,5 @@
 import axios from "axios";
-// import { postRefreshToken } from "./user";
+import { postRefreshToken } from "./user";
 
 /**
  * 인증이 필요없는 기본 요청
@@ -52,54 +52,88 @@ export const authFormDataAxios = authFormDataInstance();
 
 /** 인터셉터 처리 */
 
-// 액세스가 만료되면 401 error, 조작되면 false
-// 리프레쉬가 올바르게 들어오면 access_token, 만료되면 false, 조작되면 false;
+// axios 요청이 처리되기 전 요청 가로채기
+authJsonAxios.interceptors.request.use(
+  (config) => {
+    const accessToken = localStorage.getItem("accessToken");
 
-// authJsonAxios.interceptors.request.use(function (config) {
-//   config.headers["access-token"] = localStorage.getItem("accessToken") ? localStorage.getItem("accessToken") : "";
+    if (accessToken) {
+      config.headers["access-token"] = `${accessToken}`;
+    }
 
-//   return config;
-// });
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
-// authJsonAxios.interceptors.response.use(
-//   function (response) {
-//     console.log("interceptor response enter !!");
-//     console.log("response : ", response);
+// axios 요청이 처리되기 전 응답 가로채기
+authJsonAxios.interceptors.response.use(
+  (response) => response, // 응답이 성공적인 경우 아무것도 하지 않음
+  async (error) => {
+    // 액세스 토큰이 만료됐다면
+    if (error.response.status === 401) {
+      const response = await postRefreshToken(); // 액세스토큰 갱신
 
-//     if (!response) {
-//       // 액세스토큰이 조작된경우
-//       console.log("액세스 토큰이 조작된 경우 : ", response);
-//     }
+      // 갱신된 accessToken을 받으면
+      if (response) {
+        localStorage.setItem("accessToken", response.accessToken); // 새로운 토큰 localStorage 저장
+        localStorage.setItem("refreshToken", response.refreshToken);
+        error.config.headers["access-token"] = response; // 원래 api 요청의 headers의 accessToken도 변경
+        const originalResponse = await authJsonAxios.request(error.config); // 원래 api 요청하기
+        return originalResponse; // 원래 api 요청의 response return
+      }
+      // 리프레시 토큰도 만료됐으면
+      else {
+        alert("로그인이 만료되었습니다. 다시 로그인 해주세요!");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        window.location.href = "/login";
+      }
+    }
 
-//     return response;
-//   },
-//   function (error) {
-//     console.log("accesstoken : ", localStorage.getItem("accessToken"));
-//     console.log("interceptor error enter !!");
-//     console.log("error : ", error);
+    return Promise.reject(error);
+  }
+);
 
-//     const originalRequest = error.config;
-//     console.log("원래의 요청 : ", originalRequest);
+// axios 요청이 처리되기 전 요청 가로채기
+authFormDataAxios.interceptors.request.use(
+  (config) => {
+    const accessToken = localStorage.getItem("accessToken");
 
-//     // 액세스 토큰 만료된 경우
-//     if (error.response.status === 401) {
-//       let newAccessToken = "";
+    if (accessToken) {
+      config.headers["access-token"] = `${accessToken}`;
+    }
 
-//       postRefreshToken().then((res) => {
-//         if (res) {
-//           newAccessToken = res;
-//         }
-//       });
-//       console.log("newAccessToken : ", newAccessToken);
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
-//       if (newAccessToken) {
-//         localStorage.setItem("accessToken", newAccessToken);
+// axios 요청이 처리되기 전 응답 가로채기
+authFormDataAxios.interceptors.response.use(
+  (response) => response, // 응답이 성공적인 경우 아무것도 하지 않음
+  async (error) => {
+    // 액세스 토큰이 만료됐다면
+    if (error.response.status === 401) {
+      const response = await postRefreshToken(); // 액세스토큰 갱신
 
-//         authJsonAxios.defaults.headers.common["access_token"] = `${newAccessToken}`;
+      // 갱신된 accessToken을 받으면
+      if (response) {
+        localStorage.setItem("accessToken", response.accessToken); // 새로운 토큰 localStorage 저장
+        localStorage.setItem("refreshToken", response.refreshToken);
+        error.config.headers["access-token"] = response; // 원래 api 요청의 headers의 accessToken도 변경
+        const originalResponse = await authFormDataInstance.request(error.config); // 원래 api 요청하기
+        return originalResponse; // 원래 api 요청의 response return
+      }
+      // 리프레시 토큰도 만료됐으면
+      else {
+        alert("로그인이 만료되었습니다. 다시 로그인 해주세요!");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        window.location.href = "/login";
+      }
+    }
 
-//         // 원래 요청 진행
-//         return authJsonAxios(originalRequest);
-//       }
-//     }
-//   }
-// );
+    return Promise.reject(error);
+  }
+);

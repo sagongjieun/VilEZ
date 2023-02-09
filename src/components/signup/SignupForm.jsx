@@ -10,8 +10,8 @@ import EmailCodeTimer from "./EmailCodeTimer";
 import Validation from "./SignupValidation";
 import useForm from "../../hooks/useForm";
 import { SHA256 } from "./EmailCodeHashFunction";
-import { confirmEmail } from "../../api/email";
-import { checkNickName, postUserInformation } from "../../api/user";
+import { postConfirmEmail } from "../../api/email";
+import { getCheckNickName, postUserInformation } from "../../api/user";
 import { useNavigate } from "react-router-dom";
 
 const SignupForm = () => {
@@ -65,7 +65,7 @@ const SignupForm = () => {
   }
   function onSubmitEmail() {
     setIsCodeConfirmed(false);
-    confirmEmail(email).then((response) => {
+    postConfirmEmail(email).then((response) => {
       if (response) {
         setHashedCode(response[0]);
         setIsEmailCodeVisible(false);
@@ -86,7 +86,7 @@ const SignupForm = () => {
   }
   function onSubmitNickName() {
     if (nickName.length > 0 && nickName.length < 7) {
-      checkNickName(nickName).then((response) => {
+      getCheckNickName(nickName).then((response) => {
         setNickNameCheck(response.text);
         setIsNickNameAvailable(response.isNickNameAvailable);
       });

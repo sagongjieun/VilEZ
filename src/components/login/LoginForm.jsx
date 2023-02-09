@@ -8,7 +8,7 @@ import LargeWideButton from "../../components/button/LargeWideButton";
 import LoginInputBox from "./LoginInputBox";
 import Validation from "../../components/login/LoginValidation";
 import useForm from "../../hooks/useForm";
-import { requestLogin } from "../../api/user";
+import { postLogin } from "../../api/user";
 import { useSetRecoilState } from "recoil";
 import { loginUserState } from "../../recoil/atom";
 
@@ -18,7 +18,7 @@ const LoginForm = () => {
 
   // 로그인
   const onSubmit = (values) => {
-    requestLogin(values.email, values.password).then((res) => {
+    postLogin(values.email, values.password).then((res) => {
       if (!res) return;
 
       res = res[0];

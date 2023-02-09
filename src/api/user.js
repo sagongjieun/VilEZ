@@ -1,7 +1,4 @@
 import { authJsonAxios, authFormDataAxios, defaultAxios } from "./instance";
-// import { useNavigate } from "react-router-dom";
-
-// const navigate = useNavigate();
 
 // GET
 
@@ -11,6 +8,23 @@ async function getUserDetail(userId) {
 
     if (data.flag === "success") return data.data[0];
     else console.log("일치하는 유저 정보가 없습니다.");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getCheckNickName(nickName) {
+  try {
+    const { data } = await authJsonAxios.get(`/users/check?nickname=${nickName}`);
+
+    if (data.flag === "success") {
+      return { text: `"${nickName}"은(는) 사용 가능한 닉네임입니다.`, isNickNameAvailable: true };
+    } else if (data.flag === "fail") {
+      return {
+        text: `"${nickName}"은(는) 사용중인 닉네임입니다. 다른 닉네임을 입력해 주세요.`,
+        isNickNameAvailable: false,
+      };
+    }
   } catch (error) {
     console.log(error);
   }
@@ -29,9 +43,9 @@ async function postMannerPoint(body) {
   }
 }
 
-async function requestLogin(email, password) {
+async function postLogin(email, password) {
   try {
-    const { data } = await authJsonAxios.post(`/users/login`, { email, password });
+    const { data } = await defaultAxios.post(`/users/login`, { email, password });
 
     if (data.flag === "success") {
       if (!data.data) {
@@ -57,16 +71,12 @@ async function requestLogin(email, password) {
   }
 }
 
-async function requsetLogout(userInfo) {
+async function postLogout(userInfo) {
   try {
     const { data } = await defaultAxios.post("users/logout", userInfo);
-    if (data.flag === "success") {
-      alert("로그아웃이 완료되었습니다.");
-      console.log(data);
-    } else {
-      alert("로그아웃이 정상적으로 완료되지 않았습니다.");
-      console.log(data);
-    }
+
+    if (data.flag === "success") return true;
+    else console.log("로그아웃이 정상적으로 완료되지 않았습니다.");
   } catch (error) {
     console.log(error);
   }
@@ -75,20 +85,26 @@ async function requsetLogout(userInfo) {
 async function postRefreshToken() {
   try {
     // 리프레쉬 토큰을 이용해 액세스 토큰을 갱신
-    const refresh_token = localStorage.getItem("refreshToken");
-    defaultAxios.defaults.headers["refresh-token"] = refresh_token;
-    const { data } = await defaultAxios.post(`/users/refresh`, { refresh_token });
+    const refreshToken = localStorage.getItem("refreshToken");
+    const headers = {
+      "Content-Type": "application/json;charset=utf-8",
+      "refresh-token": refreshToken,
+    };
 
-    console.log("accessToken 갱신 요청 후 : ", data);
+    const { data } = await defaultAxios.post(
+      `/users/refresh`,
+      {},
+      {
+        headers: headers,
+      }
+    );
 
     if (data.flag === "success") {
-      return data.data[0].access_token;
+      return data.data[0];
     } else if (data.flag === "fail") {
       console.log(data);
     } else {
-      console.log("refresh token도 만료된 경우");
-      alert("로그인이 만료되었습니다. 다시 로그인 해주세요!");
-      // navigate("/login");
+      return false;
     }
   } catch (error) {
     console.log(error);
@@ -97,31 +113,14 @@ async function postRefreshToken() {
 
 async function postUserInformation(userInformation) {
   try {
-    console.log(userInformation);
-    const { data } = await authJsonAxios.post("/users/join", userInformation);
+    const { data } = await defaultAxios.post("/users/join", userInformation);
+
     if (data.flag === "success") {
       alert("회원가입이 완료되었습니다. 로그인을 진행해주세요.");
       return data.data;
     } else if (data.flag === "fail") {
       alert("회원가입이 정상적으로 완료되지 않았습니다. 다시 진행해주세요.");
       return "";
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function checkNickName(nickName) {
-  try {
-    console.log(nickName);
-    const { data } = await authJsonAxios.get(`/users/check?nickname=${nickName}`);
-    if (data.flag === "success") {
-      return { text: `"${nickName}"은(는) 사용 가능한 닉네임입니다.`, isNickNameAvailable: true };
-    } else if (data.flag === "fail") {
-      return {
-        text: `"${nickName}"은(는) 사용중인 닉네임입니다. 다른 닉네임을 입력해 주세요.`,
-        isNickNameAvailable: false,
-      };
     }
   } catch (error) {
     console.log(error);
@@ -169,9 +168,9 @@ export {
   putUserPasswordByEmail,
   putUserPasswordNickName,
   putUserProfileImage,
-  requestLogin,
-  requsetLogout,
+  postLogin,
+  postLogout,
   postRefreshToken,
   postUserInformation,
-  checkNickName,
+  getCheckNickName,
 };
