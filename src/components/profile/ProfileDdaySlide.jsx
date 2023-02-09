@@ -35,6 +35,8 @@ const ProfileDdaySlide = ({ ddaySlideList }) => {
     showSlides(slideIndex);
   }, [ddaySlideList]);
 
+  console.log(ddaySlideList);
+
   return (
     <div css={imageSlideWrapper}>
       {ddaySlideList.map((appoint, index) => (

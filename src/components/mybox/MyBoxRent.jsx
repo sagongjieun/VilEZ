@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
-import ProfileCardView from "./MyBoxCardView";
+import MyBoxCardView from "./MyBoxCardView";
 import { getMyRentAppointments } from "../../api/appointment";
+import MyBoxDDay from "./MyBoxDDay";
 
 // const id = localStorage.getItem("id");
 const MyBoxRent = (props) => {
@@ -12,9 +13,10 @@ const MyBoxRent = (props) => {
   const [myToBeRentedBoard, setMyToBeRentedBoard] = useState([]);
   useEffect(() => {
     getMyRentAppointments(userId).then((response) => {
-      setMyBoard(response.filter((res) => new Date(res.myAppointListVO.startDay) < new Date()));
-      setMyBeingRentedBoard(response.filter((res) => new Date(res.myAppointListVO.startDay) < new Date()));
-      setMyToBeRentedBoard(response.filter((res) => new Date(res.myAppointListVO.startDay) >= new Date()));
+      // setMyBoard(response.filter((res) => new Date(res.myAppointListVO.startDay) < new Date()));
+      setMyBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.startDay) <= 0));
+      setMyBeingRentedBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.startDay) <= 0));
+      setMyToBeRentedBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.startDay) > 0));
     });
   }, []);
   useEffect(() => {
@@ -33,14 +35,19 @@ const MyBoxRent = (props) => {
       {myBoard?.length > 0 ? (
         myBoard.map((rent, idx) => (
           <div key={idx}>
-            <ProfileCardView
+            <MyBoxCardView
               title={rent.myAppointListVO.title}
               endDay={rent.myAppointListVO.endDay}
               startDay={rent.myAppointListVO.startDay}
               date={rent.myAppointListVO.date}
               thumbnail={rent.imgPathList[0]?.path}
               boardType={2}
-              boardId={rent.imgPathList[0].boradId}
+              boardId={rent.imgPathList[0]?.boradId}
+              dDay={
+                rent.myRentType === 1
+                  ? MyBoxDDay(rent.myAppointListVO.endDay)
+                  : MyBoxDDay(rent.myAppointListVO.startDay)
+              }
             />
           </div>
         ))
