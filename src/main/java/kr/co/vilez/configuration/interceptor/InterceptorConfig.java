@@ -1,7 +1,5 @@
-package kr.co.vilez.configuration;
+package kr.co.vilez.configuration.interceptor;
 
-import kr.co.vilez.jwt.JwtProvider;
-import kr.co.vilez.user.interceptor.UserInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
