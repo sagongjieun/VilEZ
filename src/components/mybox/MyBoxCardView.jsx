@@ -7,8 +7,8 @@ import { HiCalendar, HiHeart } from "react-icons/hi";
 import elapsedTime from "../product/ProductElapsedTime";
 
 const MyBoxCardView = ({ title, endDay, startDay, date, thumbnail, boardType, boardId, dDay }) => {
-  const endDayDotted = endDay.slice(0, 4) + "." + endDay.slice(5, 7) + "." + endDay.slice(8, 10);
-  const startDayDotted = startDay.slice(0, 4) + "." + startDay.slice(5, 7) + "." + startDay.slice(8, 10);
+  const endDayDotted = endDay?.slice(0, 4) + "." + endDay?.slice(5, 7) + "." + endDay?.slice(8, 10);
+  const startDayDotted = startDay?.slice(0, 4) + "." + startDay?.slice(5, 7) + "." + startDay?.slice(8, 10);
   return (
     <Link
       to={`/product/detail/${boardType}/${boardId}`}
@@ -71,7 +71,7 @@ const thumbnailWrapper = css`
     right: 10px;
     top: 10px;
     border-radius: 5px;
-    min-width: 45px;
+    min-width: 30px;
     padding: 2px 8px;
     text-align: center;
     color: #fff;

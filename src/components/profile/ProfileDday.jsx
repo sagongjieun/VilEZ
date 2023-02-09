@@ -11,13 +11,12 @@ const ProfileDday = () => {
     getAppointmentsWithinAWeek(userId).then((response) => {
       setAppointmentsWithinAWeek(response);
       console.log(response);
-      console.log(appointmentsWithinAWeek);
+      // console.log(appointmentsWithinAWeek);
     });
   }, []);
   return (
     <div css={ddayWrapper}>
       <div>
-        {/* <h4>잊지 마세요</h4> */}
         <ProfileDdaySlide ddaySlideList={appointmentsWithinAWeek} />
       </div>
     </div>

@@ -22,7 +22,6 @@ const Login = () => {
     navigate(KAKAO_AUTH_URL);
   };
   const onClickNaver = () => {
-    console.log("네이버허");
     navigate(NAVER_AUTH_URL);
   };
   return (
