@@ -18,7 +18,7 @@ import elapsedTime from "./ProductElapsedTime";
 
 const ProductList = () => {
   // detail api에서 userId 받아오면, 동네인증 한 경우 위도 경도가 존재. 이를 recoil에 넣어 상태관리
-  // console.log("하하하하하");
+
   const userId = localStorage.getItem("id");
 
   // isAll이 새로고침시마다 바껴있어야 공유가능 물품 조건 유지 가능
@@ -70,7 +70,8 @@ const ProductList = () => {
   }, [cnt, getArticle, search]);
 
   // 카테고리 변경 후 스크롤을 내렸다가 ,다른 카테고리를 선택했을 때 이전 카테고리 데이터가 쌓여 나옴
-  // 네비게이션 바에서 공유 -> 요청 혹은 요청 -> 공유로 갔을 때 setCnt가 작동해야하는데, 하지 않아서 또 다른 변수가 변할 때 setCnt(0)으로 작동하게 하였음.
+  // 네비게이션 바에서 공유 -> 요청 혹은 요청 -> 공유로 갔을 때 setCnt가 작동해야하는데, 하지 않아서
+  // 또 다른 변수가 변할 때 setCnt(0)으로 작동하게 하였음.
   useEffect(() => {
     setCnt(0);
     window.scrollTo(0, 0);
@@ -113,7 +114,6 @@ const ProductList = () => {
     setCnt(0);
     setArticles([]);
     setAskArticles([]);
-
     setOriginalArticle([]);
   }
 
@@ -142,24 +142,10 @@ const ProductList = () => {
     setOriginalArticle([]);
   }
 
-  // 목록 검색창
-  // function onSubmitSearch(event) {
-  //   event.preventDefault();
-
-  //   onChangeSearch(search);
-  //   setArticles([]);
-  //   setAskArticles([]);
-
-  //   // setOriginalArticle([]);
-  //   setCnt(0);
-  // }
-
-  // 검색후, 지웠을 때 이전 검색이 리스트에 쌓이는 것을 방지
+  // 검색 후, 지웠을 때 이전 검색이 리스트에 쌓이는 것을 방지
   // 스크롤이 내려가서 cnt가 변했을 때, 검색을 하면 그 페이지를 기준으로 해서 문제를 해결함
   function onChangeSearch(event) {
     if (event.key === "Enter") {
-      console.log(event);
-
       setSearch(event.target.value);
       setArticles([]);
       setAskArticles([]);
