@@ -145,8 +145,12 @@ public class UserController {
     @PostMapping("/refresh")
     @ApiOperation(value = "access토큰을 갱신한다.", notes = "{\n refresh_token : String \n}")
     public ResponseEntity<?> refresh(@RequestHeader(value="refresh-token") String refresh_token){
+        System.out.println("refresh_token = " + refresh_token);
+
         try {
             http = userService.refreshCheck(refresh_token);
+            System.out.println("refresh_token = " + refresh_token);
+            System.out.println("http = " + http);
         }catch (Exception e){
             e.printStackTrace();
         }
