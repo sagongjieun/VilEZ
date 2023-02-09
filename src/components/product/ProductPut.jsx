@@ -13,6 +13,8 @@ import ProductRegistType from "./ProductRegistType";
 import Map from "../common/Map";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
+const { kakao } = window;
+
 const ProductPut = () => {
   // const loginUserId = localStorage.getItem("id");
   const navigate = useNavigate();
@@ -105,13 +107,23 @@ const ProductPut = () => {
     setEndDay(endDateResult.substring(1, 11));
   }
 
-  function receiveLocation(location, lat, lng) {
-    setLocation(location);
-    setHopeAreaLat(lat);
-    setHopeAreaLng(lng);
+  function receiveLocation(location, lat, lng, zoomLevel, isMarker) {
+    if (isMarker) {
+      setHopeAreaLat(lat);
+      setHopeAreaLng(lng);
+      searchDetailAddrFromCoords(lat, lng, function (result, status) {
+        if (status === kakao.maps.services.Status.OK) {
+          setLocation(result[0].address.address_name);
+        }
+      });
+    }
   }
 
-  // console.log("@@@", imageList);
+  function searchDetailAddrFromCoords(lat, lng, callback) {
+    const geocoder = new kakao.maps.services.Geocoder();
+    geocoder.coord2Address(lng, lat, callback);
+  }
+
   function onClickRegistButton() {
     // 유효성 검사
     if (registType === "선택해주세요.") {
