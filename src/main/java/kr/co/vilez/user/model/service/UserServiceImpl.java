@@ -177,6 +177,8 @@ public class UserServiceImpl implements UserService {
         return http;
     }
 
+
+
     @Override
     public HttpVO refreshCheck(String token) throws Exception {
         http = new HttpVO();
@@ -210,6 +212,34 @@ public class UserServiceImpl implements UserService {
         String refreshToken = null;
         if(user != null){
             accessToken = jwtProvider.createToken(user.getEmail(), user.getNickName());
+            refreshToken = jwtProvider.createRefreshToken(user.getEmail(), user.getNickName());
+
+            // 로그인에 성공했다면, refresh 값을 db에 저장
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("userId", user.getId());
+            map.put("token", refreshToken);
+            userMapper.saveToken(map);
+
+            user.setAccessToken(accessToken);
+            user.setRefreshToken(refreshToken);
+            data.add(user);
+
+            http.setData(data);
+            userMapper.saveToken(map);
+        }
+
+        return http;
+    }
+    @Override
+    public HttpVO loginFake(UserDto userDto) throws Exception {
+        UserDto user = userMapper.login(userDto);
+        http = new HttpVO();
+        data = new ArrayList<>();
+
+        String accessToken = null;
+        String refreshToken = null;
+        if(user != null){
+            accessToken = jwtProvider.createExpireToken(user.getEmail(), user.getNickName());
             refreshToken = jwtProvider.createRefreshToken(user.getEmail(), user.getNickName());
 
             // 로그인에 성공했다면, refresh 값을 db에 저장

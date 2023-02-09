@@ -241,6 +241,24 @@ public class UserController {
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
 
+    @PostMapping("/login/fake")
+    @ApiOperation(value = "로그인", notes = "{" +
+            "\n email : String," +
+            "\n password : String" +
+            "\n }")
+    public ResponseEntity<?> loginFake(@RequestBody UserDto user){
+        try {
+            http = userService.loginFake(user);
+            http.setFlag("success");
+            log.info("페이크 로그인 성공 user : " + user);
+        } catch (Exception e){
+            e.printStackTrace();
+            log.error("페이크 로그인 실패");
+        }
+
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
+
     @GetMapping("/detail/{id}")
     public ResponseEntity<?> detail(@PathVariable int id){
         try {
