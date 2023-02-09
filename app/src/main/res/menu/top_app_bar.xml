@@ -11,14 +11,14 @@
     <item
         android:id="@+id/option_menu_search"
         android:iconTint="@color/bg_dark"
-        android:icon="@drawable/ic_search_1"
+        android:icon="@drawable/ic_app_bar_search"
         android:title="Search"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/option_menu_menu"
         android:iconTint="@color/bg_dark"
-        android:icon="@drawable/ic_menu"
+        android:icon="@drawable/ic_app_bar_menu"
         android:title="Menu"
         app:showAsAction="always" />
 

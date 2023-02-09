@@ -64,7 +64,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_gravity="start"
-                        android:background="@drawable/icon_back"
+                        android:background="@drawable/ic_app_bar_back"
                         android:onClick="@{activity.onBackPressed}"
                         android:scaleType="fitXY" />
 
@@ -163,6 +163,7 @@
                                         android:layout_height="wrap_content"
                                         android:gravity="center_vertical"
                                         android:textStyle="bold"
+                                        android:text=""
                                         app:getMannerLevel="@{writer.manner}" />
 
 
@@ -170,13 +171,7 @@
                                         android:layout_width="20dp"
                                         android:layout_height="20dp"
                                         app:getMannerIcon="@{writer.manner}"/>
-
-
                                 </LinearLayout>
-
-
-
-
 
                             </LinearLayout>
 

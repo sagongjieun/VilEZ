@@ -30,7 +30,7 @@ RecyclerView.Adapter<BoardListAdapter.ShareHolder>(){
 
         fun bindingInfo(item: BoardData) {
             binding.boardData = item
-            binding.root.setOnClickListener {
+            binding.root.setOnClickListener { // 채팅방으로 이동하게 하기
                 val intent = if(item.type == BOARD_TYPE_SHARE) {
                     Intent(binding.root.context, ShareDetailActivity::class.java)
                 } else { // BOARD_TYPE_ASK

@@ -80,6 +80,8 @@ android {
 
 
 dependencies {
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.2'
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
@@ -183,6 +185,9 @@ dependencies {
 //    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
 
     implementation 'com.applandeo:material-calendar-view:1.9.0-rc03'
+
+    // date picker
+    implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
 }
 
 tasks.register("prepareKotlinBuildScriptModel"){}

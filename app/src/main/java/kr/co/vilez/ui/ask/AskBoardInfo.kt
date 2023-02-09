@@ -4,7 +4,7 @@ package kr.co.vilez.ui.ask
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import kr.co.vilez.data.dto.BoardListDto
-import kr.co.vilez.service.RetrofitAskService
+import kr.co.vilez.service.AskApi
 import retrofit2.HttpException
 import java.io.IOException
 

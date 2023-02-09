@@ -11,7 +11,15 @@ data class RESTMyAskArticleResult(
     val `data`: List<MyAskArticle>,
     val flag: String
 )
-interface RetrofitAskService {
+data class RESTAskResult(
+    val `data`: List<List<AskData>>,
+    val flag: String
+)
+data class RESTAskDetailResult(
+    val `data`: List<AskBoardDetail>,
+    val flag: String
+)
+interface AskApi {
     // 내가 쓴 글 목록을 불러온다.
     @GET("/vilez/askboard/my/{userId}")
     fun getMyArticle(@Path("userId")id:Int):Call<RESTMyAskArticleResult>

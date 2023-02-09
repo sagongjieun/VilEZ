@@ -13,21 +13,20 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
-import kr.co.vilez.data.dto.AskData
 import kr.co.vilez.data.dto.BoardData
 import kr.co.vilez.databinding.FragmentMyAskBinding
-import kr.co.vilez.ui.ask.AskListAdapter
+import kr.co.vilez.ui.ask.AskToChatAdapter
 import kr.co.vilez.ui.user.ProfileMenuActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
 import retrofit2.awaitResponse
 
 private const val TAG = "빌리지_프로필_MyAskFragment"
-class MyAskFragment : Fragment() {
+class MyAskFragment : Fragment() { // 대여 물품 (appointments/my/give/{userId} : 내가 빌린거, 내가 빌릴거
     private lateinit var binding : FragmentMyAskBinding
     private lateinit var profileMenuActivity: ProfileMenuActivity
 
-    private lateinit var boardAdapter: ImminentAdapter
+    private lateinit var boardAdapter: AskToChatAdapter
     private lateinit var boardList:ArrayList<BoardData>
     private var index = 0
 
@@ -79,14 +78,14 @@ class MyAskFragment : Fragment() {
     private fun initSharingData() {
         index = 0
         boardList = arrayListOf()
-        boardAdapter = ImminentAdapter(boardList)
+        boardAdapter = AskToChatAdapter(boardList)
         // 리사이클러뷰에 어댑터 등록
         binding.rvMyAskList.apply {
             adapter = boardAdapter
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         }
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.retrofitAppointmentService.getMyGiveList(
+            val result = ApplicationClass.appointmentApi.getMyGiveList(
                 ApplicationClass.prefs.getId()).awaitResponse().body()
             if (result?.flag == "success") {
                 Log.d(TAG, "initShareData: success!!!!! 검색 결과 개수 : ${result.data[0].size}")
@@ -96,13 +95,6 @@ class MyAskFragment : Fragment() {
                     Log.d(TAG, "onViewCreated: 데이터 0개")
                 }
                 for (data in result.data[0]) {
-                    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-                    if(data.myAppointListVO.appointmentStart.isNullOrEmpty()) {
-                        data.myAppointListVO.appointmentStart = "2099-12-30"
-                        data.myAppointListVO.appointmentEnd = "2100-12-30"
-                    } // TODO : api 에러같음 id 0인것은 데이터 다 null로 들어와서 나중에 고치기
-
-
                     val state = Common.getBoardState(data.myAppointListVO.appointmentStart)
                     if(state == Common.APPOINTMENT_TYPE_RESERVE) continue // 공유 예정인 것은 skip
                     if(data.myAppointListVO.id == 0) continue // TODO : api 에러같음 id 0인것은 데이터 다 null로 들어와서 skip하기
@@ -114,7 +106,7 @@ class MyAskFragment : Fragment() {
                         data.myAppointListVO.date,
                         data.myAppointListVO.appointmentStart+ " ~ " + data.myAppointListVO.appointmentEnd,
                         data.bookmarkCnt.toString(),
-                        data.myAppointListVO.userId, // TODO : notShareUserId 중 구분해서 넣어야함
+                        data.myAppointListVO.userId, // 글 작성자가 들어감
                         data.myAppointListVO.type,
                         state = Common.APPOINTMENT_TYPE_SHARE, // 공유중인 데이터만 넣을거임
                         sDay = data.myAppointListVO.appointmentStart,
@@ -131,14 +123,14 @@ class MyAskFragment : Fragment() {
     private fun initReserveData() {
         index = 0
         boardList = arrayListOf()
-        boardAdapter = ImminentAdapter(boardList)
+        boardAdapter = AskToChatAdapter(boardList)
         // 리사이클러뷰에 어댑터 등록
         binding.rvMyAskList.apply {
             adapter = boardAdapter
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         }
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.retrofitAppointmentService.getMyGiveList(ApplicationClass.prefs.getId()).awaitResponse().body()
+            val result = ApplicationClass.appointmentApi.getMyGiveList(ApplicationClass.prefs.getId()).awaitResponse().body()
             if (result?.flag == "success") {
                 Log.d(TAG, "initShareData: success!!!!! 검색 결과 개수 : ${result.data[0].size}")
 
@@ -147,12 +139,6 @@ class MyAskFragment : Fragment() {
                     Log.d(TAG, "onViewCreated: 데이터 0개")
                 }
                 for (data in result.data[0]) {
-                    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-                    if(data.myAppointListVO.appointmentStart.isNullOrEmpty()) {
-                        data.myAppointListVO.appointmentStart = "2099-12-30"
-                        data.myAppointListVO.appointmentEnd = "2100-12-30"
-                    } // TODO : api 에러같음 id 0인것은 데이터 다 null로 들어와서 나중에 고치기
-
                     val state = Common.getBoardState(data.myAppointListVO.appointmentStart)
                     if(state == Common.APPOINTMENT_TYPE_SHARE) continue // 공유 중인 것은 skip
                     if(data.myAppointListVO.id == 0) continue // TODO : api 에러같음 id 0인것은 데이터 다 null로 들어와서 skip하기
@@ -164,7 +150,7 @@ class MyAskFragment : Fragment() {
                         data.myAppointListVO.date,
                         data.myAppointListVO.appointmentStart+ " ~ " + data.myAppointListVO.appointmentEnd,
                         data.bookmarkCnt.toString(),
-                        data.myAppointListVO.userId, // TODO : notShareUserId 중 구분해서 넣어야함
+                        data.myAppointListVO.userId, //  글 작성자가 들어가는 자리 
                         data.myAppointListVO.type,
                         state = Common.APPOINTMENT_TYPE_RESERVE, // 공유 예정인 데이터만 넣을거임
                         sDay = data.myAppointListVO.appointmentStart,

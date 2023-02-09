@@ -1,5 +1,6 @@
 package kr.co.vilez.util
 
+import kr.co.vilez.data.dto.AppointmentDto
 import kr.co.vilez.data.model.*
 import retrofit2.Call
 import retrofit2.http.Body
@@ -35,22 +36,31 @@ data class RESTReturnResult(
     val `data`: List<bool>,
     val flag: String
 )
-
 data class State(val state: Int)
 data class RESTStateResult(
     val `data`: List<State>,
     val flag: String
 )
-
 data class CancelAppointmentDto(val roomId: Int)
 data class RESTCancelResult(
     val `data`: List<CancelAppointmentDto>,
     val flag: String
 )
+data class RESTChatListResult(
+    val data: List<ChatMsg>,
+    val flag: String
+)
+data class RESTRoomResult(
+    val data: List<Room>,
+    val flag: String
+)
+data class RESTRoomListResult(
+    val data: List<ChatList>,
+    val flag: String
+)
 
+interface ChatApi {
 
-
-interface RetrofitChatService {
     @GET("/vilez/appointments/map/{roomId}")
     fun loadLocationByRoomId(@Path("roomId") roomId : Int): Call<RESTKakaoResult>
 

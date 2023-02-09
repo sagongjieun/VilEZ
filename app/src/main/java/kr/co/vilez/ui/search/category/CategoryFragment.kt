@@ -73,7 +73,6 @@ class CategoryFragment : Fragment() {
         gridAdapter = GridRecyclerViewAdapter(mContext, categoryList)
         gridAdapter.onItemClickListener = object: GridRecyclerViewAdapter.OnItemClickListener {
             override fun onClick(view: View, position: Int) {
-                Toast.makeText(mContext, "클릭 ${categoryList[position].name}",Toast.LENGTH_SHORT).show()
                 activity.changeFragment(type!!, categoryList[position].name)
             }
         }

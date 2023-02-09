@@ -12,7 +12,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.gmail.bishoybasily.stomp.lib.StompClient
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import kr.co.vilez.R
@@ -26,6 +25,7 @@ import kr.co.vilez.ui.chat.ChatRoomActivity
 import kr.co.vilez.ui.dialog.MyAlertDialog
 import kr.co.vilez.ui.dialog.ConfirmDialog
 import kr.co.vilez.ui.dialog.ConfirmDialogInterface
+import kr.co.vilez.ui.dialog.FullProgressDialog
 import kr.co.vilez.ui.share.write.ShareWriteActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common.Companion.BOARD_TYPE_ASK
@@ -79,7 +79,7 @@ class AskDetailActivity : AppCompatActivity() {
             Snackbar.make(view, "예약 요청한 물건 채팅 시작하기", Snackbar.LENGTH_SHORT).show();
             CoroutineScope(Dispatchers.Main).launch {
                 // 먼저 채팅방이 존재하는지 확인하기
-                val isExist = ApplicationClass.retrofitChatService.isExistChatroom(boardId!!, BOARD_TYPE_ASK, ApplicationClass.prefs.getId()).awaitResponse().body()
+                val isExist = ApplicationClass.chatApi.isExistChatroom(boardId!!, BOARD_TYPE_ASK, ApplicationClass.prefs.getId()).awaitResponse().body()
                 Log.d(TAG, "onChatBtnClick: result: $isExist")
                 if(isExist?.flag == "success") { // 이미 채팅방이 존재함
                     Log.d(TAG, "onChatBtnClick: 채팅방 이미 존재")
@@ -114,7 +114,7 @@ class AskDetailActivity : AppCompatActivity() {
                     // 내가 빌려주는 사람 shareUserId:나, notShareUserId : 요청글 작성자 (=userId)
                     val chatRoom = Chatroom(boardId!!, 0, writerId!!, ApplicationClass.prefs.getId(),BOARD_TYPE_ASK)
                     Log.d(TAG, "onChatBtnClick: chatRoom: ${chatRoom.toString()}")
-                    val result = ApplicationClass.retrofitChatService.createChatroom(chatRoom).awaitResponse().body()
+                    val result = ApplicationClass.chatApi.createChatroom(chatRoom).awaitResponse().body()
                     Log.d(TAG, "onChatBtnClick: 새로운 채팅방 만들기 result: $result")
                     if(result?.flag == "success") {
                         val fragment = supportFragmentManager.findFragmentById(R.id.share_detail_map)
@@ -155,7 +155,7 @@ class AskDetailActivity : AppCompatActivity() {
     private fun initData(){
         var count = 0
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.retrofitAskService.getBoardDetail(boardId!!).awaitResponse().body()
+            val result = ApplicationClass.askApi.getBoardDetail(boardId!!).awaitResponse().body()
             if (result?.flag =="success") {
                 Log.d(TAG, "init: @@@공유 디테일 ${result.data[0]}")
                 binding.article = result.data[0]
@@ -167,7 +167,7 @@ class AskDetailActivity : AppCompatActivity() {
                 initMap()
 
                 // 해당 글을 작성한 작성자 데이터 가져오기
-                val userResult = ApplicationClass.retrofitUserService.getUserDetail(result.data[0].userId).awaitResponse().body()
+                val userResult = ApplicationClass.userApi.getUserDetail(result.data[0].userId).awaitResponse().body()
                 Log.d(TAG, "initData: @@@@@@@@공유글 작성자: ${result.data[0].userId}, ${result.data[0]}")
                 otherUserId = result.data[0].userId
                 if(userResult?.flag == "success") {
@@ -225,8 +225,9 @@ class AskDetailActivity : AppCompatActivity() {
                 Toast.makeText(this@AskDetailActivity, "불러올 수 없는 게시글입니다.", Toast.LENGTH_SHORT).show()
                 finish()
             }
+            isReady = true // 데이터 모두 준비된경우
         }
-        isReady = true // 데이터 모두 준비된경우
+
     } // end of initData()
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -255,7 +256,7 @@ class AskDetailActivity : AppCompatActivity() {
                 val dialog = ConfirmDialog(object : ConfirmDialogInterface {
                     override fun onYesButtonClick(id: String) {
                         CoroutineScope(Dispatchers.Main).launch {
-                            val result = ApplicationClass.retrofitAskService.deleteBoard(boardId!!).awaitResponse().body()
+                            val result = ApplicationClass.askApi.deleteBoard(boardId!!).awaitResponse().body()
                             if(result?.flag == "success") { // 삭제 성공
                                 // TODO : 채팅 목록 삭제시키기 (or 채팅종료)
                                 Toast.makeText(this@AskDetailActivity, "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
@@ -284,12 +285,17 @@ class AskDetailActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        GlobalScope.launch() {
+
+        // 꽉 찬 화면으로 다이얼로그 생성
+        val loadingDialog = FullProgressDialog(this@AskDetailActivity)
+        loadingDialog.show(supportFragmentManager, "ShareDetailLoading")
+        CoroutineScope(Dispatchers.Main).launch {
             while(!isReady) {
                 delay(500)
             }
             Log.d(TAG, "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@onStart: isReady = true")
             binding.contentContainer.visibility = View.VISIBLE
+            loadingDialog.dismiss()
         }
     }
 }

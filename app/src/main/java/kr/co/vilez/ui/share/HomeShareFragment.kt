@@ -1,5 +1,6 @@
 package kr.co.vilez.ui.share
 
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -11,13 +12,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.google.android.material.tabs.TabLayout
+import kotlinx.coroutines.*
 import kr.co.vilez.R
+import kr.co.vilez.data.dto.AskData
 import kr.co.vilez.data.dto.ShareDto
 import kr.co.vilez.databinding.FragmentHomeShareBinding
 import kr.co.vilez.ui.MainActivity
+import kr.co.vilez.ui.ask.AskListAdapter
 import kr.co.vilez.ui.search.SearchActivity
 import kr.co.vilez.ui.share.*
 import kr.co.vilez.ui.search.category.MenuCategoryActivity
@@ -25,6 +27,7 @@ import kr.co.vilez.ui.share.write.ShareWriteActivity
 import kr.co.vilez.util.ApplicationClass
 import retrofit2.awaitResponse
 import kr.co.vilez.util.Common
+import kr.co.vilez.util.Common.Companion.BOARD_TYPE_ASK
 import kr.co.vilez.util.Common.Companion.BOARD_TYPE_SHARE
 
 private const val TAG = "빌리지_HomeFragment"
@@ -33,15 +36,23 @@ class HomeShareFragment : Fragment() {
     private lateinit var binding: FragmentHomeShareBinding
     private lateinit var mainActivity: MainActivity
 
+    // 공유글
     private lateinit var shareAdapter: ShareListAdapter
-    private lateinit var shareDatas: ArrayList<ShareDto>
+    private lateinit var shareItems: ArrayList<ShareDto>
+    private var shareIndex = 0
+
+    
+    private lateinit var askAdapter: AskListAdapter
+    private var askItems = ArrayList<AskData>()
     private var index = 0
 
+    private val TAB_SHARE = 0 // 공유
+    private val TAB_ASK = 1  // 요청글
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainActivity = context as MainActivity
         setHasOptionsMenu(true)
+        mainActivity = context as MainActivity
     }
 
     override fun onCreateView(
@@ -54,14 +65,108 @@ class HomeShareFragment : Fragment() {
 
         if (ApplicationClass.prefs.getLng() != "0.0" && ApplicationClass.prefs.getLat() != "0.0") {
             binding.userLocationValid = true
-            initData()
+            initTabLayout()
+            initShareData() // default : 공유글 띄우기
         } else {
             binding.userLocationValid = false
         }
 
         initToolBar()
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            CoroutineScope(Dispatchers.Main).launch {
+                withContext(Dispatchers.Main) {
+                    when(binding.homeTabLayout.selectedTabPosition) {
+                        TAB_ASK -> {
+                            initAskData()
+                            if(askItems.size > 0) askAdapter.notifyDataSetChanged()
+                        }
+                        TAB_SHARE -> {
+                            initShareData()
+                            if(shareItems.size > 0) shareAdapter.notifyDataSetChanged()
+                        }
+                    }
+                    delay(600)
+                }
+                binding.swipeRefreshLayout.isRefreshing = false
+            }
+        }
         return binding.root
+    }
+
+
+    override fun onResume() {
+        reloadData()
+        super.onResume()
+    }
+
+    private fun reloadData() {
+        Log.d(TAG, "reloadData: @@@@@@@@@@@@@@@@@@@@@@@@@@@@RELOAD")
+        // 게시글 추가, 수정, 삭제 후 다시 돌아왔을때 데이터 재로딩
+        // 원래있던거 다 날리기
+
+        /*when(binding.homeTabLayout.selectedTabPosition) {
+            TAB_ASK -> {
+                initAskData()
+            }
+            TAB_SHARE -> {
+                initShareData()
+            }
+        }*/
+    }
+
+    var isOpen = false
+    fun toggleFloatingBtn(view: View) {
+        if(isOpen) { // 원래대로 돌아감
+            ObjectAnimator.ofFloat(binding.btnWriteAsk, "translationY", 0f).apply {
+                duration = 400
+                start()
+            }
+            ObjectAnimator.ofFloat(binding.btnWriteShare, "translationY", 0f).apply {
+                duration = 400
+                start()
+            }
+            /*ObjectAnimator.ofFloat(binding.floatingActionButton, View.ROTATION, 45f,0f).apply {
+                duration = 300
+                start()
+            }*/
+        } else { //펼쳐짐
+            ObjectAnimator.ofFloat(binding.btnWriteAsk, "translationY", -130f).apply {
+                duration = 400
+                start()
+            }
+            ObjectAnimator.ofFloat(binding.btnWriteShare, "translationY", -260f).apply {
+                duration = 400
+                start()
+            }
+            /*ObjectAnimator.ofFloat(binding.floatingActionButton, View.ROTATION, 0f,45f).apply {
+                duration = 300
+                start()
+            }*/
+        }
+        isOpen = !isOpen
+
+    }
+
+    private fun initTabLayout() {
+        binding.homeTabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                when(tab!!.position) {
+                    TAB_SHARE-> { // 공유 탭
+                        initShareData()
+                    }
+                    TAB_ASK -> { // 요청 탭
+                        initAskData()
+                    }
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+        })
     }
 
     @Deprecated("Deprecated in Java")
@@ -70,12 +175,11 @@ class HomeShareFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+
     @Deprecated("Deprecated in Java")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.option_menu_menu -> {
-                Log.d(TAG, "onContextItemSelected: ${item.title} clicked")
-                Toast.makeText(mainActivity, "${item.title} 클릭", Toast.LENGTH_SHORT).show()
                 val intent = Intent(mainActivity, MenuCategoryActivity::class.java)
                 intent.putExtra("type", BOARD_TYPE_SHARE)
                 startActivity(intent)
@@ -96,25 +200,20 @@ class HomeShareFragment : Fragment() {
     }
 
 
-    private fun initData() {
+    private fun initShareData() {
         // 데이터 가져오기
-        shareDatas = arrayListOf()
+        shareItems = arrayListOf()
 
         // 어댑터 생성
-        shareAdapter = ShareListAdapter(shareDatas)
-        shareAdapter.setItemClickListener(object : ShareListAdapter.OnItemClickListener {
-            // listview item 클릭시 실행할 메소드
-            override fun onClick(view: View, position: Int) {
-
-                Log.d(TAG, "onClick: ${shareDatas[position].title} clicked!")
-            }
-        })
+        shareAdapter = ShareListAdapter(shareItems)
 
         // 리사이클러뷰에 어댑터 등록
         binding.rvShareList.apply {
             adapter = shareAdapter
             layoutManager = LinearLayoutManager(mainActivity, LinearLayoutManager.VERTICAL, false)
         }
+
+        shareAdapter.notifyDataSetChanged()
 
         var num = 0;
         var max = 10;
@@ -123,7 +222,7 @@ class HomeShareFragment : Fragment() {
         Log.d(TAG, "$lat $lng")
         CoroutineScope(Dispatchers.Main).launch {
             val result =
-                ApplicationClass.retrofitShareService.boardList(
+                ApplicationClass.shareApi.boardList(
                     num++,
                     0,
                     max,
@@ -149,10 +248,10 @@ class HomeShareFragment : Fragment() {
                             data.shareListDto.state,
                             data.shareListDto.userId
                         );
-                    shareDatas.add(shareData)
+                    shareItems.add(shareData)
                 }
             }
-            shareAdapter.notifyItemInserted(index - 1)
+            shareAdapter.notifyItemInserted(shareIndex - 1)
         }
 
         binding.rvShareList.setOnScrollChangeListener { v, scollX, scrollY,
@@ -160,7 +259,7 @@ class HomeShareFragment : Fragment() {
             if (!v.canScrollVertically(1)) {
                 CoroutineScope(Dispatchers.Main).launch {
                     val result =
-                        ApplicationClass.retrofitShareService.boardList(
+                        ApplicationClass.shareApi.boardList(
                             num++,
                             0,
                             max,
@@ -183,20 +282,101 @@ class HomeShareFragment : Fragment() {
                                     data.shareListDto.state,
                                     data.shareListDto.userId
                                 );
-                                shareDatas.add(shareData)
+                                shareItems.add(shareData)
                             }
                         }
-                        shareAdapter.notifyItemInserted(index - 1)
+                        shareAdapter.notifyItemInserted(shareIndex - 1)
                     }
                 }
             }
         }
     }
 
+    private fun initAskData() {
+        askItems = arrayListOf()
+
+        askAdapter = AskListAdapter(askItems)
+
+        binding.rvShareList.apply {
+            adapter = askAdapter
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        }
+        askAdapter.notifyDataSetChanged()
+        
+        var num = 0
+        var max = 10
+        CoroutineScope(Dispatchers.Main).launch {
+            val result = ApplicationClass.askApi.boardList(num++, 0, max, ApplicationClass.prefs.getId()).awaitResponse().body()
+            Log.d(TAG, "initData: result: $result")
+            if (result?.flag == "success") {
+                Log.d(TAG, "initList: result: $result")
+                if(result.data.isEmpty()) {
+                    Log.d(TAG, "onViewCreated: 데이터 0개")
+                    binding.tvNoArticleMsg.visibility = View.VISIBLE
+                }
+                for (data in result.data[0]) {
+                    val askData = AskData(
+                        data.askDto.id,
+                        if (data.askDto.list.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.askDto.list[0].path,
+                        data.askDto.title,
+                        data.askDto.date,
+                        "", // 이거 안쓰기로함
+                        data.askDto.startDay+" ~ "+data.askDto.endDay,
+                        data.askDto.state,
+                        data.askDto.userId
+                    )
+                    Log.d(TAG, "추가?: $askData")
+                    askItems.add(askData)
+                }
+            } else {
+                Log.d(TAG, "initData: 실패!!")
+            }
+            Log.d(TAG, "추가완료: askItems: $askItems")
+            askAdapter.notifyItemInserted(index - 1)
+        }
+
+        binding.rvShareList.setOnScrollChangeListener { v, _, _, _, _ ->
+            if (!v.canScrollVertically(1)) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    val result = ApplicationClass.askApi.boardList(num++, 0, max, ApplicationClass.prefs.getId()).awaitResponse().body()
+                    Log.d(TAG, "initData: result: $result")
+                    if (result?.flag == "success") {
+                        Log.d(TAG, "initList: result: $result")
+                        if(result.data.isEmpty()) {
+                            Log.d(TAG, "onViewCreated: 데이터 0개")
+                            binding.tvNoArticleMsg.visibility = View.VISIBLE
+                        }
+                        for (data in result.data[0]) {
+                            val askData = AskData(
+                                data.askDto.id,
+                                if (data.askDto.list.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.askDto.list[0].path,
+                                data.askDto.title,
+                                data.askDto.date,
+                                "", // 이거 안쓰기로함
+                                data.askDto.startDay+" ~ "+data.askDto.endDay,
+                                data.askDto.state,
+                                data.askDto.userId
+                            )
+                            Log.d(TAG, "추가?: $askData")
+                            askItems.add(askData)
+                        }
+                    } else {
+                        Log.d(TAG, "initData: 실패!!")
+                    }
+                }
+            }
+        }
+    }
 
     fun moveToShareWriteActivity(view: View) {
         val intent = Intent(mainActivity, ShareWriteActivity::class.java)
         intent.putExtra("type", BOARD_TYPE_SHARE)
+        mainActivity.startActivity(intent)
+    }
+
+    fun moveToAskWriteActivity(view: View) {
+        val intent = Intent(mainActivity, ShareWriteActivity::class.java)
+        intent.putExtra("type", BOARD_TYPE_ASK)
         mainActivity.startActivity(intent)
     }
 
