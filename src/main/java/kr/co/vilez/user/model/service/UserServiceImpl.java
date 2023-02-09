@@ -194,8 +194,9 @@ public class UserServiceImpl implements UserService {
         UserDto user = userMapper.refreshCheck(map);
             
         if(user != null){
+            System.out.println("user = " + user);
             http.setFlag("success");
-            user.setAccessToken(jwtProvider.createToken(userId, nickname));
+            user.setAccessToken(jwtProvider.createToken(user.getId(), nickname));
             data.add(user);
             http.setData(data);
         }
@@ -211,8 +212,8 @@ public class UserServiceImpl implements UserService {
         String accessToken = null;
         String refreshToken = null;
         if(user != null){
-            accessToken = jwtProvider.createToken(user.getEmail(), user.getNickName());
-            refreshToken = jwtProvider.createRefreshToken(user.getEmail(), user.getNickName());
+            accessToken = jwtProvider.createToken(user.getId(), user.getNickName());
+            refreshToken = jwtProvider.createRefreshToken(user.getId(), user.getNickName());
 
             // 로그인에 성공했다면, refresh 값을 db에 저장
             HashMap<String, Object> map = new HashMap<>();
@@ -239,8 +240,8 @@ public class UserServiceImpl implements UserService {
         String accessToken = null;
         String refreshToken = null;
         if(user != null){
-            accessToken = jwtProvider.createExpireToken(user.getEmail(), user.getNickName());
-            refreshToken = jwtProvider.createRefreshToken(user.getEmail(), user.getNickName());
+            accessToken = jwtProvider.createExpireToken(user.getId(), user.getNickName());
+            refreshToken = jwtProvider.createRefreshToken(user.getId(), user.getNickName());
 
             // 로그인에 성공했다면, refresh 값을 db에 저장
             HashMap<String, Object> map = new HashMap<>();

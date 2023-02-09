@@ -91,8 +91,8 @@ public class OAuthController {
                 pointVO.setDate(now.toString());
                 appointmentDao.savePoint(pointVO);
 
-                String accessToken = jwtProvider.createToken(Integer.toString(userId), tempNickName);
-                String refreshToken = jwtProvider.createRefreshToken(Integer.toString(userId), tempNickName);
+                String accessToken = jwtProvider.createToken(userId, tempNickName);
+                String refreshToken = jwtProvider.createRefreshToken(userId, tempNickName);
 
                 oAuthUser.setId(userId);
                 oAuthUser.setAccessToken(accessToken);
@@ -105,7 +105,7 @@ public class OAuthController {
             } else{
                 // null 이 아니면, 가입이 불가능한 이메일로 어느 OAuth를 통해 가입했는지를 리턴
                 if(oAuthUser.getOauth().equals("kakao")) {
-                    String accessToken = jwtProvider.createToken(Integer.toString(oAuthUser.getId()), oAuthUser.getNickName());
+                    String accessToken = jwtProvider.createToken(oAuthUser.getId(), oAuthUser.getNickName());
                     oAuthUser.setAccessToken(accessToken);
 
                     data.add(oAuthUser);
@@ -171,8 +171,8 @@ public class OAuthController {
                 pointVO.setDate(now.toString());
                 appointmentDao.savePoint(pointVO);
 
-                String access_Token = jwtProvider.createToken(Integer.toString(userId), tempNickName);
-                String refresh_Token = jwtProvider.createRefreshToken(Integer.toString(userId), tempNickName);
+                String access_Token = jwtProvider.createToken(userId, tempNickName);
+                String refresh_Token = jwtProvider.createRefreshToken(userId, tempNickName);
 
                 userDto.setId(userId);
                 userDto.setAccessToken(access_Token);
@@ -185,7 +185,7 @@ public class OAuthController {
             } else{
                 // null 이 아니면, 가입이 불가능한 이메일로 어느 OAuth를 통해 가입했는지를 리턴
                 if(userDto.getOauth().equals("naver")) {
-                    String access_Token = jwtProvider.createToken(Integer.toString(userDto.getId()),
+                    String access_Token = jwtProvider.createToken(userDto.getId(),
                             userDto.getNickName());
                     userDto.setAccessToken(accessToken);
 

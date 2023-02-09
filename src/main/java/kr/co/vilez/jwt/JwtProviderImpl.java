@@ -32,7 +32,7 @@ public class JwtProviderImpl implements JwtProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(String userId, String userNickname) {
+    public String createToken(int userId, String userNickname) {
         Date now = new Date();
 
         Claims claims = Jwts.claims();
@@ -47,7 +47,7 @@ public class JwtProviderImpl implements JwtProvider {
                 .compact();
     }
 
-    public String createRefreshToken(String userId, String userNickname) {
+    public String createRefreshToken(int userId, String userNickname) {
         Date now = new Date();
 
         Claims claims = Jwts.claims();
@@ -61,7 +61,7 @@ public class JwtProviderImpl implements JwtProvider {
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
-    public String createExpireToken(String userId, String userNickname) {
+    public String createExpireToken(int userId, String userNickname) {
         Date now = new Date();
         Claims claims = Jwts.claims();
         claims.put("userId", userId);
