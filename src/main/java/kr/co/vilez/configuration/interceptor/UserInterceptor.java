@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 @Log4j2
 public class UserInterceptor implements HandlerInterceptor {
-    private static final String HEADER_ACCESS = "access_token";
-    private static final String HEADER_REFRESH = "refresh_token";
+    private static final String HEADER_ACCESS = "access-token";
+    private static final String HEADER_REFRESH = "refresh-token";
 
     @Autowired
     public JwtProvider jwtProvider;
@@ -24,6 +24,9 @@ public class UserInterceptor implements HandlerInterceptor {
                              HttpServletResponse response,
                              Object handler) throws Exception{
 
+        if(request.getMethod().equals("OPTIONS")) {
+            return true;
+        }
 
         String access_token = request.getHeader(HEADER_ACCESS);
         System.out.println("access_token = " + access_token);

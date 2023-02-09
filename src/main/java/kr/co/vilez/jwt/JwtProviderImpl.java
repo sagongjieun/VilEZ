@@ -25,6 +25,7 @@ public class JwtProviderImpl implements JwtProvider {
 
     private long tokenValidTime = Duration.ofMinutes(60).toMillis();
     private long refreshTokenValidTime = Duration.ofDays(90).toMillis();
+    private long longTime = Duration.ofDays(100).toMillis();
 
     @PostConstruct
     protected void init() {
@@ -100,7 +101,7 @@ public class JwtProviderImpl implements JwtProvider {
                     get("expire").
                     toString();
         }catch (Exception e){
-            return "be manipulated";
+            return "jwt parse error";
         }
     }
 
