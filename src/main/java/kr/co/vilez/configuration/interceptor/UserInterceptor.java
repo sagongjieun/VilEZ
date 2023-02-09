@@ -1,4 +1,4 @@
-package kr.co.vilez.user.interceptor;
+package kr.co.vilez.configuration.interceptor;
 
 import kr.co.vilez.jwt.JwtProvider;
 import lombok.extern.log4j.Log4j2;

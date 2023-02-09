@@ -241,7 +241,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public BoardStateVO getBoardState(int boardId, int type) throws Exception {
-        return appointmentMapper.getBoardState(boardId);
+        return appointmentMapper.getBoardState(boardId, type);
     }
 
     @Override
