@@ -38,7 +38,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="4dp"
-                            android:background="@{calendar.state == 1 ? @drawable/circle_`  1blue : @drawable/circle_green}"/>
+                            android:background="@{calendar.state == 1 ? @drawable/circle_green : @drawable/circle_blue}"/>
 
                         <TextView
                             android:id="@+id/textView5"

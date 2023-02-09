@@ -31,7 +31,7 @@ class MyShareFragment : Fragment() { // 내가 빌려주는것들 목록
     private val STATE_SHARING = 0 // 공유 중
     private val STATE_RESERVE = 1 // 공유 예정 (예약된 것)
 
-    private lateinit var boardAdapter: BoardListAdapter
+    private lateinit var boardAdapter: ImminentAdapter
     private lateinit var boardList:ArrayList<BoardData>
     private var index = 0
 
@@ -79,7 +79,7 @@ class MyShareFragment : Fragment() { // 내가 빌려주는것들 목록
     private fun initSharingData() {
         index = 0
         boardList = arrayListOf()
-        boardAdapter = BoardListAdapter(boardList)
+        boardAdapter = ImminentAdapter(boardList)
         // 리사이클러뷰에 어댑터 등록
         binding.rvMyShareList.apply {
             adapter = boardAdapter
@@ -95,17 +95,20 @@ class MyShareFragment : Fragment() { // 내가 빌려주는것들 목록
                     Log.d(TAG, "onViewCreated: 데이터 0개")
                 }
                 for (data in result.data[0]) {
+
+
                     val state = getBoardState(data.myAppointListVO.appointmentStart)
                     if(state == APPOINTMENT_TYPE_RESERVE) continue // 공유 예정인 것은 skip
-
+                    if(data.myAppointListVO.id == 0) continue // TODO : api 에러같음 id 0인것은 데이터 다 null로 들어와서 skip하기
+                    Log.d(TAG, "initSharingData: data: $data")
                     val boardData = BoardData(
-                        data.myAppointListVO.boardId,
+                        data.myAppointListVO.id,
                         if (data.imgPathList.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.imgPathList[0].path,
                         data.myAppointListVO.title,
                         data.myAppointListVO.date,
                         data.myAppointListVO.appointmentStart+ " ~ " + data.myAppointListVO.appointmentEnd,
                         data.bookmarkCnt.toString(),
-                        data.myAppointListVO.shareUserId, // TODO : notShareUserId 중 구분해서 넣어야함
+                        data.myAppointListVO.userId, // TODO : 내 id 넣으면 되니????
                         data.myAppointListVO.type,
                         state = APPOINTMENT_TYPE_SHARE, // 공유중인 데이터만 넣을거임
                         sDay = data.myAppointListVO.appointmentStart,
@@ -122,7 +125,7 @@ class MyShareFragment : Fragment() { // 내가 빌려주는것들 목록
     private fun initReserveData() {
         index = 0
         boardList = arrayListOf()
-        boardAdapter = BoardListAdapter(boardList)
+        boardAdapter = ImminentAdapter(boardList)
         // 리사이클러뷰에 어댑터 등록
         binding.rvMyShareList.apply {
             adapter = boardAdapter
@@ -138,17 +141,19 @@ class MyShareFragment : Fragment() { // 내가 빌려주는것들 목록
                     Log.d(TAG, "onViewCreated: 데이터 0개")
                 }
                 for (data in result.data[0]) {
+
+
                     val state = getBoardState(data.myAppointListVO.appointmentStart)
                     if(state == APPOINTMENT_TYPE_SHARE) continue // 공유 중인 것은 skip
-
+                    if(data.myAppointListVO.id == 0) continue
                     val boardData = BoardData(
-                        data.myAppointListVO.boardId,
+                        data.myAppointListVO.id, // TODO : api 에러같음 id 0인것은 데이터 다 null로 들어와서 skip하기
                         if (data.imgPathList.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.imgPathList[0].path,
                         data.myAppointListVO.title,
                         data.myAppointListVO.date,
                         data.myAppointListVO.appointmentStart+ " ~ " + data.myAppointListVO.appointmentEnd,
                         data.bookmarkCnt.toString(),
-                        data.myAppointListVO.shareUserId, // TODO : notShareUserId 중 구분해서 넣어야함
+                        data.myAppointListVO.userId, // TODO : notShareUserId 중 구분해서 넣어야함
                         data.myAppointListVO.type,
                         state = APPOINTMENT_TYPE_RESERVE, // 공유 예정인 데이터만 넣을거임
                         sDay = data.myAppointListVO.appointmentStart,

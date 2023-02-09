@@ -279,6 +279,10 @@ class ShareWriteActivity : AppCompatActivity() {
 
     fun onPlaceClick(view: View) {
         val intent = Intent(this@ShareWriteActivity, PlacePickerActivity::class.java)
+        if(editBoardId != 0) { // 수정하기인 경우 : 이전 희망 장소 찍어둬야 함
+            intent.putExtra("lat", lat?.toDouble())
+            intent.putExtra("lng", lng?.toDouble())
+        }
         requestLauncher.launch(intent)
     }
 

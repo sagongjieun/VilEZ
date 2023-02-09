@@ -24,15 +24,19 @@ import androidx.fragment.app.setFragmentResult
 import com.google.android.material.snackbar.Snackbar
 import kr.co.vilez.R
 import kr.co.vilez.databinding.FragmentHopePlaceBinding
-import kr.co.vilez.util.PermissionUtil
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapPoint.GeoCoordinate
+import net.daum.mf.map.api.MapPoint.mapPointWithGeoCoord
 import net.daum.mf.map.api.MapReverseGeoCoder
 import net.daum.mf.map.api.MapView
 
 
 private const val TAG = "빌리지_지도피커_HopePlaceFragment"
+
+private const val ARG_LAT = "editLat"
+private const val ARG_LNG = "editLng"
+
 class HopePlaceFragment : Fragment(), MapView.MapViewEventListener,
     MapReverseGeoCoder.ReverseGeoCodingResultListener {
     lateinit var listener : HopePlaceInterface // 선언은 인터페이스로 (런타임때는 구현체가 동작함)
@@ -49,9 +53,28 @@ class HopePlaceFragment : Fragment(), MapView.MapViewEventListener,
     private lateinit var pos: MapPoint
     private var addr:String? = null
 
+    // 수정 모드일경우 디폴트로 띄울 마커위치
+    private var editLat: Double ?=0.0
+    private var editLng: Double?=0.0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments?.let {
+            editLat = it.getDouble(ARG_LAT)
+            editLng = it.getDouble(ARG_LNG)
+        }
         activity = context as PlacePickerActivity
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(param1: Double, param2: Double) =
+            HopePlaceFragment().apply {
+                arguments = Bundle().apply {
+                    putDouble(ARG_LAT, param1)
+                    putDouble(ARG_LNG, param2)
+                }
+            }
     }
 
     override fun onCreateView(
@@ -139,13 +162,36 @@ class HopePlaceFragment : Fragment(), MapView.MapViewEventListener,
             }
         }
 
-
-
     }
 
     override fun onMapViewInitialized(p0: MapView?) {
         p0?.removeAllPOIItems()
+        if(editLat!=null && editLng != null) { // 기존 위치에 마커 찍기
+            Log.d(TAG, "onMapViewInitialized: 수정모드 lat:$editLat, lng:$editLng")
+            pos = mapPointWithGeoCoord(editLat!!, editLng!!)
 
+            val reverseGeoCoder = MapReverseGeoCoder(
+                getString(R.string.kakao_app_key),
+                pos,
+                this,
+                activity,
+            )
+            reverseGeoCoder.startFindingAddress()
+
+            marker.itemName = "hope area"
+            marker.tag = 0
+            marker.mapPoint = pos;
+            marker.markerType = MapPOIItem.MarkerType.BluePin // 기본으로 제공하는 BluePin 마커 모양.*/
+            marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+
+            if (p0 != null && pos != null) {
+                p0.removeAllPOIItems()
+                p0.addPOIItem(marker) // 마커찍기
+                isMarkerOn = true;
+                p0.setMapCenterPoint(pos,true) // 마커 중심으로 위치 이동
+            }
+
+        }
     }
 
     override fun onMapViewCenterPointMoved(p0: MapView?, p1: MapPoint?) {
