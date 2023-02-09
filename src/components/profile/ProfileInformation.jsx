@@ -7,15 +7,15 @@ import ProfileLocation from "./ProfileLocation";
 import ProfilePoint from "./ProfilePoint";
 import ProfileDday from "./ProfileDday";
 import { getUserDetail } from "../../api/user";
-import { useRecoilState } from "recoil";
-import { loginUserState } from "../../recoil/atom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { locationState, loginUserState } from "../../recoil/atom";
 
-// const { kakao } = window;
+const { kakao } = window;
 const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpen, isEditProfileOpen }) => {
   const id = localStorage.getItem("id");
   const [loginUser, setLoginUser] = useRecoilState(loginUserState);
-  const [areaLng, setAreaLng] = useState("");
-  const [areaLat, setAreaLat] = useState("");
+  // const [areaLng, setAreaLng] = useState("");
+  // const [areaLat, setAreaLat] = useState("");
   const [location, setLocation] = useState("");
   const [profileImage, setProfileImage] = useState("");
   const [nickName, setNickName] = useState("");
@@ -25,6 +25,21 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
     setIsEditProfileOpen(true);
   }
 
+  // 불러온 유저정보 활용
+  // https://apis.map.kakao.com/web/sample/coord2addr/ 참조하였음.
+  const located = useRecoilValue(locationState);
+  console.log(located);
+  var coords = new kakao.maps.LatLng(located.areaLat, located.areaLng);
+  useEffect(() => {
+    const geocoder = new kakao.maps.services.Geocoder();
+    geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), (result, status) => {
+      if (status === kakao.maps.services.Status.OK) {
+        const data = result[0];
+        console.log(data);
+        setLocation(data.region_1depth_name + " " + data.region_2depth_name + " " + data.region_3depth_name);
+      }
+    });
+  }, []);
   // 좌표로 주소 불러오기
   // state에 있는, areaLat, areaLng를 불러와서 사용할건데, useEffect()에서 그 불러온 두 값은 이렇게 사용이 될거야.
   // function getAddr(areaLat, areaLng) {
@@ -40,8 +55,8 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
   // }
   useEffect(() => {
     getUserDetail(id).then((response) => {
-      setAreaLat(response.areaLat);
-      setAreaLng(response.areaLng);
+      // setAreaLat(response.areaLat);
+      // setAreaLng(response.areaLng);
       setProfileImage(response.profile_img);
       setNickName(response.nickName);
       setManner(response.manner);
@@ -54,11 +69,11 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
       localStorage.setItem("nickName", response.nickName);
     });
   }, [isQrCodeOpen, isEditProfileOpen]);
-  useEffect(() => {
-    // getAddr(areaLng, areaLat);
-    console.log(areaLng, areaLat);
-    setLocation("동네를 설정해주세요");
-  }, [areaLng, areaLat]);
+  // useEffect(() => {
+  //   // getAddr(areaLng, areaLat);
+  //   // console.log(areaLng, areaLat);
+  //   setLocation("동네를 설정해주세요");
+  // }, [areaLng, areaLat]);
   return (
     <div css={profileWrapper}>
       <ProfileEditButton text="프로필 수정하기" onClick={onClickEditProfileOpen} />
