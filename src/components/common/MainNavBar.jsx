@@ -58,18 +58,17 @@ function MainNavBar() {
     navigate("/product/list/share");
   }
 
-  function onClickLogout() {
-    postLogout({
-      // accessToken: localStorage.getItem("assesToken"),
-      // refreshToken: localStorage.getItem("refreshToken"),
-      id: userId,
-    }).then((response) => {
-      console.log(response);
-    });
-    localStorage.clear();
-    setLoginUser(null);
+  async function onClickLogout() {
+    const response = postLogout({ id: userId });
+
+    if (response) {
+      localStorage.clear();
+      setLoginUser(null);
+      navigate("/");
+    }
   }
 
+  /** 로그인 유지 변경하기 */
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
 

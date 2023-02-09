@@ -96,7 +96,7 @@ authJsonAxios.interceptors.response.use(
 );
 
 // axios 요청이 처리되기 전 요청 가로채기
-authFormDataInstance.interceptors.request.use(
+authFormDataAxios.interceptors.request.use(
   (config) => {
     const accessToken = localStorage.getItem("accessToken");
 
@@ -110,7 +110,7 @@ authFormDataInstance.interceptors.request.use(
 );
 
 // axios 요청이 처리되기 전 응답 가로채기
-authFormDataInstance.interceptors.response.use(
+authFormDataAxios.interceptors.response.use(
   (response) => response, // 응답이 성공적인 경우 아무것도 하지 않음
   async (error) => {
     // 액세스 토큰이 만료됐다면

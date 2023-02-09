@@ -45,7 +45,7 @@ async function postMannerPoint(body) {
 
 async function postLogin(email, password) {
   try {
-    const { data } = await defaultAxios.post(`/users/login/fake`, { email, password });
+    const { data } = await defaultAxios.post(`/users/login`, { email, password });
 
     if (data.flag === "success") {
       if (!data.data) {
@@ -75,11 +75,8 @@ async function postLogout(userInfo) {
   try {
     const { data } = await defaultAxios.post("users/logout", userInfo);
 
-    if (data.flag === "success") {
-      alert("로그아웃이 완료되었습니다.");
-    } else {
-      alert("로그아웃이 정상적으로 완료되지 않았습니다.");
-    }
+    if (data.flag === "success") return true;
+    else console.log("로그아웃이 정상적으로 완료되지 않았습니다.");
   } catch (error) {
     console.log(error);
   }
