@@ -15,7 +15,6 @@ import androidx.core.app.NotificationManagerCompat
 import kr.co.vilez.R
 import kr.co.vilez.data.model.RESTResult
 import kr.co.vilez.ui.SplashActivity
-import kr.co.vilez.ui.chat.ChatRoomActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.FCMTokenUtil
 import retrofit2.Call
@@ -177,7 +176,7 @@ class FCMService : FirebaseMessagingService() {
 
         Log.d(TAG, "sendRegistrationTokenToServer($token)")
 
-        ApplicationClass.retrofitFCMService.uploadToken(FCMToken(ApplicationClass.prefs.getId(), token!!)).enqueue(object :
+        ApplicationClass.FCMApi.uploadToken(FCMToken(ApplicationClass.prefs.getId(), token!!)).enqueue(object :
             Callback<RESTResult> {
             override fun onResponse(call: Call<RESTResult>, response: Response<RESTResult>) {
                 if(response.isSuccessful){

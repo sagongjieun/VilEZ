@@ -17,6 +17,7 @@ class BoardData (
     val status:String?=null, // 시작일 임박!
 ) {
     override fun toString(): String {
-        return "{ title: $title, boardId:$boardId }"
+        return "{ title: $title, boardId:$boardId ,type:$type, state:$state, boardWriterId:$boardWriterId" +
+                "state:$state sDay:$sDay, eDay:$eDay}"
     }
 }

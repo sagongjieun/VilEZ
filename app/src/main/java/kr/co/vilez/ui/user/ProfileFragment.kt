@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthLogin
 import com.navercorp.nid.oauth.OAuthLoginCallback
@@ -21,7 +20,7 @@ import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentProfileBinding
 import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.ui.dialog.*
-import kr.co.vilez.ui.profile.ImminentAdapter
+import kr.co.vilez.ui.share.ShareToChatAdapter
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
 import retrofit2.awaitResponse
@@ -31,7 +30,7 @@ class ProfileFragment : Fragment() {
     private lateinit var binding:FragmentProfileBinding
     private lateinit var mainActivity: MainActivity
 
-    private lateinit var myAdapter: ImminentAdapter
+    private lateinit var myAdapter: ShareToChatAdapter
     private lateinit var myList:ArrayList<BoardData>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +55,7 @@ class ProfileFragment : Fragment() {
     
     private fun initData() {
         myList = arrayListOf()
-        myAdapter = ImminentAdapter(myList)
+        myAdapter = ShareToChatAdapter(myList)
         binding.rvImminentList.apply {
             adapter = myAdapter
             layoutManager =
@@ -65,7 +64,7 @@ class ProfileFragment : Fragment() {
 
         var index = 0
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.retrofitAppointmentService.getMyImminent(ApplicationClass.prefs.getId()).awaitResponse().body()
+            val result = ApplicationClass.appointmentApi.getMyImminent(ApplicationClass.prefs.getId()).awaitResponse().body()
             Log.d(TAG, "initData: result: $result")
             if (result?.flag == "success") {
                 Log.d(TAG, "initList: success!!!!!  검색 결과 : ${result.data[0].size}  result: $result")
@@ -176,7 +175,7 @@ class ProfileFragment : Fragment() {
     fun login(view:View) {
         CoroutineScope(Dispatchers.Main).launch {
             val user = User("test@naver.com", "12345")
-            val result = ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
+            val result = ApplicationClass.userApi.getLoginResult(user).awaitResponse().body()
             if (result == null) { // 로그인 실패
                 Log.d(TAG, "login: 로그인 실패, result:$result")
             } else if(result.flag == "success") {  // 로그인 성공
@@ -231,7 +230,7 @@ class ProfileFragment : Fragment() {
                 }
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    val result = ApplicationClass.retrofitUserService.postLogout(ApplicationClass.prefs.getUser()).awaitResponse().body()
+                    val result = ApplicationClass.userApi.postLogout(ApplicationClass.prefs.getUser()).awaitResponse().body()
                     if(result?.flag == "success") {
                         Log.d(TAG, "logout: 로그아웃 성공")
                         // 로그아웃 후 로그인 화면이동

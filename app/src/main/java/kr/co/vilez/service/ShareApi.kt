@@ -21,7 +21,7 @@ data class RESTShareResult(
     val `data`: List<ShareResult>,
     val flag: String
 )
-interface RetrofitShareService {
+interface ShareApi {
 
     // 내 북마크 리스트를 불러온다
     @GET("/vilez/shareboard/bookmark/my/{userId}")

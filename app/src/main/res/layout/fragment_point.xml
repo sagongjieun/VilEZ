@@ -47,7 +47,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_gravity="start"
-                        android:background="@drawable/icon_back"
+                        android:background="@drawable/ic_app_bar_back"
                         android:onClick="@{fragment.onBackPressed}"
                         android:scaleType="fitXY" />
 
@@ -198,6 +198,7 @@
                     android:id="@+id/rv_point_record"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
+
             </LinearLayout>
 
 

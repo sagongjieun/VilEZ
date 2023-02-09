@@ -88,7 +88,7 @@ class SignDialog(
 
         if(ApplicationClass.prefs.getId() == notShareUserId) { // 피공유자면
             CoroutineScope(Dispatchers.Main).launch {
-                val result = ApplicationClass.retrofitChatService.getSign(roomId).awaitResponse().body()
+                val result = ApplicationClass.chatApi.getSign(roomId).awaitResponse().body()
                 if (result?.flag == "success") {
                     sign = result.data.get(0)
                     if(sign != null) {
@@ -111,7 +111,7 @@ class SignDialog(
             binding.btnCheckBtn.visibility = View.VISIBLE
             binding.boxSign.check = true
             CoroutineScope(Dispatchers.Main).launch {
-                val result = ApplicationClass.retrofitChatService.getSign(roomId).awaitResponse().body()
+                val result = ApplicationClass.chatApi.getSign(roomId).awaitResponse().body()
                 if (result?.flag == "success") {
                     sign = result.data.get(0)
                     if(sign != null) {
@@ -149,7 +149,7 @@ class SignDialog(
         //TODO  : sign 크기 확인해야함! (추가기능)
         var sign = Sign(roomId,dataUrl)
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.retrofitChatService.addSign(sign).awaitResponse().body()
+            val result = ApplicationClass.chatApi.addSign(sign).awaitResponse().body()
             if (result?.flag == "success") {
                 dismiss()
             }

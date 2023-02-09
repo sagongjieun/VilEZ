@@ -102,7 +102,7 @@ class CategorySearchFragment : Fragment() {
         var num = 0
         var max = 10
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.retrofitAskService.boardCategoryList(num++, 0, max, ApplicationClass.prefs.getId(), category!!).awaitResponse().body()
+            val result = ApplicationClass.askApi.boardCategoryList(num++, 0, max, ApplicationClass.prefs.getId(), category!!).awaitResponse().body()
             Log.d(TAG, "initData: result: $result")
             if (result?.flag == "success") {
                 Log.d(TAG, "initList: result: $result")
@@ -136,7 +136,7 @@ class CategorySearchFragment : Fragment() {
         binding.rvShareSearch.setOnScrollChangeListener { v, _, _, _, _ ->
             if (!v.canScrollVertically(1)) {
                 CoroutineScope(Dispatchers.Main).launch {
-                    val result = ApplicationClass.retrofitAskService.boardCategoryList(num++, 0, max, ApplicationClass.prefs.getId(), category!!).awaitResponse().body()
+                    val result = ApplicationClass.askApi.boardCategoryList(num++, 0, max, ApplicationClass.prefs.getId(), category!!).awaitResponse().body()
                     Log.d(TAG, "initData: result: $result")
                     if (result?.flag == "success") {
                         Log.d(TAG, "initList: result: $result")
@@ -192,7 +192,7 @@ class CategorySearchFragment : Fragment() {
         Log.d(TAG, "$lat $lng")
         CoroutineScope(Dispatchers.Main).launch {
             val result =
-                ApplicationClass.retrofitShareService.boardCategoryList(
+                ApplicationClass.shareApi.boardCategoryList(
                     num++,
                     0,
                     max,
@@ -217,8 +217,8 @@ class CategorySearchFragment : Fragment() {
                             data.shareListDto.id,
                             "https://kr.object.ncloudstorage.com/vilez/basicProfile.png",
                             data.shareListDto.title,
-                            Common.elapsedTime(data.shareListDto.date),
-                            "구미",
+                            data.shareListDto.date,
+                            "",
                             data.shareListDto.startDay + "~"
                                     + data.shareListDto.endDay,
                             Integer.toString(data.listCnt),
@@ -230,8 +230,8 @@ class CategorySearchFragment : Fragment() {
                             data.shareListDto.id,
                             data.shareListDto.list[0].path,
                             data.shareListDto.title,
-                            Common.elapsedTime(data.shareListDto.date),
-                            "구미",
+                            data.shareListDto.date,
+                            "",
                             data.shareListDto.startDay + "~"
                                     + data.shareListDto.endDay,
                             Integer.toString(data.listCnt),
@@ -252,7 +252,7 @@ class CategorySearchFragment : Fragment() {
             if (!v.canScrollVertically(1)) {
                 CoroutineScope(Dispatchers.Main).launch {
                     val result =
-                        ApplicationClass.retrofitShareService.boardCategoryList(
+                        ApplicationClass.shareApi.boardCategoryList(
                             num++,
                             0,
                             max,
@@ -272,8 +272,8 @@ class CategorySearchFragment : Fragment() {
                                         data.shareListDto.id,
                                         "https://kr.object.ncloudstorage.com/vilez/basicProfile.png",
                                         data.shareListDto.title,
-                                        Common.elapsedTime(data.shareListDto.date),
-                                        "구미",
+                                        data.shareListDto.date,
+                                        "",
                                         data.shareListDto.startDay + "~"
                                                 + data.shareListDto.endDay,
                                         Integer.toString(data.listCnt),
@@ -285,8 +285,8 @@ class CategorySearchFragment : Fragment() {
                                         data.shareListDto.id,
                                         data.shareListDto.list[0].path,
                                         data.shareListDto.title,
-                                        Common.elapsedTime(data.shareListDto.date),
-                                        "구미",
+                                        data.shareListDto.date,
+                                        "",
                                         data.shareListDto.startDay + "~"
                                                 + data.shareListDto.endDay,
                                         Integer.toString(data.listCnt),

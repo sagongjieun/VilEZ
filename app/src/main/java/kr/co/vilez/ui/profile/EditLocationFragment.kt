@@ -136,7 +136,7 @@ class EditLocation : Fragment(), MapReverseGeoCoder.ReverseGeoCodingResultListen
                 newUser["areaLng"] = uLongitude.toString()
 
                 Log.d(TAG, "onAreaSetClick: 동네인증할 사용자: ${newUser.toString()}")
-                val result = ApplicationClass.retrofitUserService.updateUserLocation(newUser).awaitResponse()
+                val result = ApplicationClass.userApi.updateUserLocation(newUser).awaitResponse()
                 Log.d(TAG, "onAreaSetClick: body: ${result.body()}")
                 Log.d(TAG, "onAreaSetClick: raw: ${result.raw()} \nbody:${result.body()}\n header: ${result.headers()}")
                 if(result.body()?.flag == "success") {

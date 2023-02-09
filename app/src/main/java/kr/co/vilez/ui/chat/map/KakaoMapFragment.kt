@@ -11,7 +11,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.databinding.FragmentKakaoMapBinding
-import kr.co.vilez.data.chat.ChatlistData
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.StompHelper
 import net.daum.mf.map.api.MapPOIItem
@@ -73,7 +72,7 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
 
     fun subMap(mapView : MapView){
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.retrofitChatService.loadLocationByRoomId(roomId).awaitResponse().body()
+            val result = ApplicationClass.chatApi.loadLocationByRoomId(roomId).awaitResponse().body()
             if (result?.flag == "success") {
                 println(result.data)
                 var kakao = result.data[0];

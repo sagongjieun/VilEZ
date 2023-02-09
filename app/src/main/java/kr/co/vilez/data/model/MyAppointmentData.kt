@@ -1,6 +1,6 @@
-package kr.co.vilez.data.dto
+package kr.co.vilez.data.model
 
-import kr.co.vilez.data.model.ImgPath
+import kr.co.vilez.data.dto.MyAppointListVO
 
 data class MyAppointmentData(
     val bookmarkCnt: Int,

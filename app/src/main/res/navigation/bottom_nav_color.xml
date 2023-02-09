@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:icon="@drawable/home_fill" android:color="@color/bg_dark" android:state_checked="true" />
-    <item android:icon="@drawable/home_line" android:state_checked="false"/>
-    <item android:icon="@drawable/location_fill" android:state_checked="true" />
-    <item android:icon="@drawable/location_line" android:state_checked="false" />
-    <item android:icon="@drawable/message_fill" android:state_checked="true" />
-    <item android:icon="@drawable/message_line" android:state_checked="false" />
-    <item android:icon="@drawable/user_fill" android:state_checked="true" />
-    <item android:icon="@drawable/user_line" android:state_checked="false" />
+    <item android:icon="@drawable/ic_bottom_nav_home" android:state_checked="true" />
+    <item android:icon="@drawable/ic_bottom_nav_chat" android:state_checked="false" />
+    <item android:icon="@drawable/ic_bottom_nav_profile" android:state_checked="false" />
 </selector>

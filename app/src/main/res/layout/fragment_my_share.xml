@@ -30,7 +30,7 @@
                 <ImageButton
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:background="@drawable/icon_back"
+                    android:background="@drawable/ic_app_bar_back"
                     android:scaleType="fitXY"
                     android:layout_gravity="start"
                     android:onClick="@{fragment.onBackPressed}"/>

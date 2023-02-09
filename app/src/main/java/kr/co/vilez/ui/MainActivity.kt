@@ -157,15 +157,8 @@ class MainActivity : AppCompatActivity() {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.frame_layout_main, HomeShareFragment())
                     .commit()
-
-                binding.bottomNavigation.menu.apply {
-                    findItem(R.id.page_home).setIcon(R.drawable.home_fill)
-                    findItem(R.id.page_share).setIcon(R.drawable.share_request_line)
-                    findItem(R.id.page_chat).setIcon(R.drawable.message_line)
-                    findItem(R.id.page_profile).setIcon(R.drawable.user_line)
-                }
             }
-            "공유 요청" -> {
+            /*"공유 요청" -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.frame_layout_main, AskFragment())
                     .commit()
@@ -176,30 +169,16 @@ class MainActivity : AppCompatActivity() {
                     findItem(R.id.page_chat).setIcon(R.drawable.message_line)
                     findItem(R.id.page_profile).setIcon(R.drawable.user_line)
                 }
-            }
+            }*/
             "채팅" -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.frame_layout_main, ChatlistFragment())
                     .commit()
-
-                binding.bottomNavigation.menu.apply {
-                    findItem(R.id.page_home).setIcon(R.drawable.home_line)
-                    findItem(R.id.page_share).setIcon(R.drawable.share_request_line)
-                    findItem(R.id.page_chat).setIcon(R.drawable.message_fill)
-                    findItem(R.id.page_profile).setIcon(R.drawable.user_line)
-                }
             }
             "나의 빌리지" -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.frame_layout_main, ProfileFragment())
                     .commit()
-
-                binding.bottomNavigation.menu.apply {
-                    findItem(R.id.page_home).setIcon(R.drawable.home_line)
-                    findItem(R.id.page_share).setIcon(R.drawable.share_request_line)
-                    findItem(R.id.page_chat).setIcon(R.drawable.message_line)
-                    findItem(R.id.page_profile).setIcon(R.drawable.user_fill)
-                }
             }
         }
     }
@@ -207,43 +186,20 @@ class MainActivity : AppCompatActivity() {
     private fun changeFragment(item:MenuItem):Boolean {
         when(item.itemId){
             R.id.page_home -> {
-                // 아이콘 변경
-                item.setIcon(R.drawable.home_fill)
-                binding.bottomNavigation.menu.apply {
-                    findItem(R.id.page_share).setIcon(R.drawable.share_request_line)
-                    findItem(R.id.page_chat).setIcon(R.drawable.message_line)
-                    findItem(R.id.page_profile).setIcon(R.drawable.user_line)
-                }
                 // Fragment 변경
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.frame_layout_main, HomeShareFragment())
                     .commit()
                 return true
             }
-            R.id.page_share -> {
-                // 아이콘 변경
-                item.setIcon(R.drawable.share_request_fill)
-                binding.bottomNavigation.menu.apply {
-                    findItem(R.id.page_home).setIcon(R.drawable.home_line)
-                    findItem(R.id.page_chat).setIcon(R.drawable.message_line)
-                    findItem(R.id.page_profile).setIcon(R.drawable.user_line)
-                }
-
+            /*R.id.page_share -> {
                 // Fragment 변경
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.frame_layout_main, AskFragment())
                     .commit()
                 return true
-            }
+            }*/
             R.id.page_chat -> {
-                // 아이콘 변경
-                item.setIcon(R.drawable.message_fill)
-                binding.bottomNavigation.menu.apply {
-                    findItem(R.id.page_home).setIcon(R.drawable.home_line)
-                    findItem(R.id.page_share).setIcon(R.drawable.share_request_line)
-                    findItem(R.id.page_profile).setIcon(R.drawable.user_line)
-                }
-
                 this.notifyInterface = chatListFragment
                 // Fragment 변경 인터페이스 넣기
                 supportFragmentManager.beginTransaction()
@@ -252,14 +208,6 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
             R.id.page_profile -> {
-                // 아이콘 변경
-                item.setIcon(R.drawable.user_fill)
-                binding.bottomNavigation.menu.apply {
-                    findItem(R.id.page_home).setIcon(R.drawable.home_line)
-                    findItem(R.id.page_share).setIcon(R.drawable.share_request_line)
-                    findItem(R.id.page_chat).setIcon(R.drawable.message_line)
-                }
-
                 // Fragment 변경
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.frame_layout_main, ProfileFragment())
@@ -284,7 +232,6 @@ class MainActivity : AppCompatActivity() {
             findItem(R.id.page_chat).setIcon(R.drawable.message_line)
             findItem(R.id.page_profile).setIcon(R.drawable.user_line)
         }*/
-
         binding.bottomNavigation.apply {
             itemIconTintList = null // 클릭해도 아이콘 테마색으로 변경되는거 막기
             setOnItemSelectedListener { item ->

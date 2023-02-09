@@ -160,7 +160,7 @@ class RegisterFragment : Fragment() {
             CoroutineScope(Dispatchers.Main).launch {
                 val user = User(email=email, password = password, nickName = checkedNickname)
                 Log.d(TAG, "register: 회원가입 할 유저 정보 : $user")
-                val result = ApplicationClass.retrofitUserService.getJoinResult(user).awaitResponse().body()
+                val result = ApplicationClass.userApi.getJoinResult(user).awaitResponse().body()
                 Log.d(TAG, "register: $result")
                 if(result?.flag == "success") {
                     val dialog = AlertDialogWithCallback(object :AlertDialogInterface {
@@ -236,7 +236,7 @@ class RegisterFragment : Fragment() {
         }
         // 올바른 이메일 형식이면
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.retrofitEmailService.checkEmail(Email(email)).awaitResponse().body()
+            val result = ApplicationClass.emailApi.checkEmail(Email(email)).awaitResponse().body()
             Log.d(TAG, "sendEmailAuth: 회원가입 이메일 날림 result: $result")
             if(result != null) {
                 when(result.flag) {
@@ -293,7 +293,7 @@ class RegisterFragment : Fragment() {
 
         if(isValidNickname) {
             CoroutineScope(Dispatchers.Main).launch {
-                val result = ApplicationClass.retrofitUserService.isUsedUserNickName(nickname).awaitResponse().body()
+                val result = ApplicationClass.userApi.isUsedUserNickName(nickname).awaitResponse().body()
                 Log.d(TAG, "checkNickName: 닉네임 중복 확인, result : $result")
                 if(result != null && result.flag == "success") {
                     nicknameCheck = true
