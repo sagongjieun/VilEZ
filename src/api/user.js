@@ -74,21 +74,21 @@ async function postRefreshToken() {
   try {
     // 리프레쉬 토큰을 이용해 액세스 토큰을 갱신
     const refreshToken = localStorage.getItem("refreshToken");
+    const headers = {
+      "Content-Type": "application/json;charset=utf-8",
+      "refresh-token": refreshToken,
+    };
+
     const { data } = await defaultAxios.post(
       `/users/refresh`,
-      { refresh_token: refreshToken },
+      {},
       {
-        headers: {
-          "refresh-token": refreshToken,
-        },
+        headers: headers,
       }
     );
 
-    console.log("accessToken 갱신 요청 후 : ", data);
-    // refreshtoken도 만료될 경우에 어떻게 data가 날라오는지 확인 필요
-
     if (data.flag === "success") {
-      return data.data[0].token;
+      return data.data[0];
     } else if (data.flag === "fail") {
       console.log(data);
     } else {
