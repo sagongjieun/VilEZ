@@ -48,7 +48,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         list = appointmentMapper.getMyAppointmentDateAsk(userId);
         for(AppointmentDto appointmentDto : list){
-            TotalVO totalVO = new TotalVO(appointmentDto, shareDao.list(appointmentDto.getBoardId()), 0);
+            TotalVO totalVO = new TotalVO(appointmentDto, askDao.list(appointmentDto.getBoardId()), 0);
             totalList.add(totalVO);
         }
 
