@@ -23,9 +23,7 @@ public class UserInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) throws Exception{
-        if(HttpMethod.GET.matches(request.getMethod())){
-            return true;
-        }
+
 
         String access_token = request.getHeader(HEADER_ACCESS);
         String refresh_token = request.getHeader(HEADER_REFRESH);
@@ -40,9 +38,11 @@ public class UserInterceptor implements HandlerInterceptor {
             }
             //refresh 토큰이 만료되었거나 조작되었다면 access 토큰 재갱신을 막는다.
             if(System.currentTimeMillis() > Long.parseLong(date)) {
+                System.out.println("리프레시 토큰 만료!!!!!");
                 return false;
             }
 
+            System.out.println("리프레시 토큰 만료 안됨 성공임!!!!!");
             return true;
         }
 
@@ -51,6 +51,7 @@ public class UserInterceptor implements HandlerInterceptor {
 
         // 만료되지 않은 토큰
         if(System.currentTimeMillis() < Long.parseLong(date)){
+            System.out.println("에세스 토큰 만료 안됨 성공임!!!!!");
             return true;
         }
 
@@ -60,6 +61,8 @@ public class UserInterceptor implements HandlerInterceptor {
             return false;
         }
 
+
+        System.out.println("에세스 토큰 만료!!!!!");
         response.sendError(401, "UNAUTHORIZATION_ACCESS");
         return false;
     }
