@@ -23,9 +23,7 @@ public class UserInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) throws Exception{
-        if(HttpMethod.GET.matches(request.getMethod())){
-            return true;
-        }
+
 
         String access_token = request.getHeader(HEADER_ACCESS);
         String refresh_token = request.getHeader(HEADER_REFRESH);
