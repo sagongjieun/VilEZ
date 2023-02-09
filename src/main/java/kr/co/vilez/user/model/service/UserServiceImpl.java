@@ -192,11 +192,20 @@ public class UserServiceImpl implements UserService {
         map.put("token", token);
 
         UserDto user = userMapper.refreshCheck(map);
-            
+        System.out.println("user = " + user);
+        
         if(user != null){
             System.out.println("user = " + user);
             http.setFlag("success");
-            user.setAccessToken(jwtProvider.createToken(user.getId(), nickname));
+
+            String accessToken = jwtProvider.createToken(user.getId(), user.getNickName());
+            String refreshToken = jwtProvider.createRefreshToken(user.getId(), user.getNickName());
+
+            user.setAccessToken(accessToken);
+            user.setRefreshToken(refreshToken);
+
+            userMapper.setRefreshToken(user);
+
             data.add(user);
             http.setData(data);
         }
