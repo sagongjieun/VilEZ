@@ -13,6 +13,23 @@ async function getUserDetail(userId) {
   }
 }
 
+async function getCheckNickName(nickName) {
+  try {
+    const { data } = await authJsonAxios.get(`/users/check?nickname=${nickName}`);
+
+    if (data.flag === "success") {
+      return { text: `"${nickName}"은(는) 사용 가능한 닉네임입니다.`, isNickNameAvailable: true };
+    } else if (data.flag === "fail") {
+      return {
+        text: `"${nickName}"은(는) 사용중인 닉네임입니다. 다른 닉네임을 입력해 주세요.`,
+        isNickNameAvailable: false,
+      };
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // POST
 
 async function postMannerPoint(body) {
@@ -26,7 +43,7 @@ async function postMannerPoint(body) {
   }
 }
 
-async function requestLogin(email, password) {
+async function postLogin(email, password) {
   try {
     const { data } = await defaultAxios.post(`/users/login/fake`, { email, password });
 
@@ -54,16 +71,14 @@ async function requestLogin(email, password) {
   }
 }
 
-async function requsetLogout(userInfo) {
+async function postLogout(userInfo) {
   try {
     const { data } = await defaultAxios.post("users/logout", userInfo);
 
     if (data.flag === "success") {
       alert("로그아웃이 완료되었습니다.");
-      console.log(data);
     } else {
       alert("로그아웃이 정상적으로 완료되지 않았습니다.");
-      console.log(data);
     }
   } catch (error) {
     console.log(error);
@@ -101,31 +116,14 @@ async function postRefreshToken() {
 
 async function postUserInformation(userInformation) {
   try {
-    console.log(userInformation);
     const { data } = await defaultAxios.post("/users/join", userInformation);
+
     if (data.flag === "success") {
       alert("회원가입이 완료되었습니다. 로그인을 진행해주세요.");
       return data.data;
     } else if (data.flag === "fail") {
       alert("회원가입이 정상적으로 완료되지 않았습니다. 다시 진행해주세요.");
       return "";
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function checkNickName(nickName) {
-  try {
-    console.log(nickName);
-    const { data } = await authJsonAxios.get(`/users/check?nickname=${nickName}`);
-    if (data.flag === "success") {
-      return { text: `"${nickName}"은(는) 사용 가능한 닉네임입니다.`, isNickNameAvailable: true };
-    } else if (data.flag === "fail") {
-      return {
-        text: `"${nickName}"은(는) 사용중인 닉네임입니다. 다른 닉네임을 입력해 주세요.`,
-        isNickNameAvailable: false,
-      };
     }
   } catch (error) {
     console.log(error);
@@ -173,9 +171,9 @@ export {
   putUserPasswordByEmail,
   putUserPasswordNickName,
   putUserProfileImage,
-  requestLogin,
-  requsetLogout,
+  postLogin,
+  postLogout,
   postRefreshToken,
   postUserInformation,
-  checkNickName,
+  getCheckNickName,
 };

@@ -10,7 +10,7 @@ import EmailCodeTimer from "./EmailCodeTimer";
 import Validation from "./SignupValidation";
 import useForm from "../../hooks/useForm";
 import { SHA256 } from "./EmailCodeHashFunction";
-import { confirmEmailForPassword } from "../../api/email";
+import { postConfirmEmailForPassword } from "../../api/email";
 import { putUserPasswordByEmail } from "../../api/user";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -58,7 +58,7 @@ const FindPassword = () => {
   function onSubmitEmail() {
     setIsCodeConfirmed(false);
     setEmailConfirmText("");
-    confirmEmailForPassword(email).then((response) => {
+    postConfirmEmailForPassword(email).then((response) => {
       if (response) {
         setHashedCode(response[0]);
         setIsEmailCodeVisible(false);

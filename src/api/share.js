@@ -29,9 +29,9 @@ async function getShareArticleList(areaLat, areaLng, category, cnt, high, low, u
     const { data } = await authJsonAxios.get(
       `/shareboard?areaLat=${areaLat}&areaLng=${areaLng}&category=${category}&cnt=${cnt}&high=${high}&low=${low}&userId=${userId}&word=${word}`
     );
+
     if (data.flag === "success") return data.data;
     else return false;
-    // do something
   } catch (error) {
     console.log(error);
   }
@@ -62,7 +62,6 @@ async function getMyShareArticle(userId) {
 async function getRelatedShareArticle(boardId, category, userId) {
   try {
     const { data } = await authJsonAxios.get(`/shareboard/best/${boardId}/${category}/${userId}`);
-    console.log(data);
 
     if (data.flag === "success") return data.data;
     else return false;

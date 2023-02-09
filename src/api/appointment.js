@@ -175,10 +175,8 @@ async function getCheckMyRoom(boardId, type, userId) {
       `/appointments/board/checkroom?boardId=${boardId}&type=${type}&userId=${userId}`
     );
 
-    // 채팅방 이미 존재
-    if (data.flag === "success") return data.data;
-    // 채팅방 미존재
-    else return false;
+    if (data.flag === "success") return data.data; // 채팅방 이미 존재
+    else return false; // 채팅방 미존재
   } catch (error) {
     console.log(error);
   }
@@ -222,7 +220,6 @@ async function postChatRoom(body) {
 async function postAppointment(body) {
   try {
     const { data } = await authJsonAxios.post(`/appointments`, body);
-    console.log("axios : ", data);
 
     if (data.flag === "success") return true;
     else alert("약속 정보 저장에 실패하였습니다. 😅");

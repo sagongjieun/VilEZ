@@ -8,7 +8,7 @@ import { HiArchiveBox } from "react-icons/hi2";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { locationState, loginUserState } from "../../recoil/atom";
-import { requsetLogout } from "../../api/user";
+import { postLogout } from "../../api/user";
 
 function MainNavBar() {
   const navigate = useNavigate();
@@ -59,7 +59,7 @@ function MainNavBar() {
   }
 
   function onClickLogout() {
-    requsetLogout({
+    postLogout({
       // accessToken: localStorage.getItem("assesToken"),
       // refreshToken: localStorage.getItem("refreshToken"),
       id: userId,

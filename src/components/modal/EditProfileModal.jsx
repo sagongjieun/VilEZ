@@ -8,7 +8,7 @@ import { BsCheck2Circle } from "react-icons/bs";
 import { IoIosCloseCircle } from "react-icons/io";
 // import bazzie from "../../assets/images/bazzi.jpg";
 import ProfileImageSelect from "../profile/ProfileImageSelect";
-import { checkNickName } from "../../api/user";
+import { getCheckNickName } from "../../api/user";
 import { getUserDetail } from "../../api/user";
 import { putUserPasswordNickName, putUserProfileImage } from "../../api/user";
 import { useSetRecoilState } from "recoil";
@@ -57,7 +57,7 @@ function EditProfile({ setIsEditProfileOpen }) {
   }
   function onClickNickNameCheck() {
     if ((!nickNameError || nickNameError === "중복 확인을 진행해주세요.") && nickName) {
-      checkNickName(nickName).then((response) => {
+      getCheckNickName(nickName).then((response) => {
         setNickNameError("");
         setNickNameCheck(response.text);
         setIsNickNameAvailable(response.isNickNameAvailable);
