@@ -21,14 +21,6 @@
           .catch(function (error) {
             // 오류발생시 실행
           });
-        let time = 10;
-        const timer = setInterval(() => {
-          time -= 1;
-          $(".setTime").text(time);
-        }, 1000);
-        if (time === 0) {
-          clearInterval(timer);
-        }
       });
     </script>
   </head>
@@ -48,9 +40,6 @@
         <div class="exp">
           동네 인증에 성공했습니다. <br />
           PC 화면에서 인증 확인 버튼을 눌러주세요.
-        </div>
-        <div class="time">
-          <span class="setTime">10</span>초 후에 창이 종료됩니다.
         </div>
       </main>
     </div>
@@ -116,13 +105,7 @@
     }
     .exp {
       padding-top: 50px;
-      font-size: 2em;
-      text-align: center;
-    }
-    .time {
-      color: #66dd9c;
-      padding-top: 50px;
-      font-size: 2em;
+      font-size: 2.2em;
       text-align: center;
     }
   </style>
