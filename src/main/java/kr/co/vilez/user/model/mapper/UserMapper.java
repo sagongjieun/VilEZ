@@ -11,6 +11,7 @@ import java.util.List;
 
 @Mapper
 public interface UserMapper {
+
     void logout(UserDto userDto) throws SQLException;
     void modifyPassword(String email) throws SQLException;
     void setManner(int userId, int degree) throws SQLException;
@@ -22,6 +23,7 @@ public interface UserMapper {
     void modifyProfile(UserDto user) throws SQLException;
     void join(UserDto user) throws SQLException;
     UserDto login(UserDto user) throws SQLException;
+    UserDto loginFake(UserDto user) throws SQLException;
     UserDto refreshCheck(HashMap<String, String> map) throws SQLException;
     void saveToken(HashMap<String, Object> map) throws SQLException;
 
