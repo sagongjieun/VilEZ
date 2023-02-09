@@ -24,6 +24,7 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
   }
 
   // 좌표로 주소 불러오기
+  // state에 있는, areaLat, areaLng를 불러와서 사용할건데, useEffect()에서 그 불러온 두 값은 이렇게 사용이 될거야.
   // function getAddr(areaLat, areaLng) {
   //   console.log("**************");
   //   const geocoder = new kakao.maps.services.Geocoder();
