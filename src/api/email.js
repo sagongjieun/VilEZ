@@ -2,7 +2,7 @@ import { authJsonAxios } from "./instance";
 
 // POST
 
-async function confirmEmail(email) {
+async function postConfirmEmail(email) {
   try {
     const { data } = await authJsonAxios.post("/emailConfirm", { email: email });
 
@@ -19,7 +19,7 @@ async function confirmEmail(email) {
   }
 }
 
-async function confirmEmailForPassword(email) {
+async function postConfirmEmailForPassword(email) {
   try {
     const { data } = await authJsonAxios.post("/passowrd", { email: email });
 
@@ -36,4 +36,4 @@ async function confirmEmailForPassword(email) {
   }
 }
 
-export { confirmEmail, confirmEmailForPassword };
+export { postConfirmEmail, postConfirmEmailForPassword };

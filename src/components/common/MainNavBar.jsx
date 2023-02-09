@@ -8,7 +8,7 @@ import { HiArchiveBox } from "react-icons/hi2";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { locationState, loginUserState } from "../../recoil/atom";
-import { requsetLogout } from "../../api/user";
+import { postLogout } from "../../api/user";
 
 function MainNavBar() {
   const navigate = useNavigate();
@@ -58,18 +58,17 @@ function MainNavBar() {
     navigate("/product/list/share");
   }
 
-  function onClickLogout() {
-    requsetLogout({
-      // accessToken: localStorage.getItem("assesToken"),
-      // refreshToken: localStorage.getItem("refreshToken"),
-      id: userId,
-    }).then((response) => {
-      console.log(response);
-    });
-    localStorage.clear();
-    setLoginUser(null);
+  async function onClickLogout() {
+    const response = postLogout({ id: userId });
+
+    if (response) {
+      localStorage.clear();
+      setLoginUser(null);
+      navigate("/");
+    }
   }
 
+  /** 로그인 유지 변경하기 */
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
 
