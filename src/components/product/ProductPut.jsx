@@ -13,6 +13,8 @@ import ProductRegistType from "./ProductRegistType";
 import Map from "../common/Map";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
+const { kakao } = window;
+
 const ProductPut = () => {
   // const loginUserId = localStorage.getItem("id");
   const navigate = useNavigate();
@@ -105,13 +107,23 @@ const ProductPut = () => {
     setEndDay(endDateResult.substring(1, 11));
   }
 
-  function receiveLocation(location, lat, lng) {
-    setLocation(location);
-    setHopeAreaLat(lat);
-    setHopeAreaLng(lng);
+  function receiveLocation(location, lat, lng, zoomLevel, isMarker) {
+    if (isMarker) {
+      setHopeAreaLat(lat);
+      setHopeAreaLng(lng);
+      searchDetailAddrFromCoords(lat, lng, function (result, status) {
+        if (status === kakao.maps.services.Status.OK) {
+          setLocation(result[0].address.address_name);
+        }
+      });
+    }
   }
 
-  // console.log("@@@", imageList);
+  function searchDetailAddrFromCoords(lat, lng, callback) {
+    const geocoder = new kakao.maps.services.Geocoder();
+    geocoder.coord2Address(lng, lat, callback);
+  }
+
   function onClickRegistButton() {
     // 유효성 검사
     if (registType === "선택해주세요.") {
@@ -135,6 +147,10 @@ const ProductPut = () => {
 
     if (content.length > 300) {
       alert("물품에 대한 설명은 최대 300자 입력 가능합니다.");
+      return;
+    }
+    if (!imageList.length) {
+      alert("사진을 첨부해주시겠어요? 빌리지는 사진첨부가 필수에요");
       return;
     }
 
@@ -245,7 +261,13 @@ const ProductPut = () => {
           </h3>
           <span>{location}</span>
         </div>
-        <Map readOnly={false} sendLocation={receiveLocation} />
+        <Map
+          readOnly={false}
+          sendLocation={receiveLocation}
+          path={"modify"}
+          hopeAreaLat={hopeAreaLat}
+          hopeAreaLng={hopeAreaLng}
+        />
       </div>
       <div css={registButtonWrapper}>
         <div>

@@ -10,9 +10,10 @@ import MiddleWideButton from "../button/MiddleWideButton";
 import ProductCategory from "./ProductCategory";
 import ProductImageSelect from "./ProductImageSelect";
 import ProductRegistType from "./ProductRegistType";
-// import MapExperiment from "../common/MapExperiment";
 import { useNavigate, useLocation } from "react-router-dom";
 import Map from "./../common/Map";
+
+const { kakao } = window;
 
 const ProductRegist = () => {
   const loginUserId = localStorage.getItem("id");
@@ -62,10 +63,21 @@ const ProductRegist = () => {
     setEndDay(endDateResult.substring(1, 11));
   }
 
-  function receiveLocation(location, lat, lng) {
-    setLocation(location);
-    setHopeAreaLat(lat);
-    setHopeAreaLng(lng);
+  function receiveLocation(location, lat, lng, zoomLevel, isMarker) {
+    if (isMarker) {
+      setHopeAreaLat(lat);
+      setHopeAreaLng(lng);
+      searchDetailAddrFromCoords(lat, lng, function (result, status) {
+        if (status === kakao.maps.services.Status.OK) {
+          setLocation(result[0].address.address_name);
+        }
+      });
+    }
+  }
+
+  function searchDetailAddrFromCoords(lat, lng, callback) {
+    const geocoder = new kakao.maps.services.Geocoder();
+    geocoder.coord2Address(lng, lat, callback);
   }
 
   function onClickRegistButton() {
@@ -210,8 +222,7 @@ const ProductRegist = () => {
           </h3>
           <span>{location}</span>
         </div>
-        <Map readOnly={false} sendLocation={receiveLocation} />
-        {/* <MapExperiment readOnly={false} sendLocation={receiveLocation} /> */}
+        <Map readOnly={false} sendLocation={receiveLocation} path={"regist"} />
       </div>
       <div css={registButtonWrapper}>
         <div>
