@@ -46,7 +46,7 @@
         select appointment_id, board_id, share_user_id, not_share_user_id, appointment_start, appointment_end, s.title, type,
                (
                    case
-                       when now() >= DATE_SUB(appointment_start, INTERVAL 7 DAY)) then "시작일 임박!"
+                       when now() >= DATE_SUB(appointment_start, INTERVAL 7 DAY) then "시작일 임박!"
                        when now() >= DATE_SUB(appointment_end, INTERVAL 7 DAY) then "마감일 임박!"
                        end
                    ) as status
@@ -62,9 +62,9 @@
         select appointment_id, board_id, share_user_id, not_share_user_id, appointment_start, appointment_end, s.title, type,
                (
                    case
-                       when now() >= DATE_SUB(appointment_start, INTERVAL 7 DAY)) then "시작일 임박!"
+                       when now() >= DATE_SUB(appointment_start, INTERVAL 7 DAY) then "시작일 임박!"
                        when now() >= DATE_SUB(appointment_end, INTERVAL 7 DAY) then "마감일 임박!"
-                       end
+                    end
                    ) as status
         from appointment as a
         left join sharing_view as s
