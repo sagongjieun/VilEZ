@@ -19,6 +19,7 @@ const OAuthKakao = () => {
       localStorage.setItem("refreshToken", resData.refreshToken);
       localStorage.setItem("id", resData.id);
       localStorage.setItem("nickName", resData.nickName);
+      localStorage.setItem("profileImg", resData.profileImg);
       setLoginUser((prev) => {
         return {
           ...prev,

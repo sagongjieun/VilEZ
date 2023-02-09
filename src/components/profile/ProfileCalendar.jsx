@@ -214,7 +214,7 @@ const bodyWrapper = css`
         box-sizing: border-box;
         padding: 0 4px;
         font-size: 14px;
-        /* height: 20px; */
+        height: 20px;
         line-height: 20px;
         overflow: hidden;
       }
