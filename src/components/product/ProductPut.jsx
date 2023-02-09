@@ -149,6 +149,10 @@ const ProductPut = () => {
       alert("물품에 대한 설명은 최대 300자 입력 가능합니다.");
       return;
     }
+    if (!imageList.length) {
+      alert("사진을 첨부해주시겠어요? 빌리지는 사진첨부가 필수에요");
+      return;
+    }
 
     setContent(content.replaceAll("<br>", "\r\n")); // 개행 처리
 
