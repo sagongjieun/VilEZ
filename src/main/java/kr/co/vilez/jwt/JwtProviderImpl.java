@@ -60,10 +60,13 @@ public class JwtProviderImpl implements JwtProvider {
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
-    public String createExpireToken() {
-        Claims claims = Jwts.claims();
-
+    public String createExpireToken(String userId, String userNickname) {
         Date now = new Date();
+        Claims claims = Jwts.claims();
+        claims.put("userId", userId);
+        claims.put("nickname", userNickname);
+        claims.put("expire", new Date((now.getTime())));
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)

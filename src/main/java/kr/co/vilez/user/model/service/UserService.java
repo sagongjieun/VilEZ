@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 public interface UserService {
+    HttpVO loginFake(UserDto userDto) throws Exception;
     void modifyPassword(String email) throws Exception;
     void saveLocationMobile(HashMap<String, Object> map) throws Exception;
     void setManner(int userId, int degree) throws Exception;
