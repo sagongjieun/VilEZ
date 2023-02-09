@@ -41,14 +41,15 @@ const ProfileDdaySlide = ({ ddaySlideList }) => {
     <div css={imageSlideWrapper}>
       {ddaySlideList.map((appoint, index) => (
         <div key={index} css={imageWrapper} className="slide fade">
-          <div></div>
           <div css={ddayExp}>
-            <div>{appoint.appointmentDto.title}</div>
             <div>
-              <span>2</span>일 남았습니다.
+              <div>{appoint.appointmentDto.title}</div>
+              <div>
+                <span>2</span>일 남았습니다.
+              </div>
             </div>
+            <div css={imgBack(appoint.imgPath[0].path)}></div>
           </div>
-          <div css={imgBack(appoint.imgPath[0].path)}></div>
         </div>
       ))}
       <div css={buttonsWrapper}>
@@ -64,16 +65,12 @@ const ProfileDdaySlide = ({ ddaySlideList }) => {
 };
 
 const imageSlideWrapper = css`
-  box-sizing: border-box;
+  height: 180px;
   padding-top: 7px;
-  position: absolute;
   top: 0;
   width: 100%;
-  height: 60%;
   position: relative;
   margin: auto;
-  /* border: 1px solid #e1e2e3; */
-  border-radius: 15px;
 
   & .fade {
     animation-name: fade;
@@ -92,24 +89,66 @@ const imageSlideWrapper = css`
 
 const imageWrapper = css`
   width: 100%;
-  /* background-color: aliceblue; */
+  position: absolute;
+  top: 30px;
   height: 60%;
-  display: flex !important;
   justify-content: space-between;
   align-items: center;
+`;
+const buttonsWrapper = css`
+  position: absolute;
+  bottom: 24px;
+  left: 10px;
+  width: 70px;
+  display: flex;
+  justify-content: space-between;
 
-  & > div:nth-of-type(1) {
-    display: none;
+  & > button {
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    color: white;
+    transition: 0.5s ease;
+    user-select: none;
+    border: none;
+    opacity: 0.8;
+    border-radius: 50%;
+    margin-top: -25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+      background-color: #66dd9c;
+    }
   }
 
-  & > div:nth-of-type(2) {
-    box-sizing: border-box;
-    width: 68%;
-    height: 180px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    padding-top: 40px;
+  & > button:nth-of-type(1) {
+    left: 0;
+  }
+
+  & > button:nth-of-type(2) {
+    right: 0;
+  }
+`;
+
+const ddayExp = css`
+  display: flex;
+  justify-content: space-between;
+  margin: 4px 10px;
+  // 제목과 디데이
+  & > div:nth-of-type(1) {
+    font-size: 16px;
+    // 제목
+    & > div:nth-of-type(1) {
+    }
+    // 디데이
+    & > div:nth-of-type(2) {
+      margin-top: 20px;
+      & > span {
+        font-size: 26px;
+      }
+    }
   }
 `;
 
@@ -125,68 +164,5 @@ const imgBack = (props) => {
     background-position: center center;
   `;
 };
-
-const buttonsWrapper = css`
-  position: absolute;
-  bottom: 24px;
-  left: 0px;
-  width: 110px;
-  display: flex;
-  justify-content: space-between;
-
-  & > button {
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
-    color: white;
-    transition: 0.5s ease;
-    user-select: none;
-    border: none;
-    opacity: 0.8;
-    /* background-color: #e5e5e5; */
-    border-radius: 50%;
-    margin-top: -25px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    &:hover {
-      background-color: #66dd9c;
-    }
-  }
-
-  & > button:nth-of-type(1) {
-    left: 0;
-    margin-left: 20px;
-  }
-
-  & > button:nth-of-type(2) {
-    right: 0;
-    margin-right: 20px;
-  }
-`;
-
-const ddayExp = css`
-  font-size: 24px;
-  display: flex;
-  /* background-color: aqua; */
-  flex-direction: column;
-  justify-content: flex-end;
-  & > div {
-    text-align: left;
-    width: 100%;
-    padding-left: 30px;
-  }
-  & > div:nth-of-type(1) {
-    font-size: 18px;
-    /* background-color: aliceblue; */
-  }
-  & > div:nth-of-type(2) {
-    padding-top: 6px;
-    & > span {
-      font-size: 26px;
-    }
-  }
-`;
 
 export default ProfileDdaySlide;

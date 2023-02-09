@@ -29,7 +29,6 @@ const MyBoxRent = (props) => {
   }, [props.myRentType]);
   useEffect(() => {
     props.setRentDefaultPages(parseInt((myBoard?.length - 1) / 3) + 1);
-    console.log(myBoard, "******************************");
   }, [myBoard]);
   return (
     <div css={cardWrapper(props.rentPages)}>

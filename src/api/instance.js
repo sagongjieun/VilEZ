@@ -1,5 +1,5 @@
 import axios from "axios";
-import { postRefreshToken } from "./user";
+// import { postRefreshToken } from "./user";
 
 /**
  * 인증이 필요없는 기본 요청

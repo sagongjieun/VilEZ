@@ -9,15 +9,16 @@ const ProfileDday = () => {
   const [appointmentsWithinAWeek, setAppointmentsWithinAWeek] = useState([]);
   useEffect(() => {
     getAppointmentsWithinAWeek(userId).then((response) => {
-      setAppointmentsWithinAWeek(response);
-      console.log(response);
-      // console.log(appointmentsWithinAWeek);
+      if (response) {
+        setAppointmentsWithinAWeek(response);
+        console.log(response);
+      }
     });
   }, []);
   return (
     <div css={ddayWrapper}>
       <div>
-        <ProfileDdaySlide ddaySlideList={appointmentsWithinAWeek} />
+        {appointmentsWithinAWeek ? <ProfileDdaySlide ddaySlideList={appointmentsWithinAWeek} /> : <div>없습니다.</div>}
       </div>
     </div>
   );

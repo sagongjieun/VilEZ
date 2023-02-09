@@ -30,7 +30,7 @@ const ProfileMyWriting = (props) => {
   }, [props.myWritingType]);
   useEffect(() => {
     props.setWritingDefaultPages(myBoard ? parseInt((myBoard?.length - 1) / 3) + 1 : 1);
-    console.log(myBoard);
+    // console.log(myBoard);
   }, [myBoard]);
   return (
     <div css={cardWrapper(props.writingPages)}>
