@@ -11,6 +11,7 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.kakao.sdk.common.KakaoSdk
+import com.navercorp.nid.NaverIdLoginSDK
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -65,6 +66,8 @@ class ApplicationClass: Application(), LifecycleObserver {
         lateinit var editor : SharedPreferences.Editor
 
 
+        // 네트워크 상태
+        var network: Boolean = false
     }
 
     override fun onCreate() {
@@ -72,12 +75,15 @@ class ApplicationClass: Application(), LifecycleObserver {
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         prefs = SharedPreferencesUtil(applicationContext)
 
+        // 네트워크에 연결되어있는지 확인 후 없으면 앱 종료 시키기위해 네트워크 연결상태 감지 콜백 생성시켜두기
+        network = CheckNetwork.checkNetworkState(applicationContext)
+
         // Naver OAuth 초기화
-//        NaverIdLoginSDK.showDevelopersLog(true)
-//        NaverIdLoginSDK.initialize(this,
-//            getString(R.string.naver_client_id),
-//            getString(R.string.naver_client_secret)
-//            , getString(R.string.naver_client_name))
+        NaverIdLoginSDK.showDevelopersLog(true)
+        NaverIdLoginSDK.initialize(this,
+            getString(R.string.naver_client_id),
+            getString(R.string.naver_client_secret)
+            , getString(R.string.naver_client_name))
 
         // Kakao OAuth 초기화
         KakaoSdk.init(this, getString(R.string.kakao_oauth_app_key))

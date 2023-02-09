@@ -95,8 +95,6 @@ class MyShareFragment : Fragment() { // 내가 빌려주는것들 목록
                     Log.d(TAG, "onViewCreated: 데이터 0개")
                 }
                 for (data in result.data[0]) {
-
-
                     val state = getBoardState(data.myAppointListVO.appointmentStart)
                     if(state == APPOINTMENT_TYPE_RESERVE) continue // 공유 예정인 것은 skip
                     if(data.myAppointListVO.id == 0) continue // TODO : api 에러같음 id 0인것은 데이터 다 null로 들어와서 skip하기
@@ -141,8 +139,6 @@ class MyShareFragment : Fragment() { // 내가 빌려주는것들 목록
                     Log.d(TAG, "onViewCreated: 데이터 0개")
                 }
                 for (data in result.data[0]) {
-
-
                     val state = getBoardState(data.myAppointListVO.appointmentStart)
                     if(state == APPOINTMENT_TYPE_SHARE) continue // 공유 중인 것은 skip
                     if(data.myAppointListVO.id == 0) continue

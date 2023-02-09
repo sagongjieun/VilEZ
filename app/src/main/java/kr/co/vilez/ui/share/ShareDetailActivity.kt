@@ -322,23 +322,31 @@ class ShareDetailActivity : AppCompatActivity(){
             R.id.board_remove -> { // 게시글 삭제
                 val dialog = ConfirmDialog(object : ConfirmDialogInterface {
                     override fun onYesButtonClick(id: String) {
+                        // 대여중, 예약중인 경우 삭제 불가능하게 하기
                         CoroutineScope(Dispatchers.Main).launch {
-                            val result = ApplicationClass.retrofitShareService.deleteShareBoard(boardId!!).awaitResponse().body()
-                            if(result?.flag == "success") { // 삭제 성공
-                                Toast.makeText(this@ShareDetailActivity, "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
-                                val intent = Intent(this@ShareDetailActivity, MainActivity::class.java)
-                                intent.putExtra("target", "홈")
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                var data = JSONObject()
-                                data.put("boardId",boardId!!)
-                                data.put("type",2)
-                                StompHelper.stompClient.send("/recvdelete",data.toString()).subscribe()
-                                startActivity(intent)
-                                finish()
-                            } else {
-                                Toast.makeText(this@ShareDetailActivity, "게시글 삭제를 실패했습니다.", Toast.LENGTH_SHORT).show()
+                            val stateResult = ApplicationClass.retrofitAppointmentService.getIsSharing(boardId!!, BOARD_TYPE_SHARE).awaitResponse().body()
+                            if(stateResult?.flag == "success") {
+                                if (stateResult.data[0].boardId == boardId) { // 이미 있어서 삭제 불가!
+                                    Toast.makeText(this@ShareDetailActivity, "공유중인 게시글이어서 삭제가 불가합니다.", Toast.LENGTH_SHORT).show()
+                                } else { // 게시글 삭제 시작
+                                    val result = ApplicationClass.retrofitShareService.deleteShareBoard(boardId!!).awaitResponse().body()
+                                    if(result?.flag == "success") { // 삭제 성공
+                                        Toast.makeText(this@ShareDetailActivity, "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                                        val intent = Intent(this@ShareDetailActivity, MainActivity::class.java)
+                                        intent.putExtra("target", "홈")
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        var data = JSONObject()
+                                        data.put("boardId",boardId!!)
+                                        data.put("type",2)
+                                        StompHelper.stompClient.send("/recvdelete",data.toString()).subscribe()
+                                        startActivity(intent)
+                                        finish()
+                                    }
+                                    else Toast.makeText(this@ShareDetailActivity, "게시글 삭제를 실패했습니다.", Toast.LENGTH_SHORT).show()
+                                }
                             }
+                            else Toast.makeText(this@ShareDetailActivity, "게시글 삭제를 실패했습니다.", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }, "정말로 삭제하시겠습니까?\n진행중인 채팅 목록도 종료됩니다.", "")

@@ -183,6 +183,9 @@ dependencies {
 //    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
 
     implementation 'com.applandeo:material-calendar-view:1.9.0-rc03'
+
+    // date picker
+    implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
 }
 
 tasks.register("prepareKotlinBuildScriptModel"){}
