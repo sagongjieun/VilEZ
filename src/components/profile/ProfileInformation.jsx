@@ -24,11 +24,13 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
   function onClickEditProfileOpen() {
     setIsEditProfileOpen(true);
   }
+
+  // 불러온 유저정보 활용
+  // https://apis.map.kakao.com/web/sample/coord2addr/ 참조하였음.
   const located = useRecoilValue(locationState);
   console.log(located);
   var coords = new kakao.maps.LatLng(located.areaLat, located.areaLng);
   useEffect(() => {
-    // Reverse geocode the coordinates
     const geocoder = new kakao.maps.services.Geocoder();
     geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), (result, status) => {
       if (status === kakao.maps.services.Status.OK) {
