@@ -1,7 +1,4 @@
 import { authJsonAxios, authFormDataAxios, defaultAxios } from "./instance";
-// import { useNavigate } from "react-router-dom";
-
-// const navigate = useNavigate();
 
 // GET
 
@@ -31,7 +28,7 @@ async function postMannerPoint(body) {
 
 async function requestLogin(email, password) {
   try {
-    const { data } = await authJsonAxios.post(`/users/login`, { email, password });
+    const { data } = await defaultAxios.post(`/users/login/fake`, { email, password });
 
     if (data.flag === "success") {
       if (!data.data) {
@@ -60,6 +57,7 @@ async function requestLogin(email, password) {
 async function requsetLogout(userInfo) {
   try {
     const { data } = await defaultAxios.post("users/logout", userInfo);
+
     if (data.flag === "success") {
       alert("로그아웃이 완료되었습니다.");
       console.log(data);
@@ -75,20 +73,26 @@ async function requsetLogout(userInfo) {
 async function postRefreshToken() {
   try {
     // 리프레쉬 토큰을 이용해 액세스 토큰을 갱신
-    const refresh_token = localStorage.getItem("refreshToken");
-    defaultAxios.defaults.headers["refresh-token"] = refresh_token;
-    const { data } = await defaultAxios.post(`/users/refresh`, { refresh_token });
+    const refreshToken = localStorage.getItem("refreshToken");
+    const { data } = await defaultAxios.post(
+      `/users/refresh`,
+      { refresh_token: refreshToken },
+      {
+        headers: {
+          "refresh-token": refreshToken,
+        },
+      }
+    );
 
     console.log("accessToken 갱신 요청 후 : ", data);
+    // refreshtoken도 만료될 경우에 어떻게 data가 날라오는지 확인 필요
 
     if (data.flag === "success") {
-      return data.data[0].access_token;
+      return data.data[0].token;
     } else if (data.flag === "fail") {
       console.log(data);
     } else {
-      console.log("refresh token도 만료된 경우");
-      alert("로그인이 만료되었습니다. 다시 로그인 해주세요!");
-      // navigate("/login");
+      return false;
     }
   } catch (error) {
     console.log(error);
@@ -98,7 +102,7 @@ async function postRefreshToken() {
 async function postUserInformation(userInformation) {
   try {
     console.log(userInformation);
-    const { data } = await authJsonAxios.post("/users/join", userInformation);
+    const { data } = await defaultAxios.post("/users/join", userInformation);
     if (data.flag === "success") {
       alert("회원가입이 완료되었습니다. 로그인을 진행해주세요.");
       return data.data;
