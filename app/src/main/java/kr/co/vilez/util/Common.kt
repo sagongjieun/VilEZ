@@ -129,9 +129,29 @@ class Common {
             }
         }
 
+        fun dateToMillis(day: String?):Long {
+            val SDF = SimpleDateFormat ("yyyy-MM-dd")
+            val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
+            SDF.timeZone = TimeZone.getTimeZone("Asia/Seoul")
+            SDF.calendar = calendar
+
+            val startDate = SDF.parse(day)
+            return startDate.time
+        }
+
+        fun dateToCalendar(day: String?):Calendar {
+            val SDF = SimpleDateFormat ("yyyy-MM-dd")
+            val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
+            return if(!day.isNullOrEmpty()) {
+                SDF.calendar = calendar
+                Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
+                calendar.time = SDF.parse(day)
+                calendar
+            } else {
+                calendar
+            }
+
+        }
 
     }
-
-
-
 }

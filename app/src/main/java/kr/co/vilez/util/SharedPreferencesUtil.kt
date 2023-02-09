@@ -78,6 +78,9 @@ class SharedPreferencesUtil(context: Context) {
     fun setProfileImg(img: String) {
         prefs.edit().putString("profileImg", img).apply()
     }
+    fun getProfileImg():String {
+        return prefs.getString("profileImg", "")!!
+    }
     fun setPoint(point:Int) {
         prefs.edit().putInt("point", point).apply()
     }

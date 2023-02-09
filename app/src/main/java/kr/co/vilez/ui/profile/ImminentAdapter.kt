@@ -1,6 +1,7 @@
 package kr.co.vilez.ui.profile
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,16 +11,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.data.dto.BoardData
-import kr.co.vilez.databinding.BoardListItemBinding
-import kr.co.vilez.databinding.HomeBoardListItemBinding
 import kr.co.vilez.databinding.ImminentListItemBinding
-import kr.co.vilez.ui.ask.AskDetailActivity
 import kr.co.vilez.ui.chat.ChatRoomActivity
-import kr.co.vilez.ui.share.ShareDetailActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common.Companion.BOARD_TYPE_SHARE
 import retrofit2.awaitResponse
 
+private const val TAG = "빌리지_ImminentAdapter"
 class ImminentAdapter(val list: MutableList<BoardData>):
 RecyclerView.Adapter<ImminentAdapter.ShareHolder>(){
 
@@ -39,36 +37,23 @@ RecyclerView.Adapter<ImminentAdapter.ShareHolder>(){
         fun bindingInfo(item: BoardData) {
             binding.boardData = item
             binding.root.setOnClickListener {
-                // TODO : 클릭시 채팅창으로 가게 해야함
                 val intent = Intent(binding.root.context, ChatRoomActivity::class.java)
                 CoroutineScope(Dispatchers.Main).launch {
                     val result = ApplicationClass.retrofitChatService.isExistChatroom(item.boardId, item.type, ApplicationClass.prefs.getId()).awaitResponse().body()
+                    Log.d(TAG, "bindingInfo: @@@@@@@@@@@@@@imminent result: $result")
                     if(result?.flag == "success") {
+                        // 무조건 내가 빌리니까 내가 피공유자 => notShareUserId
                         intent.putExtra("roomId", result.data[0].id)
-                        if(result.data[0].type == BOARD_TYPE_SHARE) {
-                            // 공유 글이면 내가 대여
-                            intent.putExtra("otherUserId", result.data[0].notShareUserId)
-                            val writer = ApplicationClass.retrofitUserService.getUserDetail(result.data[0].notShareUserId).awaitResponse().body()
-                            if(writer?.flag == "success") {
-                                intent.putExtra("nickName", writer.data[0].nickName) // 글 작성자 닉네임
-                                intent.putExtra("profile", writer.data[0].profile_img) // 글 작성자 프로필 이미지
-                                binding.root.context.startActivity(intent)
-                            } else {
-                                Toast.makeText(binding.root.context, "이 약속의 채팅 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show()
-                            }
+                        intent.putExtra("otherUserId", result.data[0].shareUserId) // shareUserId가 공유자
+                        val otherUser = ApplicationClass.retrofitUserService.getUserDetail(result.data[0].shareUserId).awaitResponse().body()
+                        if(otherUser?.flag == "success") {
+                            intent.putExtra("nickName", otherUser.data[0].nickName) // 채팅 상대의 닉네임
+                            intent.putExtra("profile", otherUser.data[0].profile_img) // 채팅 상대의 프로필 이미지
+                            Toast.makeText(binding.root.context, "예약이 진행된 채팅방으로 이동합니다.", Toast.LENGTH_SHORT).show()
+                            binding.root.context.startActivity(intent)
                         } else {
-                            val writer = ApplicationClass.retrofitUserService.getUserDetail(result.data[0].shareUserId).awaitResponse().body()
-                            // 대여 글이면 내가 공유
-                            intent.putExtra("otherUserId", result.data[0].shareUserId)
-                            if(writer?.flag == "success") {
-                                intent.putExtra("nickName", writer.data[0].nickName) // 글 작성자 닉네임
-                                intent.putExtra("profile", writer.data[0].profile_img) // 글 작성자 프로필 이미지
-                                binding.root.context.startActivity(intent)
-                            } else {
-                                Toast.makeText(binding.root.context, "이 약속의 채팅 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show()
-                            }
+                            Toast.makeText(binding.root.context, "이 약속의 채팅 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show()
                         }
-
                     } else {
                         Toast.makeText(binding.root.context, "이 약속의 채팅 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show()
                     }

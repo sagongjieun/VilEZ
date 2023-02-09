@@ -1,5 +1,6 @@
 package kr.co.vilez.service
 
+import kr.co.vilez.data.dto.MyAppointListVO
 import kr.co.vilez.data.dto.MyAppointmentData
 import kr.co.vilez.data.model.CalendarData
 import kr.co.vilez.data.model.ImminentData
@@ -48,6 +49,18 @@ data class RESTMyShareAskResult( // 나의 공유박스 (나의 공유내역, �
     val `data`: List<List<MyAppointmentData>>,
     val flag: String
 )
+// board가 오늘 날짜 기준으로 대여중인지 확인
+data class RESTBoardStateCheckResult(
+    val `data`: List<Board>,
+    val flag: String
+)
+data class Board(
+    val boardId: Int
+)
+data class RESTBoardAppointmentsResult(
+    val `data`: List<List<MyAppointListVO>>,
+    val flag: String
+)
 interface RetrofitAppointmentService {
 
     // 공유 예정 시작 기간, 반납 기간이 7일 미만 남은 데이터들을 반환한다.
@@ -68,6 +81,18 @@ interface RetrofitAppointmentService {
     // 내 약속 정보 (공유 예정) 내역을 조회한다. type = 1 요청, type = 2 공유
     @GET("/vilez/appointments/my/appointlist/{userId}")
     fun getMyCalendar(@Path("userId")id:Int): Call<RESTCalendarResult>
+
+
+    // 이 공유글(2), 요청글(1)이 오늘 날짜 기준으로 대여중인지 반환한다. 대여중이면 boardId를 그대로 리턴, 대여 가능하면 null 리턴
+    @GET("/vilez/appointments/check/{boardId}/{type}")
+    fun getIsSharing(@Path("boardId")boardId: Int, @Path("type")type:Int):Call<RESTBoardStateCheckResult>
+
+
+    // 이 게시글에 진행중인 공유, 예약 목록을 불러온다.
+    @GET("/vilez/appointments/{boardId}/{type}")
+    fun getBoardAppointments(@Path("boardId")board: Int, @Path("type")type: Int): Call<RESTBoardAppointmentsResult>
+
+
 
 
 
