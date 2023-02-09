@@ -14,11 +14,11 @@ async function requestLogin(email, password) {
       } else {
         console.log(data);
         const res = data.data[0];
-
         localStorage.setItem("accessToken", res.accessToken);
         localStorage.setItem("refreshToken", res.refreshToken);
         localStorage.setItem("id", res.id);
-
+        localStorage.setItem("nickName", res.nickName);
+        localStorage.setItem("profileImg", res.profileImg);
         return data.data;
       }
     } else {

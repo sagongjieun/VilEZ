@@ -17,6 +17,8 @@ const OAuthNaver = () => {
       localStorage.setItem("accessToken", resData.accessToken);
       localStorage.setItem("refreshToken", resData.refreshToken);
       localStorage.setItem("id", resData.id);
+      localStorage.setItem("nickName", resData.nickName);
+      localStorage.setItem("profileImg", resData.profileImg);
       setLoginUser({
         ...loginUser,
         id: resData.id,
