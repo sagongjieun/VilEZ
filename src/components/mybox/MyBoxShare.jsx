@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
-// import { getUserShare, getUserAsk } from "../../api/profile";
 import ProfileCardView from "./MyBoxCardView";
 import { getMyShareAppointments } from "../../api/appointment";
 import MyBoxDDay from "./MyBoxDDay";
 
-// const id = localStorage.getItem("id");
 const MyBoxShare = (props) => {
   const userId = localStorage.getItem("id");
   const [myBoard, setMyBoard] = useState([]);

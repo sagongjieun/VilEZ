@@ -2,17 +2,9 @@ import React, { useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
 import villageLandscape from "../../assets/images/village_landscape.png";
-import { useRecoilValue } from "recoil";
-import { loginUserState } from "../../recoil/atom";
 
 const MyBoxHeader = () => {
-  const loginUser = useRecoilValue(loginUserState);
-  // const userNickName = loginUser.nickName;
-  console.log(loginUser);
-  const userNickName = "임시용";
-  // const userNickName = useRecoilValue("nickName");
-  // const imgTest = useRecoilValue("profileImg");
-  // console.log(imgTest);
+  const userNickName = localStorage.getItem("nickName");
   const shareCnt = 10;
   const rentCnt = 5;
   useEffect(() => {}, []);
