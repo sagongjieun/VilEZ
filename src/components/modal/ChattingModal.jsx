@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import ChattingModalItem from "./ChattingModalItem";
-import { getLatestChattingListByUserId } from "../../api/chat";
+import { getLatestChattingListByUserId } from "../../api/appointment";
 
 function ChattingModal() {
   const loginUserId = localStorage.getItem("id");

@@ -7,7 +7,7 @@ import baseProfile from "../assets/images/baseProfile.png";
 import Map from "./common/Map";
 import selectDateButton from "../assets/images/selectDateButton.png";
 import openOathButton from "../assets/images/openOathButton.png";
-import { getLatestMapLocation, getChatHistory } from "../api/chat";
+import { getLatestMapLocation, getChatHistory } from "../api/appointment";
 import CalendarModal from "./modal/CalendarModal";
 import { getOath } from "../api/oath";
 import OathModal from "./modal/OathModal";

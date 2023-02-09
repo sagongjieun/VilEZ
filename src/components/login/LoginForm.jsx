@@ -8,7 +8,7 @@ import LargeWideButton from "../../components/button/LargeWideButton";
 import LoginInputBox from "./LoginInputBox";
 import Validation from "../../components/login/LoginValidation";
 import useForm from "../../hooks/useForm";
-import { requestLogin } from "../../api/login";
+import { requestLogin } from "../../api/user";
 import { useSetRecoilState } from "recoil";
 import { loginUserState } from "../../recoil/atom";
 

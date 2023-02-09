@@ -1,12 +1,10 @@
-import { jsonInstance } from "./instance";
-
-const jsonAxios = jsonInstance();
+import { authJsonAxios } from "./instance";
 
 // GET
 
 async function getQrCode(userId) {
   try {
-    const { data } = await jsonAxios.post(`/qrcodes?userId=${userId}`);
+    const { data } = await authJsonAxios.post(`/qrcodes?userId=${userId}`);
     if (data.flag === "success") return data.data;
     else console.log(data.flag);
   } catch (error) {
@@ -16,7 +14,7 @@ async function getQrCode(userId) {
 
 async function deleteQrCode(imgUrl) {
   try {
-    const { data } = await jsonAxios.delete(`/qrcodes?imgUrl=${imgUrl}`);
+    const { data } = await authJsonAxios.delete(`/qrcodes?imgUrl=${imgUrl}`);
     console.log(data.flag);
   } catch (error) {
     console.log(error);

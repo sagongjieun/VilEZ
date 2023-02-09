@@ -8,7 +8,7 @@ import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { loginUserState } from "../../recoil/atom";
-import { requsetLogout } from "../../api/login";
+import { requsetLogout } from "../../api/user";
 
 function MainNavBar() {
   const navigate = useNavigate();

@@ -6,7 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import MiddleWideButton from "../button/MiddleWideButton";
 import { GrClose } from "react-icons/gr";
 import { ko } from "date-fns/locale";
-import { getAppointmentsByBoardId } from "../../api/chat";
+import { getAppointmentsByBoardId } from "../../api/appointment";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { shareDataState, checkShareDateState } from "../../recoil/atom";
 import DateFormat from "../common/DateFormat";

@@ -5,7 +5,7 @@ import { css } from "@emotion/react";
 import { HiCalendar, HiHeart } from "react-icons/hi";
 // import image from "../../assets/images/product_thumbnail.png";
 import elapsedTime from "../product/ProductElapsedTime";
-import { getMyChatRoomByBoardTypeUserId } from "../../api/appointment";
+import { getCheckMyRoom } from "../../api/appointment";
 
 const MyBoxCardView = ({ title, endDay, startDay, date, thumbnail, boardId, dDay, type, appId }) => {
   const userId = localStorage.getItem("id");
@@ -13,7 +13,7 @@ const MyBoxCardView = ({ title, endDay, startDay, date, thumbnail, boardId, dDay
   const startDayDotted = startDay?.slice(0, 4) + "." + startDay?.slice(5, 7) + "." + startDay?.slice(8, 10);
   const [myRoomId, setMyRoomId] = useState(0);
   useEffect(() => {
-    getMyChatRoomByBoardTypeUserId(boardId, type, userId).then((response) => {
+    getCheckMyRoom(boardId, type, userId).then((response) => {
       setMyRoomId(response.id);
     });
   }, [appId]);

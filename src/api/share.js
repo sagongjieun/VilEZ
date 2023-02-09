@@ -1,13 +1,10 @@
-import { jsonInstance, formdataInstance } from "./instance";
-
-const jsonAxios = jsonInstance();
-const formdataAxios = formdataInstance();
+import { authJsonAxios, authFormDataAxios } from "./instance";
 
 // GET
 
 async function getShareArticleByBoardId(boardId) {
   try {
-    const { data } = await jsonAxios.get(`/shareboard/detail/${boardId}`);
+    const { data } = await authJsonAxios.get(`/shareboard/detail/${boardId}`);
 
     if (data.flag === "success") return data.data;
     else console.log("일치하는 게시글이 없습니다.");
@@ -18,7 +15,7 @@ async function getShareArticleByBoardId(boardId) {
 
 async function getBookmarkStateByUserId(boardId, userId) {
   try {
-    const { data } = await jsonAxios.get(`/shareboard/bookmark/${boardId}/${userId}`);
+    const { data } = await authJsonAxios.get(`/shareboard/bookmark/${boardId}/${userId}`);
 
     if (data.flag === "success") return data.data;
     else console.log("일치하는 게시글이나 회원정보가 없습니다.");
@@ -29,7 +26,7 @@ async function getBookmarkStateByUserId(boardId, userId) {
 
 async function getShareArticleList(areaLat, areaLng, category, cnt, high, low, userId, word) {
   try {
-    const { data } = await jsonAxios.get(
+    const { data } = await authJsonAxios.get(
       `/shareboard?areaLat=${areaLat}&areaLng=${areaLng}&category=${category}&cnt=${cnt}&high=${high}&low=${low}&userId=${userId}&word=${word}`
     );
     if (data.flag === "success") return data.data;
@@ -42,7 +39,7 @@ async function getShareArticleList(areaLat, areaLng, category, cnt, high, low, u
 
 async function getBookmarkListByBoardId(boardId) {
   try {
-    const { data } = await jsonAxios.get(`/shareboard/bookmark/${boardId}`);
+    const { data } = await authJsonAxios.get(`/shareboard/bookmark/${boardId}`);
 
     if (data.flag === "success") return data.data;
     else console.log("일치하는 게시글이 없습니다.");
@@ -53,7 +50,7 @@ async function getBookmarkListByBoardId(boardId) {
 
 async function getMyShareArticle(userId) {
   try {
-    const { data } = await jsonAxios.get(`/shareboard/my/${userId}`);
+    const { data } = await authJsonAxios.get(`/shareboard/my/${userId}`);
 
     if (data.flag === "success") return data.data;
     else console.log("일치하는 회원이 없습니다.");
@@ -64,7 +61,7 @@ async function getMyShareArticle(userId) {
 
 async function getRelatedShareArticle(boardId, category, userId) {
   try {
-    const { data } = await jsonAxios.get(`/shareboard/best/${boardId}/${category}/${userId}`);
+    const { data } = await authJsonAxios.get(`/shareboard/best/${boardId}/${category}/${userId}`);
     console.log(data);
 
     if (data.flag === "success") return data.data;
@@ -74,11 +71,33 @@ async function getRelatedShareArticle(boardId, category, userId) {
   }
 }
 
+async function getUserShare(userId) {
+  try {
+    const { data } = await authJsonAxios.get(`/shareboard/my/${userId}`);
+
+    if (data.flag === "success") return data.data[0];
+    else console.log("일치하는 작성글 정보가 없습니다.");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getUserBookMark(userId) {
+  try {
+    const { data } = await authJsonAxios.get(`/shareboard/bookmark/my/${userId}`);
+
+    if (data.flag === "success") return data.data;
+    else console.log("일치하는 북마크 정보가 없습니다.");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // POST
 
 async function postShareArticle(formData) {
   try {
-    const { data } = await formdataAxios.post(`/shareboard`, formData);
+    const { data } = await authFormDataAxios.post(`/shareboard`, formData);
 
     if (data.flag === "success") return data.data;
     else alert("공유 글 등록에 실패하였습니다 😥");
@@ -89,7 +108,7 @@ async function postShareArticle(formData) {
 
 async function postBookmark(boardId, userId) {
   try {
-    const { data } = await jsonAxios.post(`/shareboard/bookmark`, { boardId, userId });
+    const { data } = await authJsonAxios.post(`/shareboard/bookmark`, { boardId, userId });
 
     if (data.flag === "success") alert("이 게시글을 북마크로 등록하였습니다. 😀");
     else alert("북마크 등록에 실패하였습니다 😥");
@@ -102,7 +121,7 @@ async function postBookmark(boardId, userId) {
 
 async function deleteBookmark(boardId, userId) {
   try {
-    const { data } = await jsonAxios.delete(`/shareboard/bookmark/${boardId}/${userId}`);
+    const { data } = await authJsonAxios.delete(`/shareboard/bookmark/${boardId}/${userId}`);
 
     if (data.flag === "success") {
       alert("북마크를 취소하였습니다. 😀");
@@ -114,7 +133,7 @@ async function deleteBookmark(boardId, userId) {
 
 async function deleteShareArticleByBoardId(boardId) {
   try {
-    const { data } = await jsonAxios.delete(`/shareboard/${boardId}`);
+    const { data } = await authJsonAxios.delete(`/shareboard/${boardId}`);
 
     if (data.flag === "success") alert("게시글 삭제에 성공하였습니다. 😀");
     else alert("게시글 삭제에 실패하였습니다 😥");
@@ -127,7 +146,7 @@ async function deleteShareArticleByBoardId(boardId) {
 
 async function putShareArticle(formData) {
   try {
-    const { data } = await formdataAxios.put(`/shareboard`, formData);
+    const { data } = await authFormDataAxios.put(`/shareboard`, formData);
     // console.log(formData);
     if (data.flag === "success") {
       alert("수정되었습니다 😀");
@@ -145,6 +164,8 @@ export {
   getBookmarkListByBoardId,
   getMyShareArticle,
   getRelatedShareArticle,
+  getUserShare,
+  getUserBookMark,
   postShareArticle,
   postBookmark,
   deleteBookmark,

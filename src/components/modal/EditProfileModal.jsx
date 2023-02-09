@@ -8,9 +8,9 @@ import { BsCheck2Circle } from "react-icons/bs";
 import { IoIosCloseCircle } from "react-icons/io";
 // import bazzie from "../../assets/images/bazzi.jpg";
 import ProfileImageSelect from "../profile/ProfileImageSelect";
-import { checkNickName } from "../../api/signup";
+import { checkNickName } from "../../api/user";
 import { getUserDetail } from "../../api/user";
-import { putUserPasswordNickName, putUserProfileImage } from "../../api/profile";
+import { putUserPasswordNickName, putUserProfileImage } from "../../api/user";
 import { useSetRecoilState } from "recoil";
 import { loginUserState } from "../../recoil/atom";
 
@@ -120,8 +120,8 @@ function EditProfile({ setIsEditProfileOpen }) {
   }
   useEffect(() => {
     getUserDetail(userId).then((response) => {
-      setUserNickName(response[0].nickName);
-      setUserProfileImage(response[0].profile_img);
+      setUserNickName(response.nickName);
+      setUserProfileImage(response.profile_img);
     });
   }, []);
   useEffect(() => {

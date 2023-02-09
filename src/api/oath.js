@@ -1,12 +1,10 @@
-import { jsonInstance } from "./instance";
-
-const jsonAxios = jsonInstance();
+import { authJsonAxios } from "./instance";
 
 // GET
 
 async function getOath(roomId) {
   try {
-    const { data } = await jsonAxios.get(`/signs/${roomId}`);
+    const { data } = await authJsonAxios.get(`/signs/${roomId}`);
 
     if (data.flag === "success") return data.data[0];
     else return false;
@@ -19,7 +17,7 @@ async function getOath(roomId) {
 
 async function postOath(body) {
   try {
-    const { data } = await jsonAxios.post("/signs", body);
+    const { data } = await authJsonAxios.post("/signs", body);
 
     if (data.flag === "success") return true;
     else return false;
@@ -32,7 +30,7 @@ async function postOath(body) {
 
 async function deleteOath(roomId) {
   try {
-    const { data } = await jsonAxios.delete(`/signs/${roomId}`);
+    const { data } = await authJsonAxios.delete(`/signs/${roomId}`);
 
     if (data.flag === "success") return true;
     else return false;
