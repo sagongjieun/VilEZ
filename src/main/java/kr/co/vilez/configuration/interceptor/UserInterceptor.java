@@ -26,7 +26,9 @@ public class UserInterceptor implements HandlerInterceptor {
 
 
         String access_token = request.getHeader(HEADER_ACCESS);
+        System.out.println("access_token = " + access_token);
         String refresh_token = request.getHeader(HEADER_REFRESH);
+        System.out.println("refresh_token = " + refresh_token);
 
         // access 토큰 만료로 refresh 토큰이 날아온 경우 controller에서 처리
         if(refresh_token != null){
