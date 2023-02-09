@@ -31,7 +31,7 @@ async function postMannerPoint(body) {
 
 async function requestLogin(email, password) {
   try {
-    const { data } = await authJsonAxios.post(`/users/login/fake`, { email, password });
+    const { data } = await authJsonAxios.post(`/users/login`, { email, password });
 
     if (data.flag === "success") {
       if (!data.data) {
@@ -44,6 +44,7 @@ async function requestLogin(email, password) {
         localStorage.setItem("refreshToken", res.refreshToken);
         localStorage.setItem("id", res.id);
         localStorage.setItem("nickName", res.nickName);
+        localStorage.setItem("profileImg", res.profileImg);
 
         return data.data;
       }
