@@ -2,8 +2,11 @@ package kr.co.vilez.util
 
 import android.app.AlertDialog
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -20,7 +23,6 @@ import kr.co.vilez.R
 import kr.co.vilez.data.model.RESTResult
 import kr.co.vilez.data.model.Token
 import kr.co.vilez.service.*
-import kr.co.vilez.ui.dialog.MyAlertDialog
 import kr.co.vilez.ui.user.LoginActivity
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
@@ -28,6 +30,7 @@ import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
 import java.lang.reflect.Type
 import java.net.HttpURLConnection
 import java.util.concurrent.TimeUnit
@@ -49,8 +52,7 @@ class ApplicationClass: Application(), LifecycleObserver {
         lateinit var shareApi: ShareApi
         lateinit var askApi: AskApi
         lateinit var appointmentApi: AppointmentApi
-
-        lateinit var FCMApi: FCMApi
+        lateinit var fcmTokenApi: FCMTokenApi
 
         // header에 accessTocken 넣는 레트로핏
         lateinit var hRetrofit : Retrofit
@@ -97,10 +99,12 @@ class ApplicationClass: Application(), LifecycleObserver {
             .serializeNulls()
             .create()
 
+
         val okHttpClient: OkHttpClient = OkHttpClient.Builder()
             .connectTimeout(20, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(15, TimeUnit.SECONDS)
+            .addInterceptor(NoConnectionInterceptor(applicationContext))
             .build()
 
         // 앱이 처음 생성되는 순간, retrofit 인스턴스를 생성
@@ -112,12 +116,10 @@ class ApplicationClass: Application(), LifecycleObserver {
             .client(okHttpClient)
             .build()
         userApi = wRetrofit.create(UserApi::class.java)
-
-
         emailApi = wRetrofit.create(EmailApi::class.java)
         chatApi = wRetrofit.create(ChatApi::class.java)
         shareApi = wRetrofit.create(ShareApi::class.java)
-        FCMApi = wRetrofit.create(FCMApi::class.java)
+        fcmTokenApi = wRetrofit.create(FCMTokenApi::class.java)
         askApi = wRetrofit.create(AskApi::class.java)
         appointmentApi = wRetrofit.create(AppointmentApi::class.java)
 
@@ -135,7 +137,7 @@ class ApplicationClass: Application(), LifecycleObserver {
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .writeTimeout(15, TimeUnit.SECONDS)
             .addInterceptor(interceptor)
-//            .addNetworkInterceptor()
+            .addInterceptor(NoConnectionInterceptor(applicationContext))
             .build()
 
         // 앱이 처음 생성되는 순간, retrofit 인스턴스를 생성
@@ -177,21 +179,84 @@ class ApplicationClass: Application(), LifecycleObserver {
                     return response
                 }
                 return chain.proceed(newRequestWithAccessToken(accessToken, request))
-            } else if (!networkMonitor.isConnected) {
+            }
+//            else if (!networkMonitor.isConnected) {
+//                AlertDialog.Builder(this@ApplicationClass)
+//                    .setTitle("네트워크 오류")
+//                    .setMessage("네트워크에 접속할 수 없습니다.\n네트워크 연결상태를 확인해주세요.")
+//                    .create()
+//                    .show()
+//            }
+            return response
+        }
+    }
+
+    inner class NoConnectionInterceptor(
+        private val context: Context
+    ) : Interceptor {
+
+        val connectivityManager = context.getSystemService(
+            Context.CONNECTIVITY_SERVICE
+        ) as ConnectivityManager
+
+        override fun intercept(chain: Interceptor.Chain): Response {
+            return if (!isConnectionOn()) {
+
+                throw NoConnectivityException()
+            } else {
+                chain.proceed(chain.request())
+            }
+        }
+
+        private fun preAndroidMInternetCheck(
+            connectivityManager: ConnectivityManager
+        ): Boolean {
+            val activeNetwork = connectivityManager.activeNetworkInfo
+
+            if (activeNetwork != null) {
+                return (activeNetwork.type == ConnectivityManager.TYPE_WIFI ||
+                        activeNetwork.type == ConnectivityManager.TYPE_MOBILE)
+            }
+            return false
+        }
+
+        private fun postAndroidMInternetCheck(
+            connectivityManager: ConnectivityManager
+        ): Boolean {
+            val network = connectivityManager.activeNetwork
+            val connection = connectivityManager.getNetworkCapabilities(network)
+
+            return connection != null && (
+                    connection.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                            connection.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR))
+        }
+
+        private fun isConnectionOn(): Boolean {
+            val connectivityManager = context.getSystemService(
+                Context.CONNECTIVITY_SERVICE
+            ) as ConnectivityManager
+
+            return if (android.os.Build.VERSION.SDK_INT >=
+                android.os.Build.VERSION_CODES.M) {
+                postAndroidMInternetCheck(connectivityManager)
+            } else {
+                preAndroidMInternetCheck(connectivityManager)
+            }
+        }
+
+        inner class NoConnectivityException : IOException() {
+
+            override val message: String
+                get() = "인터넷 연결이 끊겼습니다. WIFI나 데이터 연결을 확인해주세요"
+
+            fun showAlert() {
                 AlertDialog.Builder(this@ApplicationClass)
                     .setTitle("네트워크 오류")
                     .setMessage("네트워크에 접속할 수 없습니다.\n네트워크 연결상태를 확인해주세요.")
                     .create()
                     .show()
             }
-            return response
         }
-        /*override fun intercept(chain: Interceptor.Chain): okhttp3.Response = with(chain) {
-            val newRequest = request().newBuilder()
-                .addHeader("Authorization", prefs.getUserAccessToken())
-                .build()
-            proceed(newRequest)
-        }*/
 
     }
 
