@@ -31,7 +31,8 @@ public class ShareController {
         httpVO = new HttpVO();
 
         try{
-            shareService.getBestList(category, userId, boardId);
+            httpVO = shareService.getBestList(category, userId, boardId);
+            httpVO.setFlag("success");
         } catch (Exception e){
             e.printStackTrace();
         }

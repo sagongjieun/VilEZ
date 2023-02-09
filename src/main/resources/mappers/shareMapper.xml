@@ -45,7 +45,7 @@
                 else 0
             END
             ) as state
-        from sharing_view as s
+            from sharing_view as s
             left join
             (
             select
@@ -66,11 +66,11 @@
         <where>
             OR (CAST(hope_area_lat as Double) >= (#{areaLat} - 0.03) and (#{areaLat} + 0.03) >= CAST(hope_area_lat as Double))
             and (CAST(hope_area_lng as Double) >= (#{areaLng} - 0.03) and (#{areaLng} + 0.03) >= CAST(hope_area_lng as Double))
-            and end_day >= now()
             <if test="category != null and category != ''">
                 AND category = #{category}
             </if>
         </where>
+
     </select>
 
     <select id="loadShareList" parameterType="pageNavigator" resultMap="sharelist">
