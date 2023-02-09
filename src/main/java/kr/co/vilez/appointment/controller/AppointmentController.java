@@ -246,9 +246,12 @@ public class AppointmentController {
     notes = "boardId에 boardDetail의 boardId 정보를 넣고 전송하면" +
             "\n\t 현재 날짜와 비교해서 예약중인 boardId면 해당 boardId 값이 return" +
             "\n\t 그렇지 않으면 null 값이 들어온다.")
-    public ResponseEntity<?> getBoardState(@PathVariable int boardId, @PathVariable int type){
+    public ResponseEntity<?> getBoardState(@PathVariable("boardId") int boardId,
+                                          @PathVariable("type") int type){
         HttpVO http = new HttpVO();
         List<Object> data = new ArrayList<>();
+        System.out.println("boardId = " + boardId);
+        System.out.println("type = " + type);
 
         try {
             data.add(appointmentService.getBoardState(boardId, type));
