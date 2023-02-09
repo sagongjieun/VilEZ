@@ -35,17 +35,20 @@ const ProfileDdaySlide = ({ ddaySlideList }) => {
     showSlides(slideIndex);
   }, [ddaySlideList]);
 
+  console.log(ddaySlideList);
+
   return (
     <div css={imageSlideWrapper}>
       {ddaySlideList.map((appoint, index) => (
         <div key={index} css={imageWrapper} className="slide fade">
           <div></div>
           <div css={ddayExp}>
-            <p>{appoint.appointmentDto.title}</p>
-            <p>
+            <div>{appoint.appointmentDto.title}</div>
+            <div>
               <span>2</span>일 남았습니다.
-            </p>
+            </div>
           </div>
+          <div css={imgBack(appoint.imgPath[0].path)}></div>
         </div>
       ))}
       <div css={buttonsWrapper}>
@@ -61,6 +64,8 @@ const ProfileDdaySlide = ({ ddaySlideList }) => {
 };
 
 const imageSlideWrapper = css`
+  box-sizing: border-box;
+  padding-top: 7px;
   position: absolute;
   top: 0;
   width: 100%;
@@ -87,25 +92,44 @@ const imageSlideWrapper = css`
 
 const imageWrapper = css`
   width: 100%;
+  /* background-color: aliceblue; */
   height: 60%;
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
 
   & > div:nth-of-type(1) {
     display: none;
   }
 
   & > div:nth-of-type(2) {
+    box-sizing: border-box;
+    width: 68%;
     height: 180px;
-    /* background-color: beige; */
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+    padding-top: 40px;
   }
 `;
 
+const imgBack = (props) => {
+  console.log(props);
+  return css`
+    width: 120px;
+    height: 120px;
+    overflow: hidden;
+    border-radius: 5px;
+    background-image: url(${props});
+    background-size: cover;
+    background-position: center center;
+  `;
+};
+
 const buttonsWrapper = css`
   position: absolute;
-  bottom: 10px;
-  right: 0px;
+  bottom: 24px;
+  left: 0px;
   width: 110px;
   display: flex;
   justify-content: space-between;
@@ -145,20 +169,21 @@ const buttonsWrapper = css`
 const ddayExp = css`
   font-size: 24px;
   display: flex;
+  /* background-color: aqua; */
   flex-direction: column;
-  justify-content: center;
-  > p {
+  justify-content: flex-end;
+  & > div {
     text-align: left;
     width: 100%;
     padding-left: 30px;
   }
-  > p:nth-of-type(1) {
+  & > div:nth-of-type(1) {
     font-size: 18px;
-    /* font-weight: bold; */
+    /* background-color: aliceblue; */
   }
-  > p:nth-of-type(2) {
-    padding-top: 14px;
-    > span {
+  & > div:nth-of-type(2) {
+    padding-top: 6px;
+    & > span {
       font-size: 26px;
     }
   }

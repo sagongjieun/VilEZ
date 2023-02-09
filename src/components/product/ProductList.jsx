@@ -12,8 +12,7 @@ import { HiCalendar } from "react-icons/hi";
 import { HiHeart } from "react-icons/hi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getAskArticleList } from "../../api/ask";
-// import { useRecoilState } from "recoil";
-// import { locationState } from "../../recoil/atom";
+
 // import { getUserDetail } from "../../api/user";
 import elapsedTime from "./ProductElapsedTime";
 
@@ -21,20 +20,6 @@ const ProductList = () => {
   // detail api에서 userId 받아오면, 동네인증 한 경우 위도 경도가 존재. 이를 recoil에 넣어 상태관리
 
   const userId = localStorage.getItem("id");
-  // const [location, setLocation] = useRecoilState(locationState);
-  // useEffect(() => {
-  //   if (userId) {
-  //     getUserDetail(userId).then((res) => {
-  //       if (res) {
-  //         const userData = res;
-  //         // console.log(userData[0].areaLat);
-  //         setLocation({ areaLat: userData[0].areaLat, areaLng: userData[0].areaLng }, () => {
-  //           // console.log("Location state updated: ", location);
-  //         });
-  //       }
-  //     });
-  //   }
-  // }, [userId, location]);
 
   // isAll이 새로고침시마다 바껴있어야 공유가능 물품 조건 유지 가능
   const [isAll, setIsAll] = useState(localStorage.getItem("isAll") === "false" ? false : true);
@@ -49,7 +34,7 @@ const ProductList = () => {
   const [getArticle, setArticles] = useState([]);
   // 요청 글
   const [askArticles, setAskArticles] = useState([]);
-  // const [originalArticle, setOriginalArticle] = useState([]);
+  const [originalArticle, setOriginalArticle] = useState([]);
 
   // 무한 스크롤 관련 변수. cnt가 페이지번호를 담당, 일정 기준 이상 스크롤시 cnt 증가, 페이지 숫자가 증가하는 것
   const [cnt, setCnt] = useState(0);
@@ -59,6 +44,7 @@ const ProductList = () => {
   const urlId = pathname.includes("share") ? 2 : 1;
   const [list, setList] = useState("");
   const categoryToUse = category === "전체" ? "" : category;
+
   // 무한 스크롤 관련
   useEffect(() => {
     const handleScroll = () => {
@@ -84,7 +70,8 @@ const ProductList = () => {
   }, [cnt, getArticle, search]);
 
   // 카테고리 변경 후 스크롤을 내렸다가 ,다른 카테고리를 선택했을 때 이전 카테고리 데이터가 쌓여 나옴
-  // 네비게이션 바에서 공유 -> 요청 혹은 요청 -> 공유로 갔을 때 setCnt가 작동해야하는데, 하지 않아서 또 다른 변수가 변할 때 setCnt(0)으로 작동하게 하였음.
+  // 네비게이션 바에서 공유 -> 요청 혹은 요청 -> 공유로 갔을 때 setCnt가 작동해야하는데, 하지 않아서
+  // 또 다른 변수가 변할 때 setCnt(0)으로 작동하게 하였음.
   useEffect(() => {
     setCnt(0);
     window.scrollTo(0, 0);
@@ -97,31 +84,53 @@ const ProductList = () => {
       setCnt(0);
     }
   }, [urlId, search]);
+
   useEffect(() => {
     urlId === 1
       ? // 요청
         getAskArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then((res) => {
           const data = res;
-          // setOriginalArticle([...originalArticle, ...data[0]]);
+          console.log(data[0]);
+          setOriginalArticle([...originalArticle, ...data[0]]);
           setAskArticles([...askArticles, ...data[0]]);
 
           setList("물품 요청 목록");
-          // console.log(urlId);
-          // console.log(cnt);
         })
       : // 공유
         getShareArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then(
           (res) => {
             const data = res;
-            // setOriginalArticle([...originalArticle, ...data]);
+            console.log(data[1].shareListDto.state);
+            setOriginalArticle([...originalArticle, ...data]);
+            console.log(originalArticle[1].shareListDto);
             setArticles([...getArticle, ...data]);
             setList("물품 공유 목록");
-            // console.log(cnt);
           }
         );
-
-    // Check if the component is still mounted before making the API call
   }, [urlId, isAll, cnt, categoryToUse]);
+
+  function onClickSeePossible() {
+    setIsAll(!isAll);
+    setCnt(0);
+    setArticles([]);
+    setAskArticles([]);
+    setOriginalArticle([]);
+  }
+
+  // 공유가능 목록 보기위해 작성한 useEffect 0일때 공유가능, 1일때 공유 중
+  useEffect(() => {
+    if (isAll) {
+      setArticles(originalArticle);
+    } else {
+      if (urlId === 2) {
+        const modifyShareArticle = originalArticle.filter((article) => article.shareListDto.state === 1);
+        setArticles(modifyShareArticle);
+      } else {
+        const modifyAskArticle = originalArticle.filter((article) => article.askDto.state === 1);
+        setArticles(modifyAskArticle);
+      }
+    }
+  }, [isAll, originalArticle, cnt]);
 
   // props에서 받아온 값이 newCategory에 들어감
   // setCategory에 넘어온 값을 입력
@@ -130,34 +139,13 @@ const ProductList = () => {
     setCnt(0);
     setArticles([]);
     setAskArticles([]);
-    // setOriginalArticle([]);
+    setOriginalArticle([]);
   }
-  function onClickSeePossible() {
-    setIsAll(!isAll);
-    setCnt(0);
-    setArticles([]);
-    setAskArticles([]);
 
-    // setOriginalArticle([]);
-  }
-  // 목록 검색창
-  // function onSubmitSearch(event) {
-  //   event.preventDefault();
-
-  //   onChangeSearch(search);
-  //   setArticles([]);
-  //   setAskArticles([]);
-
-  //   // setOriginalArticle([]);
-  //   setCnt(0);
-  // }
-
-  // 검색후, 지웠을 때 이전 검색이 리스트에 쌓이는 것을 방지
+  // 검색 후, 지웠을 때 이전 검색이 리스트에 쌓이는 것을 방지
   // 스크롤이 내려가서 cnt가 변했을 때, 검색을 하면 그 페이지를 기준으로 해서 문제를 해결함
   function onChangeSearch(event) {
     if (event.key === "Enter") {
-      console.log(event);
-
       setSearch(event.target.value);
       setArticles([]);
       setAskArticles([]);
@@ -184,24 +172,6 @@ const ProductList = () => {
     navigate("/product/regist", { state: { type: urlId } });
   }
 
-  // 공유가능 목록 보기위해 작성한 useEffect 0일때 공유가능, 1일때 공유 중
-  // useEffect(() => {
-  //   // true면 다 볼 수 있음
-  //   if (isAll) {
-  //     setArticles(originalArticle);
-  //     // console.log(getArticle);
-  //   } else {
-  //     if (urlId === 2) {
-  //       const tempShareArticle = getArticle.filter(
-  //         (article) => article.shareListDto && article.shareListDto.state === 0
-  //       );
-  //       setArticles(tempShareArticle);
-  //     } else {
-  //       const tempShareArticle = getArticle.filter((article) => article.askDto && article.askDto.state === 0);
-  //       setArticles(tempShareArticle);
-  //     }
-  //   }
-  // }, [pathname, isAll, categoryToUse, cnt, search]);
   return (
     <div css={topWrap}>
       <div css={contentWrap}>

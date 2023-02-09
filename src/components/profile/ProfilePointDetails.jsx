@@ -66,7 +66,7 @@ const ProfilePointDetails = () => {
                   </div>
                 </div>
                 <div>
-                  <div>{data.boardInfoVO.title}</div>
+                  <div>{data.boardInfoVO ? data.boardInfoVO.title : "삭제된 게시글입니다"}</div>
                   <div
                     css={[
                       pointWrapper,

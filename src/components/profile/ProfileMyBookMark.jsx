@@ -12,11 +12,11 @@ const ProfileMyBookMark = (props) => {
     getUserBookMark(userId).then((response) => {
       setMyBookMarkBoard(response);
       props.setBookMarkPages(1);
-      props.setBookMarkDefaultPages(parseInt((response?.length - 1) / 3) + 1);
+      props.setBookMarkDefaultPages(response ? parseInt((response?.length - 1) / 3) + 1 : 1);
     });
   }, []);
   useEffect(() => {
-    props.setBookMarkDefaultPages(parseInt((myBookMarkBoard?.length - 1) / 3) + 1);
+    props.setBookMarkDefaultPages(myBookMarkBoard ? parseInt((myBookMarkBoard?.length - 1) / 3) + 1 : 1);
   }, [myBookMarkBoard]);
   return (
     <div css={cardWrapper(props.bookMarkPages)}>

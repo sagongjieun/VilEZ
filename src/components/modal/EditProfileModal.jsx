@@ -11,9 +11,12 @@ import ProfileImageSelect from "../profile/ProfileImageSelect";
 import { checkNickName } from "../../api/user";
 import { getUserDetail } from "../../api/user";
 import { putUserPasswordNickName, putUserProfileImage } from "../../api/user";
+import { useSetRecoilState } from "recoil";
+import { loginUserState } from "../../recoil/atom";
 
 function EditProfile({ setIsEditProfileOpen }) {
   const userId = localStorage.getItem("id");
+  const setLoginUser = useSetRecoilState(loginUserState);
   const [userNickName, setUserNickName] = useState("");
   const [userProfileImage, setUserProfileImage] = useState("");
   const [nickName, setNickName] = useState("");
@@ -87,6 +90,13 @@ function EditProfile({ setIsEditProfileOpen }) {
     if ((isNickNameAvailable || !isNickNameOpen) && !passwordError && !password2Error) {
       putUserPasswordNickName(userId, nickName, password).then((response) => {
         if (response) {
+          setLoginUser((prev) => {
+            return {
+              ...prev,
+              id: userId,
+              nickName: nickName,
+            };
+          });
           if (imageList) {
             const formData = new FormData();
             formData.append("image", imageList[0]);

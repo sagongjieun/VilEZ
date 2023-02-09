@@ -1,17 +1,25 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { HiCalendar, HiHeart } from "react-icons/hi";
 // import image from "../../assets/images/product_thumbnail.png";
 import elapsedTime from "../product/ProductElapsedTime";
+import { getMyChatRoomByBoardTypeUserId } from "../../api/appointment";
 
-const MyBoxCardView = ({ title, endDay, startDay, date, thumbnail, boardType, boardId, dDay }) => {
+const MyBoxCardView = ({ title, endDay, startDay, date, thumbnail, boardId, dDay, type, appId }) => {
+  const userId = localStorage.getItem("id");
   const endDayDotted = endDay?.slice(0, 4) + "." + endDay?.slice(5, 7) + "." + endDay?.slice(8, 10);
   const startDayDotted = startDay?.slice(0, 4) + "." + startDay?.slice(5, 7) + "." + startDay?.slice(8, 10);
+  const [myRoomId, setMyRoomId] = useState(0);
+  useEffect(() => {
+    getMyChatRoomByBoardTypeUserId(boardId, type, userId).then((response) => {
+      setMyRoomId(response.id);
+    });
+  }, [appId]);
   return (
     <Link
-      to={`/product/detail/${boardType}/${boardId}`}
+      to={`/product/chat/${myRoomId}`}
       css={css`
         color: black;
       `}

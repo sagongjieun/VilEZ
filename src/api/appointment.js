@@ -102,6 +102,7 @@ async function getMyShareAppointments(userId) {
     console.log(error);
   }
 }
+
 async function getMyRentAppointments(userId) {
   try {
     const { data } = await authJsonAxios.get(`/appointments/my/${userId}`);
