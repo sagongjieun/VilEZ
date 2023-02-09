@@ -55,7 +55,7 @@
         on s.id = a.board_id
         where a.state >= 0
           and not_share_user_id = #{userId}
-          and ((appointment_start >= now() and now() >= DATE_SUB(appointment_start, INTERVAL 7 DAY)) or now() >= DATE_SUB(appointment_end, INTERVAL 7 DAY));
+          and ((appointment_start >= now() and now() >= DATE_SUB(appointment_start, INTERVAL 7 DAY)) or now() >= DATE_SUB(appointment_end, INTERVAL 7 DAY))
         and type = 1;
 </select>
     <select id="getMyAppointmentDateShare" parameterType="int" resultMap="appointment">
