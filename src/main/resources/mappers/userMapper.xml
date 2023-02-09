@@ -116,6 +116,11 @@
         WHERE email = #{email} and password = #{password};
     </select>
 
+    <select id="loginFake" parameterType="UserDto" resultMap="user">
+        SELECT id, email, password, nickname, area_lat, area_lng, oauth,date
+        FROM user
+        WHERE email = #{email} and password = #{password};
+    </select>
     <update id="saveToken" parameterType="map">
         UPDATE user
         SET refresh_token = #{token}
