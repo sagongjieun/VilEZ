@@ -33,7 +33,7 @@ class FCMTokenUtil  {
             if(task.result != null){
                 //ApplicationClass.retrofitFCMService.uploadToken(FCMToken(ApplicationClass.prefs.getId(),task.result!!))
                 // 새로운 토큰 수신 시 서버로 전송
-                ApplicationClass.FCMApi.uploadToken(FCMToken(ApplicationClass.prefs.getId(),task.result!!)).enqueue(object :
+                ApplicationClass.fcmTokenApi.uploadToken(FCMToken(ApplicationClass.prefs.getId(),task.result!!)).enqueue(object :
                     Callback<RESTResult> {
                     override fun onResponse(call: Call<RESTResult>, response: Response<RESTResult>) {
                         if(response.isSuccessful && response.body()?.flag == "success"){

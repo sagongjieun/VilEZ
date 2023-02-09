@@ -176,7 +176,7 @@ class FCMService : FirebaseMessagingService() {
 
         Log.d(TAG, "sendRegistrationTokenToServer($token)")
 
-        ApplicationClass.FCMApi.uploadToken(FCMToken(ApplicationClass.prefs.getId(), token!!)).enqueue(object :
+        ApplicationClass.fcmTokenApi.uploadToken(FCMToken(ApplicationClass.prefs.getId(), token!!)).enqueue(object :
             Callback<RESTResult> {
             override fun onResponse(call: Call<RESTResult>, response: Response<RESTResult>) {
                 if(response.isSuccessful){

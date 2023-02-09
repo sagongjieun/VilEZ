@@ -5,8 +5,9 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
 
+
 data class FCMToken(val userId:Int, val token:String)
-interface FCMApi {
+interface FCMTokenApi {
 
     // Token정보 서버로 전송
     @POST("/vilez/token")
