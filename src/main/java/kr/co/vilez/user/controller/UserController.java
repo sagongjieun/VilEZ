@@ -144,7 +144,7 @@ public class UserController {
     // access 토큰 갱신
     @PostMapping("/refresh")
     @ApiOperation(value = "access토큰을 갱신한다.", notes = "{\n refresh_token : String \n}")
-    public ResponseEntity<?> refresh(@RequestHeader(value="refresh_token") String refresh_token){
+    public ResponseEntity<?> refresh(@RequestHeader(value="refresh-token") String refresh_token){
         try {
             http = userService.refreshCheck(refresh_token);
         }catch (Exception e){
