@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -141,10 +142,9 @@ public class UserController {
     }
 
     // access 토큰 갱신
-    @JsonIgnoreProperties(ignoreUnknown = true)
     @PostMapping("/refresh")
     @ApiOperation(value = "access토큰을 갱신한다.", notes = "{\n refresh_token : String \n}")
-    public ResponseEntity<?> refresh(@RequestBody String refresh_token){
+    public ResponseEntity<?> refresh(@RequestHeader(value="refresh_token") String refresh_token){
         try {
             http = userService.refreshCheck(refresh_token);
         }catch (Exception e){
