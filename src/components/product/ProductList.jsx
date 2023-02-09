@@ -82,6 +82,7 @@ const ProductList = () => {
       setArticles([]);
       setAskArticles([]);
       setCnt(0);
+      setIsAll(false);
     }
   }, [urlId, search]);
 
@@ -100,10 +101,11 @@ const ProductList = () => {
         getShareArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then(
           (res) => {
             const data = res;
-            console.log(data[1].shareListDto.state);
+            // console.log(data[1].shareListDto.state);
             setOriginalArticle([...originalArticle, ...data]);
-            console.log(originalArticle[1].shareListDto);
             setArticles([...getArticle, ...data]);
+            console.log(getArticle);
+            // console.log(originalArticle[1].shareListDto);
             setList("물품 공유 목록");
           }
         );
@@ -123,10 +125,12 @@ const ProductList = () => {
       setArticles(originalArticle);
     } else {
       if (urlId === 2) {
-        const modifyShareArticle = originalArticle.filter((article) => article.shareListDto.state === 1);
+        const modifyShareArticle = originalArticle.filter(
+          (article) => article.shareListDto && article.shareListDto.state === 1
+        );
         setArticles(modifyShareArticle);
       } else {
-        const modifyAskArticle = originalArticle.filter((article) => article.askDto.state === 1);
+        const modifyAskArticle = originalArticle.filter((article) => article.askDto && article.askDto.state === 1);
         setArticles(modifyAskArticle);
       }
     }
@@ -149,6 +153,7 @@ const ProductList = () => {
       setSearch(event.target.value);
       setArticles([]);
       setAskArticles([]);
+      setOriginalArticle([]);
       setCnt(0);
       urlId === 2
         ? getShareArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then(
