@@ -40,8 +40,7 @@ function MainBody() {
     if (userId) {
       getUserDetail(userId).then((res) => {
         if (res) {
-          const userData = res;
-          setLocation({ areaLat: userData[0].areaLat, areaLng: userData[0].areaLng });
+          setLocation({ areaLat: res.areaLat, areaLng: res.areaLng });
         }
       });
     }

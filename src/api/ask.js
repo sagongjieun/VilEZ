@@ -1,13 +1,10 @@
-import { jsonInstance, formdataInstance } from "./instance";
-
-const jsonAxios = jsonInstance();
-const formdataAxios = formdataInstance();
+import { authJsonAxios, authFormDataAxios } from "./instance";
 
 // GET
 
 async function getAskArticleList(areaLat, areaLng, category, cnt, high, low, userId, word) {
   try {
-    const { data } = await jsonAxios.get(
+    const { data } = await authJsonAxios.get(
       `/askboard?areaLat=${areaLat}&areaLng=${areaLng}&category=${category}&cnt=${cnt}&high=${high}&low=${low}&userId=${userId}&word=${word}`
     );
 
@@ -20,7 +17,7 @@ async function getAskArticleList(areaLat, areaLng, category, cnt, high, low, use
 
 async function getAskArticleDetailByBoardId(boardId) {
   try {
-    const { data } = await jsonAxios.get(`/askboard/detail/${boardId}`);
+    const { data } = await authJsonAxios.get(`/askboard/detail/${boardId}`);
 
     if (data.flag === "success") return data.data;
     else console.log("일치하는 게시글이 없습니다. 😥");
@@ -31,10 +28,21 @@ async function getAskArticleDetailByBoardId(boardId) {
 
 async function getMyAskArticle(userId) {
   try {
-    const { data } = await jsonAxios.get(`/askboard/my/${userId}`);
+    const { data } = await authJsonAxios.get(`/askboard/my/${userId}`);
 
     if (data.flag === "success") return data.data;
     else console.log("일치하는 회원이 없습니다. 😥");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getUserAsk(userId) {
+  try {
+    const { data } = await authJsonAxios.get(`/askboard/my/${userId}`);
+
+    if (data.flag === "success") return data.data;
+    else console.log("일치하는 작성글 정보가 없습니다.");
   } catch (error) {
     console.log(error);
   }
@@ -44,7 +52,7 @@ async function getMyAskArticle(userId) {
 
 async function postAskArticle(formData) {
   try {
-    const { data } = await formdataAxios.post(`/askboard`, formData);
+    const { data } = await authFormDataAxios.post(`/askboard`, formData);
 
     if (data.flag === "success") return data.data;
     else alert("요청 글 등록에 실패하였습니다 😥");
@@ -57,7 +65,7 @@ async function postAskArticle(formData) {
 
 async function deleteAskArticleByBoardId(boardId) {
   try {
-    const { data } = await jsonAxios.delete(`/askboard/${boardId}`);
+    const { data } = await authJsonAxios.delete(`/askboard/${boardId}`);
 
     if (data.flag === "success") alert("요청글 삭제에 성공하였습니다. 😀");
     else alert("요청 글 삭제에 실패하였습니다 😥");
@@ -70,7 +78,7 @@ async function deleteAskArticleByBoardId(boardId) {
 
 async function putAskArticle(formData) {
   try {
-    const { data } = await formdataAxios.put(`/askboard`, formData);
+    const { data } = await authFormDataAxios.put(`/askboard`, formData);
 
     if (data.flag === "success") {
       alert("수정되었습니다 😀");
@@ -85,6 +93,7 @@ export {
   getAskArticleList,
   getAskArticleDetailByBoardId,
   getMyAskArticle,
+  getUserAsk,
   postAskArticle,
   deleteAskArticleByBoardId,
   putAskArticle,

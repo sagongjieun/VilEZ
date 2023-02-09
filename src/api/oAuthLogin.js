@@ -1,10 +1,9 @@
-import { jsonInstance } from "./instance";
-
-const jsonAxios = jsonInstance();
+import { authJsonAxios } from "./instance";
 
 async function requestKakaoLogin(code) {
   try {
-    const { data } = await jsonAxios.get(`/oauth2/code/kakao?code=${code}`);
+    const { data } = await authJsonAxios.get(`/oauth2/code/kakao?code=${code}`);
+
     if (data.flag === "oauth_join_success & login_success" || data.flag === "login_success") {
       // localStorage.setItem("accessToken", data.data[0].accessToken);
       // localStorage.setItem("refreshToken", data.data[0].refreshToken);
@@ -21,8 +20,8 @@ async function requestKakaoLogin(code) {
 
 async function requestNaverLogin(code) {
   try {
-    console.log(code);
-    const { data } = await jsonAxios.get(`/oauth2/code/naver?code=${code}`);
+    const { data } = await authJsonAxios.get(`/oauth2/code/naver?code=${code}`);
+
     if (data.flag === "oauth_join_success & login_success" || data.flag === "login_success") {
       // localStorage.setItem("accessToken", data.data[0].accessToken);
       // localStorage.setItem("refreshToken", data.data[0].refreshToken);

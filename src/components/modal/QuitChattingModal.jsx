@@ -2,7 +2,7 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import MiddleWideButton from "../button/MiddleWideButton";
-import { deleteChatRoom } from "../../api/chat";
+import { deleteChatRoom } from "../../api/appointment";
 import { checkUserLeaveState } from "../../recoil/atom";
 import { useSetRecoilState } from "recoil";
 

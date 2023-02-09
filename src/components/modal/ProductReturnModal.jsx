@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { css } from "@emotion/react";
 import MiddleWideButton from "../button/MiddleWideButton";
 import { postMannerPoint } from "../../api/user";
-import { postShareReturnState } from "../../api/appointment";
+import { postShareReturnState } from "../../api/back";
 import { useSetRecoilState } from "recoil";
 import { checkShareReturnState } from "../../recoil/atom";
 
