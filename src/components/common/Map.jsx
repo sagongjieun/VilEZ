@@ -54,22 +54,6 @@ const Map = ({
     map = new kakao.maps.Map(container, options);
   }
 
-  // function geolocationMap() {
-  //   // 현재 접속위치를 중심좌표로 두기
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition(function (position) {
-  //       const lat = position.coords.latitude, // 위도
-  //         lon = position.coords.longitude; // 경도
-
-  //       const locPosition = new kakao.maps.LatLng(lat, lon);
-  //       map.setCenter(locPosition);
-  //     });
-  //   } else {
-  //     const locPosition = new kakao.maps.LatLng(33.450701, 126.570667);
-  //     map.setCenter(locPosition);
-  //   }
-  // }
-
   function eventDragEnd() {
     // 드래그 이동
     kakao.maps.event.addListener(map, "dragend", function () {
@@ -109,6 +93,7 @@ const Map = ({
         ) {
           setLat(latlng.getLat());
           setLng(latlng.getLng());
+          setIsMarker(true);
 
           marker.setPosition(latlng);
           marker.setMap(map);
