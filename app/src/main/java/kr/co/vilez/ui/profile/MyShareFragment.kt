@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.dto.BoardData
 import kr.co.vilez.databinding.FragmentMyShareBinding
+import kr.co.vilez.ui.share.ShareToChatAdapter
 import kr.co.vilez.ui.user.ProfileMenuActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.Common
@@ -24,14 +25,14 @@ import kr.co.vilez.util.Common.Companion.getBoardState
 import retrofit2.awaitResponse
 
 private const val TAG = "빌리지_프로필_MyShareFragment"
-class MyShareFragment : Fragment() { // 내가 빌려주는것들 목록
+class MyShareFragment : Fragment() { // 내가 빌린것들 목록
     private lateinit var binding: FragmentMyShareBinding
     private lateinit var activity: ProfileMenuActivity
 
     private val STATE_SHARING = 0 // 공유 중
     private val STATE_RESERVE = 1 // 공유 예정 (예약된 것)
 
-    private lateinit var boardAdapter: ImminentAdapter
+    private lateinit var boardAdapter: ShareToChatAdapter //
     private lateinit var boardList:ArrayList<BoardData>
     private var index = 0
 
@@ -79,14 +80,14 @@ class MyShareFragment : Fragment() { // 내가 빌려주는것들 목록
     private fun initSharingData() {
         index = 0
         boardList = arrayListOf()
-        boardAdapter = ImminentAdapter(boardList)
+        boardAdapter = ShareToChatAdapter(boardList)
         // 리사이클러뷰에 어댑터 등록
         binding.rvMyShareList.apply {
             adapter = boardAdapter
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         }
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.retrofitAppointmentService.getMyAppointment(ApplicationClass.prefs.getId()).awaitResponse().body()
+            val result = ApplicationClass.appointmentApi.getMyAppointment(ApplicationClass.prefs.getId()).awaitResponse().body()
             if (result?.flag == "success") {
                 Log.d(TAG, "initShareData: success!!!!! 검색 결과 개수 : ${result.data[0].size}")
 
@@ -123,14 +124,14 @@ class MyShareFragment : Fragment() { // 내가 빌려주는것들 목록
     private fun initReserveData() {
         index = 0
         boardList = arrayListOf()
-        boardAdapter = ImminentAdapter(boardList)
+        boardAdapter = ShareToChatAdapter(boardList)
         // 리사이클러뷰에 어댑터 등록
         binding.rvMyShareList.apply {
             adapter = boardAdapter
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         }
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.retrofitAppointmentService.getMyAppointment(ApplicationClass.prefs.getId()).awaitResponse().body()
+            val result = ApplicationClass.appointmentApi.getMyAppointment(ApplicationClass.prefs.getId()).awaitResponse().body()
             if (result?.flag == "success") {
                 Log.d(TAG, "initShareData: success!!!!! 검색 결과 개수 : ${result.data[0].size}")
 

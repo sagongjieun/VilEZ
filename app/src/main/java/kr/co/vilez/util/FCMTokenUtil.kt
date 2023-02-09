@@ -4,20 +4,15 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import android.provider.Settings.Global.getString
 import android.util.Log
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.messaging.FirebaseMessagingService
-import kr.co.vilez.R
 import kr.co.vilez.data.model.RESTResult
 import kr.co.vilez.service.FCMToken
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.awaitResponse
 
 private const val TAG = "빌리지_FCMTokenUtil"
 class FCMTokenUtil  {
@@ -38,7 +33,7 @@ class FCMTokenUtil  {
             if(task.result != null){
                 //ApplicationClass.retrofitFCMService.uploadToken(FCMToken(ApplicationClass.prefs.getId(),task.result!!))
                 // 새로운 토큰 수신 시 서버로 전송
-                ApplicationClass.retrofitFCMService.uploadToken(FCMToken(ApplicationClass.prefs.getId(),task.result!!)).enqueue(object :
+                ApplicationClass.FCMApi.uploadToken(FCMToken(ApplicationClass.prefs.getId(),task.result!!)).enqueue(object :
                     Callback<RESTResult> {
                     override fun onResponse(call: Call<RESTResult>, response: Response<RESTResult>) {
                         if(response.isSuccessful && response.body()?.flag == "success"){

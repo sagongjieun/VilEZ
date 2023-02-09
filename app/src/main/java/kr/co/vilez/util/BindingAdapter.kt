@@ -86,9 +86,6 @@ object BindingAdapter {
         } else {
             view.setImageResource(R.drawable.ic_manner_5)
         }
-
-
-
     }
 
 /*    @SuppressLint("SimpleDateFormat")

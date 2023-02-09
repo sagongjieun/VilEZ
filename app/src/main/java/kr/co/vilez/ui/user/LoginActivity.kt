@@ -86,14 +86,14 @@ class LoginActivity : AppCompatActivity() {
     fun login(user: User) {
         CoroutineScope(Dispatchers.Main).launch {
             val result =
-                ApplicationClass.retrofitUserService.getLoginResult(user).awaitResponse().body()
+                ApplicationClass.userApi.getLoginResult(user).awaitResponse().body()
             if (result?.flag == "success" && !result.data.isNullOrEmpty()) {
                 Log.d(TAG, "로그인 성공, 받아온 user = ${result.data[0]}")
                 ApplicationClass.prefs.setUser(result.data[0])
                 ApplicationClass.prefs.setOAuth(user.oauth) //
                 ApplicationClass.prefs.setAutoLogin(user) // 로그인시 자동으로 자동로그인 넣기
 
-                val resultDetail = ApplicationClass.retrofitUserService.getUserDetail(result.data[0].id).awaitResponse().body()
+                val resultDetail = ApplicationClass.userApi.getUserDetail(result.data[0].id).awaitResponse().body()
                 if(resultDetail?.flag == "success") {
                     Log.d(TAG, "login: Detail조회도 로그인와 같이 성공~, result: ${resultDetail.data[0]}")
                     ApplicationClass.prefs.setUserDetail(resultDetail.data[0])

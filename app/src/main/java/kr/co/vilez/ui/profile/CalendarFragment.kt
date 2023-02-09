@@ -1,25 +1,18 @@
 package kr.co.vilez.ui.profile
 
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.applandeo.materialcalendarview.CalendarDay
 import com.applandeo.materialcalendarview.EventDay
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener
-import com.applandeo.materialcalendarview.utils.isEqual
-import com.applandeo.materialcalendarview.utils.setSelectedDayColors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kr.co.vilez.R
 import kr.co.vilez.data.dto.CalendarDto
 import kr.co.vilez.databinding.FragmentCalendarBinding
 import kr.co.vilez.ui.user.ProfileMenuActivity
@@ -61,7 +54,7 @@ class CalendarFragment : Fragment() {
         itemList = arrayListOf()
         calendarList = arrayListOf()
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.retrofitAppointmentService.getMyCalendar(ApplicationClass.prefs.getId()).awaitResponse().body()
+            val result = ApplicationClass.appointmentApi.getMyCalendar(ApplicationClass.prefs.getId()).awaitResponse().body()
             Log.d(TAG, "initData: 개수: ${result?.data?.get(0)?.size} 데이터 result: $result")
             if(result?.flag == "success") {
                 Log.d(TAG, "initData: success! 개수 : ${result.data[0].size}")

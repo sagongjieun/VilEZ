@@ -1,5 +1,6 @@
 package kr.co.vilez.util
 
+import android.app.AlertDialog
 import android.app.Application
 import android.content.Intent
 import android.content.SharedPreferences
@@ -19,6 +20,7 @@ import kr.co.vilez.R
 import kr.co.vilez.data.model.RESTResult
 import kr.co.vilez.data.model.Token
 import kr.co.vilez.service.*
+import kr.co.vilez.ui.dialog.MyAlertDialog
 import kr.co.vilez.ui.user.LoginActivity
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
@@ -41,24 +43,24 @@ class ApplicationClass: Application(), LifecycleObserver {
 
         // 전역변수 문법을 통해 Retrofit 인스턴스를 앱 실행 시 1번만 생성하여 사용 (싱글톤 객체)
         lateinit var wRetrofit : Retrofit
-        lateinit var retrofitUserService: RetrofitUserService
-        lateinit var retrofitEmailService: RetrofitEmailService
-        lateinit var retrofitChatService: RetrofitChatService
-        lateinit var retrofitShareService: RetrofitShareService
-        lateinit var retrofitAskService: RetrofitAskService
-        lateinit var retrofitAppointmentService: RetrofitAppointmentService
+        lateinit var userApi: UserApi
+        lateinit var emailApi: EmailApi
+        lateinit var chatApi: ChatApi
+        lateinit var shareApi: ShareApi
+        lateinit var askApi: AskApi
+        lateinit var appointmentApi: AppointmentApi
 
-        lateinit var retrofitFCMService: RetrofitFCMService
+        lateinit var FCMApi: FCMApi
 
         // header에 accessTocken 넣는 레트로핏
         lateinit var hRetrofit : Retrofit
-        lateinit var hRetrofitTokenService: RetrofitTokenService
-        lateinit var hRetrofitUserService: RetrofitUserService
-        lateinit var hRetrofitEmailService: RetrofitEmailService
-        lateinit var hRetrofitChatService: RetrofitChatService
-        lateinit var hRetrofitShareService: RetrofitShareService
-        lateinit var hRetrofitAskService: RetrofitAskService
-        lateinit var hRetrofitAppointmentService: RetrofitAppointmentService
+        lateinit var hTokenApi: TokenApi
+        lateinit var hUserApi: UserApi
+        lateinit var hEmailApi: EmailApi
+        lateinit var hChatApi: ChatApi
+        lateinit var hShareApi: ShareApi
+        lateinit var hAskApi: AskApi
+        lateinit var hAppointmentApi: AppointmentApi
         private lateinit var interceptor: Interceptor
 
         // 정보를 담기 위한 sharedPreference
@@ -68,6 +70,7 @@ class ApplicationClass: Application(), LifecycleObserver {
 
         // 네트워크 상태
         var network: Boolean = false
+        lateinit var networkMonitor: NetworkMonitor
     }
 
     override fun onCreate() {
@@ -105,16 +108,18 @@ class ApplicationClass: Application(), LifecycleObserver {
             .baseUrl(SERVER_URL)
             .addConverterFactory(nullOnEmptyConverterFactory)
             .addConverterFactory(GsonConverterFactory.create(gson))
+//            .addNetworkInterceptor()
             .client(okHttpClient)
             .build()
+        userApi = wRetrofit.create(UserApi::class.java)
 
-        retrofitUserService = wRetrofit.create(RetrofitUserService::class.java)
-        retrofitEmailService = wRetrofit.create(RetrofitEmailService::class.java)
-        retrofitChatService = wRetrofit.create(RetrofitChatService::class.java)
-        retrofitShareService = wRetrofit.create(RetrofitShareService::class.java)
-        retrofitFCMService = wRetrofit.create(RetrofitFCMService::class.java)
-        retrofitAskService = wRetrofit.create(RetrofitAskService::class.java)
-        retrofitAppointmentService = wRetrofit.create(RetrofitAppointmentService::class.java)
+
+        emailApi = wRetrofit.create(EmailApi::class.java)
+        chatApi = wRetrofit.create(ChatApi::class.java)
+        shareApi = wRetrofit.create(ShareApi::class.java)
+        FCMApi = wRetrofit.create(FCMApi::class.java)
+        askApi = wRetrofit.create(AskApi::class.java)
+        appointmentApi = wRetrofit.create(AppointmentApi::class.java)
 
         // 네트워크에 연결되어있는지 확인 후 없으면 앱 종료 시키기위해 네트워크 연결상태 감지 콜백 생성시켜두기
 //        val network: CheckNetwork = CheckNetwork(applicationContext)
@@ -130,6 +135,7 @@ class ApplicationClass: Application(), LifecycleObserver {
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .writeTimeout(15, TimeUnit.SECONDS)
             .addInterceptor(interceptor)
+//            .addNetworkInterceptor()
             .build()
 
         // 앱이 처음 생성되는 순간, retrofit 인스턴스를 생성
@@ -140,13 +146,13 @@ class ApplicationClass: Application(), LifecycleObserver {
             .client(okHttpHeaderClient)
             .build()
 
-        hRetrofitUserService = hRetrofit.create(RetrofitUserService::class.java)
-        hRetrofitTokenService = hRetrofit.create(RetrofitTokenService::class.java)
-        hRetrofitEmailService = hRetrofit.create(RetrofitEmailService::class.java)
-        hRetrofitChatService = hRetrofit.create(RetrofitChatService::class.java)
-        hRetrofitShareService = hRetrofit.create(RetrofitShareService::class.java)
-        hRetrofitAskService = hRetrofit.create(RetrofitAskService::class.java)
-        hRetrofitAppointmentService = hRetrofit.create(RetrofitAppointmentService::class.java)
+        hUserApi = hRetrofit.create(UserApi::class.java)
+        hTokenApi = hRetrofit.create(TokenApi::class.java)
+        hEmailApi = hRetrofit.create(EmailApi::class.java)
+        hChatApi = hRetrofit.create(ChatApi::class.java)
+        hShareApi = hRetrofit.create(ShareApi::class.java)
+        hAskApi = hRetrofit.create(AskApi::class.java)
+        hAppointmentApi = hRetrofit.create(AppointmentApi::class.java)
     }
 
     inner class AppInterceptor : Interceptor { // End of AppInterceptor inner class
@@ -162,7 +168,6 @@ class ApplicationClass: Application(), LifecycleObserver {
             if (response.code == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 Log.d(TAG, "intercept: @@@@@@권한없음 토큰 갱신 필요")
                 if (!refreshToken()) { // 갱신 실패한 경우
-
                     // 로그아웃 하고 로그인 화면으로 이동
                     prefs.removeAll() // Shared Preference 삭제
                     val intent = Intent(this@ApplicationClass, LoginActivity::class.java)
@@ -172,6 +177,12 @@ class ApplicationClass: Application(), LifecycleObserver {
                     return response
                 }
                 return chain.proceed(newRequestWithAccessToken(accessToken, request))
+            } else if (!networkMonitor.isConnected) {
+                AlertDialog.Builder(this@ApplicationClass)
+                    .setTitle("네트워크 오류")
+                    .setMessage("네트워크에 접속할 수 없습니다.\n네트워크 연결상태를 확인해주세요.")
+                    .create()
+                    .show()
             }
             return response
         }
@@ -192,7 +203,7 @@ class ApplicationClass: Application(), LifecycleObserver {
     private fun refreshToken(): Boolean{
         lateinit var result:RESTResult
         CoroutineScope(Dispatchers.IO).launch {
-            result = hRetrofitTokenService.refreshToken(Token(prefs.getRefreshToken())).awaitResponse().body()!!
+            result = hTokenApi.refreshToken(Token(prefs.getRefreshToken())).awaitResponse().body()!!
         }
         return result?.flag == "success"
     }

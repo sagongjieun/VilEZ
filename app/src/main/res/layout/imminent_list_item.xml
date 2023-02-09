@@ -69,6 +69,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
+                        android:visibility="@{boardData.status == null ? View.GONE : View.VISIBLE}"
                         android:text="@{ boardData.status != null ? `[`+boardData.status+`]` : ``}"
                         android:textColor="@color/main_1"
                         android:textSize="16sp" />

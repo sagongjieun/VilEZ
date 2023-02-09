@@ -1,6 +1,6 @@
 package kr.co.vilez.data.model
 
-data class RESTAskDto(
+data class AskDto(
     val address: String,
     val area: Any,
     val category: String,

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
@@ -17,21 +16,15 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import kr.co.vilez.R
-import kr.co.vilez.data.chat.ChatlistData
 import kr.co.vilez.data.model.Bookmark
 import kr.co.vilez.data.model.Chatroom
 import kr.co.vilez.data.model.RoomlistData
-import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.ActivityShareDetailBinding
-import kr.co.vilez.ui.IntroActivity
 import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.ui.board.BoardImagePagerAdapter
 import kr.co.vilez.ui.board.BoardMapFragment
 import kr.co.vilez.ui.chat.ChatRoomActivity
-import kr.co.vilez.ui.dialog.AlertDialogInterface
-import kr.co.vilez.ui.dialog.AlertDialogWithCallback
-import kr.co.vilez.ui.dialog.ConfirmDialog
-import kr.co.vilez.ui.dialog.ConfirmDialogInterface
+import kr.co.vilez.ui.dialog.*
 import kr.co.vilez.ui.share.write.ShareWriteActivity
 import kr.co.vilez.ui.user.ProfileMenuActivity
 import kr.co.vilez.util.ApplicationClass
@@ -65,8 +58,8 @@ class ShareDetailActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_share_detail)
         binding.activity = this
-        boardId = intent.getIntExtra("boardId", 0)
-        userId = intent.getIntExtra("userId", 0)
+        boardId = intent.getIntExtra("boardId", 0) // 공유글 id
+        userId = intent.getIntExtra("userId", 0) // 공유글 작성자
         Log.d(TAG, "onCreate: boardId: $boardId $userId")
         setContentView(binding.root)
         mContext = this@ShareDetailActivity
@@ -87,7 +80,7 @@ class ShareDetailActivity : AppCompatActivity(){
         if(binding.bookmark!!) {
             // 관심목록에서 삭제
             CoroutineScope(Dispatchers.Main).launch {
-                val result = ApplicationClass.retrofitShareService.deleteBookmark(boardId!!, ApplicationClass.prefs.getId()).awaitResponse().body()
+                val result = ApplicationClass.shareApi.deleteBookmark(boardId!!, ApplicationClass.prefs.getId()).awaitResponse().body()
                 if(result?.flag == "success") {
                     binding.bookmark = false
                     binding.article!!.bookmarkCnt--
@@ -99,7 +92,7 @@ class ShareDetailActivity : AppCompatActivity(){
         } else {
             // 관심목록에 추가
             CoroutineScope(Dispatchers.Main).launch {
-                val result = ApplicationClass.retrofitShareService.addBookmark(Bookmark(boardId!!, ApplicationClass.prefs.getId())).awaitResponse().body()
+                val result = ApplicationClass.shareApi.addBookmark(Bookmark(boardId!!, ApplicationClass.prefs.getId())).awaitResponse().body()
                 if(result?.flag == "success") {
                     binding.bookmark = true
                     binding.article!!.bookmarkCnt++
@@ -130,7 +123,7 @@ class ShareDetailActivity : AppCompatActivity(){
         }
         CoroutineScope(Dispatchers.Main).launch {
             // 먼저 채팅방이 존재하는지 확인하기
-            val isExist = ApplicationClass.retrofitChatService.isExistChatroom(boardId!!,
+            val isExist = ApplicationClass.chatApi.isExistChatroom(boardId!!,
                 Common.BOARD_TYPE_SHARE, ApplicationClass.prefs.getId()).awaitResponse().body()
             if(isExist?.flag == "success" ) { // 이미 채팅방이 존재함
                 Log.d(TAG, "onChatBtnClick: 채팅방 이미 존재")
@@ -153,7 +146,7 @@ class ShareDetailActivity : AppCompatActivity(){
                 val chatRoom = Chatroom(boardId!!, 0,  ApplicationClass.prefs.getId(), userId!!,
                     Common.BOARD_TYPE_SHARE
                 )
-                val result = ApplicationClass.retrofitChatService.createChatroom(chatRoom).awaitResponse().body()
+                val result = ApplicationClass.chatApi.createChatroom(chatRoom).awaitResponse().body()
                 if(result?.flag == "success") {
                     val fragment = supportFragmentManager.findFragmentById(R.id.share_detail_map)
                     if(fragment != null)
@@ -200,11 +193,11 @@ class ShareDetailActivity : AppCompatActivity(){
     private fun initData(){
         var count = 0
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.retrofitShareService.getBoardDetail(boardId!!).awaitResponse().body()
+            val result = ApplicationClass.shareApi.getBoardDetail(boardId!!).awaitResponse().body()
 
             // 북마크 정보 가져오기
             Log.d(TAG, "initData 북마크: boardId: $boardId, userId: ${ApplicationClass.prefs.getId()}")
-            val bookmarkResult = ApplicationClass.retrofitShareService.getShareBookmark(boardId!!, ApplicationClass.prefs.getId()).awaitResponse().body()
+            val bookmarkResult = ApplicationClass.shareApi.getShareBookmark(boardId!!, ApplicationClass.prefs.getId()).awaitResponse().body()
             if(bookmarkResult?.flag == "success") {
                 binding.bookmark = (bookmarkResult.data as List<Bookmark>)[0] != null
             } else {
@@ -229,7 +222,7 @@ class ShareDetailActivity : AppCompatActivity(){
 
 
                 // 해당 글을 작성한 작성자 데이터 가져오기
-                val userResult = ApplicationClass.retrofitUserService.getUserDetail(result.data[0].userId).awaitResponse().body()
+                val userResult = ApplicationClass.userApi.getUserDetail(result.data[0].userId).awaitResponse().body()
                 Log.d(TAG, "initData: @@@@@@@@공유글 작성자: ${result.data[0].userId}, ${result.data[0]}")
                 otherUserId = result.data[0].userId
                 if(userResult?.flag == "success") {
@@ -293,8 +286,9 @@ class ShareDetailActivity : AppCompatActivity(){
                 Toast.makeText(this@ShareDetailActivity, "불러올 수 없는 게시글입니다.", Toast.LENGTH_SHORT).show()
                 finish()
             }
+            isReady = true // 데이터 모두 준비된경우
         }
-        isReady = true // 데이터 모두 준비된경우
+
     } // end of initData()
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -324,12 +318,12 @@ class ShareDetailActivity : AppCompatActivity(){
                     override fun onYesButtonClick(id: String) {
                         // 대여중, 예약중인 경우 삭제 불가능하게 하기
                         CoroutineScope(Dispatchers.Main).launch {
-                            val stateResult = ApplicationClass.retrofitAppointmentService.getIsSharing(boardId!!, BOARD_TYPE_SHARE).awaitResponse().body()
+                            val stateResult = ApplicationClass.appointmentApi.getIsSharing(boardId!!, BOARD_TYPE_SHARE).awaitResponse().body()
                             if(stateResult?.flag == "success") {
                                 if (stateResult.data[0].boardId == boardId) { // 이미 있어서 삭제 불가!
                                     Toast.makeText(this@ShareDetailActivity, "공유중인 게시글이어서 삭제가 불가합니다.", Toast.LENGTH_SHORT).show()
                                 } else { // 게시글 삭제 시작
-                                    val result = ApplicationClass.retrofitShareService.deleteShareBoard(boardId!!).awaitResponse().body()
+                                    val result = ApplicationClass.shareApi.deleteShareBoard(boardId!!).awaitResponse().body()
                                     if(result?.flag == "success") { // 삭제 성공
                                         Toast.makeText(this@ShareDetailActivity, "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
                                         val intent = Intent(this@ShareDetailActivity, MainActivity::class.java)
@@ -359,12 +353,16 @@ class ShareDetailActivity : AppCompatActivity(){
 
     override fun onStart() {
         super.onStart()
-        GlobalScope.launch() {
+        // 꽉 찬 화면으로 다이얼로그 생성
+        val loadingDialog = FullProgressDialog(this@ShareDetailActivity)
+        loadingDialog.show(supportFragmentManager, "ShareDetailLoading")
+        CoroutineScope(Dispatchers.Main).launch() {
             while(!isReady) {
                 delay(500)
             }
             Log.d(TAG, "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@onStart: isReady = true")
             binding.contentContainer.visibility = View.VISIBLE
+            loadingDialog.dismiss()
         }
     }
 }

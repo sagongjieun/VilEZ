@@ -14,7 +14,6 @@ import kr.co.vilez.data.dto.BoardData
 import kr.co.vilez.databinding.ImminentListItemBinding
 import kr.co.vilez.ui.chat.ChatRoomActivity
 import kr.co.vilez.util.ApplicationClass
-import kr.co.vilez.util.Common.Companion.BOARD_TYPE_SHARE
 import retrofit2.awaitResponse
 
 private const val TAG = "빌리지_ImminentAdapter"
@@ -39,13 +38,13 @@ RecyclerView.Adapter<ImminentAdapter.ShareHolder>(){
             binding.root.setOnClickListener {
                 val intent = Intent(binding.root.context, ChatRoomActivity::class.java)
                 CoroutineScope(Dispatchers.Main).launch {
-                    val result = ApplicationClass.retrofitChatService.isExistChatroom(item.boardId, item.type, ApplicationClass.prefs.getId()).awaitResponse().body()
+                    val result = ApplicationClass.chatApi.isExistChatroom(item.boardId, item.type, ApplicationClass.prefs.getId()).awaitResponse().body()
                     Log.d(TAG, "bindingInfo: @@@@@@@@@@@@@@imminent result: $result")
                     if(result?.flag == "success") {
                         // 무조건 내가 빌리니까 내가 피공유자 => notShareUserId
                         intent.putExtra("roomId", result.data[0].id)
                         intent.putExtra("otherUserId", result.data[0].shareUserId) // shareUserId가 공유자
-                        val otherUser = ApplicationClass.retrofitUserService.getUserDetail(result.data[0].shareUserId).awaitResponse().body()
+                        val otherUser = ApplicationClass.userApi.getUserDetail(result.data[0].shareUserId).awaitResponse().body()
                         if(otherUser?.flag == "success") {
                             intent.putExtra("nickName", otherUser.data[0].nickName) // 채팅 상대의 닉네임
                             intent.putExtra("profile", otherUser.data[0].profile_img) // 채팅 상대의 프로필 이미지

@@ -22,6 +22,7 @@ import kr.co.vilez.data.dto.WriteBoard
 import kr.co.vilez.databinding.ActivityShareWriteBinding
 import kr.co.vilez.service.RESTShareBoardDetail
 import kr.co.vilez.ui.ask.AskDetailActivity
+import kr.co.vilez.ui.dialog.ProgressDialog
 import kr.co.vilez.ui.share.ShareDetailActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.ChangeMultipartUtil
@@ -103,7 +104,7 @@ class ShareWriteActivity : AppCompatActivity() {
         when(type) {
             BOARD_TYPE_SHARE -> {
                 CoroutineScope(Dispatchers.Main).launch {
-                    val result = ApplicationClass.retrofitShareService.getBoardDetail(editBoardId).awaitResponse().body()
+                    val result = ApplicationClass.shareApi.getBoardDetail(editBoardId).awaitResponse().body()
                     if(result?.flag == "success") { // 기존 데이터 불러오기 성공
                         val detail = result.data[0]
                         Log.d(TAG, "initEditView: 기존 데이터 불러오기 성공 : result: $detail")
@@ -128,7 +129,7 @@ class ShareWriteActivity : AppCompatActivity() {
             }
             BOARD_TYPE_ASK -> {
                 CoroutineScope(Dispatchers.Main).launch {
-                    val result = ApplicationClass.retrofitAskService.getBoardDetail(editBoardId).awaitResponse().body()
+                    val result = ApplicationClass.askApi.getBoardDetail(editBoardId).awaitResponse().body()
                     if(result?.flag == "success") { // 기존 데이터 불러오기 성공
                         val detail = result.data[0]
                         Log.d(TAG, "initEditView: 기존 데이터 불러오기 성공 : result: $detail")
@@ -302,10 +303,11 @@ class ShareWriteActivity : AppCompatActivity() {
     }
 
     fun savePost(view: View) {
+        Log.d(TAG, "savePost: 완료버튼 클릭)")
+        Toast.makeText(this@ShareWriteActivity, "완료 벝느 클릭", Toast.LENGTH_SHORT).show()
         view.isClickable = false
         view.isEnabled = false
         if (binding.etTitle.text.toString().isEmpty()) {
-            Snackbar.make(view, "제목을 입력해주세요.", Snackbar.LENGTH_SHORT).show()
         } else if (binding.etContent.text.toString().isEmpty()) {
             Snackbar.make(view, "내용을 입력해주세요.", Snackbar.LENGTH_SHORT).show();
         } else if (imgList.size < 1) {
@@ -318,6 +320,11 @@ class ShareWriteActivity : AppCompatActivity() {
             Snackbar.make(view, "희망 공유 장소를 선택해주세요.", Snackbar.LENGTH_SHORT).show()
         } else {
             Log.d(TAG, "savePost: 이제 글 POST/PUT 요청 시작하기")
+
+            // 저장중 다이얼로그 띄우기
+            val progressDialog = ProgressDialog(this@ShareWriteActivity, "게시글을 저장하고 있습니다.")
+            progressDialog.isCancelable = false // 임의로 닫을 수 없다
+            progressDialog.show(supportFragmentManager, "BoardPostStart")
 
             // 이미지 리스트 multipart list에 넣기
             makeMultiPartList()
@@ -334,18 +341,20 @@ class ShareWriteActivity : AppCompatActivity() {
                     CoroutineScope(Dispatchers.Main).launch {
                         val result = if(editBoardId != 0) {
                             Log.d(TAG, "savePost: 수정 시작합니닷 editBoardId: $editBoardId , 수정한 보드 정보 : $writeBoard")
-                            ApplicationClass.retrofitShareService.putShareBoard(writeBoard, imgMultiPart).awaitResponse().body()
+                            ApplicationClass.shareApi.putShareBoard(writeBoard, imgMultiPart).awaitResponse().body()
                         } else {
-                            ApplicationClass.retrofitShareService.postShareBoard(writeBoard, imgMultiPart).awaitResponse().body()
+                            ApplicationClass.shareApi.postShareBoard(writeBoard, imgMultiPart).awaitResponse().body()
                         }
                         Log.d(TAG, "savePost: 게시글 작성/수정 결과 : $result")
 
                         if(result?.flag == "success") {
+                            progressDialog.dismiss()
                             Toast.makeText(this@ShareWriteActivity, if(editBoardId!=0) "게시글 수정을 완료했습니다." else "게시글 작성을 완료했습니다.", Toast.LENGTH_SHORT).show()
                             val boardId = if(editBoardId != 0) editBoardId else result.data[0].id
                             Log.d(TAG, "savePost: 작성/수정 성공!!!! 새로 작성/수정된 게시글 id: ${boardId}")
                             moveToDetailActivity(BOARD_TYPE_SHARE, boardId) // 게시글 상세보기로 이동
                         } else {
+                            progressDialog.dismiss()
                             Toast.makeText(this@ShareWriteActivity, if(editBoardId!=0) "게시글 수정을 실패했습니다." else "게시글 작성을을 실패했습니다.", Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -354,18 +363,20 @@ class ShareWriteActivity : AppCompatActivity() {
                     CoroutineScope(Dispatchers.Main).launch {
                         val result = if(editBoardId != 0) {
                             Log.d(TAG, "savePost: 수정 시작합니닷 editBoardId: $editBoardId , 수정한 보드 정보 : $writeBoard")
-                            ApplicationClass.retrofitAskService.putBoard(writeBoard, imgMultiPart).awaitResponse().body()
+                            ApplicationClass.askApi.putBoard(writeBoard, imgMultiPart).awaitResponse().body()
                         } else {
                             Log.d(TAG, "savePost: 게시글 작성 시작한닷")
-                            ApplicationClass.retrofitAskService.postBoard(writeBoard, imgMultiPart).awaitResponse().body()
+                            ApplicationClass.askApi.postBoard(writeBoard, imgMultiPart).awaitResponse().body()
                         }
                         Log.d(TAG, "savePost: 게시글 작성/수정 결과 : $result")
                         if(result?.flag == "success") {
+                            progressDialog.dismiss()
                             Toast.makeText(this@ShareWriteActivity, if(editBoardId!=0) "게시글 수정을 완료했습니다." else "게시글 작성을 완료했습니다.", Toast.LENGTH_SHORT).show()
                             val boardId = if(editBoardId != 0) editBoardId else result.data[0].id
                             Log.d(TAG, "savePost: 작성/수정 성공!!!! 새로 작성/수정된 게시글 id: ${boardId}")
                             moveToDetailActivity(BOARD_TYPE_ASK, boardId) // 게시글 상세보기로 이동
                         } else {
+                            progressDialog.dismiss()
                             Toast.makeText(this@ShareWriteActivity, if(editBoardId!=0) "게시글 수정을 실패했습니다." else "게시글 작성을을 실패했습니다.", Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -393,6 +404,7 @@ class ShareWriteActivity : AppCompatActivity() {
         }
         intent?.putExtra("userId", ApplicationClass.prefs.getId())
         intent?.putExtra("boardId", boardId)
+
         startActivity(intent)
         finish()
     }

@@ -63,7 +63,7 @@ class PointFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun initData() {
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.hRetrofitAppointmentService.getPointList(ApplicationClass.prefs.getId()).awaitResponse().body()
+            val result = ApplicationClass.hAppointmentApi.getPointList(ApplicationClass.prefs.getId()).awaitResponse().body()
             Log.d(TAG, "initData: 포인트 리스트 개수 : ${result?.data?.get(0)?.size}")
             if(result?.flag=="success") {
                 for( i in 0 until result.data[0].size) {

@@ -98,9 +98,8 @@ class HopePlaceFragment : Fragment(), MapView.MapViewEventListener,
     }
 
     fun onConfirmClicked(view: View) {
-        Log.d(TAG, "onConfirmClicked: ㅁㄴㅇㄹ")
         if(addr == null) {
-            Snackbar.make(view, "희망 공유 장소를 선택해서 마커를 찍어주세요.", Snackbar.LENGTH_SHORT).show()
+            Toast.makeText(activity, "희망 공유 장소를 선택해서 마커를 찍어주세요.", Toast.LENGTH_SHORT).show()
         } else { // 선택한 주소 담아서 게시글 작성 액티비티로 보내기
             listener.setAddress(addr!!)
             //Snackbar.make(view, "선택한 주소: ${addr}", Snackbar.LENGTH_SHORT).show()
@@ -283,7 +282,7 @@ class HopePlaceFragment : Fragment(), MapView.MapViewEventListener,
         }
         mapView.addPOIItem(marker)
         Log.d(TAG, "onReverseGeoCoderFailedToFindAddress: 주소변환실패")
-        Toast.makeText(activity, "현재 위치에 해당하는 주소를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(activity, "현재 위치에 해당하는 주소를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
     }
 
 }

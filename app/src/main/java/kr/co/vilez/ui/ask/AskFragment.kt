@@ -113,7 +113,7 @@ class AskFragment : Fragment() {
         var num = 0
         var max = 10
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.retrofitAskService.boardList(num++, 0, max, ApplicationClass.prefs.getId()).awaitResponse().body()
+            val result = ApplicationClass.askApi.boardList(num++, 0, max, ApplicationClass.prefs.getId()).awaitResponse().body()
             Log.d(TAG, "initData: result: $result")
             if (result?.flag == "success") {
                 Log.d(TAG, "initList: result: $result")
@@ -145,7 +145,7 @@ class AskFragment : Fragment() {
         binding.rv.setOnScrollChangeListener { v, _, _, _, _ ->
             if (!v.canScrollVertically(1)) {
                 CoroutineScope(Dispatchers.Main).launch {
-                    val result = ApplicationClass.retrofitAskService.boardList(num++, 0, max, ApplicationClass.prefs.getId()).awaitResponse().body()
+                    val result = ApplicationClass.askApi.boardList(num++, 0, max, ApplicationClass.prefs.getId()).awaitResponse().body()
                     Log.d(TAG, "initData: result: $result")
                     if (result?.flag == "success") {
                         Log.d(TAG, "initList: result: $result")
