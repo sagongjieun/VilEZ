@@ -165,20 +165,8 @@ const Map = ({
   }
 
   useEffect(() => {
-    if (hopeAreaLat && hopeAreaLng) {
-      initMap();
-      makeRectangle();
-      const latlng = new kakao.maps.LatLng(hopeAreaLat, hopeAreaLng);
-      console.log(latlng);
-
-      marker.setPosition(latlng);
-      marker.setMap(map);
-    }
-  }, [hopeAreaLat, hopeAreaLng]);
-
-  useEffect(() => {
     initMap();
-    // geolocationMap();
+
     if (path === "regist") {
       makeRectangle();
     }
@@ -190,6 +178,22 @@ const Map = ({
       eventSetMarker();
     }
   }, []);
+
+  /** 게시글 수정에서 쓰이는 map */
+  useEffect(() => {
+    if (hopeAreaLat && hopeAreaLng) {
+      initMap();
+      makeRectangle();
+      const latlng = new kakao.maps.LatLng(hopeAreaLat, hopeAreaLng);
+
+      marker.setPosition(latlng);
+      marker.setMap(map);
+
+      eventDragEnd();
+      eventZoomChanged();
+      eventSetMarker();
+    }
+  }, [hopeAreaLat, hopeAreaLng]);
 
   /** 지도 데이터 보내기 */
   useEffect(() => {
