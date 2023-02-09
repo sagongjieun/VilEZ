@@ -72,8 +72,10 @@ async function putAskArticle(formData) {
   try {
     const { data } = await formdataAxios.put(`/askboard`, formData);
 
-    if (data.flag === "success") alert("수정되었습니다 😀");
-    else alert("요청 글 수정에 실패하였습니다 😥");
+    if (data.flag === "success") {
+      alert("수정되었습니다 😀");
+      return data.data;
+    } else alert("요청 글 수정에 실패하였습니다 😥");
   } catch (error) {
     console.log(error);
   }
