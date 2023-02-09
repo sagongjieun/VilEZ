@@ -6,7 +6,7 @@ import { postOath } from "../../api/oath";
 import MiddleWideButton from "../button/MiddleWideButton";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { shareDataState, checkAppointmentState } from "../../recoil/atom";
-import { getUserDetail } from "../../api/profile";
+import { getUserDetail } from "../../api/user";
 
 // https://stackblitz.com/edit/react-signature-canvas-demo?file=index.js
 function OathModal({ close, roomId, readOnly, oathSign }) {

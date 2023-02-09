@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
-// import { getUserShare, getUserAsk } from "../../api/profile";
 import ProfileCardView from "./MyBoxCardView";
 import { getMyShareAppointments } from "../../api/appointment";
 

@@ -14,9 +14,9 @@ import bookmarkCancel from "../../assets/images/bookmarkCancel.png";
 import { getUserDetail } from "../../api/user";
 import MannerPoint from "../common/MannerPoint";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { postChatRoom } from "../../api/chat";
+import { postChatRoom } from "../../api/appointment";
 import { getAskArticleDetailByBoardId } from "../../api/ask";
-import { getCheckMyRoom } from "../../api/chat";
+import { getCheckMyRoom } from "../../api/appointment";
 
 const ProductDetail = () => {
   const navigate = useNavigate();
@@ -139,12 +139,9 @@ const ProductDetail = () => {
     if (writerId) {
       getUserDetail(writerId)
         .then((res) => {
-          const data = res[0];
-
-          setWriterProfile(data.profile_img);
-          setWriterNickname(data.nickName);
-          // setWriterArea(data.area);
-          setWriterManner(MannerPoint(data.manner));
+          setWriterProfile(res.profile_img);
+          setWriterNickname(res.nickName);
+          setWriterManner(MannerPoint(res.manner));
         })
         .catch((error) => console.log(error));
     }

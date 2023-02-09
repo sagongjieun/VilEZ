@@ -6,7 +6,7 @@ import ProfileSummary from "./ProfileSummary";
 import ProfileLocation from "./ProfileLocation";
 import ProfilePoint from "./ProfilePoint";
 import ProfileDday from "./ProfileDday";
-import { getUserDetail } from "../../api/profile";
+import { getUserDetail } from "../../api/user";
 
 // const { kakao } = window;
 const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpen, isEditProfileOpen }) => {

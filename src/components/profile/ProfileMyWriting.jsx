@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
-import { getUserShare, getUserAsk } from "../../api/profile";
+import { getUserAsk } from "../../api/ask";
+import { getUserShare } from "../../api/share";
 import ProfileCardView from "./ProfileCardView";
 
 // const id = localStorage.getItem("id");

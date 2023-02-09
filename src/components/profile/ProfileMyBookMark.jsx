@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
-import { getUserBookMark } from "../../api/profile";
+import { getUserBookMark } from "../../api/share";
 import ProfileCardView from "./ProfileCardView";
 
 const ProfileMyBookMark = (props) => {
