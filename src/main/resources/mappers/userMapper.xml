@@ -27,6 +27,11 @@
         <result column="lat" property="area_lat"/>
     </resultMap>
 
+    <update id="setRefreshToken" parameterType="userDto" >
+        update user
+        set refresh_token = #{refreshToken}
+        where id = #{id};
+    </update>
     <update id="modifyPassword" parameterType="string" >
         update user
         set password = #{password}
