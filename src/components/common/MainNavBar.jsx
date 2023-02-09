@@ -12,7 +12,7 @@ import { requsetLogout } from "../../api/user";
 
 function MainNavBar() {
   const navigate = useNavigate();
-  const userId = localStorage.getItem("id");
+
   const nickName = localStorage.getItem("nickName");
   const profileImg = localStorage.getItem("profileImg");
   const [loginUser, setLoginUser] = useRecoilState(loginUserState);
