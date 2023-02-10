@@ -22,7 +22,7 @@ const ProfileMyBookMark = (props) => {
   }, [myBookMarkBoard]);
   return (
     <div css={cardWrapper(props.bookMarkPages)}>
-      {myBookMarkBoard ? (
+      {myBookMarkBoard && myBookMarkBoard.length ? (
         myBookMarkBoard.map((bookMarkData) => {
           const share = bookMarkData.shareListDto;
 
