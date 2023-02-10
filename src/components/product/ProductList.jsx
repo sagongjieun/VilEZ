@@ -2,39 +2,25 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import DivideLine from "../../components/common/DivideLine";
-
 import ProductCategory from "./ProductCategory";
 import { useState, useEffect } from "react";
 import NoProductList from "./NoProductList";
 import { getShareArticleList } from "../../api/share";
-
 import { HiCalendar } from "react-icons/hi";
 import { HiHeart } from "react-icons/hi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getAskArticleList } from "../../api/ask";
-
-// import { getUserDetail } from "../../api/user";
 import elapsedTime from "./ProductElapsedTime";
+import MiddleWideButton from "./../button/MiddleWideButton";
 
 const ProductList = () => {
-  // detail api에서 userId 받아오면, 동네인증 한 경우 위도 경도가 존재. 이를 recoil에 넣어 상태관리
-
   const userId = localStorage.getItem("id");
-
-  // isAll이 새로고침시마다 바껴있어야 공유가능 물품 조건 유지 가능
-  const [isAll, setIsAll] = useState(localStorage.getItem("isAll") === "false" ? false : true);
-  // console.log(isAll);
-  useEffect(() => {
-    localStorage.setItem("isAll", isAll);
-  }, [isAll]);
-
+  const [isAll, setIsAll] = useState(true);
   const [category, setCategory] = useState("");
   const [search, setSearch] = useState("");
-  // 공유 글
-  const [getArticle, setArticles] = useState([]);
-  // 요청 글
-  const [askArticles, setAskArticles] = useState([]);
-  const [originalArticle, setOriginalArticle] = useState([]);
+  const [getArticle, setArticles] = useState([]); // 공유 글
+  const [askArticles, setAskArticles] = useState([]); // 요청 글
+  // const [originalArticle, setOriginalArticle] = useState([]);
 
   // 무한 스크롤 관련 변수. cnt가 페이지번호를 담당, 일정 기준 이상 스크롤시 cnt 증가, 페이지 숫자가 증가하는 것
   const [cnt, setCnt] = useState(0);
@@ -76,39 +62,52 @@ const ProductList = () => {
     setCnt(0);
     window.scrollTo(0, 0);
   }, [currentTab]);
+
   useEffect(() => {
     if (currentTab !== urlId) {
       setCurrentTab(urlId);
       setArticles([]);
       setAskArticles([]);
       setCnt(0);
-      setIsAll(!false);
     }
   }, [urlId, search]);
 
   useEffect(() => {
-    urlId === 1
-      ? // 요청
+    if (isAll) {
+      if (urlId === 1) {
         getAskArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then((res) => {
           const data = res;
-          console.log(data[0]);
-          setOriginalArticle([...originalArticle, ...data[0]]);
           setAskArticles([...askArticles, ...data[0]]);
-
           setList("물품 요청 목록");
-        })
-      : // 공유
+        });
+      } else {
         getShareArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then(
           (res) => {
+            console.log(res);
             const data = res;
-            // console.log(data[1].shareListDto.state);
-            setOriginalArticle([...originalArticle, ...data]);
             setArticles([...getArticle, ...data]);
-            console.log(getArticle);
-            // console.log(originalArticle[1].shareListDto);
             setList("물품 공유 목록");
           }
         );
+      }
+    } else {
+      if (urlId === 1) {
+        getAskArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then((res) => {
+          const data = res.filter((article) => article.askDto && article.askDto.state === 0);
+          setAskArticles([...askArticles, ...data[0]]);
+          setList("물품 요청 목록");
+        });
+      } else {
+        getShareArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then(
+          (res) => {
+            console.log(res);
+            const data = res.filter((article) => article.shareListDto && article.shareListDto.state === 0);
+            setArticles([...getArticle, ...data]);
+            setList("물품 공유 목록");
+          }
+        );
+      }
+    }
   }, [urlId, isAll, cnt, categoryToUse]);
 
   function onClickSeePossible() {
@@ -116,25 +115,8 @@ const ProductList = () => {
     setCnt(0);
     setArticles([]);
     setAskArticles([]);
-    setOriginalArticle([]);
+    console.log(isAll);
   }
-
-  // 공유가능 목록 보기위해 작성한 useEffect 0일때 공유가능, 1일때 공유 중
-  useEffect(() => {
-    if (isAll) {
-      setArticles(originalArticle);
-    } else {
-      if (urlId === 2) {
-        const modifyShareArticle = originalArticle.filter(
-          (article) => article.shareListDto && article.shareListDto.state === 1
-        );
-        setArticles(modifyShareArticle);
-      } else {
-        const modifyAskArticle = originalArticle.filter((article) => article.askDto && article.askDto.state === 1);
-        setArticles(modifyAskArticle);
-      }
-    }
-  }, [isAll, originalArticle, cnt]);
 
   // props에서 받아온 값이 newCategory에 들어감
   // setCategory에 넘어온 값을 입력
@@ -143,18 +125,18 @@ const ProductList = () => {
     setCnt(0);
     setArticles([]);
     setAskArticles([]);
-    setOriginalArticle([]);
+    // setOriginalArticle([]);
   }
 
   // 검색 후, 지웠을 때 이전 검색이 리스트에 쌓이는 것을 방지
   // 스크롤이 내려가서 cnt가 변했을 때, 검색을 하면 그 페이지를 기준으로 해서 문제를 해결함
-  function onChangeSearch(event) {
-    if (event.key === "Enter") {
-      setSearch(event.target.value);
+  function onChangeSearch(e) {
+    if (e.keyCode === 13) {
       setArticles([]);
       setAskArticles([]);
-      setOriginalArticle([]);
+      // setOriginalArticle([]);
       setCnt(0);
+
       urlId === 2
         ? getShareArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then(
             (res) => {
@@ -170,10 +152,12 @@ const ProductList = () => {
               setList("물품 공유 목록");
             }
           );
+
+      setSearch("");
     }
   }
+
   function onClicktoRegist() {
-    // urlid
     navigate("/product/regist", { state: { type: urlId } });
   }
 
@@ -193,22 +177,25 @@ const ProductList = () => {
                 type="text"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                onKeyDown={onChangeSearch}
+                onKeyDown={(e) => onChangeSearch(e)}
               />
               <img src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
             </div>
-
-            <div onClick={onClickSeePossible} css={isAll ? possibleWrap : unPossibleWrap}>
-              공유가능한 물품만 보기
-            </div>
+            {isAll ? (
+              <div onClick={onClickSeePossible} css={possibleWrap}>
+                공유가능한 물품만 보기
+              </div>
+            ) : (
+              <div onClick={onClickSeePossible} css={unPossibleWrap}>
+                공유가능한 물품만 보기
+              </div>
+            )}
           </div>
         </div>
         <DivideLine />
 
         <div css={buttonDiv}>
-          <button css={buttonWrap} onClick={onClicktoRegist}>
-            물품 등록
-          </button>
+          <MiddleWideButton text={"물품 등록"} onclick={onClicktoRegist} />
         </div>
 
         {urlId === 2 ? (
@@ -348,25 +335,10 @@ const unPossibleWrap = css`
 `;
 
 const buttonDiv = css`
-  width: 100%;
-  /* display: inline-block; */
+  width: 200px;
   display: flex;
-  justify-content: flex-end;
-`;
-
-const buttonWrap = css`
-  width: 10%;
-  position: relative;
-  margin-top: 25px;
-  margin-bottom: 40px;
-  cursor: pointer;
-  display: block;
-  height: 35px;
-  border: none;
-  border-radius: 5px;
-  font-size: 12px;
-  background-color: #66dd9c;
-  color: white;
+  float: right;
+  margin-bottom: 20px;
 `;
 
 const relatedProductWrapper = css`
@@ -436,7 +408,7 @@ const infoWrapper = css`
 `;
 
 const NoProductWrap = css`
-  height: 250px;
+  margin: 100px 0;
 `;
 
 export default ProductList;

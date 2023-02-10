@@ -76,6 +76,16 @@ const goCntZero = atom({
   default: 0,
 });
 
+const mainSearchTextState = atom({
+  key: "mainSearchTextState",
+  default: "",
+});
+
+const chatListState = atom({
+  key: "chatListState",
+  default: null,
+});
+
 export {
   loginUserState,
   shareDataState,
@@ -89,4 +99,6 @@ export {
   checkShareReturnState,
   checkUserLeaveState,
   goCntZero,
+  mainSearchTextState,
+  chatListState,
 };
