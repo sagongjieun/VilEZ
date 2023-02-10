@@ -81,6 +81,14 @@ const ProductRegist = () => {
   }
 
   function onClickRegistButton() {
+    let myPoint = localStorage.getItem("point");
+    myPoint = parseInt(myPoint);
+
+    if (myPoint < 0) {
+      alert("포인트가 부족해요. 다른 사람에게 물건을 공유해주고 포인트를 얻어봐요 😀");
+      return;
+    }
+
     // 유효성 검사
     if (registType === "선택해주세요.") {
       alert("공유할 지 요청할 지 선택해주셔야해요.");
