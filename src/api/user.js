@@ -60,6 +60,8 @@ async function postLogin(email, password) {
         localStorage.setItem("nickName", res.nickName);
         localStorage.setItem("profileImg", res.profileImg);
         localStorage.setItem("point", res.point);
+        localStorage.setItem("areaLat", res.areaLat);
+        localStorage.setItem("areaLng", res.areaLng);
 
         return data.data;
       }

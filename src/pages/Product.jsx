@@ -14,7 +14,7 @@ const Product = () => {
 
   useEffect(() => {
     // 동네 인증이 안됐으면 Product관련 페이지 이용 불가
-    if (!areaLat || !areaLng) {
+    if (areaLat == null || areaLng == null) {
       alert("빌리지를 이용하시려면 동네 인증을 해주셔야해요.");
       navigate(`/profile/product`);
     }
