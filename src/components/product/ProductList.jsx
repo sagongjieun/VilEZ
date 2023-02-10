@@ -11,23 +11,15 @@ import { HiHeart } from "react-icons/hi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getAskArticleList } from "../../api/ask";
 import elapsedTime from "./ProductElapsedTime";
-import { useRecoilValue } from "recoil";
-import { mainSearchTextState } from "../../recoil/atom";
+import MiddleWideButton from "./../button/MiddleWideButton";
 
 const ProductList = () => {
-  // detail api에서 userId 받아오면, 동네인증 한 경우 위도 경도가 존재. 이를 recoil에 넣어 상태관리
-
   const userId = localStorage.getItem("id");
-
-  // isAll이 새로고침시마다 바껴있어야 공유가능 물품 조건 유지 가능
   const [isAll, setIsAll] = useState(true);
-
   const [category, setCategory] = useState("");
   const [search, setSearch] = useState("");
-  // 공유 글
-  const [getArticle, setArticles] = useState([]);
-  // 요청 글
-  const [askArticles, setAskArticles] = useState([]);
+  const [getArticle, setArticles] = useState([]); // 공유 글
+  const [askArticles, setAskArticles] = useState([]); // 요청 글
   // const [originalArticle, setOriginalArticle] = useState([]);
 
   // 무한 스크롤 관련 변수. cnt가 페이지번호를 담당, 일정 기준 이상 스크롤시 cnt 증가, 페이지 숫자가 증가하는 것
@@ -38,15 +30,6 @@ const ProductList = () => {
   const urlId = pathname.includes("share") ? 2 : 1;
   const [list, setList] = useState("");
   const categoryToUse = category === "전체" ? "" : category;
-
-  const mainSearchText = useRecoilValue(mainSearchTextState);
-
-  useEffect(() => {
-    if (mainSearchText !== "") {
-      setSearch(mainSearchText);
-      onChangeSearch(mainSearchText);
-    }
-  }, [mainSearchText]);
 
   // 무한 스크롤 관련
   useEffect(() => {
@@ -79,6 +62,7 @@ const ProductList = () => {
     setCnt(0);
     window.scrollTo(0, 0);
   }, [currentTab]);
+
   useEffect(() => {
     if (currentTab !== urlId) {
       setCurrentTab(urlId);
@@ -146,8 +130,8 @@ const ProductList = () => {
 
   // 검색 후, 지웠을 때 이전 검색이 리스트에 쌓이는 것을 방지
   // 스크롤이 내려가서 cnt가 변했을 때, 검색을 하면 그 페이지를 기준으로 해서 문제를 해결함
-  function onChangeSearch(search) {
-    if (window.event.keyCode == 13) {
+  function onChangeSearch(e) {
+    if (e.keyCode === 13) {
       setArticles([]);
       setAskArticles([]);
       // setOriginalArticle([]);
@@ -172,8 +156,8 @@ const ProductList = () => {
       setSearch("");
     }
   }
+
   function onClicktoRegist() {
-    // urlid
     navigate("/product/regist", { state: { type: urlId } });
   }
 
@@ -193,7 +177,7 @@ const ProductList = () => {
                 type="text"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                onKeyDown={() => onChangeSearch(search)}
+                onKeyDown={(e) => onChangeSearch(e)}
               />
               <img src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
             </div>
@@ -211,9 +195,7 @@ const ProductList = () => {
         <DivideLine />
 
         <div css={buttonDiv}>
-          <button css={buttonWrap} onClick={onClicktoRegist}>
-            물품 등록
-          </button>
+          <MiddleWideButton text={"물품 등록"} onclick={onClicktoRegist} />
         </div>
 
         {urlId === 2 ? (
@@ -353,25 +335,10 @@ const unPossibleWrap = css`
 `;
 
 const buttonDiv = css`
-  width: 100%;
-  /* display: inline-block; */
+  width: 200px;
   display: flex;
-  justify-content: flex-end;
-`;
-
-const buttonWrap = css`
-  width: 10%;
-  position: relative;
-  margin-top: 25px;
-  margin-bottom: 40px;
-  cursor: pointer;
-  display: block;
-  height: 35px;
-  border: none;
-  border-radius: 5px;
-  font-size: 12px;
-  background-color: #66dd9c;
-  color: white;
+  float: right;
+  margin-bottom: 20px;
 `;
 
 const relatedProductWrapper = css`
@@ -441,7 +408,7 @@ const infoWrapper = css`
 `;
 
 const NoProductWrap = css`
-  height: 250px;
+  margin: 100px 0;
 `;
 
 export default ProductList;

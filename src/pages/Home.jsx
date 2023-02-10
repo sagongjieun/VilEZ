@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Animated } from "react-animated-css";
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
@@ -8,28 +8,13 @@ import secondbodyimg from "../assets/images/secondbodyimg.png";
 import thirdbodyimg from "../assets/images/thirdbodyimg.png";
 import mapimg from "../assets/images/mapimg.png";
 import chatimg from "../assets/images/chatimg.png";
-import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
-import { locationState, mainSearchTextState } from "../recoil/atom";
+import { locationState } from "../recoil/atom";
 import { getUserDetail } from "../api/user";
 
 function MainBody() {
-  const [search, setSearch] = useState("");
-  const navigate = useNavigate();
   const userId = localStorage.getItem("id");
-  const setLocation = useSetRecoilState(locationState); // 어떤 변수가 상태를 담을 수 있는 그릇을 만들어 줌
-  const setMainSearchText = useSetRecoilState(mainSearchTextState);
-
-  const onChangeSearch = (e) => {
-    setSearch(e.target.value);
-  };
-
-  const onKeyPresssearch = (e) => {
-    if (e.keyCode == 13) {
-      setMainSearchText(search);
-      navigate("/product/list/share");
-    }
-  };
+  const setLocation = useSetRecoilState(locationState);
 
   useEffect(() => {
     if (userId) {
@@ -51,18 +36,6 @@ function MainBody() {
             <div css={FirstBodyDiv}>공유마을 빌리지.</div>
           </div>
         </Animated>
-        <div css={InputWrap}>
-          <input
-            type="text"
-            placeholder="공유하고 싶은 물품을 검색해보세요."
-            css={InputBox}
-            value={search}
-            onChange={onChangeSearch}
-            onKeyDown={onKeyPresssearch}
-          />
-        </div>
-        {/* 애니메이션 넣어야 함 */}
-        {/* animate__slideInDown */}
         <div css={ArrowBox}>
           <a href="#movebottom">
             <img src={mainarrow} alt="" />
@@ -128,7 +101,7 @@ const FirstWrap = css`
 
 const FirstBodyWrap = css`
   width: 100%;
-  height: 700px;
+  height: 550px;
   background-image: url(${mainBackgroundImage});
   background-size: cover;
 `;
@@ -144,28 +117,8 @@ const FirstBodyDiv = css`
   padding: 10px;
 `;
 
-const InputWrap = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 90px;
-`;
-
-const InputBox = css`
-  display: block;
-  height: 85px;
-  width: 750px;
-  border-radius: 20px;
-  line-height: 85px;
-  padding: 0 30px;
-  font-size: 25px;
-  outline: none;
-  border: 1px solid #e1e2e3;
-  font-size: 20px;
-`;
-
 const floating = keyframes`
-  {
+  0% {
       transform: translateY(0);
   }
   50% {
