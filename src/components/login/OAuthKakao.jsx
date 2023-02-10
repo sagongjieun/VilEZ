@@ -15,6 +15,7 @@ const OAuthKakao = () => {
     requestKakaoLogin(code).then((response) => {
       const resData = response[0];
       console.log("***************");
+      console.log("###################", resData);
       localStorage.setItem("accessToken", resData.accessToken);
       localStorage.setItem("refreshToken", resData.refreshToken);
       localStorage.setItem("id", resData.id);

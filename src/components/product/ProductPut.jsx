@@ -175,6 +175,7 @@ const ProductPut = () => {
             hopeAreaLng: hopeAreaLng,
             startDay: startDay,
             title: title,
+            address: location,
           }),
         ],
         { type: "application/json" }
