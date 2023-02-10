@@ -254,7 +254,13 @@
             and share_user_id = #{shareUserId} and not_share_user_id = #{notShareUserId}
             and state = 0
     </select>
-
+    <select id="checkRoom3" parameterType="int" resultMap="room">
+        SELECT *
+        from room
+        where board_id = #{boardId} and type = #{type}
+          and share_user_id = #{shareUserId} and not_share_user_id = #{notShareUserId}
+          and state = 0
+    </select>
     <select id="getRoomListByBoardId" parameterType="int" resultMap="room">
         SELECT *
         from room
