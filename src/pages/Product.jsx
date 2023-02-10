@@ -24,7 +24,7 @@ const Product = () => {
     else if (areaLat == "null" || areaLng == "null" || areaLat == "undefined" || areaLng == "undefined") {
       if (nickName.includes("#")) {
         alert("빌리지를 이용하시려면 닉네임을 변경하셔야 해요.");
-        navigate(`/socialnickname`);
+        navigate(`/socialnickname`, { state: { url: "/profile/product" } });
       } else {
         alert("빌리지를 이용하시려면 동네 인증을 해주셔야해요.");
         navigate(`/profile/product`);
