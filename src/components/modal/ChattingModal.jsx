@@ -1,21 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import ChattingModalItem from "./ChattingModalItem";
-import { getLatestChattingListByUserId } from "../../api/appointment";
+import { chatListState } from "../../recoil/atom";
+import { useRecoilValue } from "recoil";
 
 function ChattingModal() {
   const loginUserId = localStorage.getItem("id");
 
-  const [chatList, setChatList] = useState([]);
+  const chatList = useRecoilValue(chatListState);
 
   useEffect(() => {
     if (loginUserId) {
-      getLatestChattingListByUserId(loginUserId).then((res) => {
-        if (res) {
-          setChatList(res);
-        }
-      });
+      console.log("ddddddd");
     }
   }, []);
 
