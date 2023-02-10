@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
@@ -11,7 +11,7 @@ const OAuthKakao = () => {
   const setLoginUser = useSetRecoilState(loginUserState);
   const navigate = useNavigate();
   const code = new URL(window.location.href).searchParams.get("code");
-  const nickname = localStorage.getItem("nickName");
+  const [nickname, setNickname] = useState("");
 
   function onKakaoLogin(code) {
     requestKakaoLogin(code).then((response) => {
@@ -25,6 +25,7 @@ const OAuthKakao = () => {
       localStorage.setItem("areaLat", resData.areaLat);
       localStorage.setItem("areaLng", resData.areaLng);
       localStorage.setItem("point", resData.point);
+      setNickname(resData.nickName);
 
       setLoginUser((prev) => {
         return {
@@ -38,16 +39,21 @@ const OAuthKakao = () => {
       });
     });
   }
+
   useEffect(() => {
     onKakaoLogin(code);
   }, []);
 
-  setTimeout(() => {
-    console.log("#######", nickname, typeof nickname);
-    if (nickname.includes("#")) {
-      navigate("/socialnickname");
-    } else navigate("/");
-  }, 1500);
+  useEffect(() => {
+    if (nickname !== "") {
+      setTimeout(() => {
+        console.log("#######", nickname, typeof nickname);
+        if (nickname.includes("#")) {
+          navigate("/socialnickname");
+        } else navigate("/");
+      }, 1500);
+    }
+  }, [nickname]);
 
   return (
     <div css={container}>
