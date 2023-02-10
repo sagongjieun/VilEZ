@@ -25,9 +25,10 @@ const Product = () => {
       if (nickName.includes("#")) {
         alert("빌리지를 이용하시려면 닉네임을 변경하셔야 해요.");
         navigate(`/socialnickname`);
+      } else {
+        alert("빌리지를 이용하시려면 동네 인증을 해주셔야해요.");
+        navigate(`/profile/product`);
       }
-      alert("빌리지를 이용하시려면 동네 인증을 해주셔야해요.");
-      navigate(`/profile/product`);
     }
   }, []);
 

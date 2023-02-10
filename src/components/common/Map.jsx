@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useRecoilValue } from "recoil";
-import { locationState } from "../../recoil/atom";
 
 const { kakao } = window;
 
@@ -33,7 +31,8 @@ const Map = ({
   let container, options, map;
   let marker = new kakao.maps.Marker();
 
-  const certifiedLocation = useRecoilValue(locationState);
+  const areaLat = localStorage.getItem("areaLat");
+  const areaLng = localStorage.getItem("areaLng");
 
   function initMap() {
     // 지도를 표시할 공간과 초기 중심좌표, 레벨 세팅
@@ -41,12 +40,12 @@ const Map = ({
 
     if (path === "regist" || path === "modify") {
       options = {
-        center: new kakao.maps.LatLng(certifiedLocation.areaLat, certifiedLocation.areaLng),
+        center: new kakao.maps.LatLng(areaLat, areaLng),
         level: 7,
       };
     } else {
       options = {
-        center: new kakao.maps.LatLng(certifiedLocation.areaLat, certifiedLocation.areaLng),
+        center: new kakao.maps.LatLng(areaLat, areaLng),
         level: 4,
       };
     }
@@ -86,10 +85,10 @@ const Map = ({
 
       if (path === "regist" || path === "modify") {
         if (
-          latlng.getLat() > parseFloat(certifiedLocation.areaLat) - 0.03 &&
-          latlng.getLat() < parseFloat(certifiedLocation.areaLat) + 0.03 &&
-          latlng.getLng() < parseFloat(certifiedLocation.areaLng) + 0.045 &&
-          latlng.getLng() > parseFloat(certifiedLocation.areaLng) - 0.045
+          latlng.getLat() > parseFloat(areaLat) - 0.03 &&
+          latlng.getLat() < parseFloat(areaLat) + 0.03 &&
+          latlng.getLng() < parseFloat(areaLng) + 0.045 &&
+          latlng.getLng() > parseFloat(areaLng) - 0.045
         ) {
           setLat(latlng.getLat());
           setLng(latlng.getLng());
@@ -101,7 +100,7 @@ const Map = ({
         } else {
           alert("현재 위치를 기반으로 가능한 범위내의 장소를 선택해야해요!");
           // 초록영역 바깥일 시 본인 위치 중앙으로 렌더링
-          map.setCenter(new kakao.maps.LatLng(certifiedLocation.areaLat, certifiedLocation.areaLng));
+          map.setCenter(new kakao.maps.LatLng(areaLat, areaLng));
           failToSelect = true;
           return;
         }
@@ -136,14 +135,8 @@ const Map = ({
   }
 
   function makeRectangle() {
-    var sw = new kakao.maps.LatLng(
-        parseFloat(certifiedLocation.areaLat) - 0.03,
-        parseFloat(certifiedLocation.areaLng) - 0.045
-      ), // 사각형 영역의 남서쪽 좌표
-      ne = new kakao.maps.LatLng(
-        parseFloat(certifiedLocation.areaLat) + 0.03,
-        parseFloat(certifiedLocation.areaLng) + 0.045
-      ); // 사각형 영역의 북동쪽 좌표
+    var sw = new kakao.maps.LatLng(parseFloat(areaLat) - 0.03, parseFloat(areaLng) - 0.045), // 사각형 영역의 남서쪽 좌표
+      ne = new kakao.maps.LatLng(parseFloat(areaLat) + 0.03, parseFloat(areaLng) + 0.045); // 사각형 영역의 북동쪽 좌표
 
     // 사각형을 구성하는 영역정보를 생성합니다
     // 사각형을 생성할 때 영역정보는 LatLngBounds 객체로 넘겨줘야 합니다
