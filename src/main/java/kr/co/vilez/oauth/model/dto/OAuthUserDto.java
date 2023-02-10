@@ -20,5 +20,7 @@ public class OAuthUserDto {
     private String oauth;
     private String accessToken;
     private String refreshToken;
+    private String areaLng;
+    private String areaLat;
     private int state;
 }
