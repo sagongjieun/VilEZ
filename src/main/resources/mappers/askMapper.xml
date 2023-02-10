@@ -67,7 +67,8 @@
     <update id="updateAskBoard" parameterType="askDto" >
         UPDATE ask_board
         SET category =#{category} ,title =#{title},content =#{content},
-        hope_area_lat =#{hopeAreaLat},hope_area_lng =#{hopeAreaLng},start_day = #{startDay},end_day=#{endDay}
+        hope_area_lat =#{hopeAreaLat},hope_area_lng =#{hopeAreaLng},start_day = #{startDay},end_day=#{endDay},
+        address = #{address}
         WHERE id = #{id};
     </update>
 
