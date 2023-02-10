@@ -327,7 +327,7 @@ const StompRealTime = ({
         roomId: chatRoomId,
         fromUserId: myUserId,
         toUserId: otherUserId,
-        content: "공유기간이 설정됐어요! 예약 확정을 해주세요 😀",
+        content: "공유기간이 설정됐어요! 아래의 예약 확정을 눌러주세요 😀",
         system: true,
         time: new Date().getTime(),
       };
