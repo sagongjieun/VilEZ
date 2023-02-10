@@ -49,9 +49,9 @@
                appointment_start, appointment_end, s.title, a.type,
                (
                    case
-                       when now() >= DATE_SUB(appointment_start, INTERVAL 7 DAY) then "시작일 임박!"
-                       when now() >= DATE_SUB(appointment_end, INTERVAL 7 DAY) then "마감일 임박!"
-                       end
+                       when 7 >= datediff(appointment_end, now()) and now() > appointment_start then "마감일 임박!"
+                       when 7 >= datediff(appointment_start, now()) then "시작일 임박!"
+                    end
                    ) as status
         from appointment as a
         left join ask_view as s
@@ -70,8 +70,8 @@
                appointment_start, appointment_end, s.title, a.type,
                (
                    case
-                       when now() >= DATE_SUB(appointment_start, INTERVAL 7 DAY) then "시작일 임박!"
-                       when now() >= DATE_SUB(appointment_end, INTERVAL 7 DAY) then "마감일 임박!"
+                       when 7 >= datediff(appointment_end, now())+1 and now() > appointment_start then "마감일 임박!"
+                       when 7 >= datediff(appointment_start, now())+1 then "시작일 임박!"
                     end
                    ) as status
         from appointment as a
