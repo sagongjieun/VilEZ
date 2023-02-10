@@ -10,9 +10,11 @@ const ProfileMyBookMark = (props) => {
   const [myBookMarkBoard, setMyBookMarkBoard] = useState([]);
   useEffect(() => {
     getUserBookMark(userId).then((response) => {
-      setMyBookMarkBoard(response);
-      props.setBookMarkPages(1);
-      props.setBookMarkDefaultPages(response ? parseInt((response?.length - 1) / 3) + 1 : 1);
+      if (response) {
+        setMyBookMarkBoard(response);
+        props.setBookMarkPages(1);
+        props.setBookMarkDefaultPages(response ? parseInt((response.length - 1) / 3) + 1 : 1);
+      }
     });
   }, []);
   useEffect(() => {
@@ -20,14 +22,14 @@ const ProfileMyBookMark = (props) => {
   }, [myBookMarkBoard]);
   return (
     <div css={cardWrapper(props.bookMarkPages)}>
-      {myBookMarkBoard?.length > 0 ? (
+      {myBookMarkBoard ? (
         myBookMarkBoard.map((bookMarkData) => {
           const share = bookMarkData.shareListDto;
 
           return (
             <div key={share.id}>
               <ProfileCardView
-                title={share?.title}
+                title={share.title}
                 endDay={share.endDay}
                 startDay={share.startDay}
                 date={share.date}

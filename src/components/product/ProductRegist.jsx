@@ -32,6 +32,15 @@ const ProductRegist = () => {
   const [hopeAreaLng, setHopeAreaLng] = useState("");
   const [imageList, setImageList] = useState([]);
 
+  // 소셜 로그인 시 닉네임 변경
+  function checkSocialNickName() {
+    const nickName = localStorage.getItem("nickName");
+    if (nickName.slice(0, 1) === "#") {
+      alert("닉네임 변경을 진행해주세요.");
+      navigate("/socialnickname", { state: { url: "/product/regist" } });
+    }
+  }
+
   function receiveRegistType(registType) {
     setRegistType(registType);
   }
@@ -170,6 +179,7 @@ const ProductRegist = () => {
   }
 
   useEffect(() => {
+    checkSocialNickName();
     if (loc.state) {
       if (loc.state.type == 2) {
         setRegistType("물품 공유 등록");
