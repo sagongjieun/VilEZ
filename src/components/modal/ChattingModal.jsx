@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import ChattingModalItem from "./ChattingModalItem";
@@ -6,21 +6,13 @@ import { chatListState } from "../../recoil/atom";
 import { useRecoilValue } from "recoil";
 
 function ChattingModal() {
-  const loginUserId = localStorage.getItem("id");
-
   const chatList = useRecoilValue(chatListState);
-
-  useEffect(() => {
-    if (loginUserId) {
-      console.log("ddddddd");
-    }
-  }, []);
 
   return (
     <div css={chatWrap}>
       <span>채팅 목록</span>
       <div css={chatContentWrap}>
-        {chatList.length ? (
+        {chatList && chatList.length ? (
           chatList.map((chat) => {
             return <ChattingModalItem chat={chat} key={chat.chatData.roomId} />;
           })
