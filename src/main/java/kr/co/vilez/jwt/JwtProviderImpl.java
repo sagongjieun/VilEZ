@@ -25,7 +25,6 @@ public class JwtProviderImpl implements JwtProvider {
 
     private long tokenValidTime = Duration.ofMinutes(60).toMillis();
     private long refreshTokenValidTime = Duration.ofDays(90).toMillis();
-    private long longTime = Duration.ofDays(100).toMillis();
 
     @PostConstruct
     protected void init() {
@@ -63,6 +62,7 @@ public class JwtProviderImpl implements JwtProvider {
     }
     public String createExpireToken(int userId, String userNickname) {
         Date now = new Date();
+
         Claims claims = Jwts.claims();
         claims.put("userId", userId);
         claims.put("nickname", userNickname);
@@ -75,6 +75,21 @@ public class JwtProviderImpl implements JwtProvider {
                 .compact();
     }
 
+    @Override
+    public String createExpireRefreshToken(int userId, String userNickname) {
+        Date now = new Date();
+
+        Claims claims = Jwts.claims();
+        claims.put("userId", userId);
+        claims.put("nickname", userNickname);
+        claims.put("expire", new Date((now.getTime())));
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+    }
 
     public String getUserId(String token) {
         return Jwts.parser().
