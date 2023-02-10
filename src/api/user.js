@@ -143,10 +143,11 @@ async function putUserPasswordByEmail(email, password) {
 
 async function putUserPasswordNickName(userId, nickName, password) {
   try {
-    const { data } = await authJsonAxios.put("/users/modify", { userId, nickName, password });
-
-    if (data.flag === "success") return data;
-    else alert("프로필 변경에 실패했습니다. 다시 시도해주세요.");
+    console.log(userId, nickName, password, "여기요");
+    const { data } = await authJsonAxios.put("/users/modify", { id: userId, nickName: nickName, password: password });
+    if (data.flag === "success") {
+      return data;
+    } else alert("프로필 변경에 실패했습니다. 다시 시도해주세요.");
   } catch (error) {
     console.log(error);
   }
@@ -156,7 +157,7 @@ async function putUserProfileImage(formData) {
   try {
     const { data } = await authFormDataAxios.put("/users/profile", formData);
 
-    if (data.flag === "success") return data;
+    if (data.flag === "success") return data.data;
     else alert("프로필 변경에 실패했습니다. 다시 시도해주세요.");
   } catch (error) {
     console.log(error);
