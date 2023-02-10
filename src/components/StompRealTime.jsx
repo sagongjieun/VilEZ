@@ -236,7 +236,7 @@ const StompRealTime = ({
         payload = {
           userId: myUserId,
         };
-        client.send("/room_list", {}, JSON.stringify(payload));
+        client.send("/room_web", {}, JSON.stringify(payload));
 
         client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
           // 상대방이 채팅방을 나갔다면
@@ -253,7 +253,7 @@ const StompRealTime = ({
           payload = {
             userId: myUserId,
           };
-          setTimeout(() => client.send("/room_list", {}, JSON.stringify(payload)), 100);
+          setTimeout(() => client.send("/room_web", {}, JSON.stringify(payload)), 100);
         });
 
         // 예약 확정을 구독
