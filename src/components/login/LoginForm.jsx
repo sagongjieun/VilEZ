@@ -20,7 +20,7 @@ const LoginForm = () => {
   const onSubmit = (values) => {
     postLogin(values.email, values.password).then((res) => {
       if (!res) return;
-
+      console.log(res);
       res = res[0];
 
       // recoil에 로그인유저 정보 저장
