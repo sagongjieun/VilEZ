@@ -53,6 +53,7 @@ public interface AppointmentService {
     RoomDto getBoard(int roomId);
 
     RoomDto checkRoom(int userId, int boardId, int type);
+    List<RoomDto> checkRoom3(int userId, int boardId, int type);
 
     void recvEnd(int roomId);
 
