@@ -106,9 +106,15 @@ public class OAuthController {
                 // null 이 아니면, 가입이 불가능한 이메일로 어느 OAuth를 통해 가입했는지를 리턴
                 if(oAuthUser.getOauth().equals("kakao")) {
                     String accessToken = jwtProvider.createToken(oAuthUser.getId(), oAuthUser.getNickName());
+                    String refreshToken = jwtProvider.createRefreshToken(oAuthUser.getId(), oAuthUser.getNickName());
+
                     oAuthUser.setAccessToken(accessToken);
+                    oAuthUser.setRefreshToken(refreshToken);
+
+                    oAuthService.update(oAuthUser);
 
                     data.add(oAuthUser);
+
                     httpVO.setFlag("login_success");
                 } else{
                     // 카카오가 아니면 어디에서 가입했는지만 알려준다.
@@ -187,7 +193,13 @@ public class OAuthController {
                 if(userDto.getOauth().equals("naver")) {
                     String access_Token = jwtProvider.createToken(userDto.getId(),
                             userDto.getNickName());
+                    String refresh_Token = jwtProvider.createRefreshToken(userDto.getId(),
+                            userDto.getNickName());
+
                     userDto.setAccessToken(accessToken);
+                    userDto.setRefreshToken(refresh_Token);
+
+                    naverOAuthService.update(userDto);
 
                     data.add(userDto);
                     httpVO.setFlag("login_success");
