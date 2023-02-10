@@ -40,10 +40,10 @@ function ChatOpenIcon() {
           const payload = {
             userId: loginUserId,
           };
-          setTimeout(() => client.send("/room_list", {}, JSON.stringify(payload)), 100);
+          setTimeout(() => client.send("/room_web", {}, JSON.stringify(payload)), 100);
         });
 
-        client.subscribe(`/send_room_list/${loginUserId}`, (data) => {
+        client.subscribe(`/send_room_web/${loginUserId}`, (data) => {
           data = JSON.parse(data.body);
           setChatList(data);
           var flag = false;
@@ -61,7 +61,7 @@ function ChatOpenIcon() {
         const sendMessage = {
           userId: loginUserId,
         };
-        client.send("/room_list", {}, JSON.stringify(sendMessage));
+        client.send("/room_web", {}, JSON.stringify(sendMessage));
       });
     }
   }, []);
