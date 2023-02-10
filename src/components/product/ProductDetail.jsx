@@ -25,7 +25,6 @@ const ProductDetail = () => {
   const loginUserId = localStorage.getItem("id"); // 로그인유저 id
 
   const [writerId, setWriterId] = useState(""); // 공유자 id
-  const [isRelated, setIsRelated] = useState(false); // 로그인유저가 현재 공유중인 공유자 or 피공유자인지 확인
 
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
@@ -38,7 +37,6 @@ const ProductDetail = () => {
   const [hopeAreaLng, setHopeAreaLng] = useState("");
   const [location, setLocation] = useState("");
   const [bookmarkCnt, setBookmarkCnt] = useState(0);
-  const [state, setState] = useState(0); // 0 : 일반, 1 : 공유중
   const [writerProfile, setWriterProfile] = useState("");
   const [writerNickname, setWriterNickname] = useState("");
   const [writerManner, setWriterManner] = useState("");
@@ -57,40 +55,43 @@ const ProductDetail = () => {
   }
 
   function onClickMoveChat() {
-    const type = pathname.includes("share") ? 2 : 1; // 요청글 = 1, 공유글 = 2
+    let myPoint = localStorage.getItem("point");
+    myPoint = parseInt(myPoint);
 
-    getCheckMyRoom(boardId, type, loginUserId).then((res) => {
-      // 채팅방이 이미 존재하면 해당 방으로 이동
-      if (res) {
-        navigate(`/product/chat/${res[0].id}`);
-      }
-      // 채팅방이 없으면 채팅방 생성
-      else {
-        // 요청글이면 공유자 = 나, 피공유자 = 상대방
-        // 공유글이면 공유자 = 상대방, 피공유자 = 나
-        type === 1
-          ? postChatRoom({
-              type: type,
-              boardId: boardId,
-              shareUserId: loginUserId,
-              notShareUserId: writerId,
-            }).then((res) => {
-              navigate(`/product/chat/${res[0].id}`);
-            })
-          : postChatRoom({
-              type: type,
-              boardId: boardId,
-              shareUserId: writerId,
-              notShareUserId: loginUserId,
-            }).then((res) => {
-              navigate(`/product/chat/${res[0].id}`);
-            });
-      }
-    });
-  }
+    if (myPoint < 0) {
+      alert("포인트가 부족해요. 다른 사람에게 물건을 공유해주고 포인트를 얻어봐요 😀");
+    } else {
+      const type = pathname.includes("share") ? 2 : 1; // 요청글 = 1, 공유글 = 2
 
-  function onClickReturnProduct() {
-    // 반납완료 로직 구현
+      getCheckMyRoom(boardId, type, loginUserId).then((res) => {
+        // 채팅방이 이미 존재하면 해당 방으로 이동
+        if (res) {
+          navigate(`/product/chat/${res[0].id}`);
+        }
+        // 채팅방이 없으면 채팅방 생성
+        else {
+          // 요청글이면 공유자 = 나, 피공유자 = 상대방
+          // 공유글이면 공유자 = 상대방, 피공유자 = 나
+          type === 1
+            ? postChatRoom({
+                type: type,
+                boardId: boardId,
+                shareUserId: loginUserId,
+                notShareUserId: writerId,
+              }).then((res) => {
+                navigate(`/product/chat/${res[0].id}`);
+              })
+            : postChatRoom({
+                type: type,
+                boardId: boardId,
+                shareUserId: writerId,
+                notShareUserId: loginUserId,
+              }).then((res) => {
+                navigate(`/product/chat/${res[0].id}`);
+              });
+        }
+      });
+    }
   }
 
   // 게시글 정보 얻어오기
@@ -112,7 +113,6 @@ const ProductDetail = () => {
           setHopeAreaLat(data.hopeAreaLat);
           setHopeAreaLng(data.hopeAreaLng);
           setBookmarkCnt(data.bookmarkCnt);
-          setState(data.state);
           setLocation(data.address);
         })
       : getShareArticleByBoardId(boardId).then((res) => {
@@ -129,7 +129,6 @@ const ProductDetail = () => {
           setHopeAreaLat(data.hopeAreaLat);
           setHopeAreaLng(data.hopeAreaLng);
           setBookmarkCnt(data.bookmarkCnt);
-          setState(data.state);
           setLocation(data.address);
         });
   }, []);
@@ -161,18 +160,6 @@ const ProductDetail = () => {
     }
   }, [boardId, loginUserId]);
 
-  // 이 게시물이 이미 공유중일 때, 내가 공유자 or 피공유자인지 확인
-  useEffect(() => {
-    if (state === 1) {
-      const type = pathname.includes("share") ? 2 : 1; // 요청글 = 1, 공유글 = 2
-
-      getCheckMyRoom(boardId, type, loginUserId).then((res) => {
-        if (!res) setIsRelated(false);
-        else setIsRelated(true);
-      });
-    }
-  }, [state]);
-
   return (
     <div css={wrapper}>
       <ProductDeatilHeader
@@ -199,19 +186,7 @@ const ProductDetail = () => {
             ) : (
               <img src={bookmarkCancel} alt="bookmarkCancel" onClick={onClickBookmark} />
             )}
-            {state === 0 ? (
-              loginUserId == writerId ? (
-                <></>
-              ) : (
-                <MiddleWideButton text="채팅하기" onclick={onClickMoveChat} />
-              )
-            ) : loginUserId == writerId ? (
-              <MiddleWideButton text="반납확정" onclick={onClickReturnProduct} />
-            ) : isRelated ? (
-              <MiddleWideButton text="채팅하기" onclick={onClickMoveChat} />
-            ) : (
-              <MiddleWideButton text="예약하기" onclick={onClickMoveChat} />
-            )}
+            {loginUserId == writerId ? <></> : <MiddleWideButton text="채팅하기" onclick={onClickMoveChat} />}
           </div>
         </div>
         <div css={contentWrapper}>
