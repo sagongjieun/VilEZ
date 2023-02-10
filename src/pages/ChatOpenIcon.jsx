@@ -3,8 +3,8 @@ import { BsChatSquare } from "react-icons/bs";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import ChattingModal from "../components/modal/ChattingModal";
-import { modalOpenState, enterChatRoomState } from "../recoil/atom";
-import { useRecoilState } from "recoil";
+import { modalOpenState, enterChatRoomState, chatListState } from "../recoil/atom";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 
@@ -15,10 +15,11 @@ function ChatOpenIcon() {
   const [modalOpen, setModalOpen] = useRecoilState(modalOpenState);
   const [isNewMessage, setIsNewMessage] = useState(false);
   const [enterChatRoom, setEnterChatRoom] = useRecoilState(enterChatRoomState);
+  const setChatList = useSetRecoilState(chatListState);
   const [isSocketConnected, setIsSocketConnected] = useState(false);
-
+  //useSetRecoilState
   const onClickOpenChat = () => {
-    if (!modalOpen) setIsNewMessage(false); // 새로운메시지를 확인했다면 알림 지우기
+    // if (!modalOpen) setIsNewMessage(false); // 새로운메시지를 확인했다면 알림 지우기
     setModalOpen(!modalOpen);
   };
 
@@ -30,15 +31,37 @@ function ChatOpenIcon() {
 
       // 웹소켓과 연결됐을 때 동작하는 콜백함수들
       client.connect({}, () => {
-        client.subscribe(`/sendlist/${loginUserId}`, (data) => {
-          data = JSON.parse(data.body);
+        client.subscribe(`/sendlist/${loginUserId}`, () => {
+          // data = JSON.parse(data.body);
           // 상대방이 메시지 보낼 때만 새로운 메시지 알림
-          if (data.fromUserId != loginUserId) {
-            setIsNewMessage(true);
+          // if (data.fromUserId != loginUserId) {
+          //   setIsNewMessage(true);
+          // }
+          const payload = {
+            userId: loginUserId,
+          };
+          setTimeout(() => client.send("/room_list", {}, JSON.stringify(payload)), 100);
+        });
+
+        client.subscribe(`/send_room_list/${loginUserId}`, (data) => {
+          data = JSON.parse(data.body);
+          setChatList(data);
+          var flag = false;
+          for (var i in data) {
+            if (data[i].noReadCount > 0) {
+              flag = true;
+              break;
+            }
           }
+          setIsNewMessage(flag);
         });
 
         setIsSocketConnected(true);
+
+        const sendMessage = {
+          userId: loginUserId,
+        };
+        client.send("/room_list", {}, JSON.stringify(sendMessage));
       });
     }
   }, []);
