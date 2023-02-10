@@ -14,6 +14,8 @@
         <result column="oauth" property="oauth"/>
         <result column="access_token" property="accessToken"/>
         <result column="refresh_token" property="refreshToken"/>
+        <result column="area_lat" property="areaLat"/>
+        <result column="area_lng" property="areaLng"/>
         <result column="state" property="state"/>
     </resultMap>
 
@@ -32,6 +34,7 @@
 
     <select id="getOAuthUser" parameterType="string" resultMap="oauth">
         SELECT id, email, nickName, point, manner, profile_img, date, oauth, access_token, refresh_token
+                ,area_lat,area_lng
         FROM user
         WHERE email = #{email}
     </select>
