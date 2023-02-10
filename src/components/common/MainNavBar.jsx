@@ -24,6 +24,7 @@ function MainNavBar() {
   ];
 
   const userId = localStorage.getItem("id");
+
   const [isMenu, setIsMenu] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
 
