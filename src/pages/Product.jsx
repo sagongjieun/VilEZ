@@ -8,13 +8,17 @@ import ProductPut from "../components/product/ProductPut";
 import { useNavigate } from "react-router-dom";
 
 const Product = () => {
+  const accessToken = localStorage.getItem("accessToken");
   const areaLat = localStorage.getItem("areaLat");
   const areaLng = localStorage.getItem("areaLng");
   const navigate = useNavigate();
 
   useEffect(() => {
     // 동네 인증이 안됐으면 Product관련 페이지 이용 불가
-    if (areaLat == null || areaLng == null) {
+    if (!accessToken) {
+      alert("빌리지를 이용하시려면 로그인을 먼저 진행해주세요.");
+      navigate(`/login`);
+    } else if (areaLat == "null" || areaLng == "null" || areaLat == "undefined" || areaLng == "undefined") {
       alert("빌리지를 이용하시려면 동네 인증을 해주셔야해요.");
       navigate(`/profile/product`);
     }
