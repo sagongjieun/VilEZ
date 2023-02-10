@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class MyAppointListDto {
     private int id;
     private int userId;
+    private int roomId;
     private String title;
     private String hopeAreaLat;
     private String hopeAreaLng;
