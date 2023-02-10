@@ -128,6 +128,16 @@ const ProductList = () => {
     // setOriginalArticle([]);
   }
 
+  const allowedCharsRegex = /^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣 ]*$/;
+
+  const handleChange = (event) => {
+    const inputValue = event.target.value;
+    if (!allowedCharsRegex.test(inputValue)) {
+      alert("특수문자는 입력할 수 없어요");
+      return;
+    }
+    setSearch(inputValue);
+  };
   // 검색 후, 지웠을 때 이전 검색이 리스트에 쌓이는 것을 방지
   // 스크롤이 내려가서 cnt가 변했을 때, 검색을 하면 그 페이지를 기준으로 해서 문제를 해결함
   function onChangeSearch(e) {
@@ -176,7 +186,7 @@ const ProductList = () => {
                 placeholder="필요한 물품을 검색해보세요"
                 type="text"
                 value={search}
-                onChange={(event) => setSearch(event.target.value)}
+                onChange={handleChange}
                 onKeyDown={(e) => onChangeSearch(e)}
               />
               <img src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />

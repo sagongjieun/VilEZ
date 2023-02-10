@@ -27,8 +27,8 @@ const style = css`
     margin: 0;
     padding: 0;
     /* font-family: "Noto Sans KR", sans-serif; */
-    /* font-family: "Spoqa Han Sans Neo", "sans-serif"; */
-    font-family: "EliceDigitalBaeum-Bd";
+    font-family: "Spoqa Han Sans Neo", "sans-serif";
+    /* font-family: "EliceDigitalBaeum-Bd"; */
 
     text-decoration: none;
   }

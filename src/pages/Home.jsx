@@ -29,13 +29,20 @@ function MainBody() {
   return (
     <div>
       <div css={FirstBodyWrap}>
-        <Animated animationIn="animate__jackInTheBox" animationInDuration={2000}>
+        <Animated animationIn="animate__fadeIn" animationInDuration={2700}>
           <div css={FirstBody}>
-            <div css={FirstBodyDiv}>쉽게 빌리고</div>
-            <div css={FirstBodyDiv}>쉽게 빌려주는,</div>
-            <div css={FirstBodyDiv}>공유마을 빌리지.</div>
+            <Animated animationIn="animate__fadeIn" animationInDuration={2200}>
+              <div css={FirstBodyDiv}>쉽게 빌리고</div>
+            </Animated>
+            <Animated animationIn="animate__fadeIn" animationInDuration={3200}>
+              <div css={FirstBodyDiv}>쉽게 빌려주는,</div>
+            </Animated>
+            <Animated animationIn="animate__fadeIn" animationInDuration={4200}>
+              <div css={FirstBodyDiv}>공유마을 빌리지.</div>
+            </Animated>
           </div>
         </Animated>
+
         <div css={ArrowBox}>
           <a href="#movebottom">
             <img src={mainarrow} alt="" />
