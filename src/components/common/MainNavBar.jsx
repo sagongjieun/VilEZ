@@ -23,7 +23,6 @@ function MainNavBar() {
     { name: "글 등록하기", path: "/product/regist" },
   ];
 
-  // 동네인증 안할 시 프로필페이지로 가서 동네인증하게.
   const userId = localStorage.getItem("id");
 
   const [isMenu, setIsMenu] = useState(false);

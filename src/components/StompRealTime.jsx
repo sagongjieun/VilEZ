@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { css } from "@emotion/react";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
-import baseProfile from "../assets/images/baseProfile.png";
 import Map from "./common/Map";
 import selectDateButton from "../assets/images/selectDateButton.png";
 import openOathButton from "../assets/images/openOathButton.png";
@@ -24,6 +23,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { getCheckShareCancelRequest } from "../api/appointment";
+import { getUserDetail } from "../api/user";
 
 let client = null;
 const { kakao } = window;
@@ -66,8 +66,7 @@ const StompRealTime = ({
   const [disableMapLat, setDisableMapLat] = useState("");
   const [disableMapLng, setDisableMapLng] = useState("");
   const [cancelMessage, setCancelMessage] = useState({});
-
-  const [isSocketConnected, setIsSocketConnected] = useState(false);
+  const [otherUserProfileImage, setOtherUserProfileImage] = useState("");
 
   function onKeyDownSendMessage(e) {
     if (e.keyCode === 13) {
@@ -286,18 +285,17 @@ const StompRealTime = ({
           setMovedZoomLevel(data.zoomLevel);
           data.isMarker ? setMovedMarker(true) : setMovedMarker(false);
         });
-
-        setIsSocketConnected(true);
       });
     }
   }, [client]);
 
   useEffect(() => {
-    if (isSocketConnected) {
-      /** 소켓에 연결되면 채팅 내역 보여주기 */
-      console.log("dddddd");
+    if (otherUserId) {
+      getUserDetail(otherUserId).then((res) => {
+        if (res) setOtherUserProfileImage(res.profile_img);
+      });
     }
-  }, [isSocketConnected]);
+  }, [otherUserId]);
 
   useEffect(() => {
     scrollToBottom();
@@ -555,7 +553,7 @@ const StompRealTime = ({
                 } else {
                   return (
                     <div key={index} css={yourMessageWrapper}>
-                      <img src={baseProfile} />
+                      <img src={otherUserProfileImage} />
                       <div>
                         <small>{otherUserNickname}</small>
                         <span>{message.content}</span>
@@ -693,9 +691,10 @@ const yourMessageWrapper = css`
   justify-content: flex-start;
 
   & > img {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     margin-right: 10px;
+    border-radius: 100%;
   }
 
   & > div {
