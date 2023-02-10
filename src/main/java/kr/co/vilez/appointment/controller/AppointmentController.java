@@ -521,6 +521,11 @@ public class AppointmentController {
         List<?> list = appointmentService.loadMyChatList(payload.get("userId"));
         sendingOperations.convertAndSend("/send_room_list/"+payload.get("userId"),list);
     }
+    @MessageMapping("/room_web")
+    public void getWebList(HashMap<String, Integer> payload) {
+        List<?> list = appointmentService.loadMyChatList(payload.get("userId"));
+        sendingOperations.convertAndSend("/send_room_web/"+payload.get("userId"),list);
+    }
 
     /*
      *
