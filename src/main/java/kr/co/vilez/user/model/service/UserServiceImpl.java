@@ -250,7 +250,7 @@ public class UserServiceImpl implements UserService {
         String refreshToken = null;
         if(user != null){
             accessToken = jwtProvider.createExpireToken(user.getId(), user.getNickName());
-            refreshToken = jwtProvider.createRefreshToken(user.getId(), user.getNickName());
+            refreshToken = jwtProvider.createExpireRefreshToken(user.getId(), user.getNickName());
 
             // 로그인에 성공했다면, refresh 값을 db에 저장
             HashMap<String, Object> map = new HashMap<>();
