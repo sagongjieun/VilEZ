@@ -21,11 +21,7 @@ const ProductList = () => {
   const userId = localStorage.getItem("id");
 
   // isAll이 새로고침시마다 바껴있어야 공유가능 물품 조건 유지 가능
-  const [isAll, setIsAll] = useState(localStorage.getItem("isAll") === "false" ? false : true);
-
-  useEffect(() => {
-    localStorage.setItem("isAll", isAll);
-  }, [isAll]);
+  const [isAll, setIsAll] = useState(false);
 
   const [category, setCategory] = useState("");
   const [search, setSearch] = useState("");
