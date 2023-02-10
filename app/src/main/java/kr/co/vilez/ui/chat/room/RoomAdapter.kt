@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import kr.co.vilez.R
 import kr.co.vilez.data.model.RoomlistData
+import kr.co.vilez.util.Common
 
 
 class RoomAdapter(val itemList: ArrayList<RoomlistData>) : RecyclerView.Adapter<RoomAdapter.RoomViewHolder>() {
@@ -38,10 +39,13 @@ class RoomAdapter(val itemList: ArrayList<RoomlistData>) : RecyclerView.Adapter<
             holder.noRead.visibility = View.GONE
             itemClickListener.onClick(it, position)
         }
+
         var time = System.currentTimeMillis() - itemList[position].time
         time = time / 1000 // 1초 단위 // 이게 1시간 보다 작으면 방금 전
-        if(time < 3600) {
+        if(time < 60) {
             holder.time.text = "방금 전"
+        } else if(time < 3600) {
+            holder.time.text = (time/60).toInt().toString() +"분 전"
         } else if(time<86400) {
             holder.time.text = (time/3600).toInt().toString() + "시간 전"
         } else {

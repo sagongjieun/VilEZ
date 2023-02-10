@@ -102,13 +102,16 @@ class MyShareFragment : Fragment() { // 내가 빌린것들 목록
                     Log.d(TAG, "initSharingData: data: $data")
                     val boardData = BoardData(
                         data.myAppointListVO.id,
+                        data.myAppointListVO.roomId,
                         if (data.imgPathList.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.imgPathList[0].path,
                         data.myAppointListVO.title,
-                        data.myAppointListVO.date,
+                        "",
                         data.myAppointListVO.appointmentStart+ " ~ " + data.myAppointListVO.appointmentEnd,
                         data.bookmarkCnt.toString(),
                         data.myAppointListVO.userId, // TODO : 내 id 넣으면 되니????
-                        data.myAppointListVO.type,
+                        data.myAppointListVO.shareUserId.toInt(),
+                        data.myAppointListVO.notShareUserId.toInt(),
+                        type = data.myAppointListVO.type,
                         state = APPOINTMENT_TYPE_SHARE, // 공유중인 데이터만 넣을거임
                         sDay = data.myAppointListVO.appointmentStart,
                         eDay = data.myAppointListVO.appointmentEnd,
@@ -145,13 +148,16 @@ class MyShareFragment : Fragment() { // 내가 빌린것들 목록
                     if(data.myAppointListVO.id == 0) continue
                     val boardData = BoardData(
                         data.myAppointListVO.id, // TODO : api 에러같음 id 0인것은 데이터 다 null로 들어와서 skip하기
+                        data.myAppointListVO.roomId,
                         if (data.imgPathList.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.imgPathList[0].path,
                         data.myAppointListVO.title,
-                        data.myAppointListVO.date,
+                        "",
                         data.myAppointListVO.appointmentStart+ " ~ " + data.myAppointListVO.appointmentEnd,
                         data.bookmarkCnt.toString(),
                         data.myAppointListVO.userId, // TODO : notShareUserId 중 구분해서 넣어야함
-                        data.myAppointListVO.type,
+                        data.myAppointListVO.shareUserId.toInt(),
+                        data.myAppointListVO.notShareUserId.toInt(),
+                        type = data.myAppointListVO.type,
                         state = APPOINTMENT_TYPE_RESERVE, // 공유 예정인 데이터만 넣을거임
                         sDay = data.myAppointListVO.appointmentStart,
                         eDay = data.myAppointListVO.appointmentEnd,

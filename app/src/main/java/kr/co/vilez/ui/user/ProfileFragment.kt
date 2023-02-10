@@ -82,13 +82,16 @@ class ProfileFragment : Fragment() {
                     };
                     val boardData = BoardData(
                         data.appointmentDto.boardId,
+                        data.appointmentDto.roomId,
                         if (data.imgPath.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.imgPath[0].path,
                         data.appointmentDto.title,
                         "", // date는 필요없음
                         data.appointmentDto.appointmentStart+ " ~ " + data.appointmentDto.appointmentEnd,
                         data.bookmarkCnt.toString(),
                         data.appointmentDto.shareUserId, // TODO : 내꺼냐 남꺼냐에 따라서 id 바꿔서 넣어줘야함
-                        data.appointmentDto.type,
+                        data.appointmentDto.shareUserId,
+                        data.appointmentDto.notShareUserId,
+                        type = data.appointmentDto.type,
                         sDay = data.appointmentDto.appointmentStart,
                         eDay = data.appointmentDto.appointmentEnd,
                         status = data.appointmentDto.status // 시작일 임박! or 종료일 임박!

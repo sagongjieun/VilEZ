@@ -14,5 +14,6 @@ data class MyAppointListVO(
     val startDay: String,
     val title: String,
     val type: Int,
-    val userId: Int
+    val userId: Int,
+    val roomId: Int,
 )
