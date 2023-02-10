@@ -1,10 +1,21 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import MyBoxMain from "../components/mybox/MyBoxMain.jsx";
 
 const MyBox = () => {
+  const navigate = useNavigate();
+  function checkSocialNickName() {
+    const nickName = localStorage.getItem("nickName");
+    if (nickName.slice(0, 1) === "#") {
+      alert("닉네임 변경을 진행해주세요.");
+      navigate("/socialnickname", { state: { url: "/mybox" } });
+    }
+  }
+  useEffect(() => {
+    checkSocialNickName();
+  }, []);
   return (
     <div css={innerBox}>
       <Routes>
