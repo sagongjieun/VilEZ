@@ -171,7 +171,7 @@ const InputBox = css`
 `;
 
 const floating = keyframes`
-  {
+  0%{
       transform: translateY(0);    
   }
   50% {

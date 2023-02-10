@@ -35,7 +35,7 @@ const ProfileDdaySlide = ({ ddaySlideList }) => {
     showSlides(slideIndex);
   }, [ddaySlideList]);
 
-  console.log(ddaySlideList);
+  // console.log(ddaySlideList);
 
   return (
     <div css={imageSlideWrapper}>
@@ -163,7 +163,6 @@ const ddayExp = css`
 `;
 
 const imgBack = (props) => {
-  console.log(props);
   return css`
     width: 50%;
     overflow: hidden;

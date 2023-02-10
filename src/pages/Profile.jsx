@@ -1,19 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import ProfileInformation from "../components/profile/ProfileInformation";
 import ProfileMainCalendar from "../components/profile/ProfileMainCalendar";
 import ProfileMainProduct from "../components/profile/ProfileMainProduct";
 import ProfileMainPoint from "../components/profile/ProfileMainPoint";
-import EditProfile from "../components/modal/EditProfileModal";
+import EditProfileModal from "../components/modal/EditProfileModal";
 import Qrcode from "../components/modal/QrcodeModal";
 
 const Profile = () => {
   const [isQrCodeOpen, setIsQrCodeOpen] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [move, setMove] = useState("calc(50% - 55px)");
+  const navigate = useNavigate();
+  function checkSocialNickName() {
+    const nickName = localStorage.getItem("nickName");
+    if (nickName.slice(0, 1) === "#") {
+      alert("닉네임 변경을 진행해주세요.");
+      navigate("/socialnickname", { state: { url: "/mybox" } });
+    }
+  }
+  useEffect(() => {
+    checkSocialNickName();
+  }, []);
   return (
     <div css={ProfileWrapper}>
       <ProfileInformation
@@ -62,7 +73,7 @@ const Profile = () => {
       ></div>
       {isEditProfileOpen ? (
         <div css={modalWrapper}>
-          <EditProfile setIsEditProfileOpen={setIsEditProfileOpen} />
+          <EditProfileModal setIsEditProfileOpen={setIsEditProfileOpen} />
         </div>
       ) : null}
       {isQrCodeOpen ? (

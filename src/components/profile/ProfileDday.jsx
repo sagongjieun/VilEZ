@@ -11,7 +11,7 @@ const ProfileDday = () => {
     getAppointmentsWithinAWeek(userId).then((response) => {
       if (response) {
         setAppointmentsWithinAWeek(response);
-        console.log(response);
+        // console.log(response);
       }
     });
   }, []);

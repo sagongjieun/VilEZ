@@ -3,6 +3,7 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { AiOutlineEyeInvisible, AiOutlineEye, AiOutlineExclamationCircle } from "react-icons/ai";
 import { BsCheck2Circle } from "react-icons/bs";
 import { IoIosCloseCircle } from "react-icons/io";
@@ -14,9 +15,10 @@ import { putUserPasswordNickName, putUserProfileImage } from "../../api/user";
 import { useSetRecoilState } from "recoil";
 import { loginUserState } from "../../recoil/atom";
 
-function EditProfile({ setIsEditProfileOpen }) {
+function EditNickNameModal({ url }) {
   const userId = localStorage.getItem("id");
   const setLoginUser = useSetRecoilState(loginUserState);
+  const navigate = useNavigate();
   const [userNickName, setUserNickName] = useState("");
   const [userProfileImage, setUserProfileImage] = useState("");
   const [nickName, setNickName] = useState("");
@@ -84,10 +86,11 @@ function EditProfile({ setIsEditProfileOpen }) {
     setImageList(imageList);
   }
   function onClickCancle() {
-    setIsEditProfileOpen(false);
+    // setIsEditProfileOpen(false);
+    navigate("/");
   }
   function onSubmit() {
-    if ((isNickNameAvailable || !isNickNameOpen) && !passwordError && !password2Error) {
+    if ((isNickNameAvailable || !isNickNameOpen) && !passwordError && !password2Error && nickName) {
       putUserPasswordNickName(userId, nickName, password).then((response) => {
         if (response) {
           setLoginUser((prev) => {
@@ -102,18 +105,22 @@ function EditProfile({ setIsEditProfileOpen }) {
             formData.append("image", imageList[0]);
             formData.append("userId", new Blob([JSON.stringify(userId)], { type: "application/json" }));
             putUserProfileImage(formData).then((response) => {
-              if (response) {
-                setIsEditProfileOpen(false);
+              if (!response) {
+                return;
               }
             });
           }
+          console.log(nickName, "nickName");
+          localStorage.setItem("nickName", nickName);
           alert("프로필 정보가 변경되었습니다.");
-          setIsEditProfileOpen(false);
+          navigate(url);
           return;
         }
       });
     } else if (!isNickNameAvailable) {
       setNickNameError("중복 확인을 진행해주세요.");
+    } else if (!nickName) {
+      alert("닉네임을 변경해주세요.");
     }
   }
   useEffect(() => {
@@ -289,7 +296,7 @@ function EditProfile({ setIsEditProfileOpen }) {
       {/* 취소 / 완료 버튼 */}
       <div css={commitButtonWrapper}>
         <button type="button" onClick={onClickCancle}>
-          취소
+          홈으로 돌아가기
         </button>
         <button type="button" onClick={onSubmit}>
           완료
@@ -312,6 +319,7 @@ const EditProfileBox = css`
     padding-bottom: 10px;
   }
 `;
+
 const firstWrap = css`
   display: flex;
   flex-direction: column;
@@ -321,6 +329,7 @@ const subTitleWrap = css`
   font-size: 18px;
   padding-top: 20px;
 `;
+
 const condition = css`
   color: #c4c4c4;
   font-size: 12px;
@@ -430,4 +439,4 @@ const commitButtonWrapper = css`
     background-color: #66dd9c;
   }
 `;
-export default EditProfile;
+export default EditNickNameModal;

@@ -82,7 +82,7 @@ const ProductList = () => {
       setArticles([]);
       setAskArticles([]);
       setCnt(0);
-      setIsAll(false);
+      setIsAll(!false);
     }
   }, [urlId, search]);
 
