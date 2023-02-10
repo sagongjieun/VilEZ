@@ -178,10 +178,13 @@ const ProductChatting = () => {
           setNotShareUserId(parseInt(res.notShareUserId));
         }
         // 로그인유저가 피공유자면
-        else {
+        else if (loginUserId == res.notShareUserId) {
           setOtherUserId(res.shareUserId);
           setShareUserId(res.shareUserId);
           setNotShareUserId(parseInt(loginUserId));
+        } else {
+          alert("채팅방에 입장할 수 없습니다.");
+          navigate(-1);
         }
       })
       .catch((error) => {
@@ -206,10 +209,6 @@ const ProductChatting = () => {
       }
     });
   }, [roomId]);
-
-  useEffect(() => {
-    console.log("shareState : ", shareState);
-  }, [shareState]);
 
   useEffect(() => {
     if (otherUserId) {

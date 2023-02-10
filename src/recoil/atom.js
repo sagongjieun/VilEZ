@@ -83,7 +83,7 @@ const mainSearchTextState = atom({
 
 const chatListState = atom({
   key: "chatListState",
-  default: null,
+  default: [],
 });
 
 export {
