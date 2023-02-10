@@ -13,7 +13,7 @@ public class OAuthUserDto {
     private String password;
     private String nickName;
     private String area;
-    private String point;
+    private int point;
     private String manner;
     private String profileImg;
     private String date;
