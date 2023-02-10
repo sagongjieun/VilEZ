@@ -173,9 +173,7 @@ class FCMService : FirebaseMessagingService() {
 
     // 새로운 토큰 수신 시 서버로 전송
     private fun sendRegistrationToServer(token: String?) {
-
         Log.d(TAG, "sendRegistrationTokenToServer($token)")
-
         ApplicationClass.fcmTokenApi.uploadToken(FCMToken(ApplicationClass.prefs.getId(), token!!)).enqueue(object :
             Callback<RESTResult> {
             override fun onResponse(call: Call<RESTResult>, response: Response<RESTResult>) {
