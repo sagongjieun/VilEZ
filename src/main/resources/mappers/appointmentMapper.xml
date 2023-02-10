@@ -24,6 +24,7 @@
 
     <resultMap id="mylist" type="MyAppointListDto">
         <result column="id" property="id"/>
+        <result column="room_id" property="roomId"/>
         <result column="user_id" property="userId"/>
         <result column="title" property="title"/>
         <result column="hope_area_lat" property="hopeAreaLat"/>
@@ -148,52 +149,58 @@
 
     <select id="getGiveListShare" parameterType="int" resultMap="mylist">
         select
-            id, user_id,
-            title , hope_area_lat,
-            hope_area_lng, start_day,
-            end_day, appointment_id,
-            share_user_id, not_share_user_id, s.date, appointment_start, appointment_end
+            a.board_id as id, r.id as room_id, title, hope_area_lat,
+            hope_area_lng, start_day, end_day, appointment_id, r.share_user_id,
+            r.not_share_user_id, appointment_start, appointment_end
         from sharing_view as s
-                 right join(
+        right join(
             select *
             from appointment
             where share_user_id = #{userId}
         ) as a
         on a.board_id = s.id
-        where a.state >= 0 and type = 2;
+        join room as r
+        on a.type = r.type and s.id = r.board_id and a.share_user_id = r.share_user_id and a.not_share_user_id = r.not_share_user_id
+        where a.state >= 0 and a.type = 2;
     </select>
     <select id="getGiveListAsk" parameterType="int" resultMap="mylist">
         select
-            id, user_id,
-            title , hope_area_lat,
-            hope_area_lng, start_day,
-            end_day, appointment_id,
-            share_user_id, not_share_user_id, s.date, appointment_start, appointment_end
+            a.board_id as id, r.id as room_id, title, hope_area_lat,
+            hope_area_lng, start_day, end_day, appointment_id, r.share_user_id,
+            r.not_share_user_id, appointment_start, appointment_end
         from ask_view as s
-                 right join(
+        right join(
             select *
             from appointment
             where share_user_id = #{userId}
         ) as a
         on a.board_id = s.id
-        where a.state >= 0 and type = 1;
+        join room as r
+        on a.type = r.type and s.id = r.board_id and a.share_user_id = r.share_user_id and a.not_share_user_id = r.not_share_user_id
+        where a.state >= 0 and a.type = 1;
     </select>
 
     <select id="getMyAppointmentListShare" parameterType="int" resultMap="mylist">
         select
-            *
+            a.board_id as id, r.id as room_id, title, hope_area_lat,
+            hope_area_lng, start_day, end_day, appointment_id, r.share_user_id,
+            r.not_share_user_id, appointment_start, appointment_end
         from sharing_view as s
-        right join(
+                 right join(
             select *
             from appointment
             where not_share_user_id = #{userId}
         ) as a
         on a.board_id = s.id
-        where a.state >= 0 and type = 2;
+        join room as r
+        on a.type = r.type and s.id = r.board_id and a.share_user_id = r.share_user_id and a.not_share_user_id = r.not_share_user_id
+        where a.state >= 0 and a.type = 2;
     </select>
     <select id="getMyAppointmentListAsk" parameterType="int" resultMap="mylist">
         select
-            *
+            a.board_id as id, r.id as room_id, title, hope_area_lat,
+            hope_area_lng, start_day, end_day, appointment_id, r.share_user_id,
+            r.not_share_user_id, appointment_start, appointment_end
         from ask_view as s
         right join(
             select *
@@ -201,7 +208,9 @@
             where not_share_user_id = #{userId}
         ) as a
         on a.board_id = s.id
-        where a.state >= 0 and type = 1;
+        join room as r
+        on a.type = r.type and s.id = r.board_id and a.share_user_id = r.share_user_id and a.not_share_user_id = r.not_share_user_id
+        where a.state >= 0 and a.type = 1;
     </select>
 
     <select id="getAppointmentList" parameterType="int" resultMap="appointment">
