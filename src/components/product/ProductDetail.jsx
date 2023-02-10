@@ -43,6 +43,21 @@ const ProductDetail = () => {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [level, setLevel] = useState(0);
 
+  // function checkSocialNickName() {
+  //   const nickName = localStorage.getItem("nickName");
+  //   if (nickName.slice(0, 1) === "바") {
+  //     alert("닉네임 변경을 진행해주세요.");
+  //     navigate("/socialnickname", { state: { url: "/mybox" } });
+  //   }
+  // }
+  function checkSocialNickName() {
+    const nickName = localStorage.getItem("nickName");
+    if (nickName.slice(0, 1) === "#") {
+      return true;
+    }
+    return false;
+  }
+
   function onClickBookmark() {
     if (isBookmarked) {
       deleteBookmark(boardId, loginUserId);
@@ -56,6 +71,12 @@ const ProductDetail = () => {
   }
 
   function onClickMoveChat() {
+    if (checkSocialNickName()) {
+      alert("닉네임 변경을 진행해주세요.");
+      navigate("/socialnickname", { state: { url: "/mybox" } });
+      return;
+    }
+
     let myPoint = localStorage.getItem("point");
     myPoint = parseInt(myPoint);
 

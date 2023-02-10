@@ -7,8 +7,8 @@ import ProfileLocation from "./ProfileLocation";
 import ProfilePoint from "./ProfilePoint";
 import ProfileDday from "./ProfileDday";
 import { getUserDetail } from "../../api/user";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { locationState, loginUserState } from "../../recoil/atom";
+import { useRecoilState } from "recoil";
+import { loginUserState } from "../../recoil/atom";
 
 const { kakao } = window;
 const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpen, isEditProfileOpen }) => {
@@ -16,7 +16,7 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
   const [loginUser, setLoginUser] = useRecoilState(loginUserState);
   // const [areaLng, setAreaLng] = useState("");
   // const [areaLat, setAreaLat] = useState("");
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState("동네를 인증해주세요");
   const [profileImage, setProfileImage] = useState("");
   const [nickName, setNickName] = useState("");
   const [manner, setManner] = useState(0);
@@ -27,19 +27,29 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
 
   // 불러온 유저정보 활용
   // https://apis.map.kakao.com/web/sample/coord2addr/ 참조하였음.
-  const located = useRecoilValue(locationState);
-  console.log(located);
-  var coords = new kakao.maps.LatLng(located.areaLat, located.areaLng);
+
+  const localLat = localStorage.getItem("areaLat");
+  const localLng = localStorage.getItem("areaLng");
+
+  var coords = new kakao.maps.LatLng(localLat, localLng);
   useEffect(() => {
     const geocoder = new kakao.maps.services.Geocoder();
     geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), (result, status) => {
       if (status === kakao.maps.services.Status.OK) {
         const data = result[0];
-        console.log(data);
-        setLocation(data.region_1depth_name + " " + data.region_2depth_name + " " + data.region_3depth_name);
+        // console.log(data);
+
+        // useState에 기본값에 "동네를 인증해주세요."를 넣어놓아도 반응이 없어서, 분기하였음
+        if (data.region_1depth_name.length === 0) {
+          setLocation("동네를 인증해주세요");
+        } else {
+          setLocation(data.region_1depth_name + " " + data.region_2depth_name + " " + data.region_3depth_name);
+        }
       }
     });
-  }, []);
+    // console.log(localLat);
+  }, [localLat]);
+
   // 좌표로 주소 불러오기
   // state에 있는, areaLat, areaLng를 불러와서 사용할건데, useEffect()에서 그 불러온 두 값은 이렇게 사용이 될거야.
   // function getAddr(areaLat, areaLng) {
@@ -67,8 +77,10 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
       });
       localStorage.setItem("profileImg", response.profile_img);
       localStorage.setItem("nickName", response.nickName);
+      localStorage.setItem("areaLat", response.areaLat);
+      localStorage.setItem("areaLng", response.areaLng);
     });
-  }, [isQrCodeOpen, isEditProfileOpen]);
+  }, [isQrCodeOpen, isEditProfileOpen, location]);
   // useEffect(() => {
   //   // getAddr(areaLng, areaLat);
   //   // console.log(areaLng, areaLat);

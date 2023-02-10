@@ -13,11 +13,15 @@ const ProfileMyWriting = (props) => {
   const [myAskBoard, setMyAskBoard] = useState([]);
   useEffect(() => {
     getUserShare(userId).then((response) => {
-      setMyBoard(response);
-      setMyShareBoard(response);
+      if (response) {
+        setMyBoard(response);
+        setMyShareBoard(response);
+      }
     });
     getUserAsk(userId).then((response) => {
-      setMyAskBoard(response);
+      if (response) {
+        setMyAskBoard(response);
+      }
     });
   }, []);
   useEffect(() => {
@@ -34,7 +38,7 @@ const ProfileMyWriting = (props) => {
   }, [myBoard]);
   return (
     <div css={cardWrapper(props.writingPages)}>
-      {myBoard?.length > 0 ? (
+      {myBoard ? (
         myBoard.map((share, idx) => (
           <div key={idx}>
             <ProfileCardView

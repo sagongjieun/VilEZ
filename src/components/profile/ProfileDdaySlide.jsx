@@ -35,20 +35,19 @@ const ProfileDdaySlide = ({ ddaySlideList }) => {
     showSlides(slideIndex);
   }, [ddaySlideList]);
 
-  console.log(ddaySlideList);
-
   return (
     <div css={imageSlideWrapper}>
       {ddaySlideList.map((appoint, index) => (
         <div key={index} css={imageWrapper} className="slide fade">
           <div css={ddayExp}>
+            <div css={imgBack(appoint.imgPath[0].path)}></div>
             <div>
+              <div>잊지 마세요</div>
               <div>{appoint.appointmentDto.title}</div>
               <div>
-                <span>2</span>일 남았습니다.
+                반납까지 <span>2</span>일 남았습니다.
               </div>
             </div>
-            <div css={imgBack(appoint.imgPath[0].path)}></div>
           </div>
         </div>
       ))}
@@ -90,15 +89,15 @@ const imageSlideWrapper = css`
 const imageWrapper = css`
   width: 100%;
   position: absolute;
-  top: 30px;
+  top: 26px;
   height: 60%;
   justify-content: space-between;
   align-items: center;
 `;
 const buttonsWrapper = css`
   position: absolute;
-  bottom: 24px;
-  left: 10px;
+  bottom: 20px;
+  right: 10px;
   width: 70px;
   display: flex;
   justify-content: space-between;
@@ -135,16 +134,25 @@ const buttonsWrapper = css`
 const ddayExp = css`
   display: flex;
   justify-content: space-between;
-  margin: 4px 10px;
-  // 제목과 디데이
-  & > div:nth-of-type(1) {
+  margin: 0px 10px;
+  height: 140px;
+  text-align: left;
+  // 섹션 타이틀과 제목과 디데이
+  & > div:nth-of-type(2) {
     font-size: 16px;
-    // 제목
+    width: calc(50% - 20px);
+    // 섹션 타이틀
     & > div:nth-of-type(1) {
+      font-weight: bold;
     }
-    // 디데이
+    // 제목
     & > div:nth-of-type(2) {
       margin-top: 20px;
+      /* font-weight: bold; */
+    }
+    // 디데이
+    & > div:nth-of-type(3) {
+      margin-top: 5px;
       & > span {
         font-size: 26px;
       }
@@ -153,10 +161,8 @@ const ddayExp = css`
 `;
 
 const imgBack = (props) => {
-  console.log(props);
   return css`
-    width: 120px;
-    height: 120px;
+    width: 50%;
     overflow: hidden;
     border-radius: 5px;
     background-image: url(${props});

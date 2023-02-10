@@ -74,7 +74,6 @@ const RenderCells = ({ currentMonth, selectedDate }) => {
   useEffect(() => {
     getAppointmentsByUserId(userId).then((response) => {
       setAppointList(response[0]);
-      console.log(response[0]);
     });
     // const dummyData = [
     //   {

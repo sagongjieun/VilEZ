@@ -24,6 +24,7 @@ function MainNavBar() {
   ];
 
   const userId = localStorage.getItem("id");
+
   const [isMenu, setIsMenu] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
 
@@ -110,7 +111,9 @@ function MainNavBar() {
                   </div>
                   {/* <CgProfile onClick={onClickMoveMyPage} /> */}
                 </div>
-                <span onClick={onClickLogout}>로그아웃</span>
+                <span onClick={onClickLogout} css={logout}>
+                  로그아웃
+                </span>
               </div>
             </div>
           </div>
@@ -305,6 +308,10 @@ const midrightWrap = css`
       }
     }
   }
+`;
+
+const logout = css`
+  line-height: 35px;
 `;
 
 export default MainNavBar;

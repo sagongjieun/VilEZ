@@ -41,7 +41,7 @@ const ProductPut = () => {
           // console.log(data);
           setTitle(data.title);
           setCategory(data.category);
-          setImageList(data.list);
+
           setContent(data.content);
           setStartDay(data.startDay);
           setEndDay(data.endDay);
@@ -149,7 +149,7 @@ const ProductPut = () => {
       alert("물품에 대한 설명은 최대 300자 입력 가능합니다.");
       return;
     }
-    if (!imageList.length) {
+    if (imageList.length === 0) {
       alert("사진을 첨부해주시겠어요? 빌리지는 사진첨부가 필수에요");
       return;
     }
@@ -202,6 +202,7 @@ const ProductPut = () => {
           console.log(error);
         });
     }
+    console.log(imageList);
   }
 
   return (
