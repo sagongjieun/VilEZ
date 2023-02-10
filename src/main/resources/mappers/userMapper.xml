@@ -116,13 +116,13 @@
     </insert>
 
     <select id="login" parameterType="UserDto" resultMap="user">
-        SELECT id, email, password, nickname, area_lat, area_lng, oauth,date
+        SELECT id, email, password, nickname, area_lat, area_lng, oauth,date, profile_img
         FROM user
         WHERE email = #{email} and password = #{password};
     </select>
 
     <select id="loginFake" parameterType="UserDto" resultMap="user">
-        SELECT id, email, password, nickname, area_lat, area_lng, oauth,date
+        SELECT id, email, password, nickname, area_lat, area_lng, oauth,date , profile_img
         FROM user
         WHERE email = #{email} and password = #{password};
     </select>
