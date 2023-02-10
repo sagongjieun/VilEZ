@@ -4,11 +4,12 @@ import { css } from "@emotion/react";
 import bookmark from "../../assets/images/bookmark.png";
 import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
 import { deleteShareArticleByBoardId, getShareArticleByBoardId } from "../../api/share";
-import { deleteAskArticleByBoardId } from "../../api/ask";
-
+import { deleteAskArticleByBoardId, getAskArticleDetailByBoardId } from "../../api/ask";
+import { getAppointmentsByBoardId } from "../../api/appointment";
 const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
   const userId = localStorage.getItem("id");
-  const [ThisboardUserId, setThisboardUserId] = useState(null);
+  const [thisboardUserId, setThisboardUserId] = useState(null);
+  const [isAppointment, setIsAppointment] = useState(false);
   const pathname = useLocation().pathname;
   const boardId = parseInt(useParams().boardId);
   const type = pathname.includes("share") ? 2 : 1;
@@ -17,22 +18,40 @@ const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
     type === 2
       ? getShareArticleByBoardId(boardId).then((res) => {
           setThisboardUserId(res[0].userId);
-          console.log(res[0].userId);
-        })
-      : null;
-  }, []);
-  console.log(userId === ThisboardUserId);
-  function onClickDelete() {
-    type === 2
-      ? deleteShareArticleByBoardId(boardId).then(() => {
-          navigate(`/product/list/share`);
-        })
-      : deleteAskArticleByBoardId(boardId).then(() => {
-          navigate(`/product/list/ask`);
-        });
-  }
-  console.log(userId, ThisboardUserId, parseInt(userId) === parseInt(ThisboardUserId));
+          // console.log(res[0]);
+          // console.log(res[0].state);
 
+          // console.log(res[0].userId);
+          //
+        })
+      : getAskArticleDetailByBoardId(boardId).then((res) => {
+          // console.log(res[0]);
+          setThisboardUserId(res[0].userId);
+        });
+  }, []);
+  // console.log(isAppointment);
+  function onClickDelete() {
+    if (isAppointment === true) {
+      alert("예약중인 글은 삭제할 수 없어요😱");
+    } else {
+      type === 2
+        ? deleteShareArticleByBoardId(boardId).then(() => {
+            navigate(`/product/list/share`);
+          })
+        : deleteAskArticleByBoardId(boardId).then(() => {
+            navigate(`/product/list/share`);
+          });
+    }
+  }
+  // console.log(userId, thisboardUserId, parseInt(userId) === parseInt(thisboardUserId));
+  useEffect(() => {
+    getAppointmentsByBoardId(boardId, type).then((res) => {
+      console.log(res[0].length === 1);
+      if (res[0].length === 1) {
+        setIsAppointment(true);
+      }
+    });
+  }, []);
   return (
     <div css={headerWrapper}>
       <div css={headerLeftSectionWrapper}>
@@ -43,7 +62,7 @@ const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
       <div css={headerRightSectionWrapper}>
         {/* Link로 변경 */}
         {type === 1 ? (
-          parseInt(userId) === parseInt(ThisboardUserId) ? (
+          parseInt(userId) === parseInt(thisboardUserId) ? (
             <div>
               <Link to={"/product/list/ask"}>
                 <span css={optionWrap}>목록</span>
@@ -60,7 +79,7 @@ const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
               <span css={optionWrap}>목록</span>
             </Link>
           )
-        ) : parseInt(userId) === parseInt(ThisboardUserId) ? (
+        ) : parseInt(userId) === parseInt(thisboardUserId) ? (
           <div>
             <Link to={"/product/list/share"}>
               <span css={optionWrap}>목록</span>
