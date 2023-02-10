@@ -196,7 +196,7 @@ const ProductPut = () => {
       putAskArticle(formData)
         .then((res) => {
           // console.log(res);
-          navigate(`/product/detail/ask/${res.id}`);
+          navigate(`/product/detail/ask/${res[0].id}`);
         })
         .catch((error) => {
           console.log(error);
@@ -272,7 +272,7 @@ const ProductPut = () => {
       </div>
       <div css={registButtonWrapper}>
         <div>
-          <MiddleWideButton text="등록하기" onclick={onClickRegistButton} />
+          <MiddleWideButton text="수정하기" onclick={onClickRegistButton} />
         </div>
       </div>
     </div>
