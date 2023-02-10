@@ -47,9 +47,8 @@ const OAuthKakao = () => {
   useEffect(() => {
     if (nickname !== "") {
       setTimeout(() => {
-        console.log("#######", nickname, typeof nickname);
         if (nickname.includes("#")) {
-          navigate("/socialnickname");
+          navigate("/socialnickname", { state: { url: "/" } });
         } else navigate("/");
       }, 1500);
     }
