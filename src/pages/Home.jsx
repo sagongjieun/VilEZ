@@ -10,32 +10,27 @@ import mapimg from "../assets/images/mapimg.png";
 import chatimg from "../assets/images/chatimg.png";
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
-import { locationState } from "../recoil/atom";
+import { locationState, mainSearchTextState } from "../recoil/atom";
 import { getUserDetail } from "../api/user";
 
 function MainBody() {
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
-
-  const mainToProduct = () => {
-    navigate("/product/");
-  };
+  const userId = localStorage.getItem("id");
+  const setLocation = useSetRecoilState(locationState); // 어떤 변수가 상태를 담을 수 있는 그릇을 만들어 줌
+  const setMainSearchText = useSetRecoilState(mainSearchTextState);
 
   const onChangeSearch = (e) => {
     setSearch(e.target.value);
-    // console.log(e.target.value);
   };
 
   const onKeyPresssearch = (e) => {
-    if (e.key === "Enter") {
-      mainToProduct();
+    if (e.keyCode == 13) {
+      setMainSearchText(search);
+      navigate("/product/list/share");
     }
   };
-  const userId = localStorage.getItem("id");
-  // 어떤 변수가 상태를 담을 수 있는 그릇을 만들어 줌
-  const setLocation = useSetRecoilState(locationState);
-  // 상태의 값을 불러 올 수 있음
-  // const value = useRecoilValue(locationState);
+
   useEffect(() => {
     if (userId) {
       getUserDetail(userId).then((res) => {
@@ -45,7 +40,6 @@ function MainBody() {
       });
     }
   }, []);
-  // console.log(value);
 
   return (
     <div>
@@ -172,7 +166,7 @@ const InputBox = css`
 
 const floating = keyframes`
   {
-      transform: translateY(0);    
+      transform: translateY(0);
   }
   50% {
       transform: translateY(-15px);
