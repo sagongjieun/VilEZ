@@ -95,10 +95,6 @@ interface AppointmentApi {
     fun getBoardAppointments(@Path("boardId")board: Int, @Path("type")type: Int): Call<RESTBoardAppointmentsResult>
 
 
-
-
-
-
     // 포인트 내역 조회
     @GET("/vilez/appointments/my/point")
     fun getPointList(@Query("userId") int: Int): Call<RESTPointResult>

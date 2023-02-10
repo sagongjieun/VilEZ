@@ -71,8 +71,9 @@ class ApplicationClass: Application(), LifecycleObserver {
 
 
         // 네트워크 상태
-        var network: Boolean = false
+        var isNetworkConnected = false
         lateinit var networkMonitor: NetworkMonitor
+
     }
 
     override fun onCreate() {
@@ -81,7 +82,7 @@ class ApplicationClass: Application(), LifecycleObserver {
         prefs = SharedPreferencesUtil(applicationContext)
 
         // 네트워크에 연결되어있는지 확인 후 없으면 앱 종료 시키기위해 네트워크 연결상태 감지 콜백 생성시켜두기
-        network = CheckNetwork.checkNetworkState(applicationContext)
+        //isNetworkConnected = CheckNetwork.checkNetworkState(applicationContext)
 
         // Naver OAuth 초기화
         NaverIdLoginSDK.showDevelopersLog(true)
@@ -104,7 +105,7 @@ class ApplicationClass: Application(), LifecycleObserver {
             .connectTimeout(20, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(15, TimeUnit.SECONDS)
-            .addInterceptor(NoConnectionInterceptor(applicationContext))
+            //.addInterceptor(NoConnectionInterceptor(applicationContext))
             .build()
 
         // 앱이 처음 생성되는 순간, retrofit 인스턴스를 생성
@@ -112,7 +113,6 @@ class ApplicationClass: Application(), LifecycleObserver {
             .baseUrl(SERVER_URL)
             .addConverterFactory(nullOnEmptyConverterFactory)
             .addConverterFactory(GsonConverterFactory.create(gson))
-//            .addNetworkInterceptor()
             .client(okHttpClient)
             .build()
         userApi = wRetrofit.create(UserApi::class.java)
@@ -124,8 +124,8 @@ class ApplicationClass: Application(), LifecycleObserver {
         appointmentApi = wRetrofit.create(AppointmentApi::class.java)
 
         // 네트워크에 연결되어있는지 확인 후 없으면 앱 종료 시키기위해 네트워크 연결상태 감지 콜백 생성시켜두기
-//        val network: CheckNetwork = CheckNetwork(applicationContext)
-//        network.registerNetworkCallback()
+        val network = CheckNetworkState(applicationContext)
+        network.registerNetworkCallback()
 
 
         // 여기서부터는 accessToken 추가한 헤더 있는 레트로핏 서비스
@@ -137,7 +137,7 @@ class ApplicationClass: Application(), LifecycleObserver {
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .writeTimeout(15, TimeUnit.SECONDS)
             .addInterceptor(interceptor)
-            .addInterceptor(NoConnectionInterceptor(applicationContext))
+            //.addInterceptor(NoConnectionInterceptor(applicationContext))
             .build()
 
         // 앱이 처음 생성되는 순간, retrofit 인스턴스를 생성
@@ -162,7 +162,7 @@ class ApplicationClass: Application(), LifecycleObserver {
             var accessToken = prefs.getUserAccessToken()
 
             val request = chain.request().newBuilder()
-                .addHeader("access_token", accessToken)
+                .addHeader("access-token", accessToken)
                 .build()
 
             val response = chain.proceed(newRequestWithAccessToken(accessToken, request))
@@ -201,7 +201,6 @@ class ApplicationClass: Application(), LifecycleObserver {
 
         override fun intercept(chain: Interceptor.Chain): Response {
             return if (!isConnectionOn()) {
-
                 throw NoConnectivityException()
             } else {
                 chain.proceed(chain.request())

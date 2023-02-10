@@ -1,10 +1,15 @@
 package kr.co.vilez.ui.chat
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
+import android.view.ViewTreeObserver
 import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -67,6 +72,8 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
         otherUserId = intent.getIntExtra("otherUserId", 0)
         nickName = intent.getStringExtra("nickName")!!
         profile = intent.getStringExtra("profile")!!
+
+        binding.activity = this
         println(otherUserId)
         val data = JSONObject()
         data.put("roomId", roomId)
@@ -126,8 +133,26 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
             }
         }
 
-
+        val activityRootView = binding.chatroomActivityRoot
+        activityRootView.viewTreeObserver.addOnGlobalLayoutListener( ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            fun onGlobalLayout() {
+                val heightDiff = activityRootView.rootView.height - activityRootView.height;
+                if (heightDiff > dpToPx(this@ChatRoomActivity, 200f)) { // if more than 200 dp, it's probably a keyboard...
+                    // ... do something here
+                    Log.d(TAG, "@@@@@@@@@@@@@@@@2onGlobalLayout: 키보드 높이입니다 : $heightDiff")
+                }
+            }
+        })
     }
+
+    private fun dpToPx(context: Context, valueInDp: Float): Float {
+        val metrics = context.resources.displayMetrics
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp, metrics)
+    }
+
+
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -140,8 +165,8 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
     fun initView() {
         val toolbar_title = binding.root.findViewById(R.id.toolbar_title) as TextView
         val txt_edit = binding.root.findViewById(R.id.editText1) as EditText
-        val chat_plus = binding.root.findViewById(R.id.chat_plus) as TextView
-        val chat_menu = binding.root.findViewById(R.id.chat_menu) as LinearLayout
+        //val chat_plus = binding.root.findViewById(R.id.chat_plus) as TextView
+        //val chat_menu = binding.root.findViewById(R.id.chat_menu) as LinearLayout
         val txt_send = binding.root.findViewById(R.id.sendText) as ImageView
         val btn_back = binding.root.findViewById(R.id.btn_back) as ImageButton
         rv_chat = binding.root.findViewById(R.id.rv_chat) as RecyclerView
@@ -196,7 +221,8 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
             if(now == 0) {
                 binding.frameLayout.visibility = View.VISIBLE
                 binding.chatMenu.visibility = View.GONE
-                binding.chatPlus.text = "+"
+                binding.chatPlus.background = resources.getDrawable(R.drawable.ic_chat_add)
+                // binding.chatPlus.text = "+"
                 now = 3
             } else if(now == 3){
                 binding.frameLayout.visibility = View.GONE
@@ -204,17 +230,26 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
             }
         }
 
-        chat_plus.setOnClickListener(View.OnClickListener {
-            if(chat_plus.text == "X") {
-                chat_plus.text = "+"
-                chat_menu.visibility = View.GONE
-                rv_chat.scrollToPosition(itemList.size - 1)
-            } else {
-                chat_plus.text = "X"
-                chat_menu.visibility = View.VISIBLE
-                rv_chat.scrollToPosition(itemList.size - 1)
-            }
-        })
+//        binding.chatPlus.setOnClickListener(View.OnClickListener {
+//            /*if(chat_plus.background == resources.getDrawable(R.drawable.ic_chat_close)) {
+//                binding.chatPlus.background = resources.getDrawable(R.drawable.ic_chat_add)
+//                chat_menu.visibility = View.GONE
+//                rv_chat.scrollToPosition(itemList.size - 1)
+//            } else {
+//                binding.chatPlus.background = resources.getDrawable(R.drawable.ic_chat_close)
+//                chat_menu.visibility = View.VISIBLE
+//                rv_chat.scrollToPosition(itemList.size - 1)
+//            }
+//            *//*if(chat_plus.text == "X") {
+//                chat_plus.text = "+"
+//                chat_menu.visibility = View.GONE
+//                rv_chat.scrollToPosition(itemList.size - 1)
+//            } else {
+//                chat_plus.text = "X"
+//                chat_menu.visibility = View.VISIBLE
+//                rv_chat.scrollToPosition(itemList.size - 1)
+//            }*/
+//        })
         rv_chat.adapter = roomAdapter
         rv_chat.layoutManager = LinearLayoutManager(this)
 
@@ -485,6 +520,29 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
     fun showDialog(msg: String) {
         var dialog = MyAlertDialog(this, msg)
         dialog.show(this.supportFragmentManager, "Appoint")
+    }
+
+    private var isOpen = false
+    fun toggleBottomMenu(view: View) {
+        if(isOpen) {
+            binding.chatPlus.background = resources.getDrawable(R.drawable.ic_chat_add)
+            binding.chatMenu.visibility = View.GONE
+            binding.rvChat.scrollToPosition(itemList.size - 1)
+        } else {
+            binding.chatPlus.background = resources.getDrawable(R.drawable.ic_chat_close)
+            binding.chatMenu.visibility = View.VISIBLE
+            binding.rvChat.scrollToPosition(itemList.size - 1)
+        }
+        /*if(chat_plus.text == "X") {
+            chat_plus.text = "+"
+            chat_menu.visibility = View.GONE
+            rv_chat.scrollToPosition(itemList.size - 1)
+        } else {
+            chat_plus.text = "X"
+            chat_menu.visibility = View.VISIBLE
+            rv_chat.scrollToPosition(itemList.size - 1)
+        }*/
+        isOpen = !isOpen
     }
 
     @SuppressLint("ResourceAsColor")
