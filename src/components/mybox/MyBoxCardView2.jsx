@@ -1,24 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { HiCalendar, HiHeart } from "react-icons/hi";
 import elapsedTime from "../product/ProductElapsedTime";
-import { getCheckMyRoom } from "../../api/appointment";
+// import { getCheckMyRoom } from "../../api/appointment";
 
-const MyBoxCardView = ({ title, endDay, startDay, date, thumbnail, boardId, dDay, type, appId }) => {
-  const userId = localStorage.getItem("id");
+const MyBoxCardView = ({ title, endDay, startDay, date, thumbnail, dDay, roomId }) => {
   const endDayDotted = endDay?.slice(0, 4) + "." + endDay?.slice(5, 7) + "." + endDay?.slice(8, 10);
   const startDayDotted = startDay?.slice(0, 4) + "." + startDay?.slice(5, 7) + "." + startDay?.slice(8, 10);
-  const [myRoomId, setMyRoomId] = useState(0);
-  useEffect(() => {
-    getCheckMyRoom(boardId, type, userId).then((response) => {
-      setMyRoomId(response[0].id);
-    });
-  }, [appId]);
+  // const [myRoomId, setMyRoomId] = useState(0);
+  // useEffect(() => {
+  //   getCheckMyRoom(boardId, type, userId).then((response) => {
+  //     setMyRoomId(response[0].id);
+  //   });
+  // }, [appId]);
   return (
     <Link
-      to={`/product/chat/${myRoomId}`}
+      to={`/product/chat/${roomId}`}
       css={css`
         color: black;
       `}

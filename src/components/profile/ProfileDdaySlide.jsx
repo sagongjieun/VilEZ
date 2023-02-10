@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { Link } from "react-router-dom";
 import { HiChevronRight, HiChevronLeft } from "react-icons/hi2";
 
 const ProfileDdaySlide = ({ ddaySlideList }) => {
@@ -40,7 +41,11 @@ const ProfileDdaySlide = ({ ddaySlideList }) => {
       {ddaySlideList.map((appoint, index) => (
         <div key={index} css={imageWrapper} className="slide fade">
           <div css={ddayExp}>
-            <div css={imgBack(appoint.imgPath[0].path)}></div>
+            <div css={imgBack(appoint.imgPath[0].path)}>
+              <Link to={`/product/chat/${appoint.appointmentDto.roomId}`}>
+                <div>채팅으로 이동</div>
+              </Link>
+            </div>
             <div>
               <div>잊지 마세요</div>
               <div>{appoint.appointmentDto.title}</div>
@@ -162,12 +167,44 @@ const ddayExp = css`
 
 const imgBack = (props) => {
   return css`
+    cursor: pointer;
     width: 50%;
     overflow: hidden;
     border-radius: 5px;
     background-image: url(${props});
     background-size: cover;
     background-position: center center;
+    transition: all 0.3s;
+
+    > a {
+      > div {
+        opacity: 0;
+        background-color: #55cb8a8f;
+        color: #fff;
+        transition: all 0.3s;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      :hover div {
+        opacity: 1;
+      }
+    }
+
+    /* ::after {
+      content: "";
+      display: block;
+      height: 100%;
+      background-color: #66dd9c;
+      opacity: 0;
+      transition: all 0.3s;
+    }
+
+    :hover::after {
+      opacity: 0.5;
+    } */
   `;
 };
 

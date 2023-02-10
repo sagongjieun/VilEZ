@@ -35,14 +35,13 @@ const MyBoxShare = (props) => {
         myBoard.map((share, idx) => (
           <div key={idx}>
             <MyBoxCardView2
-              appId={share.myAppointListVO.id}
               title={share.myAppointListVO.title}
               type={share.myAppointListVO.type}
               startDay={share.myAppointListVO.appointmentStart}
               endDay={share.myAppointListVO.appointmentEnd}
               date={share.myAppointListVO.date}
+              roomId={share.myAppointListVO.roomId}
               thumbnail={share.imgPathList[0].path}
-              boardId={share.imgPathList[0].boardId}
               dDay={
                 share.myRentType === 1
                   ? MyBoxDDay(share.myAppointListVO.appointmentEnd)
