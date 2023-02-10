@@ -222,24 +222,7 @@ public class AppointmentController {
 
 
     ///////////////////////예약 관련 내용////////////////////////
-    @GetMapping("/my/give/{userId}")
-    @ApiOperation(value = "내가 빌려준 내역 정보를 요청하는 API",
-            notes = "\n\t type = 1 요청 게시글 "+"\n\t type = 2 공유 게시글"
-                    )
-    public ResponseEntity<?> getGiveList(@PathVariable int userId){
-        HttpVO http = new HttpVO();
-        ArrayList<Object> data = new ArrayList<>();
 
-        try{
-            data.add(appointmentService.getGiveList(userId));
-            http.setFlag("success");
-            http.setData(data);
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-
-        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
-    }
 
     @GetMapping("/check/{boardId}/{type}")
     @ApiOperation(value = "현재 공유 중인지 아닌지에 대한 정보를 요청하는 API",
@@ -283,6 +266,25 @@ public class AppointmentController {
         } catch(Exception e){
             e.printStackTrace();
         }
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
+
+    @GetMapping("/my/give/{userId}")
+    @ApiOperation(value = "내가 빌려준 내역 정보를 요청하는 API",
+            notes = "\n\t type = 1 요청 게시글 "+"\n\t type = 2 공유 게시글"
+    )
+    public ResponseEntity<?> getGiveList(@PathVariable int userId){
+        HttpVO http = new HttpVO();
+        ArrayList<Object> data = new ArrayList<>();
+
+        try{
+            data.add(appointmentService.getGiveList(userId));
+            http.setFlag("success");
+            http.setData(data);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
 
