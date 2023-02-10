@@ -5,17 +5,16 @@ import ProductDetail from "../components/product/ProductDetail";
 import ProductChatting from "../components/product/ProductChatting";
 import ProductList from "../components/product/ProductList";
 import ProductPut from "../components/product/ProductPut";
-import { useRecoilValue } from "recoil";
-import { locationState } from "../recoil/atom";
 import { useNavigate } from "react-router-dom";
 
 const Product = () => {
-  const located = useRecoilValue(locationState);
+  const areaLat = localStorage.getItem("areaLat");
+  const areaLng = localStorage.getItem("areaLng");
   const navigate = useNavigate();
 
   useEffect(() => {
     // 동네 인증이 안됐으면 Product관련 페이지 이용 불가
-    if (located.areaLat === null) {
+    if (!areaLat || !areaLng) {
       alert("빌리지를 이용하시려면 동네 인증을 해주셔야해요.");
       navigate(`/profile/product`);
     }
