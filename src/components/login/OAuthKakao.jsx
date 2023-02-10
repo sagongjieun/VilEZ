@@ -43,6 +43,7 @@ const OAuthKakao = () => {
   }, []);
 
   setTimeout(() => {
+    console.log("#######", nickname, typeof nickname);
     if (nickname.includes("#")) {
       navigate("/socialnickname");
     } else navigate("/");
