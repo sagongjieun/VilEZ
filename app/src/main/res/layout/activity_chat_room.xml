@@ -11,11 +11,13 @@
     </data>
 
     <LinearLayout
+        android:id="@+id/chatroom_activity_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:windowSoftInputMode="adjustResize">
         <!--    tools:context=".ui.chat.ChatRoomActivity"-->
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -91,14 +93,13 @@
 
                     <TextView
                         android:id="@+id/chat_plus"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_margin="8dp"
-                        android:layout_weight="1"
                         android:gravity="center"
-                        android:text="+"
-                        android:textSize="16dp" />
+                        android:background="@drawable/ic_chat_add"
+                        android:onClick="@{activity.toggleBottomMenu}"/>
 
                     <EditText
                         android:id="@+id/editText1"
@@ -107,7 +108,7 @@
                         android:layout_margin="8dp"
                         android:layout_weight="8"
                         android:background="@drawable/view_round_white2"
-                        android:elevation="4dp"
+                        android:elevation="0dp"
                         android:inputType="textMultiLine|textNoSuggestions"
                         android:maxLength="120"
                         android:maxLines="2"
@@ -119,12 +120,11 @@
 
                     <ImageView
                         android:id="@+id/sendText"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_margin="6dp"
-                        android:layout_weight="1"
-
-                        android:src="@drawable/chat_send" />
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_chat_send" />
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/chat_menu"
