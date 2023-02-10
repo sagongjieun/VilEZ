@@ -38,34 +38,31 @@ RecyclerView.Adapter<AskToChatAdapter.ShareHolder>(){
          */
         fun bindingInfo(item: BoardData) {
             binding.boardData = item
+
             binding.root.setOnClickListener {
                 CoroutineScope(Dispatchers.Main).launch {
                     val intent = Intent(binding.root.context, ChatRoomActivity::class.java)
-                    val result = ApplicationClass.chatApi.isExistChatroom(item.boardId, item.type, ApplicationClass.prefs.getId()).awaitResponse().body()
-                    if(result?.flag == "success") {
-                        intent.putExtra("roomId", result.data[0].id)
-                        intent.putExtra("otherUserId", result.data[0].notShareUserId) // shareUserId가 공유자
-                        val otherUser = ApplicationClass.userApi.getUserDetail(result.data[0].notShareUserId).awaitResponse().body()
+                    //val result = ApplicationClass.chatApi.isExistChatroom(item.boardId, item.type, ApplicationClass.prefs.getId()).awaitResponse().body()
+                        intent.putExtra("roomId", item.roomId)
+                        intent.putExtra("otherUserId", item.notShareUserId) // notShareUserId 가 상대
+                        val otherUser = ApplicationClass.userApi.getUserDetail(item.notShareUserId).awaitResponse().body()
                         if(otherUser?.flag == "success") {
                             intent.putExtra("nickName", otherUser.data[0].nickName) // 채팅 상대의 닉네임
                             intent.putExtra("profile", otherUser.data[0].profile_img) // 채팅 상대의 프로필 이미지
                             Toast.makeText(binding.root.context, "예약이 진행된 채팅방으로 이동합니다.", Toast.LENGTH_SHORT).show()
                             binding.root.context.startActivity(intent)
                         } else { // 채팅 상대 정보 불러오기 불가
-                            Toast.makeText(binding.root.context, "이 약속의 채팅 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show()
+                            // 웹 채팅 버그로 안불러와질 수 있음. 이때는 게시글 상세보기로 이동.
+                            val boardDetailIntent = if(item.type == BOARD_TYPE_SHARE) { // 디테일 상세보기로 이동
+                                Intent(binding.root.context, ShareDetailActivity::class.java)
+                            } else { // 요청글 상세보기로 이동
+                                Intent(binding.root.context, AskDetailActivity::class.java)
+                            }
+                            boardDetailIntent.putExtra("boardId", item.boardId)
+                            boardDetailIntent.putExtra("userId", item.boardWriterId)
+                            Toast.makeText(binding.root.context, "이 약속의 채팅 정보를 불러올 수 없어서 게시글 상세보기로 이동합니다.", Toast.LENGTH_SHORT).show()
+                            binding.root.context.startActivity(boardDetailIntent)
                         }
-                    } else {
-                        // 웹 채팅 버그로 안불러와질 수 있음. 이때는 게시글 상세보기로 이동.
-                        val intent = if(item.type == BOARD_TYPE_SHARE) { // 디테일 상세보기로 이동
-                            Intent(binding.root.context, ShareDetailActivity::class.java)
-                        } else { // 요청글 상세보기로 이동
-                            Intent(binding.root.context, AskDetailActivity::class.java)
-                        }
-                        intent.putExtra("boardId", item.boardId)
-                        intent.putExtra("userId", item.boardWriterId)
-                        Toast.makeText(binding.root.context, "이 약속의 채팅 정보를 불러올 수 없어서 게시글 상세보기로 이동합니다.", Toast.LENGTH_SHORT).show()
-                        binding.root.context.startActivity(intent)
-                    }
                 }
             }
         }

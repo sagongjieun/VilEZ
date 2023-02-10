@@ -11,6 +11,7 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
@@ -151,8 +152,16 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp, metrics)
     }
 
-
-
+    override fun onBackPressed() {
+        if(isOpen) {
+            binding.chatPlus.background = resources.getDrawable(R.drawable.ic_chat_add)
+            binding.chatMenu.visibility = View.GONE
+            binding.rvChat.scrollToPosition(itemList.size - 1)
+            isOpen = !isOpen
+        } else {
+            super.onBackPressed()
+        }
+    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -196,7 +205,8 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                         rv_chat.scrollToPosition(itemList.size - 1)
                         if(itemList.size>=5 && !chatSizeCheck) {
                             chatSizeCheck = true
-                            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+//                            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
                         }
                     }
                 }
@@ -349,7 +359,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                     window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
                 } else {
                         chatSizeCheck = true
-                        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+                        //window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
                 }
                 val data = JSONObject()
                 data.put("roomId", roomId)
@@ -416,6 +426,11 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
         binding.btnChatSign.setOnClickListener {
             showSignDialog()
         }
+    }
+
+    fun closeKeyboard(context: Context, view: EditText) {
+        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     private fun initScheduleButton() {
@@ -533,15 +548,6 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
             binding.chatMenu.visibility = View.VISIBLE
             binding.rvChat.scrollToPosition(itemList.size - 1)
         }
-        /*if(chat_plus.text == "X") {
-            chat_plus.text = "+"
-            chat_menu.visibility = View.GONE
-            rv_chat.scrollToPosition(itemList.size - 1)
-        } else {
-            chat_plus.text = "X"
-            chat_menu.visibility = View.VISIBLE
-            rv_chat.scrollToPosition(itemList.size - 1)
-        }*/
         isOpen = !isOpen
     }
 

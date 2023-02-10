@@ -101,13 +101,16 @@ class MyAskFragment : Fragment() { // 대여 물품 (appointments/my/give/{userI
                     Log.d(TAG, "initReserveData: 이 약속 data: $data")
                     val boardData = BoardData(
                         data.myAppointListVO.id,
+                        data.myAppointListVO.roomId,
                         if (data.imgPathList.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.imgPathList[0].path,
                         data.myAppointListVO.title,
-                        data.myAppointListVO.date,
+                        "",
                         data.myAppointListVO.appointmentStart+ " ~ " + data.myAppointListVO.appointmentEnd,
                         data.bookmarkCnt.toString(),
                         data.myAppointListVO.userId, // 글 작성자가 들어감
-                        data.myAppointListVO.type,
+                        data.myAppointListVO.shareUserId.toInt(),
+                        data.myAppointListVO.notShareUserId.toInt(),
+                        type = data.myAppointListVO.type,
                         state = Common.APPOINTMENT_TYPE_SHARE, // 공유중인 데이터만 넣을거임
                         sDay = data.myAppointListVO.appointmentStart,
                         eDay = data.myAppointListVO.appointmentEnd,
@@ -145,13 +148,16 @@ class MyAskFragment : Fragment() { // 대여 물품 (appointments/my/give/{userI
                     Log.d(TAG, "initReserveData: 이 약속 data: $data")
                     val boardData = BoardData(
                         data.myAppointListVO.id,
+                        data.myAppointListVO.roomId,
                         if (data.imgPathList.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.imgPathList[0].path,
                         data.myAppointListVO.title,
-                        data.myAppointListVO.date,
+                        "",
                         data.myAppointListVO.appointmentStart+ " ~ " + data.myAppointListVO.appointmentEnd,
                         data.bookmarkCnt.toString(),
                         data.myAppointListVO.userId, //  글 작성자가 들어가는 자리 
-                        data.myAppointListVO.type,
+                        data.myAppointListVO.shareUserId.toInt(),
+                        data.myAppointListVO.notShareUserId.toInt(),
+                        type = data.myAppointListVO.type,
                         state = Common.APPOINTMENT_TYPE_RESERVE, // 공유 예정인 데이터만 넣을거임
                         sDay = data.myAppointListVO.appointmentStart,
                         eDay = data.myAppointListVO.appointmentEnd,
