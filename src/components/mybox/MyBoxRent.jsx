@@ -41,8 +41,8 @@ const MyBoxRent = (props) => {
               startDay={rent.myAppointListVO.appointmentEnd}
               endDay={rent.myAppointListVO.appointmentStart}
               date={rent.myAppointListVO.date}
+              roomId={rent.myAppointListVO.roomId}
               thumbnail={rent.imgPathList[0].path}
-              boardId={rent.imgPathList[0].boardId}
               dDay={
                 rent.myRentType === 1
                   ? MyBoxDDay(rent.myAppointListVO.appointmentEnd)
