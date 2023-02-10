@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-// import default_profile from "../../assets/images/default_profile.png";
+import MannerPoint from "./../common/MannerPoint";
+
 const ProfileSummary = (props) => {
   const [level, setLevel] = useState(0);
+
   useEffect(() => {
     if (props.manner > 40) {
       setLevel(5);
@@ -12,6 +14,7 @@ const ProfileSummary = (props) => {
       setLevel(calLevel);
     }
   }, [props.manner]);
+
   return (
     <div css={summaryWrapper}>
       <div css={summaryBox}>
@@ -26,7 +29,10 @@ const ProfileSummary = (props) => {
           {props.nickName}
         </h3>
         <div css={mannerWrapper}>
-          <div>Lv.{level}</div>
+          <div>
+            <div>Lv.{level}</div>
+            <img src={MannerPoint(props.manner)} />
+          </div>
           <div css={mannerBox}>{props.manner}</div>
         </div>
         <div css={gaugeBar}>
@@ -67,6 +73,17 @@ const mannerWrapper = css`
   justify-content: space-between;
   width: 100%;
   margin-bottom: 10px;
+
+  & > div:nth-of-type(1) {
+    display: flex;
+    flex-direction: row;
+  }
+
+  & img {
+    width: 25px;
+    height: 25px;
+    margin-left: 5px;
+  }
 `;
 const mannerBox = css`
   border-radius: 30px;

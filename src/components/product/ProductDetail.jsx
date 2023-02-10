@@ -41,6 +41,7 @@ const ProductDetail = () => {
   const [writerNickname, setWriterNickname] = useState("");
   const [writerManner, setWriterManner] = useState("");
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [level, setLevel] = useState(0);
 
   function onClickBookmark() {
     if (isBookmarked) {
@@ -94,6 +95,14 @@ const ProductDetail = () => {
     }
   }
 
+  function calcMannerLevel(manner) {
+    if (manner > 40) {
+      return 5;
+    } else {
+      return parseInt((manner - 1) / 10) + 1;
+    }
+  }
+
   // 게시글 정보 얻어오기
   useEffect(() => {
     const type = pathname.includes("share") ? 2 : 1;
@@ -141,6 +150,7 @@ const ProductDetail = () => {
           setWriterProfile(res.profile_img);
           setWriterNickname(res.nickName);
           setWriterManner(MannerPoint(res.manner));
+          setLevel(calcMannerLevel(res.manner));
         })
         .catch((error) => console.log(error));
     }
@@ -178,6 +188,7 @@ const ProductDetail = () => {
           <div css={nickNameWrapper}>
             <img src={writerProfile} alt="writerProfileImage" />
             <span>{writerNickname}</span>
+            <span>Lv.{level}</span>
             <img src={writerManner} alt="writerMannerPoint" />
           </div>
           <div css={chatWrapper}>
