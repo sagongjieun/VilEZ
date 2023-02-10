@@ -10,7 +10,6 @@ import { HiCalendar } from "react-icons/hi";
 import { HiHeart } from "react-icons/hi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getAskArticleList } from "../../api/ask";
-// import { getUserDetail } from "../../api/user";
 import elapsedTime from "./ProductElapsedTime";
 import { useRecoilValue } from "recoil";
 import { mainSearchTextState } from "../../recoil/atom";
@@ -29,7 +28,7 @@ const ProductList = () => {
   const [getArticle, setArticles] = useState([]);
   // 요청 글
   const [askArticles, setAskArticles] = useState([]);
-  const [originalArticle, setOriginalArticle] = useState([]);
+  // const [originalArticle, setOriginalArticle] = useState([]);
 
   // 무한 스크롤 관련 변수. cnt가 페이지번호를 담당, 일정 기준 이상 스크롤시 cnt 증가, 페이지 숫자가 증가하는 것
   const [cnt, setCnt] = useState(0);
@@ -90,28 +89,41 @@ const ProductList = () => {
   }, [urlId, search]);
 
   useEffect(() => {
-    urlId === 1
-      ? // 요청
+    if (isAll) {
+      if (urlId === 1) {
         getAskArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then((res) => {
           const data = res;
-          console.log(data[0]);
-          setOriginalArticle([...originalArticle, ...data[0]]);
           setAskArticles([...askArticles, ...data[0]]);
-
           setList("물품 요청 목록");
-        })
-      : // 공유
+        });
+      } else {
         getShareArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then(
           (res) => {
+            console.log(res);
             const data = res;
-            // console.log(data[1].shareListDto.state);
-            setOriginalArticle([...originalArticle, ...data]);
             setArticles([...getArticle, ...data]);
-            console.log(getArticle);
-            // console.log(originalArticle[1].shareListDto);
             setList("물품 공유 목록");
           }
         );
+      }
+    } else {
+      if (urlId === 1) {
+        getAskArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then((res) => {
+          const data = res.filter((article) => article.askDto && article.askDto.state === 0);
+          setAskArticles([...askArticles, ...data[0]]);
+          setList("물품 요청 목록");
+        });
+      } else {
+        getShareArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then(
+          (res) => {
+            console.log(res);
+            const data = res.filter((article) => article.shareListDto && article.shareListDto.state === 0);
+            setArticles([...getArticle, ...data]);
+            setList("물품 공유 목록");
+          }
+        );
+      }
+    }
   }, [urlId, isAll, cnt, categoryToUse]);
 
   function onClickSeePossible() {
@@ -119,25 +131,8 @@ const ProductList = () => {
     setCnt(0);
     setArticles([]);
     setAskArticles([]);
-    setOriginalArticle([]);
+    console.log(isAll);
   }
-
-  // 공유가능 목록 보기위해 작성한 useEffect 0일때 공유가능, 1일때 공유 중
-  useEffect(() => {
-    if (isAll) {
-      setArticles(originalArticle);
-    } else {
-      if (urlId === 2) {
-        const modifyShareArticle = originalArticle.filter(
-          (article) => article.shareListDto && article.shareListDto.state === 1
-        );
-        setArticles(modifyShareArticle);
-      } else {
-        const modifyAskArticle = originalArticle.filter((article) => article.askDto && article.askDto.state === 1);
-        setArticles(modifyAskArticle);
-      }
-    }
-  }, [isAll, originalArticle, cnt]);
 
   // props에서 받아온 값이 newCategory에 들어감
   // setCategory에 넘어온 값을 입력
@@ -146,7 +141,7 @@ const ProductList = () => {
     setCnt(0);
     setArticles([]);
     setAskArticles([]);
-    setOriginalArticle([]);
+    // setOriginalArticle([]);
   }
 
   // 검색 후, 지웠을 때 이전 검색이 리스트에 쌓이는 것을 방지
@@ -155,7 +150,7 @@ const ProductList = () => {
     if (window.event.keyCode == 13) {
       setArticles([]);
       setAskArticles([]);
-      setOriginalArticle([]);
+      // setOriginalArticle([]);
       setCnt(0);
 
       urlId === 2

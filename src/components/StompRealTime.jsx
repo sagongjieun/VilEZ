@@ -160,10 +160,34 @@ const StompRealTime = ({
 
   useEffect(() => {
     if (chatRoomId) {
+      if (client) {
+        client.disconnect();
+        client = null;
+      }
       client = Stomp.over(function () {
         return new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
       }); // 웹소켓 클라이언트 생성
+      getChatHistory(chatRoomId).then((res) => {
+        if (res.length > 0) {
+          setShowingMessage(res);
+        }
+        // 처음 입장하면 시스템 메시지 보내기
+        else {
+          const sendMessage = {
+            roomId: chatRoomId,
+            fromUserId: myUserId,
+            toUserId: otherUserId,
+            content: "대화를 시작해보세요 😊",
+            system: true,
+            time: new Date().getTime(),
+          };
 
+          setShowingMessage([sendMessage]);
+
+          console.log("StompRealTime send1 오류");
+          client.send("/recvchat", {}, JSON.stringify(sendMessage));
+        }
+      });
       /** 채팅방의 마지막 공유지도 장소 받기 */
       getLatestMapLocation(chatRoomId).then((res) => {
         // 마지막 장소가 있다면
@@ -203,7 +227,17 @@ const StompRealTime = ({
       // 웹소켓과 연결됐을 때 동작하는 콜백함수들
       client.connect({}, () => {
         // 다른 유저의 채팅을 구독
-        console.log("StompRealTime subscribe1 오류");
+        let payload = {
+          roomId: chatRoomId,
+          userId: myUserId,
+        };
+        client.send("/room_enter", {}, JSON.stringify(payload));
+
+        payload = {
+          userId: myUserId,
+        };
+        client.send("/room_web", {}, JSON.stringify(payload));
+
         client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
           // 상대방이 채팅방을 나갔다면
           if (JSON.parse(data.body).fromUserId == -1) {
@@ -211,31 +245,35 @@ const StompRealTime = ({
             sendShareState(-1);
           }
           setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
+          let payload = {
+            roomId: chatRoomId,
+            userId: myUserId,
+          };
+          client.send("/room_enter", {}, JSON.stringify(payload));
+          payload = {
+            userId: myUserId,
+          };
+          setTimeout(() => client.send("/room_web", {}, JSON.stringify(payload)), 100);
         });
 
         // 예약 확정을 구독
-        console.log("StompRealTime subscribe2 오류");
         client.subscribe(`/sendappoint/${chatRoomId}`, () => {
           sendShareState(0);
         });
 
         // 예약 취소를 구독
-        console.log("StompRealTime subscribe3 오류");
         client.subscribe(`/sendcancel/${chatRoomId}`, () => {
           sendShareState(-2);
         });
 
         // 공유 종료를 구독
-        console.log("StompRealTime subscribe4 오류");
         client.subscribe(`/sendend/${chatRoomId}`, () => {
           sendShareState(-1);
         });
 
         // 공유지도를 구독
-        console.log("StompRealTime subscribe5 오류");
         client.subscribe(`/sendmap/${chatRoomId}/${myUserId}`, (data) => {
           data = JSON.parse(data.body);
-          console.log("오류테스트 sendmap : ", data);
 
           // 다른 유저가 움직인 지도의 데이터들
           setMovedLat(data.lat);
@@ -257,27 +295,7 @@ const StompRealTime = ({
   useEffect(() => {
     if (isSocketConnected) {
       /** 소켓에 연결되면 채팅 내역 보여주기 */
-      getChatHistory(chatRoomId).then((res) => {
-        if (res.length > 0) {
-          setShowingMessage(res);
-        }
-        // 처음 입장하면 시스템 메시지 보내기
-        else {
-          const sendMessage = {
-            roomId: chatRoomId,
-            fromUserId: myUserId,
-            toUserId: otherUserId,
-            content: "대화를 시작해보세요 😊",
-            system: true,
-            time: new Date().getTime(),
-          };
-
-          setShowingMessage([sendMessage]);
-
-          console.log("StompRealTime send1 오류");
-          client.send("/recvchat", {}, JSON.stringify(sendMessage));
-        }
-      });
+      console.log("dddddd");
     }
   }, [isSocketConnected]);
 
