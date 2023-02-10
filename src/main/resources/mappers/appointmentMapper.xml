@@ -44,7 +44,8 @@
     </resultMap>
 
     <select id="getMyAppointmentDateAsk" parameterType="int" resultMap="appointment">
-        select appointment_id, board_id, share_user_id, not_share_user_id, appointment_start, appointment_end, s.title, type,
+        select appointment_id, r.id as room_id, a.board_id, a.share_user_id, a.not_share_user_id,
+               appointment_start, appointment_end, s.title, a.type,
                (
                    case
                        when now() >= DATE_SUB(appointment_start, INTERVAL 7 DAY) then "시작일 임박!"
@@ -54,13 +55,18 @@
         from appointment as a
         left join ask_view as s
         on s.id = a.board_id
+        join room as r
+        on a.board_id = r.board_id
+            and a.share_user_id = r.share_user_id
+            and a.not_share_user_id = r.not_share_user_id
         where a.state >= 0
-          and not_share_user_id = #{userId}
+          and a.not_share_user_id = 3
           and ((appointment_start >= now() and now() >= DATE_SUB(appointment_start, INTERVAL 7 DAY)) or now() >= DATE_SUB(appointment_end, INTERVAL 7 DAY))
-        and type = 1;
+          and a.type = 1;
 </select>
     <select id="getMyAppointmentDateShare" parameterType="int" resultMap="appointment">
-        select appointment_id, board_id, share_user_id, not_share_user_id, appointment_start, appointment_end, s.title, type,
+        select appointment_id, r.id as room_id, a.board_id, a.share_user_id, a.not_share_user_id,
+               appointment_start, appointment_end, s.title, a.type,
                (
                    case
                        when now() >= DATE_SUB(appointment_start, INTERVAL 7 DAY) then "시작일 임박!"
@@ -70,10 +76,16 @@
         from appointment as a
         left join sharing_view as s
         on s.id = a.board_id
+        join room as r
+        on a.board_id = r.board_id
+            and a.share_user_id = r.share_user_id
+            and a.not_share_user_id = r.not_share_user_id
         where a.state >= 0
-          and not_share_user_id = #{userId}
-          and ((appointment_start >= now() and now() >= DATE_SUB(appointment_start, INTERVAL 7 DAY)) or now() >= DATE_SUB(appointment_end, INTERVAL 7 DAY))
-        and type = 2;
+          and a.not_share_user_id = #{userId}
+          and ((appointment_start >= now()
+                    and now() >= DATE_SUB(appointment_start, INTERVAL 7 DAY))
+                   or now() >= DATE_SUB(appointment_end, INTERVAL 7 DAY))
+          and a.type = 2;
 </select>
 
     <select id="getBoardInfoAsk" parameterType="kr.co.vilez.appointment.model.vo.PointVO" resultMap="info">
