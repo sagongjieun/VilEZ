@@ -468,11 +468,31 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
 
         }
     }
+
+    /**
+     * @return 포인트 충분하면 true, 부족시 토스트 띄우고 false 리턴
+     */
+    fun checkMyPoint(): Boolean{
+        if(ApplicationClass.prefs.getPoint() < 30) { // 대여할 때 무조건 30 포인트 삭감
+            showDialog("포인트가 부족해서 채팅하기가 불가합니다." +
+                    "\n다른 주민들에게 공유하기를 통해 포인트를 모아보세요!")
+            return false
+        }
+        return true
+    }
+
     private fun initAcceptButton() {
         if(room.state != 0) {
             showDialog("종료된 대화방입니다.")
             return
         }
+
+        if(ApplicationClass.prefs.getId() == room.shareUserId) { // 내가 대여자인 경우 포인트 확인
+            showDialog("만남 확정은 피공유자만 할 수 있습니다.")
+        } else if (!checkMyPoint()){ // 피공유자인 경우 포인트 확인
+            return
+        }
+
         binding.btnChatAccept.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
                 val result = ApplicationClass.chatApi.getAppointMent(
@@ -480,10 +500,6 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                     room.shareUserId,room.type
                 ).awaitResponse().body()
                 if(result?.flag == "success") {
-                    if(ApplicationClass.prefs.getId() == room.shareUserId) {
-                        showDialog("만남 확정은 피공유자만 할 수 있습니다.")
-                        return@launch
-                    }
                     appointDto = result.data.get(0)
                     if(appointDto != null) {
                         showDialog("이미 약속된 정보가 있습니다.")
