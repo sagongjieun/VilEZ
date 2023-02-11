@@ -18,8 +18,10 @@ import androidx.core.content.ContextCompat
 import kr.co.vilez.ui.user.RegisterActivity
 
 class PermissionUtil {
-    val REQ_GALLERY = 1
-    val REQ_LOCATION = 2
+    companion object{
+        const val REQ_GALLERY = 1
+        const val REQ_LOCATION = 2
+    }
 
     /**
      * @param multiple : 이미지를 여러장 요청하는가
@@ -75,5 +77,29 @@ class PermissionUtil {
 
 
 
+    fun checkLocationPermission(context: Context) :Boolean{
+        val locationFinePermission = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+        val locationCoarsePermission = ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+        if(locationFinePermission == PackageManager.PERMISSION_DENIED || locationCoarsePermission == PackageManager.PERMISSION_DENIED) {
+            return false
+        }
+        return true
+    }
+
+
+    fun requestLocationPermissions(context: Context) {
+        ActivityCompat.requestPermissions(
+            context as Activity, arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ), REQ_LOCATION
+        )
+    }
 
 }
