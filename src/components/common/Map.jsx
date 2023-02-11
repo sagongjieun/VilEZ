@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
 
 const { kakao } = window;
-let container, options, map, marker;
+let container, options, map;
 
 const Map = ({
   readOnly,
@@ -29,7 +29,7 @@ const Map = ({
 
   const [markerLat, setMarkerLat] = useState("");
   const [markerLng, setMarkerLng] = useState("");
-  marker = new kakao.maps.Marker();
+  let marker = new kakao.maps.Marker();
 
   const areaLat = localStorage.getItem("areaLat");
   const areaLng = localStorage.getItem("areaLng");
