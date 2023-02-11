@@ -14,12 +14,12 @@ import MyBox from "./pages/MyBox";
 import ScrollToTop from "./components/common/ScrollToTop";
 import SocialNickName from "./pages/SocialNickName";
 import { getCheckValidToken } from "./api/user";
-import { useSetRecoilState } from "recoil";
+import { useSetRecoilState, useRecoilState } from "recoil";
 import { loginUserState, isLoginState } from "./recoil/atom";
 
 function App() {
   const setLoginUser = useSetRecoilState(loginUserState);
-  const setIsLogin = useSetRecoilState(isLoginState);
+  const [isLogin, setIsLogin] = useRecoilState(isLoginState);
 
   // 로그인 유지
   useEffect(() => {
@@ -52,7 +52,7 @@ function App() {
     <BrowserRouter>
       <ScrollToTop />
       <MainNavBar />
-      <ChatOpenIcon />
+      {isLogin && <ChatOpenIcon />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
