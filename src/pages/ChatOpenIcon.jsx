@@ -3,8 +3,8 @@ import { BsChatSquare } from "react-icons/bs";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import ChattingModal from "../components/modal/ChattingModal";
-import { modalOpenState, enterChatRoomState, chatListState, boardState } from "../recoil/atom";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { modalOpenState, enterChatRoomState, chatListState, boardState, isLoginState } from "../recoil/atom";
+import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 
@@ -26,6 +26,7 @@ function ChatOpenIcon() {
     // if (!modalOpen) setIsNewMessage(false); // 새로운메시지를 확인했다면 알림 지우기
     setModalOpen(!modalOpen);
   };
+  const isLogin = useRecoilValue(isLoginState);
 
   useEffect(() => {
     if (loginUserId) {
@@ -97,13 +98,15 @@ function ChatOpenIcon() {
 
     setBoardFlag([]);
   }, [boardFlag]);
+
   return (
     <>
-      <div css={IconBox} onClick={onClickOpenChat}>
-        <BsChatSquare size="25" />
-        {isNewMessage ? <div css={newMessageAlarm}></div> : <></>}
-      </div>
-
+      {isLogin && (
+        <div css={IconBox} onClick={onClickOpenChat}>
+          <BsChatSquare size="25" />
+          {isNewMessage ? <div css={newMessageAlarm}></div> : <></>}
+        </div>
+      )}
       {modalOpen ? <ChattingModal /> : null}
     </>
   );
