@@ -128,7 +128,6 @@ const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
           </div>
         ) : null}
       </div>
-      <div>{/* <RealDeleteModal /> */}</div>
     </div>
   );
 };
@@ -140,7 +139,6 @@ const headerWrapper = css`
   justify-content: space-between;
   align-items: flex-end;
   margin-bottom: 5px;
-  position: relative;
 `;
 
 const headerLeftSectionWrapper = css`
