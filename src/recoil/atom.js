@@ -86,6 +86,16 @@ const chatListState = atom({
   default: [],
 });
 
+const stompState = atom({
+  key: "stompState",
+  default: [],
+});
+
+const boardState = atom({
+  key: "boardState",
+  default: [],
+});
+
 export {
   loginUserState,
   shareDataState,
@@ -101,4 +111,6 @@ export {
   goCntZero,
   mainSearchTextState,
   chatListState,
+  stompState,
+  boardState,
 };

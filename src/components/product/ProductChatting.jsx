@@ -22,6 +22,8 @@ import ProductReturnModal from "../modal/ProductReturnModal";
 import ShareCompleteModal from "../modal/ShareCompleteModal";
 import ShareCancelAskModal from "../modal/ShareCancelAskModal";
 import ShareCancelModal from "../modal/ShareCancelModal";
+import SockJS from "sockjs-client";
+import { Stomp } from "@stomp/stompjs";
 
 const ProductChatting = () => {
   const { roomId } = useParams();
@@ -62,10 +64,23 @@ const ProductChatting = () => {
 
   // 채팅 나가기
   function onClickQuit() {
+    // TODO
     // 상대방이 이미 나갔다면 그냥 나가기
+    // 방이 이미 터진 방인지 확인
     if (isOtherLeave) {
       deleteChatRoom(roomId, loginUserId).then((res) => {
         if (res) {
+          console.log("deleteChatRoom");
+          const client = Stomp.over(function () {
+            return new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
+          }); // 웹소켓 클라이언트 생성
+          client.connect({}, () => {
+            var payload = {
+              userId: loginUserId,
+            };
+            client.send("/room_web", {}, JSON.stringify(payload));
+          });
+
           navigate(`/product/list/share`);
         }
       });
@@ -165,7 +180,6 @@ const ProductChatting = () => {
 
         setBoardId(res.boardId);
         setBoardType(res.type);
-
         if (res.state == -1) {
           console.log("대화가 종료된 채팅방입니다.");
           setRoomState(res.state);

@@ -5,7 +5,16 @@ import bookmark from "../../assets/images/bookmark.png";
 import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
 import { deleteShareArticleByBoardId, getShareArticleByBoardId } from "../../api/share";
 import { deleteAskArticleByBoardId, getAskArticleDetailByBoardId } from "../../api/ask";
+import { useSetRecoilState } from "recoil";
 import { getAppointmentsByBoardId } from "../../api/appointment";
+// import SockJS from "sockjs-client";
+// import { Stomp } from "@stomp/stompjs";
+import { boardState } from "../../recoil/atom";
+
+// const client = Stomp.over(function () {
+//   return new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
+// });
+
 const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
   const userId = localStorage.getItem("id");
   const [thisboardUserId, setThisboardUserId] = useState(null);
@@ -14,6 +23,7 @@ const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
   const boardId = parseInt(useParams().boardId);
   const type = pathname.includes("share") ? 2 : 1;
   const navigate = useNavigate();
+  const setBoardState = useSetRecoilState(boardState);
   useEffect(() => {
     type === 2
       ? getShareArticleByBoardId(boardId).then((res) => {
@@ -34,6 +44,20 @@ const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
     if (isAppointment === true) {
       alert("예약중인 글은 삭제할 수 없어요😱");
     } else {
+      // client.connect({}, () => {
+      //   var sendMessage = {
+      //     boardId: boardId,
+      //     type: type,
+      //   };
+      //   client.send("/recvdelete", {}, JSON.stringify(sendMessage));
+
+      //   sendMessage = {
+      //     userId: userId,
+      //   };
+      //   client.send("/room_web", {}, JSON.stringify(sendMessage));
+      // });
+
+      setBoardState([boardId, type]);
       type === 2
         ? deleteShareArticleByBoardId(boardId).then(() => {
             navigate(`/product/list/share`);
