@@ -20,6 +20,7 @@ import kr.co.vilez.data.dto.ShareDto
 import kr.co.vilez.databinding.FragmentHomeShareBinding
 import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.ui.ask.AskListAdapter
+import kr.co.vilez.ui.dialog.MyAlertDialog
 import kr.co.vilez.ui.search.SearchActivity
 import kr.co.vilez.ui.share.*
 import kr.co.vilez.ui.search.category.MenuCategoryActivity
@@ -368,13 +369,28 @@ class HomeShareFragment : Fragment() {
         }
     }
 
-    fun moveToShareWriteActivity(view: View) {
+    /**
+     * @return 포인트 충분하면 true, 부족시 토스트 띄우고 false 리턴
+     */
+    fun checkMyPoint(): Boolean{
+        if(ApplicationClass.prefs.getPoint() < 30) { // 대여할 때 무조건 30 포인트 삭감
+            val dialog = MyAlertDialog(mainActivity, "포인트가 부족해서 요청글 작성이 불가합니다." +
+                    "\n다른 주민들에게 공유하기를 통해 포인트를 모아보세요!")
+            dialog.show(mainActivity.supportFragmentManager, "ShortPoint")
+            return false
+        }
+        return true
+    }
+
+    fun moveToShareWriteActivity(view: View) { // 공유하기 글쓰기 버튼 클릭
         val intent = Intent(mainActivity, ShareWriteActivity::class.java)
         intent.putExtra("type", BOARD_TYPE_SHARE)
         mainActivity.startActivity(intent)
     }
 
-    fun moveToAskWriteActivity(view: View) {
+    fun moveToAskWriteActivity(view: View) { // 요청글쓰기 버튼 클릭
+        // 포인트 확인 후 적으면 막기
+        if(!checkMyPoint()) return // 포인트 부족하면 글쓰기 화면으로 이동 불가
         val intent = Intent(mainActivity, ShareWriteActivity::class.java)
         intent.putExtra("type", BOARD_TYPE_ASK)
         mainActivity.startActivity(intent)
