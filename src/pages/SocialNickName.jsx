@@ -1,13 +1,13 @@
 import React from "react";
-// import { useLocation } from "react-router";
+import { useLocation } from "react-router";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import EditNickNameModal from "../components/modal/EditNickNameModal";
 
 const SocialNickName = () => {
-  // const location = useLocation();
-  // const url = location.state.url;
-  const url = "/";
+  const location = useLocation();
+  // console.log(url);
+  const url = location.state.url;
   console.log(url);
   return (
     <div css={modalWrapper}>
