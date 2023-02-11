@@ -12,6 +12,7 @@ import ProductImageSelect from "./ProductImageSelect";
 import ProductRegistType from "./ProductRegistType";
 import { useNavigate, useLocation } from "react-router-dom";
 import Map from "./../common/Map";
+import { getUserDetail } from "../../api/user";
 
 const { kakao } = window;
 
@@ -31,6 +32,7 @@ const ProductRegist = () => {
   const [hopeAreaLat, setHopeAreaLat] = useState("");
   const [hopeAreaLng, setHopeAreaLng] = useState("");
   const [imageList, setImageList] = useState([]);
+  const [myPoint, setMyPoint] = useState(0);
 
   // 소셜 로그인 시 닉네임 변경
   function checkSocialNickName() {
@@ -90,17 +92,14 @@ const ProductRegist = () => {
   }
 
   function onClickRegistButton() {
-    let myPoint = localStorage.getItem("point");
-    myPoint = parseInt(myPoint);
-
-    if (myPoint < 0) {
-      alert("포인트가 부족해요. 다른 사람에게 물건을 공유해주고 포인트를 얻어봐요 😀");
-      return;
-    }
-
     // 유효성 검사
     if (registType === "선택해주세요.") {
       alert("공유할 지 요청할 지 선택해주셔야해요.");
+      return;
+    }
+
+    if (registType === "물품 요청 등록" && myPoint < 30) {
+      alert("공유를 요청하기에 포인트가 부족해요. 다른 사람에게 물건을 공유해주고 포인트를 얻어봐요 😀");
       return;
     }
 
@@ -188,6 +187,14 @@ const ProductRegist = () => {
         setRegistType("물품 요청 등록");
         setSendType("물품 요청 등록");
       }
+    }
+
+    if (loginUserId) {
+      getUserDetail(loginUserId)
+        .then((res) => {
+          setMyPoint(res.point);
+        })
+        .catch((error) => console.log(error));
     }
   }, []);
 

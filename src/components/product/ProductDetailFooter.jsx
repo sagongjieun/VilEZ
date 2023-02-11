@@ -35,7 +35,7 @@ const ProductDetailFooter = () => {
         <span>이 게시물 신고하기</span>
         <HiChevronRight size="22" />
       </div> */}
-      <div onClick={() => onClickShareArticle(`http://localhost:3000${location.pathname}`)}>
+      <div onClick={() => onClickShareArticle(`https://i8d111.p.ssafy.io${location.pathname}`)}>
         <span>이 게시물 공유하기</span>
         <HiChevronRight size="22" />
       </div>

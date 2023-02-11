@@ -21,7 +21,6 @@ const OAuthNaver = () => {
       localStorage.setItem("profileImg", resData.profileImg);
       localStorage.setItem("areaLat", resData.areaLat);
       localStorage.setItem("areaLng", resData.areaLng);
-      localStorage.setItem("point", resData.point);
       setLoginUser({
         ...loginUser,
         id: resData.id,
