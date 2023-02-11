@@ -4,10 +4,10 @@ import React from "react";
 import { css } from "@emotion/react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { AiOutlineEyeInvisible, AiOutlineEye, AiOutlineExclamationCircle } from "react-icons/ai";
-import { BsCheck2Circle } from "react-icons/bs";
+// import { AiOutlineEyeInvisible, AiOutlineEye, AiOutlineExclamationCircle } from "react-icons/ai";
+// import { BsCheck2Circle } from "react-icons/bs";
+import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { IoIosCloseCircle } from "react-icons/io";
-// import bazzie from "../../assets/images/bazzi.jpg";
 import ProfileImageSelect from "../profile/ProfileImageSelect";
 import { getCheckNickName } from "../../api/user";
 import { getUserDetail } from "../../api/user";
@@ -25,16 +25,17 @@ function EditNickNameModal({ url }) {
   const [nickNameCheck, setNickNameCheck] = useState("");
   const [nickNameError, setNickNameError] = useState("");
   const [isNickNameAvailable, setIsNickNameAvailable] = useState(false);
-  const [password, setPassword] = useState("");
-  const [password2, setPassword2] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [password2Error, setPassword2Error] = useState("");
-  const [isVisible, setIsVisible] = useState(false);
-  const [isDeleted, setIsDeleted] = useState(true);
-  const [isPasswordConfirmed, setIsPasswordConfirmed] = useState("");
   const [imageList, setImageList] = useState([]);
   const [isNickNameOpen, setIsNickNameOpen] = useState(false);
-  const [isPasswordOpen, setIsPasswordOpen] = useState(false);
+  // const [password, setPassword] = useState("");
+  // const [password2, setPassword2] = useState("");
+  // const [passwordError, setPasswordError] = useState("");
+  // const [password2Error, setPassword2Error] = useState("");
+  // const [isVisible, setIsVisible] = useState(false);
+  // const [isDeleted, setIsDeleted] = useState(true);
+  // const [isPasswordConfirmed, setIsPasswordConfirmed] = useState("");
+  // const [isPasswordOpen, setIsPasswordOpen] = useState(false);
+
   function onKeyDown(event) {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -45,18 +46,18 @@ function EditNickNameModal({ url }) {
     setIsNickNameAvailable(false);
     setNickNameCheck("");
   }
-  function onChangePassword(event) {
-    setPassword(event.target.value);
-  }
-  function onChangePassword2(event) {
-    setPassword2(event.target.value);
-  }
+  // function onChangePassword(event) {
+  //   setPassword(event.target.value);
+  // }
+  // function onChangePassword2(event) {
+  // setPassword2(event.target.value);
+  // }
   function onClickNickName() {
     setIsNickNameOpen(true);
   }
-  function onClickPassword() {
-    setIsPasswordOpen(true);
-  }
+  // function onClickPassword() {
+  // setIsPasswordOpen(true);
+  // }
   function onClickNickNameCheck() {
     if ((!nickNameError || nickNameError === "중복 확인을 진행해주세요.") && nickName) {
       getCheckNickName(nickName).then((response) => {
@@ -66,22 +67,22 @@ function EditNickNameModal({ url }) {
       });
     }
   }
-  function onClickVisible() {
-    setIsVisible((prev) => !prev);
-  }
+  // function onClickVisible() {
+  //   setIsVisible((prev) => !prev);
+  // }
   function onClickDeleteNickName() {
     setNickName("");
     setNickNameCheck("");
     setIsNickNameOpen(false);
     console.log("here");
   }
-  function onClickDeletePassword() {
-    setIsDeleted(true);
-    setPassword("");
-    setPassword2("");
-    setIsPasswordOpen(false);
-    console.log("here");
-  }
+  // function onClickDeletePassword() {
+  //   setIsDeleted(true);
+  // setPassword("");
+  // setPassword2("");
+  // setIsPasswordOpen(false);
+  //   console.log("here");
+  // }
   function receiveImageList(imageList) {
     setImageList(imageList);
   }
@@ -90,8 +91,10 @@ function EditNickNameModal({ url }) {
     navigate("/");
   }
   function onSubmit() {
-    if ((isNickNameAvailable || !isNickNameOpen) && !passwordError && !password2Error && nickName) {
-      putUserPasswordNickName(userId, nickName, password).then((response) => {
+    // if ((isNickNameAvailable || !isNickNameOpen) && !passwordError && !password2Error && nickName) {
+    if ((isNickNameAvailable || !isNickNameOpen) && nickName) {
+      // putUserPasswordNickName(userId, nickName, password).then((response) => {
+      putUserPasswordNickName(userId, nickName).then((response) => {
         if (response) {
           setLoginUser((prev) => {
             return {
@@ -138,32 +141,32 @@ function EditNickNameModal({ url }) {
       setNickNameError("");
     }
   }, [nickName]);
-  useEffect(() => {
-    if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/i.test(password) && password) {
-      setPasswordError("영어 소문자, 숫자 조합 8~16자리로 입력해주세요.");
-    } else {
-      setPasswordError("");
-    }
-  }, [password]);
-  useEffect(() => {
-    if (password !== password2 && password2) {
-      setPassword2Error("비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
-    } else {
-      setPassword2Error("");
-    }
-    if (password || password2) {
-      setIsDeleted(false);
-    } else {
-      setIsDeleted(true);
-    }
-  }, [password, password2]);
-  useEffect(() => {
-    if (password && password2 && !passwordError && !password2Error) {
-      setIsPasswordConfirmed("비밀번호가 일치합니다.");
-    } else {
-      setIsPasswordConfirmed("");
-    }
-  }, [passwordError, password2Error]);
+  // useEffect(() => {
+  //   if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/i.test(password) && password) {
+  //     setPasswordError("영어 소문자, 숫자 조합 8~16자리로 입력해주세요.");
+  //   } else {
+  //     setPasswordError("");
+  //   }
+  // }, [password]);
+  // useEffect(() => {
+  //   if (password !== password2 && password2) {
+  //     setPassword2Error("비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
+  //   } else {
+  //     setPassword2Error("");
+  //   }
+  //   if (password || password2) {
+  //     setIsDeleted(false);
+  //   } else {
+  //     setIsDeleted(true);
+  //   }
+  // }, [password, password2]);
+  // useEffect(() => {
+  //   if (password && password2 && !passwordError && !password2Error) {
+  //     setIsPasswordConfirmed("비밀번호가 일치합니다.");
+  //   } else {
+  //     setIsPasswordConfirmed("");
+  //   }
+  // }, [passwordError, password2Error]);
   useEffect(() => {
     console.log(imageList);
   }, [imageList]);
@@ -218,7 +221,7 @@ function EditNickNameModal({ url }) {
       </div>
 
       {/* 비밀번호 파트 */}
-      <div css={secondWrap}>
+      {/* <div css={secondWrap}>
         <div css={subTitleWrap}>
           <strong>비밀번호</strong>
         </div>
@@ -284,7 +287,7 @@ function EditNickNameModal({ url }) {
             {isDeleted ? null : <IoIosCloseCircle />}
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* 프로필 사진 파트 */}
       <div css={thirdWrap}>
@@ -383,11 +386,11 @@ const duplicateCheck = css`
   color: #66dd9c;
 `;
 
-const secondWrap = css`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-`;
+// const secondWrap = css`
+//   display: flex;
+//   flex-direction: column;
+//   width: 100%;
+// `;
 
 const thirdWrap = css`
   display: flex;
@@ -403,18 +406,18 @@ const errorWrapper = ({ color }) => css`
   line-height: 20px;
 `;
 
-const passwordWrapper = css`
-  position: relative;
-  cursor: pointer;
-  & > div {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    right: 144px;
-    height: 44px;
-    top: 6px;
-  }
-`;
+// const passwordWrapper = css`
+//   position: relative;
+//   cursor: pointer;
+//   & > div {
+//     position: absolute;
+//     display: flex;
+//     align-items: center;
+//     right: 144px;
+//     height: 44px;
+//     top: 6px;
+//   }
+// `;
 
 const commitButtonWrapper = css`
   display: flex;
