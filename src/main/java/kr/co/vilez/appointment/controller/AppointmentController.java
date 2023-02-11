@@ -635,10 +635,11 @@ public class AppointmentController {
             map.put("fromUserId",chatVO.getFromUserId());
             map.put("profile",BASE_PROFILE);
             map.put("time",chatVO.getTime());
-            sendingOperations.convertAndSend("/sendlist/"+chatVO.getToUserId(),map);
-            sendingOperations.convertAndSend("/sendlist/"+chatVO.getFromUserId(),map);
-            sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+chatVO.getToUserId(),chatVO);
-            sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+chatVO.getFromUserId(),chatVO);
+            sendingOperations.convertAndSend("/sendlist/"+room.getShareUserId(),map);
+            sendingOperations.convertAndSend("/sendlist/"+room.getNotShareUserId(),map);
+
+            sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+room.getShareUserId(),chatVO);
+            sendingOperations.convertAndSend("/sendchat/"+chatVO.getRoomId()+"/"+room.getNotShareUserId(),chatVO);
             sendingOperations.convertAndSend("/sendend/"+chatVO.getRoomId(),map);
         }
         return payload;
