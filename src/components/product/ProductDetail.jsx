@@ -173,11 +173,18 @@ const ProductDetail = () => {
           setWriterNickname(res.nickName);
           setWriterManner(MannerPoint(res.manner));
           setLevel(calcMannerLevel(res.manner));
-          setMyPoint(res.point);
         })
         .catch((error) => console.log(error));
     }
   }, [writerId]);
+
+  useEffect(() => {
+    if (loginUserId) {
+      getUserDetail(loginUserId).then((res) => {
+        setMyPoint(res.point);
+      });
+    }
+  }, [loginUserId]);
 
   // 내가 이 게시글을 북마크했는지 여부 확인
   useEffect(() => {
@@ -246,7 +253,7 @@ const ProductDetail = () => {
             <h3>희망 공유 장소</h3>
             <span>{location}</span>
           </div>
-          <Map readOnly={true} selectedLat={hopeAreaLat} selectedLng={hopeAreaLng} />
+          <Map readOnly={true} selectedLat={hopeAreaLat} selectedLng={hopeAreaLng} path={"detail"} />
         </div>
       </div>
 
