@@ -3,12 +3,14 @@ import { BsChatSquare } from "react-icons/bs";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import ChattingModal from "../components/modal/ChattingModal";
-import { modalOpenState, enterChatRoomState, chatListState } from "../recoil/atom";
+import { modalOpenState, enterChatRoomState, chatListState, boardState } from "../recoil/atom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 
-let client;
+const client = Stomp.over(function () {
+  return new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
+});
 
 function ChatOpenIcon() {
   const loginUserId = localStorage.getItem("id");
@@ -16,7 +18,9 @@ function ChatOpenIcon() {
   const [isNewMessage, setIsNewMessage] = useState(false);
   const [enterChatRoom, setEnterChatRoom] = useRecoilState(enterChatRoomState);
   const setChatList = useSetRecoilState(chatListState);
+  // const [stomp, setStomp] = useRecoilState(stompState);
   const [isSocketConnected, setIsSocketConnected] = useState(false);
+  const [boardFlag, setBoardFlag] = useRecoilState(boardState);
   //useSetRecoilState
   const onClickOpenChat = () => {
     // if (!modalOpen) setIsNewMessage(false); // 새로운메시지를 확인했다면 알림 지우기
@@ -25,9 +29,9 @@ function ChatOpenIcon() {
 
   useEffect(() => {
     if (loginUserId) {
-      client = Stomp.over(function () {
-        return new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
-      }); // 웹소켓 클라이언트 생성
+      // client = Stomp.over(function () {
+      //   return new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
+      // }); // 웹소켓 클라이언트 생성
 
       // 웹소켓과 연결됐을 때 동작하는 콜백함수들
       client.connect({}, () => {
@@ -63,6 +67,7 @@ function ChatOpenIcon() {
         };
         client.send("/room_web", {}, JSON.stringify(sendMessage));
       });
+      client.debug = () => {};
     }
   }, []);
 
@@ -80,6 +85,18 @@ function ChatOpenIcon() {
     }
   }, [enterChatRoom, loginUserId, isSocketConnected]);
 
+  useEffect(() => {
+    if (boardFlag.length == 0) {
+      return;
+    }
+    var sendMessage = {
+      boardId: boardFlag[0],
+      type: boardFlag[1],
+    };
+    client.send("/recvdelete", {}, JSON.stringify(sendMessage));
+
+    setBoardFlag([]);
+  }, [boardFlag]);
   return (
     <>
       <div css={IconBox} onClick={onClickOpenChat}>
