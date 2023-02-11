@@ -195,7 +195,10 @@ const ProductDetail = () => {
 
   return (
     <div css={wrapper}>
-      {/* <RealDeleteModal /> */}
+      {/* <div css={DeleteWrap}>
+        <RealDeleteModal />
+      </div> */}
+
       <ProductDeatilHeader
         title={title}
         category={category}
@@ -259,7 +262,25 @@ const wrapper = css`
   display: flex;
   flex-direction: column;
   position: relative;
+  height: 100vh;
 `;
+
+// const DeleteWrap = css`
+//   position: fixed;
+//   width: 500px;
+//   top: 30%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+//   background-color: white;
+//   padding: 20px;
+//   border-radius: 10px;
+//   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
+//   z-index: 9999;
+
+//   display: flex;
+//   flex-direction: column-reverse;
+//   /* justify-content: space-between; */
+// `;
 
 const contentsWrapper = css`
   display: flex;
