@@ -463,7 +463,7 @@ const mapAndChatWrapper = css`
 const buttonWrapper = css`
   display: flex;
   flex-direction: row;
-  margin-left: auto;
+  justify-content: flex-end;
   margin-top: 80px;
   & > button {
     width: 250px;
