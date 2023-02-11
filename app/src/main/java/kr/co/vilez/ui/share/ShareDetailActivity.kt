@@ -115,12 +115,31 @@ class ShareDetailActivity : AppCompatActivity(){
         }
     }
 
+    /**
+     * @return 포인트 충분하면 true, 부족시 토스트 띄우고 false 리턴
+     */
+    fun checkMyPoint(): Boolean{
+        if(ApplicationClass.prefs.getPoint() < 30) { // 대여할 때 무조건 30 포인트 삭감
+            val dialog = MyAlertDialog(this@ShareDetailActivity, "포인트가 부족해서 만남 확정이 불가합니다." +
+                    "\n다른 주민들에게 공유하기를 통해 포인트를 모아보세요!")
+            dialog.show(supportFragmentManager, "ShortPoint")
+            return false
+        }
+        return true
+    }
+
     fun onChatBtnClick(view: View) {
         if(binding.article!!.state == 0) { // 공유 가능
-            Snackbar.make(view, "공유가능한 물건 채팅 시작하기", Snackbar.LENGTH_SHORT).show();
+            Log.d(TAG, "onChatBtnClick: 공유가능 채팅 시작")
+           // Snackbar.make(view, "공유가능한 물건 채팅 시작하기", Snackbar.LENGTH_SHORT).show();
         } else { // 공유중 => 예약
-            Snackbar.make(view, "공유중인 물건 예약 시작하기", Snackbar.LENGTH_SHORT).show();
+            Log.d(TAG, "onChatBtnClick: 이미 다른 사람이 공유중인것 예약 시작")
+            //Snackbar.make(view, "공유중인 물건 예약 시작하기", Snackbar.LENGTH_SHORT).show();
         }
+        
+        // 포인트 확인 후 충분하면 시행
+        if(!checkMyPoint()) return // 포인트 부족시 더이상 진행 불가
+        
         CoroutineScope(Dispatchers.Main).launch {
             // 먼저 채팅방이 존재하는지 확인하기
             val isExist = ApplicationClass.chatApi.isExistChatroom(boardId!!,
