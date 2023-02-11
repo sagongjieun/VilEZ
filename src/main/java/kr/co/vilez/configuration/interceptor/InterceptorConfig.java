@@ -19,7 +19,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/users/join")
                 .excludePathPatterns("/users/code")
                 .excludePathPatterns("/users/login/fake")
-                .addPathPatterns("/users/refresh");
-//                .addPathPatterns("/appointments/my/point"); todo 테스트용
+                .addPathPatterns("/users/refresh")
+                .addPathPatterns("/appointments/my/point");
     }
 }
