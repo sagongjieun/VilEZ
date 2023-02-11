@@ -52,7 +52,13 @@ const ProductCategory = ({ isMain, sendCategory, list }) => {
   useEffect(() => {
     sendCategory(category);
   }, [category]);
-
+  // const getLeftValue = () => {
+  //   if (categoryTypeList.length >= 10 || categoryType.length >= 10) {
+  //     return 210;
+  //   } else {
+  //     return 130;
+  //   }
+  // };
   return (
     <div css={isMain ? categoryWrapper : noBorder}>
       <span>{category}</span>
@@ -117,7 +123,7 @@ const noBorder = css`
   flex-direction: row;
   /* border: 1px solid #ededed; */
   border-radius: 5px;
-  width: 200px;
+  width: fit-content;
   height: 55px;
   align-items: center;
   background: #ffffff;
@@ -188,7 +194,7 @@ const categoryTypeModifyWrapper = css`
   position: absolute;
   width: 158px;
   height: 300px;
-  left: 130px;
+  right: -170px;
   top: 0px;
   background: #ffffff;
   border: 1px solid #ededed;

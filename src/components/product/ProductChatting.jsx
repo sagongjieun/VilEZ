@@ -156,7 +156,7 @@ const ProductChatting = () => {
   function receiveShareState(state) {
     setShareState(state);
   }
-
+  const [isAuthorized, setIsAuthorized] = useState(false);
   useEffect(() => {
     // boardId 얻기
     getBoardIdByRoomId(roomId)
@@ -184,7 +184,14 @@ const ProductChatting = () => {
           setNotShareUserId(parseInt(loginUserId));
         } else {
           alert("채팅방에 입장할 수 없습니다.");
-          navigate(-1);
+          navigate(`/`);
+          return null;
+        }
+        // Add a state variable to keep track of the authorization status
+
+        // Update the authorization status based on the result of the API call
+        if (loginUserId == res.shareUserId || loginUserId == res.notShareUserId) {
+          setIsAuthorized(true);
         }
       })
       .catch((error) => {
@@ -288,94 +295,106 @@ const ProductChatting = () => {
 
   return (
     <div css={wrapper}>
-      <div css={articleInfoWrapper}>
-        <h2>{boardDetail.otherUserNickname} 님과의 대화</h2>
-        <ProductInfo infos={boardDetail} boardId={boardId} boardType={boardType} />
-      </div>
-      <div css={mapAndChatWrapper}>
-        {boardId && boardType && otherUserId && boardDetail.otherUserNickname && (
-          <StompRealTime
-            roomId={roomId}
-            boardId={boardId}
-            boardType={boardType}
-            otherUserId={otherUserId}
-            otherUserNickname={boardDetail.otherUserNickname}
-            shareUserId={shareUserId}
-            notShareUserId={notShareUserId}
-            shareState={shareState}
-            roomState={roomState}
-            sendShareState={receiveShareState}
-            isChatEnd={isChatEnd}
-            sendOtherLeave={receiveOtherLeave}
-          />
-        )}
-      </div>
-      <div css={buttonWrapper}>
-        {/* state : 0 예약 후, -1 반납 후, -2 예약 취소 후, -3 예약 전 */}
-        {shareState == 0 && (
-          <>
-            {loginUserId == notShareUserId ? (
+      {isAuthorized ? (
+        <div>
+          <div css={articleInfoWrapper}>
+            <h2>{boardDetail.otherUserNickname} 님과의 대화</h2>
+            <ProductInfo infos={boardDetail} boardId={boardId} boardType={boardType} />
+          </div>
+          <div css={mapAndChatWrapper}>
+            {boardId && boardType && otherUserId && boardDetail.otherUserNickname && (
+              <StompRealTime
+                roomId={roomId}
+                boardId={boardId}
+                boardType={boardType}
+                otherUserId={otherUserId}
+                otherUserNickname={boardDetail.otherUserNickname}
+                shareUserId={shareUserId}
+                notShareUserId={notShareUserId}
+                shareState={shareState}
+                roomState={roomState}
+                sendShareState={receiveShareState}
+                isChatEnd={isChatEnd}
+                sendOtherLeave={receiveOtherLeave}
+              />
+            )}
+          </div>
+          <div css={buttonWrapper}>
+            {/* state : 0 예약 후, -1 반납 후, -2 예약 취소 후, -3 예약 전 */}
+            {shareState == 0 && (
               <>
-                <MiddleWideButton text={"예약 취소"} onclick={onClickAskCancelShare} />
-                <MiddleWideButton text={"공유 종료"} onclick={onClickEndShare} />
-              </>
-            ) : (
-              <>
-                <MiddleWideButton text={"예약 취소"} onclick={onClickCancelShare} />
-                <MiddleWideButton text={"반납 확인"} onclick={onClickCheckReturn} />
+                {loginUserId == notShareUserId ? (
+                  <>
+                    <MiddleWideButton text={"예약 취소"} onclick={onClickAskCancelShare} />
+                    <MiddleWideButton text={"공유 종료"} onclick={onClickEndShare} />
+                  </>
+                ) : (
+                  <>
+                    <MiddleWideButton text={"예약 취소"} onclick={onClickCancelShare} />
+                    <MiddleWideButton text={"반납 확인"} onclick={onClickCheckReturn} />
+                  </>
+                )}
               </>
             )}
-          </>
-        )}
-        {shareState == -1 && (
-          <>
-            <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
-          </>
-        )}
-        {shareState == -2 && (
-          <>
-            <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
-          </>
-        )}
-        {shareState == -3 && (
-          <>
-            <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
-            {loginUserId == notShareUserId ? <MiddleWideButton text={"예약 확정"} onclick={onClickConfirm} /> : <></>}
-          </>
-        )}
-      </div>
+            {shareState == -1 && (
+              <>
+                <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
+              </>
+            )}
+            {shareState == -2 && (
+              <>
+                <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
+              </>
+            )}
+            {shareState == -3 && (
+              <>
+                <MiddleWideButton text={"채팅 나가기"} onclick={onClickQuit} />
+                {loginUserId == notShareUserId ? (
+                  <MiddleWideButton text={"예약 확정"} onclick={onClickConfirm} />
+                ) : (
+                  <></>
+                )}
+              </>
+            )}
+          </div>
 
-      {isConfirm ? (
-        <MeetConfirmModal
-          close={setIsConfirm}
-          openOath={setIsOath}
-          otherUserNickname={boardDetail.otherUserNickname}
-          confirmedStartDate={confirmedStartDate}
-          confirmedEndDate={confirmedEndDate}
-        />
-      ) : null}
-      {isQuit ? <QuitChattingModal close={setIsQuit} roomId={roomId} /> : null}
-      {isOath ? <OathModal close={setIsOath} roomId={roomId} readOnly={false} /> : null}
-      {isProductReturn ? (
-        <ProductReturnModal
-          close={setIsProductReturn}
-          otherUserNickname={boardDetail.otherUserNickname}
-          otherUserId={otherUserId}
-          roomId={roomId}
-        />
-      ) : null}
-      {isShareComplete ? (
-        <ShareCompleteModal otherUserNickname={boardDetail.otherUserNickname} close={setIsShareComplete} />
-      ) : null}
-      {isShareCancel ? (
-        <ShareCancelModal close={setIsShareCancel} otherUserNickname={boardDetail.otherUserNickname} roomId={roomId} />
-      ) : null}
-      {isShareCancelAsk ? (
-        <ShareCancelAskModal
-          close={setIsShareCancelAsk}
-          otherUserNickname={boardDetail.otherUserNickname}
-          roomId={roomId}
-        />
+          {isConfirm ? (
+            <MeetConfirmModal
+              close={setIsConfirm}
+              openOath={setIsOath}
+              otherUserNickname={boardDetail.otherUserNickname}
+              confirmedStartDate={confirmedStartDate}
+              confirmedEndDate={confirmedEndDate}
+            />
+          ) : null}
+          {isQuit ? <QuitChattingModal close={setIsQuit} roomId={roomId} /> : null}
+          {isOath ? <OathModal close={setIsOath} roomId={roomId} readOnly={false} /> : null}
+          {isProductReturn ? (
+            <ProductReturnModal
+              close={setIsProductReturn}
+              otherUserNickname={boardDetail.otherUserNickname}
+              otherUserId={otherUserId}
+              roomId={roomId}
+            />
+          ) : null}
+          {isShareComplete ? (
+            <ShareCompleteModal otherUserNickname={boardDetail.otherUserNickname} close={setIsShareComplete} />
+          ) : null}
+          {isShareCancel ? (
+            <ShareCancelModal
+              close={setIsShareCancel}
+              otherUserNickname={boardDetail.otherUserNickname}
+              roomId={roomId}
+            />
+          ) : null}
+          {isShareCancelAsk ? (
+            <ShareCancelAskModal
+              close={setIsShareCancelAsk}
+              otherUserNickname={boardDetail.otherUserNickname}
+              roomId={roomId}
+            />
+          ) : null}
+        </div>
       ) : null}
     </div>
   );
