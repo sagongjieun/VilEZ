@@ -28,13 +28,19 @@ const locationWrapper = css`
   border-right: 1px solid #d8d8d8;
   & > div {
     width: 100%;
-    max-width: 160px;
+    max-width: 170px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     margin: 0 auto;
     padding-top: 20px;
+    & > div:nth-of-type(2) {
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
 `;
 const locationIcon = css`
