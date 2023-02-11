@@ -156,7 +156,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<PointListVO> getPointList(int userId) throws Exception {
         List<PointVO> pointVOList =  appointmentDao.getPointList(userId);
-
+        Collections.reverse(pointVOList);
         List<PointListVO> list = new ArrayList<>();
         for(PointVO pointVO : pointVOList) {
             BoardInfoVO boardInfoVO = new BoardInfoVO();
