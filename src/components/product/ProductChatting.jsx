@@ -61,6 +61,7 @@ const ProductChatting = () => {
   const [roomState, setRoomState] = useState(0);
   const [isChatEnd, setIsChatEnd] = useState(false);
   const [isOtherLeave, setIsOtherLeave] = useState(false);
+  const [myPoint, setMyPoint] = useState(0);
 
   // 채팅 나가기
   function onClickQuit() {
@@ -98,6 +99,11 @@ const ProductChatting = () => {
 
   // 예약(약속) 확정
   function onClickConfirm() {
+    if (myPoint < 30) {
+      alert("공유를 진행하기에 포인트가 부족해요. 다른 사람에게 물건을 공유해주고 포인트를 얻어봐요 😀");
+      return;
+    }
+
     getShareDate(boardId, notShareUserId, shareUserId, boardType).then((res) => {
       res = res[0];
 
@@ -172,6 +178,16 @@ const ProductChatting = () => {
     setShareState(state);
   }
   const [isAuthorized, setIsAuthorized] = useState(false);
+  useEffect(() => {
+    if (loginUserId) {
+      getUserDetail(loginUserId)
+        .then((res) => {
+          setMyPoint(res.point);
+        })
+        .catch((error) => console.log(error));
+    }
+  }, []);
+
   useEffect(() => {
     // boardId 얻기
     getBoardIdByRoomId(roomId)

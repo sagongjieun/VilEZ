@@ -24,7 +24,6 @@ const OAuthKakao = () => {
       localStorage.setItem("profileImg", resData.profileImg);
       localStorage.setItem("areaLat", resData.areaLat);
       localStorage.setItem("areaLng", resData.areaLng);
-      localStorage.setItem("point", resData.point);
       setNickname(resData.nickName);
 
       setLoginUser((prev) => {

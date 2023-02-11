@@ -15,6 +15,8 @@ import ScrollToTop from "./components/common/ScrollToTop";
 import SocialNickName from "./pages/SocialNickName";
 
 function App() {
+  // 로그인 유지
+
   return (
     <BrowserRouter>
       <ScrollToTop />

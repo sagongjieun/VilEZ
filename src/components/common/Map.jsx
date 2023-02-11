@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
 
 const { kakao } = window;
+let container, options, map, marker;
 
 const Map = ({
   readOnly,
@@ -28,8 +29,7 @@ const Map = ({
 
   const [markerLat, setMarkerLat] = useState("");
   const [markerLng, setMarkerLng] = useState("");
-  let container, options, map;
-  let marker = new kakao.maps.Marker();
+  marker = new kakao.maps.Marker();
 
   const areaLat = localStorage.getItem("areaLat");
   const areaLng = localStorage.getItem("areaLng");
@@ -158,6 +158,7 @@ const Map = ({
   }
 
   useEffect(() => {
+    console.log("1");
     initMap();
 
     if (path === "regist") {
@@ -174,8 +175,8 @@ const Map = ({
 
   /** 게시글 수정에서 쓰이는 map */
   useEffect(() => {
-    if (hopeAreaLat && hopeAreaLng) {
-      initMap();
+    console.log("2");
+    if (map && hopeAreaLat && hopeAreaLng) {
       makeRectangle();
       const latlng = new kakao.maps.LatLng(hopeAreaLat, hopeAreaLng);
 
@@ -186,10 +187,11 @@ const Map = ({
       eventZoomChanged();
       eventSetMarker();
     }
-  }, [hopeAreaLat, hopeAreaLng]);
+  }, [map, hopeAreaLat, hopeAreaLng]);
 
   /** 지도 데이터 보내기 */
   useEffect(() => {
+    console.log("3");
     if (!readOnly) {
       sendLocation(location, lat, lng, zoomLevel, isMarker);
     }
@@ -197,17 +199,18 @@ const Map = ({
 
   /** 실시간 공유 지도 데이터 받기 */
   useEffect(() => {
-    if (movedLat && movedLng && movedZoomLevel) {
-      initMap();
+    console.log("4");
+    if (map && movedLat && movedLng && movedZoomLevel) {
       const locPosition = new kakao.maps.LatLng(movedLat, movedLng);
 
       map.setLevel(movedZoomLevel); // 지도 레벨 동기화
       map.setCenter(locPosition);
-      map.panTo(locPosition);
 
       if (movedMarker) {
+        console.log("여기로 안옴???");
         marker.setPosition(locPosition);
         marker.setMap(map);
+        map.panTo(locPosition);
         setHasMarker(true);
         setMarkerLat(locPosition.getLat());
         setMarkerLng(locPosition.getLng());
@@ -220,9 +223,11 @@ const Map = ({
       } else {
         // dragend, zoomchange 이벤트의 경우 이전 마커의 위치에 마커 유지
         if (hasMarker) {
+          console.log("저기로 안옴???");
           const prevMarkerPosition = new kakao.maps.LatLng(markerLat, markerLng);
           marker.setPosition(prevMarkerPosition);
           marker.setMap(map);
+          map.panTo(locPosition);
         }
       }
 
@@ -231,13 +236,12 @@ const Map = ({
       eventZoomChanged();
       eventSetMarker();
     }
-  }, [movedLat, movedLng, movedZoomLevel]);
+  }, [map, movedLat, movedLng, movedZoomLevel, movedMarker]);
 
   /** readOnly : 지도 제어 불가능 */
   useEffect(() => {
-    if (selectedLat && selectedLng) {
-      initMap();
-
+    console.log("5");
+    if (map && selectedLat && selectedLng) {
       marker = new kakao.maps.Marker();
 
       const latlng = new kakao.maps.LatLng(selectedLat, selectedLng);
@@ -250,8 +254,6 @@ const Map = ({
     } else {
       // 공유지도에서 더 이상 대화가 안 될 때
       if (disableMapLat && disableMapLng) {
-        initMap();
-
         marker = new kakao.maps.Marker();
 
         const latlng = new kakao.maps.LatLng(disableMapLat, disableMapLng);
@@ -262,7 +264,7 @@ const Map = ({
         map.setZoomable(false);
       }
     }
-  }, [selectedLat, selectedLng, disableMapLat, disableMapLng]);
+  }, [map, selectedLat, selectedLng, disableMapLat, disableMapLng]);
 
   return <div id="map" css={mapWrapper}></div>;
 };
