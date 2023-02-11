@@ -99,7 +99,6 @@ function EditNickNameModal({ url }) {
           setLoginUser((prev) => {
             return {
               ...prev,
-              id: userId,
               nickName: nickName,
             };
           });

@@ -4,13 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { css } from "@emotion/react";
 import { requestNaverLogin } from "../../api/oAuthLogin";
 import LoginLoadingModal from "../modal/LoginLoadingModal";
-import { useRecoilState } from "recoil";
-import { loginUserState } from "../../recoil/atom";
+import { useSetRecoilState } from "recoil";
+import { isLoginState, loginUserState } from "../../recoil/atom";
 
 const OAuthNaver = () => {
-  const [loginUser, setLoginUser] = useRecoilState(loginUserState);
   const navigate = useNavigate();
   const code = new URL(window.location.href).searchParams.get("code");
+  const setLoginUser = useSetRecoilState(loginUserState);
+  const setIsLogin = useSetRecoilState(isLoginState);
+
   function onNaverLogin(code) {
     requestNaverLogin(code).then((response) => {
       const resData = response[0];
@@ -21,16 +23,21 @@ const OAuthNaver = () => {
       localStorage.setItem("profileImg", resData.profileImg);
       localStorage.setItem("areaLat", resData.areaLat);
       localStorage.setItem("areaLng", resData.areaLng);
+
       setLoginUser({
-        ...loginUser,
         id: resData.id,
         nickName: resData.nickName,
         manner: resData.manner,
         point: resData.point,
         profileImg: resData.profileImg,
+        areaLng: resData.areaLng,
+        areaLat: resData.areaLat,
       });
+
+      setIsLogin(true);
     });
   }
+
   useEffect(() => {
     onNaverLogin(code);
   }, []);

@@ -30,6 +30,18 @@ async function getCheckNickName(nickName) {
   }
 }
 
+async function getCheckValidToken() {
+  // 로그인 유지를 위한 토큰 유효 검사
+  try {
+    const { data } = await authJsonAxios.get(`/users/check/access`);
+
+    if (data.flag === "success") return data.data[0];
+    else return false;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // POST
 
 async function postMannerPoint(body) {
@@ -52,17 +64,7 @@ async function postLogin(email, password) {
         alert("이메일 혹은 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
       } else {
         console.log(data);
-        const res = data.data[0];
-
-        localStorage.setItem("accessToken", res.accessToken);
-        localStorage.setItem("refreshToken", res.refreshToken);
-        localStorage.setItem("id", res.id);
-        localStorage.setItem("nickName", res.nickName);
-        localStorage.setItem("profileImg", res.profileImg);
-        localStorage.setItem("areaLat", res.areaLat);
-        localStorage.setItem("areaLng", res.areaLng);
-
-        return data.data;
+        return data.data[0];
       }
     } else {
       alert("이메일 혹은 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
@@ -73,9 +75,9 @@ async function postLogin(email, password) {
   }
 }
 
-async function postLogout(userInfo) {
+async function postLogout(id) {
   try {
-    const { data } = await defaultAxios.post("users/logout", userInfo);
+    const { data } = await defaultAxios.post("users/logout", { id: id });
 
     if (data.flag === "success") return true;
     else console.log("로그아웃이 정상적으로 완료되지 않았습니다.");
@@ -167,6 +169,8 @@ async function putUserProfileImage(formData) {
 
 export {
   getUserDetail,
+  getCheckNickName,
+  getCheckValidToken,
   postMannerPoint,
   putUserPasswordByEmail,
   putUserPasswordNickName,
@@ -175,5 +179,4 @@ export {
   postLogout,
   postRefreshToken,
   postUserInformation,
-  getCheckNickName,
 };

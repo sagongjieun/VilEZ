@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { Link } from "react-router-dom";
@@ -6,27 +6,24 @@ import { FiSearch } from "react-icons/fi";
 import { HiArchiveBox } from "react-icons/hi2";
 // import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { loginUserState } from "../../recoil/atom";
+import { useRecoilValue, useRecoilState, useResetRecoilState } from "recoil";
+import { loginUserState, isLoginState } from "../../recoil/atom";
 import { postLogout } from "../../api/user";
 
 function MainNavBar() {
   const navigate = useNavigate();
-
   const nickName = localStorage.getItem("nickName");
   const profileImg = localStorage.getItem("profileImg");
-  const [loginUser, setLoginUser] = useRecoilState(loginUserState);
+  const loginUser = useRecoilValue(loginUserState);
+  const resetLoginUser = useResetRecoilState(loginUserState);
+  const [isLogin, setIsLogin] = useRecoilState(isLoginState);
 
+  const [isMenu, setIsMenu] = useState(false);
   const menus = [
     { name: "물품 공유 목록", path: "/product/list/share" },
     { name: "물품 요청 목록", path: "/product/list/ask" },
     { name: "글 등록하기", path: "/product/regist" },
   ];
-
-  const userId = localStorage.getItem("id");
-
-  const [isMenu, setIsMenu] = useState(false);
-  const [isLogin, setIsLogin] = useState(false);
 
   function onClickShowMenu() {
     setIsMenu(!isMenu);
@@ -48,26 +45,17 @@ function MainNavBar() {
     navigate("/product/list/share");
   }
 
-  async function onClickLogout() {
-    const response = postLogout({ id: userId });
-
-    if (response) {
-      localStorage.clear();
-      setLoginUser(null);
-      navigate("/");
-    }
+  function onClickLogout() {
+    postLogout(loginUser.id).then((res) => {
+      if (res) {
+        // localstorage와 recoil값 초기화
+        localStorage.clear();
+        resetLoginUser();
+        setIsLogin(false);
+        navigate("/");
+      }
+    });
   }
-
-  /** 로그인 유지 변경하기 */
-  useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-
-    if (accessToken) {
-      setIsLogin(true);
-    } else {
-      setIsLogin(false);
-    }
-  }, [loginUser]);
 
   return (
     <>
