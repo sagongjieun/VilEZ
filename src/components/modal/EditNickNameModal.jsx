@@ -121,7 +121,11 @@ function EditNickNameModal({ url }) {
         }
       });
     } else if (!isNickNameAvailable) {
-      setNickNameError("중복 확인을 진행해주세요.");
+      if ((nickName && nickName.length > 6) || !/^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣 ]*$/.test(nickName)) {
+        setNickNameError("닉네임은 특수문자 제외 최대 6자까지 설정할 수 있어요.");
+      } else {
+        setNickNameError("중복 확인을 진행해주세요.");
+      }
     } else if (!nickName) {
       alert("닉네임을 변경해주세요.");
     }
@@ -135,7 +139,7 @@ function EditNickNameModal({ url }) {
   useEffect(() => {
     if (nickName === userNickName && nickName) {
       setNickNameError(`${nickName}"은(는) 현재 닉네임과 동일합니다.`);
-    } else if (nickName && nickName.length > 6) {
+    } else if ((nickName && nickName.length > 6) || /^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣 ]*$/.test(nickName)) {
       setNickNameError("닉네임은 특수문자 제외 최대 6자까지 설정할 수 있어요.");
     } else {
       setNickNameError("");

@@ -138,6 +138,7 @@ const ProductList = () => {
     }
     setSearch(inputValue);
   };
+
   // 검색 후, 지웠을 때 이전 검색이 리스트에 쌓이는 것을 방지
   // 스크롤이 내려가서 cnt가 변했을 때, 검색을 하면 그 페이지를 기준으로 해서 문제를 해결함
   function onChangeSearch(e) {

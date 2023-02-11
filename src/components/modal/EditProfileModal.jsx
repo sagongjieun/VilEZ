@@ -113,7 +113,11 @@ function EditProfile({ setIsEditProfileOpen }) {
         }
       });
     } else if (!isNickNameAvailable) {
-      setNickNameError("중복 확인을 진행해주세요.");
+      if ((nickName && nickName.length > 6) || !/^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣 ]*$/.test(nickName)) {
+        setNickNameError("닉네임은 특수문자 제외 최대 6자까지 설정할 수 있어요.");
+      } else {
+        setNickNameError("중복 확인을 진행해주세요.");
+      }
     }
   }
   useEffect(() => {
@@ -125,7 +129,7 @@ function EditProfile({ setIsEditProfileOpen }) {
   useEffect(() => {
     if (nickName === userNickName && nickName) {
       setNickNameError(`${nickName}"은(는) 현재 닉네임과 동일합니다.`);
-    } else if (nickName && nickName.length > 6) {
+    } else if ((nickName && nickName.length > 6) || !/^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣 ]*$/.test(nickName)) {
       setNickNameError("닉네임은 특수문자 제외 최대 6자까지 설정할 수 있어요.");
     } else {
       setNickNameError("");
@@ -157,9 +161,6 @@ function EditProfile({ setIsEditProfileOpen }) {
       setIsPasswordConfirmed("");
     }
   }, [passwordError, password2Error]);
-  useEffect(() => {
-    console.log(imageList);
-  }, [imageList]);
   return (
     <form css={EditProfileBox}>
       <h3>프로필 수정</h3>

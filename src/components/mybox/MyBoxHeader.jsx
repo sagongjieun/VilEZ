@@ -1,22 +1,37 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
 import villageLandscape from "../../assets/images/village_landscape.png";
+import { getAppointmentsByUserId } from "../../api/appointment";
 
 const MyBoxHeader = () => {
+  const userId = localStorage.getItem("id");
   const userNickName = localStorage.getItem("nickName");
-  const shareCnt = 10;
-  const rentCnt = 5;
-  useEffect(() => {}, []);
+  // const shareCnt = 10;
+  // const rentCnt = 5;
+  const [allAppointments, setAllAppointments] = useState([]);
+  const [shareCnt, setShareCnt] = useState(0);
+  const [rentCnt, setRentCnt] = useState(0);
+  useEffect(() => {
+    getAppointmentsByUserId(userId).then((response) => {
+      setAllAppointments(response[0]);
+      setShareCnt(response[0].filter((appoint) => appoint.state === 1).length);
+      setRentCnt(response[0].filter((appoint) => appoint.state === 0).length);
+    });
+  }, []);
   return (
     <div css={headerWrapper}>
       <div>
         <b>{userNickName}</b> 님은
       </div>
       <div>
-        <div>
-          <div>{shareCnt}회</div> 공유를 하고 <div>{rentCnt}회</div> 공유를 받았습니다.
-        </div>
+        {allAppointments && allAppointments.length > 0 ? (
+          <div>
+            <div>{shareCnt}회</div> 공유를 하고 <div>{rentCnt}회</div> 공유를 받았습니다.
+          </div>
+        ) : (
+          <div>아직 공유 내역이 없어요. 빌리지에서 공유를 시작해보세요.</div>
+        )}
       </div>
       <img src={villageLandscape} />
     </div>

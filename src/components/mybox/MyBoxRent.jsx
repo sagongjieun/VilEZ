@@ -44,7 +44,7 @@ const MyBoxRent = (props) => {
               roomId={rent.myAppointListVO.roomId}
               thumbnail={rent.imgPathList[0].path}
               dDay={
-                rent.myRentType === 1
+                props.myRentType === 1
                   ? MyBoxDDay(rent.myAppointListVO.appointmentEnd)
                   : MyBoxDDay(rent.myAppointListVO.appointmentStart)
               }
