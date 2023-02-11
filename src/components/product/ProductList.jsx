@@ -158,9 +158,9 @@ const ProductList = () => {
           )
         : getAskArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then(
             (res) => {
-              const data = res;
+              const data = res[0];
               setAskArticles(data);
-              setList("물품 공유 목록");
+              setList("물품 요청 목록");
             }
           );
 

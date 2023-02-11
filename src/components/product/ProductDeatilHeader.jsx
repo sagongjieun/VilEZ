@@ -10,6 +10,7 @@ import { getAppointmentsByBoardId } from "../../api/appointment";
 // import SockJS from "sockjs-client";
 // import { Stomp } from "@stomp/stompjs";
 import { boardState } from "../../recoil/atom";
+// import RealDeleteModal from "./../modal/RealDeleteModal";
 
 // const client = Stomp.over(function () {
 //   return new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
@@ -120,12 +121,14 @@ const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
             <span css={optionWrap}>목록</span>
           </Link>
         )}
-
-        <div>
-          <img src={bookmark} alt="bookmark" />
-          <small>{bookmarkCount}</small>
-        </div>
+        {type === 2 ? (
+          <div>
+            <img src={bookmark} alt="bookmark" />
+            <small>{bookmarkCount}</small>
+          </div>
+        ) : null}
       </div>
+      <div>{/* <RealDeleteModal /> */}</div>
     </div>
   );
 };
@@ -137,6 +140,7 @@ const headerWrapper = css`
   justify-content: space-between;
   align-items: flex-end;
   margin-bottom: 5px;
+  position: relative;
 `;
 
 const headerLeftSectionWrapper = css`
