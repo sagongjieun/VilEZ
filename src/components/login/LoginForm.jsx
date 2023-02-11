@@ -10,33 +10,39 @@ import Validation from "../../components/login/LoginValidation";
 import useForm from "../../hooks/useForm";
 import { postLogin } from "../../api/user";
 import { useSetRecoilState } from "recoil";
-import { loginUserState } from "../../recoil/atom";
+import { loginUserState, isLoginState } from "../../recoil/atom";
 
 const LoginForm = () => {
   const navigate = useNavigate();
   const setLoginUser = useSetRecoilState(loginUserState);
+  const setIsLogin = useSetRecoilState(isLoginState);
 
   // 로그인
   const onSubmit = (values) => {
     postLogin(values.email, values.password).then((res) => {
       if (!res) return;
-      console.log(res);
-      res = res[0];
 
-      // recoil에 로그인유저 정보 저장
-      setLoginUser((prev) => {
-        return {
-          ...prev,
-          id: res.id,
-          nickName: res.nickName,
-          manner: res.manner,
-          point: res.point,
-          profileImg: res.profileImg,
-        };
-      });
-
+      // localstorage와 login에 유저 정보 저장
+      // 원래는 localstorage에는 token만 저장 -> 추후 수정
+      localStorage.setItem("accessToken", res.accessToken);
+      localStorage.setItem("refreshToken", res.refreshToken);
+      localStorage.setItem("id", res.id);
+      localStorage.setItem("nickName", res.nickName);
+      localStorage.setItem("profileImg", res.profileImg);
       localStorage.setItem("areaLat", res.areaLat);
       localStorage.setItem("areaLng", res.areaLng);
+
+      setLoginUser({
+        id: res.id,
+        nickName: res.nickName,
+        manner: res.manner,
+        point: res.point,
+        profileImg: res.profileImg,
+        areaLng: res.areaLng,
+        areaLat: res.areaLat,
+      });
+
+      setIsLogin(true);
 
       navigate("/");
     });

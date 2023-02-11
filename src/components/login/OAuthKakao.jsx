@@ -5,12 +5,14 @@ import { css } from "@emotion/react";
 import { requestKakaoLogin } from "../../api/oAuthLogin";
 import LoginLoadingModal from "../modal/LoginLoadingModal";
 import { useSetRecoilState } from "recoil";
-import { loginUserState } from "../../recoil/atom";
+import { isLoginState, loginUserState } from "../../recoil/atom";
 
 const OAuthKakao = () => {
-  const setLoginUser = useSetRecoilState(loginUserState);
   const navigate = useNavigate();
   const code = new URL(window.location.href).searchParams.get("code");
+  const setLoginUser = useSetRecoilState(loginUserState);
+  const setIsLogin = useSetRecoilState(isLoginState);
+
   const [nickname, setNickname] = useState("");
 
   function onKakaoLogin(code) {
@@ -26,16 +28,17 @@ const OAuthKakao = () => {
       localStorage.setItem("areaLng", resData.areaLng);
       setNickname(resData.nickName);
 
-      setLoginUser((prev) => {
-        return {
-          ...prev,
-          id: resData.id,
-          nickName: resData.nickName,
-          manner: resData.manner,
-          point: resData.point,
-          profileImg: resData.profileImg,
-        };
+      setLoginUser({
+        id: resData.id,
+        nickName: resData.nickName,
+        manner: resData.manner,
+        point: resData.point,
+        profileImg: resData.profileImg,
+        areaLng: resData.areaLng,
+        areaLat: resData.areaLat,
       });
+
+      setIsLogin(true);
     });
   }
 

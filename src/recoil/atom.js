@@ -1,13 +1,20 @@
 import { atom } from "recoil";
 
+const isLoginState = atom({
+  key: "isLoginState",
+  default: false,
+});
+
 const loginUserState = atom({
   key: "loginUserState",
   default: {
-    id: null,
-    nickName: null,
-    manner: null,
-    point: null,
-    profileImg: null,
+    id: 0,
+    nickName: "",
+    manner: 0,
+    point: 0,
+    profileImg: "",
+    areaLng: "",
+    areaLat: "",
   },
 });
 
@@ -89,6 +96,7 @@ const boardState = atom({
 });
 
 export {
+  isLoginState,
   loginUserState,
   shareDataState,
   modalOpenState,
