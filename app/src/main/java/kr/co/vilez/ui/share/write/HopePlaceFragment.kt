@@ -1,32 +1,39 @@
 package kr.co.vilez.ui.share.write
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.customtabs.CustomTabsClient.getPackageName
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.contains
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
-import com.google.android.material.snackbar.Snackbar
 import kr.co.vilez.R
 import kr.co.vilez.databinding.FragmentHopePlaceBinding
+import kr.co.vilez.ui.dialog.ConfirmDialog
+import kr.co.vilez.ui.dialog.ConfirmDialogInterface
+import kr.co.vilez.ui.dialog.MyAlertDialog
+import kr.co.vilez.util.PermissionUtil
+import kr.co.vilez.util.PermissionUtil.Companion.REQ_LOCATION
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
-import net.daum.mf.map.api.MapPoint.GeoCoordinate
 import net.daum.mf.map.api.MapPoint.mapPointWithGeoCoord
 import net.daum.mf.map.api.MapReverseGeoCoder
 import net.daum.mf.map.api.MapView
@@ -117,7 +124,29 @@ class HopePlaceFragment : Fragment(), MapView.MapViewEventListener,
     }
 
 
-    private val REQ_LOCATION = 2
+
+    @SuppressLint("MissingPermission")
+    private fun getCurrentLocation() {
+        val lm = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val userNowLocation: Location? = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+
+        // 현재 위치를 가져올 수 있음
+        //위도 , 경도
+        val uLatitude = userNowLocation?.latitude
+        val uLongitude = userNowLocation?.longitude
+        Log.d(TAG, "initMap: 위도: $uLatitude 경도: $uLongitude")
+        pos = MapPoint.mapPointWithGeoCoord(uLatitude!!, uLongitude!!)
+
+
+        mapView.apply {
+            setMapCenterPointAndZoomLevel(pos, 3, true) // 중심점 변경 + 줌 레벨 변경
+            currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
+            zoomIn(true) // 줌 인
+            zoomOut(true)  // 줌 아웃
+        }
+    }
+
+
     private fun initMap() {
         mapView = MapView(activity)
         binding.flMap.addView(mapView)
@@ -125,42 +154,44 @@ class HopePlaceFragment : Fragment(), MapView.MapViewEventListener,
 
         mapView.setShowCurrentLocationMarker(true)
 
-
-        val locationFinePermission = ContextCompat.checkSelfPermission(
-            activity,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-        val locationCoarsePermission = ActivityCompat.checkSelfPermission(
-            activity,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-        if(locationFinePermission == PackageManager.PERMISSION_DENIED || locationCoarsePermission == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(
-                context as Activity, arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ), REQ_LOCATION
-            )
+        // 위치 권한 가져오기
+        if(PermissionUtil().checkLocationPermission(activity)) {
+            getCurrentLocation()
         } else {
-            val lm = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            val userNowLocation: Location? = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-
-            // 현재 위치를 가져올 수 있음
-            //위도 , 경도
-            val uLatitude = userNowLocation?.latitude
-            val uLongitude = userNowLocation?.longitude
-            Log.d(TAG, "initMap: 위도: $uLatitude 경도: $uLongitude")
-             pos = MapPoint.mapPointWithGeoCoord(uLatitude!!, uLongitude!!)
+            PermissionUtil().checkLocationPermission(activity)
+        }
+    }
 
 
-            mapView.apply {
-                setMapCenterPointAndZoomLevel(pos, 3, true) // 중심점 변경 + 줌 레벨 변경
-                currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
-                zoomIn(true) // 줌 인
-                zoomOut(true)  // 줌 아웃
+    @SuppressLint("MissingPermission")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQ_LOCATION) {
+            if (grantResults.isEmpty()) {
+                // 권한 창 떴을 때 그냥 끈 경우
+            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getCurrentLocation()
+            } else {
+                // Permission denied.
+                for (permission in permissions) {
+                    if ("android.permission.ACCESS_FINE_LOCATION" == permission) {
+                        val dialog = ConfirmDialog(object:ConfirmDialogInterface {
+                            override fun onYesButtonClick(id: String) {
+                                val intent = Intent()
+                                intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                                intent.data = Uri.fromParts("package", activity.packageName, null)
+                                startActivity(intent)
+                            }
+                        }, "동네 설정을 위해 위치 접근을 권한이 필요합니다.\n휴대폰 [설정]-[애플리케이션]-[vilez]에서 위치 권한을 켜주세요.", "")
+                        dialog.show(activity.supportFragmentManager, "LocationPermission")
+                    }
+                }
             }
         }
-
     }
 
     override fun onMapViewInitialized(p0: MapView?) {

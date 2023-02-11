@@ -2,8 +2,11 @@ package kr.co.vilez.ui.share.write
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -22,6 +25,8 @@ import kr.co.vilez.data.dto.WriteBoard
 import kr.co.vilez.databinding.ActivityShareWriteBinding
 import kr.co.vilez.service.RESTShareBoardDetail
 import kr.co.vilez.ui.ask.AskDetailActivity
+import kr.co.vilez.ui.dialog.ConfirmDialog
+import kr.co.vilez.ui.dialog.ConfirmDialogInterface
 import kr.co.vilez.ui.dialog.ProgressDialog
 import kr.co.vilez.ui.share.ShareDetailActivity
 import kr.co.vilez.util.ApplicationClass
@@ -170,9 +175,12 @@ class ShareWriteActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@ShareWriteActivity, LinearLayoutManager.HORIZONTAL, false)
         }
 
-        binding.btnFinish.setOnSingleClickListener { // 3초 이내 재클릭 불가
+        binding.btnFinish.setOnClickListener {
             savePost(it)
         }
+//        binding.btnFinish.setOnSingleClickListener { // 3초 이내 재클릭 불가
+//            savePost(it)
+//        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -183,6 +191,46 @@ class ShareWriteActivity : AppCompatActivity() {
             Toast.makeText(this@ShareWriteActivity, "더이상 사진을 추가할 수 없습니다.", Toast.LENGTH_SHORT).show()
         }
     }
+
+    private fun openGallery() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        intent.setDataAndType(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*"
+        )
+        imageResult.launch(intent)
+    }
+
+    @SuppressLint("MissingPermission")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PermissionUtil.REQ_GALLERY) { // 갤러리 접근 권한
+            if (grantResults.isEmpty()) {
+                // 권한 창 떴을 때 그냥 끈 경우
+            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openGallery() // 갤러리 열어서 사진 가져오기
+            } else { // 사용자가 거부 누른 경우
+                for (permission in permissions) {
+                    if ("android.permission.ACCESS_FINE_LOCATION" == permission) {
+                        val dialog = ConfirmDialog(object: ConfirmDialogInterface {
+                            override fun onYesButtonClick(id: String) {
+                                val intent = Intent()
+                                intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                                intent.data = Uri.fromParts("package", packageName, null)
+                                startActivity(intent)
+                            }
+                        }, "동네 설정을 위해 위치 접근을 권한이 필요합니다.\n휴대폰 [설정]-[애플리케이션]-[vilez]에서 위치 권한을 켜주세요.", "")
+                        dialog.show(supportFragmentManager, "LocationPermission")
+                    }
+                }
+            }
+        }
+    }
+
 
     // 이미지 갤러리에서 선택할 시 콜백
     private val imageResult = registerForActivityResult(
