@@ -23,6 +23,7 @@ const ProfilePointDetails = () => {
   useEffect(() => {
     getPointListByUserId(userId)
       .then((response) => {
+        console.log(response);
         setPointList(response[0].sort(sortDate));
         setFilteredPointList(response[0].sort(sortDate));
       })
