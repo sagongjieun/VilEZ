@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Animated } from "react-animated-css";
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
@@ -8,24 +8,8 @@ import secondbodyimg from "../assets/images/secondbodyimg.png";
 import thirdbodyimg from "../assets/images/thirdbodyimg.png";
 import mapimg from "../assets/images/mapimg.png";
 import chatimg from "../assets/images/chatimg.png";
-import { useSetRecoilState } from "recoil";
-import { locationState } from "../recoil/atom";
-import { getUserDetail } from "../api/user";
 
 function MainBody() {
-  const userId = localStorage.getItem("id");
-  const setLocation = useSetRecoilState(locationState);
-
-  useEffect(() => {
-    if (userId) {
-      getUserDetail(userId).then((res) => {
-        if (res) {
-          setLocation({ areaLat: res.areaLat, areaLng: res.areaLng });
-        }
-      });
-    }
-  }, []);
-
   return (
     <div>
       <div css={FirstBodyWrap}>

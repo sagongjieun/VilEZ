@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
@@ -11,10 +11,12 @@ const OAuthKakao = () => {
   const setLoginUser = useSetRecoilState(loginUserState);
   const navigate = useNavigate();
   const code = new URL(window.location.href).searchParams.get("code");
+  const [nickname, setNickname] = useState("");
+
   function onKakaoLogin(code) {
     requestKakaoLogin(code).then((response) => {
       const resData = response[0];
-      console.log("***************");
+
       localStorage.setItem("accessToken", resData.accessToken);
       localStorage.setItem("refreshToken", resData.refreshToken);
       localStorage.setItem("id", resData.id);
@@ -23,6 +25,8 @@ const OAuthKakao = () => {
       localStorage.setItem("areaLat", resData.areaLat);
       localStorage.setItem("areaLng", resData.areaLng);
       localStorage.setItem("point", resData.point);
+      setNickname(resData.nickName);
+
       setLoginUser((prev) => {
         return {
           ...prev,
@@ -35,16 +39,20 @@ const OAuthKakao = () => {
       });
     });
   }
+
   useEffect(() => {
-    // setCode(new URL(window.location.href).searchParams.get("code"));
     onKakaoLogin(code);
   }, []);
-  // useEffect(() => {
-  //   onKakaoLogin();
-  // }, [code]);
-  setTimeout(() => {
-    navigate("/");
-  }, 1500);
+
+  useEffect(() => {
+    if (nickname !== "") {
+      setTimeout(() => {
+        if (nickname.includes("#")) {
+          navigate("/socialnickname", { state: { url: "/" } });
+        } else navigate("/");
+      }, 1500);
+    }
+  }, [nickname]);
 
   return (
     <div css={container}>
@@ -52,6 +60,7 @@ const OAuthKakao = () => {
     </div>
   );
 };
+
 const container = css`
   position: absolute;
   top: 0;
@@ -64,4 +73,5 @@ const container = css`
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 100;
 `;
+
 export default OAuthKakao;

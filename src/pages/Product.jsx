@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 const Product = () => {
   const accessToken = localStorage.getItem("accessToken");
+  const nickName = localStorage.getItem("nickName");
   const areaLat = localStorage.getItem("areaLat");
   const areaLng = localStorage.getItem("areaLng");
   const navigate = useNavigate();
@@ -18,9 +19,16 @@ const Product = () => {
     if (!accessToken) {
       alert("빌리지를 이용하시려면 로그인을 먼저 진행해주세요.");
       navigate(`/login`);
-    } else if (areaLat == "null" || areaLng == "null" || areaLat == "undefined" || areaLng == "undefined") {
-      alert("빌리지를 이용하시려면 동네 인증을 해주셔야해요.");
-      navigate(`/profile/product`);
+    }
+    // 일반 로그인했을 때 동네인증 안된경우
+    else if (areaLat == "null" || areaLng == "null" || areaLat == "undefined" || areaLng == "undefined") {
+      if (nickName.includes("#")) {
+        alert("빌리지를 이용하시려면 닉네임을 변경하셔야 해요.");
+        navigate(`/socialnickname`, { state: { url: "/profile/product" } });
+      } else {
+        alert("빌리지를 이용하시려면 동네 인증을 해주셔야해요.");
+        navigate(`/profile/product`);
+      }
     }
   }, []);
 
