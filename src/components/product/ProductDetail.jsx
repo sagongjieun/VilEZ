@@ -172,11 +172,18 @@ const ProductDetail = () => {
           setWriterNickname(res.nickName);
           setWriterManner(MannerPoint(res.manner));
           setLevel(calcMannerLevel(res.manner));
-          setMyPoint(res.point);
         })
         .catch((error) => console.log(error));
     }
   }, [writerId]);
+
+  useEffect(() => {
+    if (loginUserId) {
+      getUserDetail(loginUserId).then((res) => {
+        setMyPoint(res.point);
+      });
+    }
+  }, [loginUserId]);
 
   // 내가 이 게시글을 북마크했는지 여부 확인
   useEffect(() => {
