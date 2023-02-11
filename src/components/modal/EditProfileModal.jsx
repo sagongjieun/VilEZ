@@ -93,7 +93,6 @@ function EditProfile({ setIsEditProfileOpen }) {
           setLoginUser((prev) => {
             return {
               ...prev,
-              id: userId,
               nickName: nickName,
             };
           });
