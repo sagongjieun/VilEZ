@@ -52,7 +52,7 @@ function MainNavBar() {
         localStorage.clear();
         resetLoginUser();
         setIsLogin(false);
-        navigate("/");
+        window.location.replace("/");
       }
     });
   }
