@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import kr.co.vilez.appointment.model.dto.AppointmentDto;
 import kr.co.vilez.appointment.model.service.AppointmentService;
 import kr.co.vilez.data.HttpVO;
+import kr.co.vilez.jwt.JwtProvider;
 import kr.co.vilez.user.model.dto.LocationDto;
 import kr.co.vilez.user.model.dto.UserDto;
 import kr.co.vilez.user.model.service.UserService;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RequestMapping("/users")
@@ -34,6 +36,7 @@ public class UserController {
     HttpVO http = null;
     final AppointmentService appointmentService;
     final UserService userService;
+    final JwtProvider jwtProvider;
 
     @PutMapping("/modify/password")
     public ResponseEntity<?> modifyPassword(String email, String password){
@@ -247,6 +250,37 @@ public class UserController {
         return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
     }
 
+    @GetMapping("/check/access")
+    @ApiOperation(value = "access토큰 유효한지 확인", notes = "access-token을 헤더에 넣어주기" )
+    public ResponseEntity<?> checkAccess(@RequestHeader("access-token") String access_token){
+        String date = jwtProvider.getExp(access_token);
+        http = new HttpVO();
+        List<Object> data = new ArrayList<>();
+        // 만료되지 않은 토큰
+        if(System.currentTimeMillis() >= Long.parseLong(date)){
+            return new ResponseEntity<HttpVO>(http,HttpStatus.UNAUTHORIZED);
+        }
+
+        // 토큰이 조작된 경우
+        if(date.equals("be manipulated")){
+            log.warn("토큰 조작");
+            return new ResponseEntity<HttpVO>(http,HttpStatus.UNAUTHORIZED);
+        }
+
+        int id = Integer.parseInt(jwtProvider.getUserId(access_token));
+
+        try {
+            UserDto user = userService.detail2(id);
+            data.add(user);
+            http.setFlag("success");
+            http.setData(data);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<HttpVO>(http, HttpStatus.OK);
+    }
+
     @PostMapping("/login/fake")
     @ApiOperation(value = "로그인", notes = "{" +
             "\n email : String," +
@@ -269,8 +303,6 @@ public class UserController {
     public ResponseEntity<?> detail(@PathVariable int id){
         try {
             http = userService.detail(id);
-
-            System.out.println(http);
 
         } catch (Exception e){
             e.printStackTrace();
