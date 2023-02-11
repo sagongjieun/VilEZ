@@ -84,7 +84,7 @@
     </select>
 
     <select id="detail" parameterType="int" resultMap="user">
-        SELECT nickname,token,point,manner,profile_img, area_lat, area_lng
+        SELECT *
         from user
         where id = #{id} and state >= 0;
     </select>
