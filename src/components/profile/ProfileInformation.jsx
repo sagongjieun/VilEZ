@@ -64,22 +64,24 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
   //   geocoder.coord2Address(areaLng, areaLat, callback);
   // }
   useEffect(() => {
-    getUserDetail(id).then((response) => {
-      // setAreaLat(response.areaLat);
-      // setAreaLng(response.areaLng);
-      setProfileImage(response.profile_img);
-      setNickName(response.nickName);
-      setManner(response.manner);
-      setPoint(response.point);
-      setLoginUser({
-        ...loginUser,
-        profileImg: response.profile_img,
+    setTimeout(() => {
+      getUserDetail(id).then((response) => {
+        // setAreaLat(response.areaLat);
+        // setAreaLng(response.areaLng);
+        setProfileImage(response.profile_img);
+        setNickName(response.nickName);
+        setManner(response.manner);
+        setPoint(response.point);
+        setLoginUser({
+          ...loginUser,
+          profileImg: response.profile_img,
+        });
+        localStorage.setItem("profileImg", response.profile_img);
+        localStorage.setItem("nickName", response.nickName);
+        localStorage.setItem("areaLat", response.areaLat);
+        localStorage.setItem("areaLng", response.areaLng);
       });
-      localStorage.setItem("profileImg", response.profile_img);
-      localStorage.setItem("nickName", response.nickName);
-      localStorage.setItem("areaLat", response.areaLat);
-      localStorage.setItem("areaLng", response.areaLng);
-    });
+    }, 100);
   }, [isQrCodeOpen, isEditProfileOpen, location]);
   // useEffect(() => {
   //   // getAddr(areaLng, areaLat);

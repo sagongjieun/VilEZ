@@ -43,7 +43,7 @@ const MyBoxShare = (props) => {
               roomId={share.myAppointListVO.roomId}
               thumbnail={share.imgPathList[0].path}
               dDay={
-                share.myRentType === 1
+                props.myShareType === 1
                   ? MyBoxDDay(share.myAppointListVO.appointmentEnd)
                   : MyBoxDDay(share.myAppointListVO.appointmentStart)
               }

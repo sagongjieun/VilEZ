@@ -106,7 +106,9 @@ function MainNavBar() {
                       <div>
                         <img src={profileImg} />
                       </div>
-                      <div>{nickName}</div>
+                      <div>
+                        {nickName.includes("#") ? (nickName.includes("#KAKAO") ? "#KAKAO" : "#NAVER") : nickName}
+                      </div>
                     </div>
                   </div>
                   {/* <CgProfile onClick={onClickMoveMyPage} /> */}
@@ -282,9 +284,9 @@ const midrightWrap = css`
       box-sizing: border-box;
       top: 36px;
       left: -30px;
-      width: 90px;
+      width: 80px;
       padding: 10px;
-      font-size: 14px;
+      font-size: 12px;
       background-color: #fff;
       border-radius: 5px;
       box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
