@@ -225,7 +225,6 @@ const Map = ({
       const locPosition = new kakao.maps.LatLng(movedLat, movedLng);
 
       map.setLevel(movedZoomLevel); // 지도 레벨 동기화
-      map.setCenter(locPosition);
 
       if (movedMarker) {
         marker.setPosition(locPosition);
@@ -235,7 +234,6 @@ const Map = ({
         setMarkerLat(locPosition.getLat());
         setMarkerLng(locPosition.getLng());
 
-        console.log("이걸 받나?");
         searchDetailAddrFromCoords(locPosition, function (result, status) {
           if (status === kakao.maps.services.Status.OK) {
             setLocation(result[0].address.address_name);
