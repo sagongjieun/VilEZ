@@ -250,7 +250,7 @@ const ProductDetail = () => {
             <h3>희망 공유 장소</h3>
             <span>{location}</span>
           </div>
-          <Map readOnly={true} selectedLat={hopeAreaLat} selectedLng={hopeAreaLng} />
+          <Map readOnly={true} selectedLat={hopeAreaLat} selectedLng={hopeAreaLng} path={"detail"} />
         </div>
       </div>
 
