@@ -52,7 +52,7 @@ function MainNavBar() {
         localStorage.clear();
         resetLoginUser();
         setIsLogin(false);
-        navigate("/");
+        window.location.replace("/");
       }
     });
   }
@@ -95,7 +95,13 @@ function MainNavBar() {
                         <img src={profileImg} />
                       </div>
                       <div>
-                        {nickName.includes("#") ? (nickName.includes("#KAKAO") ? "#KAKAO" : "#NAVER") : nickName}
+                        {nickName
+                          ? nickName.includes("#")
+                            ? nickName.includes("#KAKAO")
+                              ? "#KAKAO"
+                              : "#NAVER"
+                            : nickName
+                          : null}
                       </div>
                     </div>
                   </div>

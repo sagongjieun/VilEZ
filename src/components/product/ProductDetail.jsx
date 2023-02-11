@@ -17,13 +17,14 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { postChatRoom } from "../../api/appointment";
 import { getAskArticleDetailByBoardId } from "../../api/ask";
 import { getCheckMyRoom } from "../../api/appointment";
+// import RealDeleteModal from "../modal/RealDeleteModal";
 
 const ProductDetail = () => {
   const navigate = useNavigate();
   const boardId = parseInt(useParams().boardId);
   const pathname = useLocation().pathname;
   const loginUserId = localStorage.getItem("id"); // 로그인유저 id
-
+  const type = pathname.includes("share") ? 2 : 1;
   const [writerId, setWriterId] = useState(""); // 공유자 id
 
   const [title, setTitle] = useState("");
@@ -201,6 +202,7 @@ const ProductDetail = () => {
 
   return (
     <div css={wrapper}>
+      {/* <RealDeleteModal /> */}
       <ProductDeatilHeader
         title={title}
         category={category}
@@ -221,11 +223,13 @@ const ProductDetail = () => {
             <img src={writerManner} alt="writerMannerPoint" />
           </div>
           <div css={chatWrapper}>
-            {isBookmarked ? (
-              <img src={bookmark} alt="bookmark" onClick={onClickBookmark} />
-            ) : (
-              <img src={bookmarkCancel} alt="bookmarkCancel" onClick={onClickBookmark} />
-            )}
+            {type === 2 ? (
+              isBookmarked ? (
+                <img src={bookmark} alt="bookmark" onClick={onClickBookmark} />
+              ) : (
+                <img src={bookmarkCancel} alt="bookmarkCancel" onClick={onClickBookmark} />
+              )
+            ) : null}
             {loginUserId == writerId ? <></> : <MiddleWideButton text="채팅하기" onclick={onClickMoveChat} />}
           </div>
         </div>
@@ -261,6 +265,7 @@ const wrapper = css`
   padding: 90px 200px;
   display: flex;
   flex-direction: column;
+  position: relative;
 `;
 
 const contentsWrapper = css`
