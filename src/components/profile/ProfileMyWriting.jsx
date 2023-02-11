@@ -38,7 +38,7 @@ const ProfileMyWriting = (props) => {
   }, [myBoard]);
   return (
     <div css={cardWrapper(props.writingPages)}>
-      {myBoard ? (
+      {myBoard && myBoard.length > 0 ? (
         myBoard.map((share, idx) => (
           <div key={idx}>
             <ProfileCardView
