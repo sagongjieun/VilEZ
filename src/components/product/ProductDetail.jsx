@@ -42,6 +42,7 @@ const ProductDetail = () => {
   const [writerManner, setWriterManner] = useState("");
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [level, setLevel] = useState(0);
+  const [myPoint, setMyPoint] = useState(0);
 
   // function checkSocialNickName() {
   //   const nickName = localStorage.getItem("nickName");
@@ -77,43 +78,42 @@ const ProductDetail = () => {
       return;
     }
 
-    let myPoint = localStorage.getItem("point");
-    myPoint = parseInt(myPoint);
-
-    if (myPoint < 0) {
-      alert("포인트가 부족해요. 다른 사람에게 물건을 공유해주고 포인트를 얻어봐요 😀");
-    } else {
-      const type = pathname.includes("share") ? 2 : 1; // 요청글 = 1, 공유글 = 2
-
-      getCheckMyRoom(boardId, type, loginUserId).then((res) => {
-        // 채팅방이 이미 존재하면 해당 방으로 이동
-        if (res) {
-          navigate(`/product/chat/${res[0].id}`);
-        }
-        // 채팅방이 없으면 채팅방 생성
-        else {
-          // 요청글이면 공유자 = 나, 피공유자 = 상대방
-          // 공유글이면 공유자 = 상대방, 피공유자 = 나
-          type === 1
-            ? postChatRoom({
-                type: type,
-                boardId: boardId,
-                shareUserId: loginUserId,
-                notShareUserId: writerId,
-              }).then((res) => {
-                navigate(`/product/chat/${res[0].id}`);
-              })
-            : postChatRoom({
-                type: type,
-                boardId: boardId,
-                shareUserId: writerId,
-                notShareUserId: loginUserId,
-              }).then((res) => {
-                navigate(`/product/chat/${res[0].id}`);
-              });
-        }
-      });
+    // 공유받을 수 있는 포인트가 충분한지 확인
+    if (myPoint < 30) {
+      alert("공유를 진행하기에 포인트가 부족해요. 다른 사람에게 물건을 공유해주고 포인트를 얻어봐요 😀");
+      return;
     }
+
+    const type = pathname.includes("share") ? 2 : 1; // 요청글 = 1, 공유글 = 2
+
+    getCheckMyRoom(boardId, type, loginUserId).then((res) => {
+      // 채팅방이 이미 존재하면 해당 방으로 이동
+      if (res) {
+        navigate(`/product/chat/${res[0].id}`);
+      }
+      // 채팅방이 없으면 채팅방 생성
+      else {
+        // 요청글이면 공유자 = 나, 피공유자 = 상대방
+        // 공유글이면 공유자 = 상대방, 피공유자 = 나
+        type === 1
+          ? postChatRoom({
+              type: type,
+              boardId: boardId,
+              shareUserId: loginUserId,
+              notShareUserId: writerId,
+            }).then((res) => {
+              navigate(`/product/chat/${res[0].id}`);
+            })
+          : postChatRoom({
+              type: type,
+              boardId: boardId,
+              shareUserId: writerId,
+              notShareUserId: loginUserId,
+            }).then((res) => {
+              navigate(`/product/chat/${res[0].id}`);
+            });
+      }
+    });
   }
 
   function calcMannerLevel(manner) {
@@ -172,6 +172,7 @@ const ProductDetail = () => {
           setWriterNickname(res.nickName);
           setWriterManner(MannerPoint(res.manner));
           setLevel(calcMannerLevel(res.manner));
+          setMyPoint(res.point);
         })
         .catch((error) => console.log(error));
     }
