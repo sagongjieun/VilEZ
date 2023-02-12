@@ -10,7 +10,6 @@ import mapimg from "../assets/images/mapimg.png";
 import chatimg from "../assets/images/chatimg.png";
 import homeBackground from "../assets/images/home_background.jpg";
 import messageGreen from "../assets/images/back.png";
-import TypingText from "../components/common/Typing";
 
 function MainBody() {
   const vilEZ = useRef();
@@ -62,7 +61,6 @@ function MainBody() {
               <Animated animationIn="animate__fadeIn" animationInDuration={4200}>
                 <div css={FirstBodyDiv} ref={vilEZ}>
                   공유마을 빌리지.
-                  <TypingText />
                 </div>
               </Animated>
             </div>
