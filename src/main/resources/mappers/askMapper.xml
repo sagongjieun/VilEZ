@@ -21,7 +21,13 @@
     </resultMap>
 
     <select id="loadAskList" resultMap="ask">
-        select b.user_id, b.nickname, b.id, b.category, b.hope_area_lng, b.hope_area_lat, b.title, b.address, b.start_day, b.end_day, b.date, b.state,
+        select b.user_id, b.nickname, b.id, b.category, b.hope_area_lng, b.hope_area_lat, b.title, b.address, b.start_day, b.end_day, b.date,
+        (
+        CASE
+        WHEN now() >= a.appointment_start and a.appointment_end >= now() then 1
+        else 0
+        END
+        ) as state,
                (
                     case
                 WHEN a.state >= 0 then "요청완료"
