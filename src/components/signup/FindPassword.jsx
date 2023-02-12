@@ -44,8 +44,8 @@ const FindPassword = () => {
   }
   function onSubmit() {
     if (isCodeConfirmed) {
-      // putUserPasswordByEmail(email, SHA256(password)).then((response) => {
-      putUserPasswordByEmail(email, password).then((response) => {
+      putUserPasswordByEmail(email, SHA256(password)).then((response) => {
+        // putUserPasswordByEmail(email, password).then((response) => {
         if (response) {
           navigate("/login");
         }
