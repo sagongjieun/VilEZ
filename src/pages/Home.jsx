@@ -12,27 +12,29 @@ import homeBackground from "../assets/images/home_background.jpg";
 import messageGreen from "../assets/images/back.png";
 
 function MainBody() {
+  const vilEZ = useRef();
+  const mainBox = useRef();
   const firstBox = useRef();
   const secondBox = useRef();
   const thirdBox = useRef();
-  const forthBox = useRef();
   const [firstHeight, setFirstHeight] = useState(0);
   const [secondHeight, setSecondHeight] = useState(0);
   const [thirdHeight, setThirdHeight] = useState(0);
   const [forthHeight, setForthHeight] = useState(0);
+
   function toNumber(styleText) {
     return Number(styleText.height.slice(0, styleText.height.length - 2));
   }
 
   useEffect(() => {
+    const mainStyle = window.getComputedStyle(mainBox.current);
     const firstStyle = window.getComputedStyle(firstBox.current);
     const secondStyle = window.getComputedStyle(secondBox.current);
     const thirdStyle = window.getComputedStyle(thirdBox.current);
-    const forthStyle = window.getComputedStyle(forthBox.current);
-    setFirstHeight(toNumber(firstStyle));
-    setSecondHeight(toNumber(firstStyle) + toNumber(secondStyle));
-    setThirdHeight(toNumber(firstStyle) + toNumber(secondStyle) + toNumber(thirdStyle));
-    setForthHeight(toNumber(firstStyle) + toNumber(secondStyle) + toNumber(thirdStyle) + toNumber(forthStyle));
+    setFirstHeight(toNumber(mainStyle) - 200);
+    setSecondHeight(toNumber(mainStyle) + toNumber(firstStyle) - 200);
+    setThirdHeight(toNumber(mainStyle) + toNumber(firstStyle) + toNumber(secondStyle) - 200);
+    setForthHeight(toNumber(mainStyle) + toNumber(firstStyle) + toNumber(secondStyle) + toNumber(thirdStyle) - 200);
   }, []);
 
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -55,7 +57,7 @@ function MainBody() {
 
   return (
     <div>
-      <div css={[FirstBodyWrap, moveGradientStyle]} onMouseMove={moveGradient}>
+      <div css={FirstBodyWrap} onMouseMove={moveGradient} ref={mainBox}>
         <div>
           <Animated animationIn="animate__fadeIn" animationInDuration={2700}>
             <div css={FirstBody}>
@@ -66,7 +68,9 @@ function MainBody() {
                 <div css={FirstBodyDiv}>쉽게 빌려주는,</div>
               </Animated>
               <Animated animationIn="animate__fadeIn" animationInDuration={4200}>
-                <div css={FirstBodyDiv}>공유마을 빌리지.</div>
+                <div css={FirstBodyDiv} ref={vilEZ}>
+                  공유마을 <div>빌리지.</div>
+                </div>
               </Animated>
             </div>
           </Animated>
@@ -79,7 +83,7 @@ function MainBody() {
         </div>
       </div>
       <a id="movebottom"></a>
-      <div css={[FirstWrap, scrollPosition > firstHeight - 150 ? visibleBox : hiddenBox]} ref={firstBox}>
+      <div css={[FirstWrap, scrollPosition > firstHeight ? visibleBox : hiddenBox]} ref={firstBox}>
         <div css={ExplainLeft}>
           <div css={ExplainTitle}>따뜻해지는 공유 문화</div>
           <div css={ExplainContent}>필요하지만 구매하기엔 부담스럽고, </div>
@@ -90,7 +94,7 @@ function MainBody() {
           <img css={[ImgHeight, firstImgMargin]} src={secondbodyimg} alt="" />
         </div>
       </div>
-      <div css={[ExplainWrap, scrollPosition > secondHeight - 150 ? visibleBox : hiddenBox]} ref={secondBox}>
+      <div css={[ExplainWrap, scrollPosition > secondHeight ? visibleBox : hiddenBox]} ref={secondBox}>
         <div css={[ExplainLeft, ImgHeight]}>
           <img css={ImgHeight} src={thirdbodyimg} alt="" />
         </div>
@@ -100,7 +104,7 @@ function MainBody() {
           <div css={ExplainContent}>안전하게 물건을 빌리고, 빌려줄 수 있어요.</div>
         </div>
       </div>
-      <div css={[thirdWrap, scrollPosition > thirdHeight - 150 ? visibleBox : hiddenBox]} ref={thirdBox}>
+      <div css={[thirdWrap, scrollPosition > thirdHeight ? visibleBox : hiddenBox]} ref={thirdBox}>
         <div css={ExplainLeft}>
           <div css={ExplainTitle}>실시간 장소선정</div>
           <div css={ExplainContent}>장소를 선정할 때 어려웠던 경험,</div>
@@ -111,7 +115,7 @@ function MainBody() {
           <img src={mapimg} alt="" />
         </div>
       </div>
-      <div css={[ExplainWrap, scrollPosition > forthHeight - 150 ? visibleBox : hiddenBox]} ref={forthBox}>
+      <div css={[ExplainWrap, scrollPosition > forthHeight ? visibleBox : hiddenBox]}>
         <div css={ExplainLeft}>
           <img css={ImgHeight} src={chatimg} alt="" />
         </div>
@@ -272,36 +276,6 @@ const visibleBox = css`
   opacity: 1;
   transition: all 1s;
   transform: translateY(0px);
-`;
-
-const moveGradientStyle = css`
-  position: relative;
-  color: #fff;
-  font-weight: 500;
-  overflow: hidden;
-  /* background: #66dd9c; */
-  cursor: pointer;
-  border: 0;
-
-  :hover::before {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-  }
-  ::before {
-    position: absolute;
-    content: "";
-    width: 50vw;
-    height: 50vw;
-    /* background: radial-gradient(circle closest-side, #8fd3f4, transparent); */
-    top: var(--y);
-    left: var(--x);
-    transition: 0.2s;
-    transform: translate(-50%, -50%) scale(0);
-    opacity: 0;
-  }
-  & > div {
-    z-index: 10;
-  }
 `;
 
 export default MainBody;

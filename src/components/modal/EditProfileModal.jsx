@@ -13,7 +13,7 @@ import { getUserDetail } from "../../api/user";
 import { putUserPasswordNickName, putUserProfileImage } from "../../api/user";
 import { useSetRecoilState } from "recoil";
 import { loginUserState } from "../../recoil/atom";
-// import { SHA256 } from "../signup/HashFunction";
+import { SHA256 } from "../signup/HashFunction";
 
 function EditProfile({ setIsEditProfileOpen }) {
   const userId = localStorage.getItem("id");
@@ -89,8 +89,8 @@ function EditProfile({ setIsEditProfileOpen }) {
   }
   function onSubmit() {
     if ((isNickNameAvailable || !isNickNameOpen) && !passwordError && !password2Error) {
-      // putUserPasswordNickName(userId, nickName, SHA256(password)).then((response) => {
-      putUserPasswordNickName(userId, nickName, password).then((response) => {
+      putUserPasswordNickName(userId, nickName, SHA256(password)).then((response) => {
+        // putUserPasswordNickName(userId, nickName, password).then((response) => {
         if (response) {
           setLoginUser((prev) => {
             return {
