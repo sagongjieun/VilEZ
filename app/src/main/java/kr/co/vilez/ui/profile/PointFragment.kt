@@ -31,7 +31,6 @@ class PointFragment : Fragment() {
 
     private var pointPlusSum = 0
     private var pointMinusSum = 0
-    private var pointSum = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,7 +67,6 @@ class PointFragment : Fragment() {
             if(result?.flag=="success") {
                 for( i in 0 until result.data[0].size) {
                     val data = result.data[0][i]
-                    pointSum += data.pointVO.point
                     if (data.pointVO.point > 0) { // 적립한 포인트 총합
                         pointPlusSum += data.pointVO.point
                     } else { // 사용한 포인트 총합
