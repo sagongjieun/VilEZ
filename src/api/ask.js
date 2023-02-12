@@ -55,7 +55,7 @@ async function postAskArticle(formData) {
     const { data } = await authFormDataAxios.post(`/askboard`, formData);
 
     if (data.flag === "success") return data.data;
-    else alert("요청 글 등록에 실패하였습니다 😥");
+    else alert("요청 글 등록에 실패했어요 😥");
   } catch (error) {
     console.log(error);
   }
@@ -67,8 +67,8 @@ async function deleteAskArticleByBoardId(boardId) {
   try {
     const { data } = await authJsonAxios.delete(`/askboard/${boardId}`);
 
-    if (data.flag === "success") alert("요청글 삭제에 성공하였습니다. 😀");
-    else alert("요청 글 삭제에 실패하였습니다 😥");
+    if (data.flag === "success") alert("요청글 삭제에 성공했어요. 또 이용해주세요 😀");
+    else alert("요청 글 삭제에 실패했어요 😥");
   } catch (error) {
     console.log(error);
   }
@@ -81,9 +81,9 @@ async function putAskArticle(formData) {
     const { data } = await authFormDataAxios.put(`/askboard`, formData);
 
     if (data.flag === "success") {
-      alert("수정되었습니다 😀");
+      alert("수정되었어요 😀");
       return data.data;
-    } else alert("요청 글 수정에 실패하였습니다 😥");
+    } else alert("요청 글 수정에 실패했어요 😥");
   } catch (error) {
     console.log(error);
   }

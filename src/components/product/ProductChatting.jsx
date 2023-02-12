@@ -125,7 +125,7 @@ const ProductChatting = () => {
 
         setIsConfirm(!isConfirm);
       } else {
-        alert("공유자가 아직 기간을 확정하지 않았습니다. 😥");
+        alert("공유자가 아직 기간을 확정하지 않았어요! 😥");
       }
     });
   }
@@ -137,7 +137,7 @@ const ProductChatting = () => {
       if (res != "true") {
         setIsShareCancelAsk(!isShareCancelAsk);
       } else {
-        alert("예약 취소 요청이 불가능합니다.");
+        alert("예약 취소 요청이 불가능해요.");
       }
     });
   }
@@ -149,7 +149,7 @@ const ProductChatting = () => {
       if (res != "true") {
         setIsShareCancel(!isShareCancel);
       } else {
-        alert("예약 취소가 불가능합니다.");
+        alert("예약 취소가 불가능해요.");
       }
     });
   }
@@ -168,7 +168,7 @@ const ProductChatting = () => {
         setIsShareComplete(!isShareComplete);
         setIsChatEnd(true);
       } else {
-        alert("공유자가 물품에 대해 확인중입니다. 공유자에게 반납 확인 요청을 해주세요. 🙂");
+        alert("공유자님이 물품에 대해 확인중이에요. 공유자님에게 반납 확인 요청을 해주세요. 🙂");
       }
     });
   }
@@ -213,7 +213,7 @@ const ProductChatting = () => {
           setShareUserId(res.shareUserId);
           setNotShareUserId(parseInt(loginUserId));
         } else {
-          alert("채팅방에 입장할 수 없습니다.");
+          alert("채팅방에 입장할 수 없어요.");
           navigate(`/`);
           return null;
         }

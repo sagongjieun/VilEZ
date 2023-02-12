@@ -19,7 +19,7 @@ const ProductDetailFooter = () => {
     try {
       await navigator.clipboard.writeText(url);
 
-      alert("링크를 클립보드에 복사했습니다.");
+      alert("링크를 클립보드에 복사했어요.");
     } catch (error) {
       console.log("URL 복사 실패 : ", error);
     }
