@@ -395,6 +395,8 @@ const nickNameWrapper = css`
     height: 90px;
     margin-right: 20px;
     border-radius: 100%;
+    /* 화면 꽉 차게 해주는. */
+    object-fit: cover;
   }
 
   & > span {
