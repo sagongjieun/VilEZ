@@ -111,11 +111,13 @@ const StompRealTime = ({
 
   // Map에서 받은 데이터로 서버에 전송
   function receiveLocation(location, lat, lng, zoomLevel, isMarker) {
-    searchDetailAddrFromCoords(lat, lng, function (result, status) {
-      if (status === kakao.maps.services.Status.OK) {
-        setHopeLocation(result[0].address.address_name);
-      }
-    });
+    if (lat && lng) {
+      searchDetailAddrFromCoords(lat, lng, function (result, status) {
+        if (status === kakao.maps.services.Status.OK) {
+          setHopeLocation(result[0].address.address_name);
+        }
+      });
+    }
 
     if (lat && lng && zoomLevel) {
       const sendMapData = {
@@ -284,11 +286,15 @@ const StompRealTime = ({
           // 다른 유저가 움직인 지도의 데이터들
           setMovedLat(data.lat);
           setMovedLng(data.lng);
-          searchDetailAddrFromCoords(data.lat, data.lng, function (result, status) {
-            if (status === kakao.maps.services.Status.OK) {
-              setHopeLocation(result[0].address.address_name);
-            }
-          });
+
+          if (data.isMarker) {
+            searchDetailAddrFromCoords(data.lat, data.lng, function (result, status) {
+              if (status === kakao.maps.services.Status.OK) {
+                setHopeLocation(result[0].address.address_name);
+              }
+            });
+          }
+
           setMovedZoomLevel(data.zoomLevel);
           data.isMarker ? setMovedMarker(true) : setMovedMarker(false);
         });
@@ -500,7 +506,7 @@ const StompRealTime = ({
         <div>
           {shareState == -1 || shareState == -2 || roomState == -1 ? (
             // 공유지도 막기
-            <Map readOnly={true} disableMapLat={disableMapLat} disableMapLng={disableMapLng} />
+            <Map readOnly={true} disableMapLat={disableMapLat} disableMapLng={disableMapLng} path={"block"} />
           ) : (
             <Map
               readOnly={false}
@@ -509,6 +515,7 @@ const StompRealTime = ({
               movedLng={movedLng}
               movedZoomLevel={movedZoomLevel}
               movedMarker={movedMarker}
+              path={"stomp"}
             />
           )}
         </div>

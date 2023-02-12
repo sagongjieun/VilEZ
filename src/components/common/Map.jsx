@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
 
 const { kakao } = window;
-let container, options, map, marker;
+
+let container, options, map, rectangle, marker;
 
 const Map = ({
   readOnly,
@@ -29,7 +30,6 @@ const Map = ({
 
   const [markerLat, setMarkerLat] = useState("");
   const [markerLng, setMarkerLng] = useState("");
-  marker = new kakao.maps.Marker();
 
   const areaLat = localStorage.getItem("areaLat");
   const areaLng = localStorage.getItem("areaLng");
@@ -94,17 +94,24 @@ const Map = ({
           setLng(latlng.getLng());
           setIsMarker(true);
 
+          if (marker) {
+            marker.setMap(null);
+          }
+
           marker.setPosition(latlng);
           marker.setMap(map);
           map.panTo(latlng);
         } else {
           alert("현재 위치를 기반으로 가능한 범위내의 장소를 선택해야해요!");
-          // 초록영역 바깥일 시 본인 위치 중앙으로 렌더링
-          map.setCenter(new kakao.maps.LatLng(areaLat, areaLng));
+          map.setCenter(new kakao.maps.LatLng(areaLat, areaLng)); // 본인 위치 중앙으로 렌더링
           failToSelect = true;
           return;
         }
       } else {
+        if (marker) {
+          marker.setMap(null);
+        }
+
         marker.setPosition(latlng);
         marker.setMap(map);
 
@@ -135,6 +142,8 @@ const Map = ({
   }
 
   function makeRectangle() {
+    if (rectangle) rectangle.setMap(null);
+
     var sw = new kakao.maps.LatLng(parseFloat(areaLat) - 0.03, parseFloat(areaLng) - 0.045), // 사각형 영역의 남서쪽 좌표
       ne = new kakao.maps.LatLng(parseFloat(areaLat) + 0.03, parseFloat(areaLng) + 0.045); // 사각형 영역의 북동쪽 좌표
 
@@ -143,7 +152,7 @@ const Map = ({
     var rectangleBounds = new kakao.maps.LatLngBounds(sw, ne);
 
     // 지도에 표시할 사각형을 생성합니다
-    var rectangle = new kakao.maps.Rectangle({
+    rectangle = new kakao.maps.Rectangle({
       bounds: rectangleBounds, // 그려질 사각형의 영역정보입니다
       strokeWeight: 2, // 선의 두께입니다
       strokeColor: "#66DD9C", // 선의 색깔입니다
@@ -157,26 +166,31 @@ const Map = ({
     rectangle.setMap(map);
   }
 
+  /** 지도 데이터 보내기 */
   useEffect(() => {
-    console.log("1");
+    if (!readOnly) {
+      sendLocation(location, lat, lng, zoomLevel, isMarker);
+    }
+  }, [lat, lng, zoomLevel, isMarker]);
+
+  useEffect(() => {
     initMap();
+    marker = new kakao.maps.Marker();
 
     if (path === "regist") {
+      console.log("regist");
       makeRectangle();
-    }
-
-    /** readOnly : 지도 제어 가능 */
-    if (!readOnly) {
       eventDragEnd();
       eventZoomChanged();
-      eventSetMarker();
     }
+
+    if (path === "regist" || path === "modify" || path === "stomp") eventSetMarker();
   }, []);
 
-  /** 게시글 수정에서 쓰이는 map */
+  /** 게시글 수정 map */
   useEffect(() => {
-    console.log("2");
-    if (map && hopeAreaLat && hopeAreaLng) {
+    if (path === "modify" && hopeAreaLat && hopeAreaLng && map) {
+      console.log("modify", hopeAreaLat, hopeAreaLng);
       makeRectangle();
       const latlng = new kakao.maps.LatLng(hopeAreaLat, hopeAreaLng);
 
@@ -185,29 +199,34 @@ const Map = ({
 
       eventDragEnd();
       eventZoomChanged();
-      eventSetMarker();
     }
-  }, [map, hopeAreaLat, hopeAreaLng]);
+  }, [hopeAreaLat, hopeAreaLng, map]);
 
-  /** 지도 데이터 보내기 */
+  /** 게시글 디테일 map */
   useEffect(() => {
-    console.log("3");
-    if (!readOnly) {
-      sendLocation(location, lat, lng, zoomLevel, isMarker);
+    if (path === "detail" && selectedLat && selectedLng && map) {
+      console.log("detail");
+      marker = new kakao.maps.Marker();
+
+      const latlng = new kakao.maps.LatLng(selectedLat, selectedLng);
+
+      marker.setMap(map);
+      map.setCenter(latlng);
+      marker.setPosition(latlng);
+      map.setDraggable(false);
+      map.setZoomable(false);
     }
-  }, [lat, lng, zoomLevel, isMarker]);
+  }, [selectedLat, selectedLng, map]);
 
-  /** 실시간 공유 지도 데이터 받기 */
+  /** 공유 지도 map 데이터 받기 */
   useEffect(() => {
-    console.log("4");
-    if (map && movedLat && movedLng && movedZoomLevel) {
+    if (path === "stomp" && movedLat && movedLng && movedZoomLevel && map) {
+      console.log("stomp");
       const locPosition = new kakao.maps.LatLng(movedLat, movedLng);
 
       map.setLevel(movedZoomLevel); // 지도 레벨 동기화
-      map.setCenter(locPosition);
 
       if (movedMarker) {
-        console.log("여기로 안옴???");
         marker.setPosition(locPosition);
         marker.setMap(map);
         map.panTo(locPosition);
@@ -223,7 +242,6 @@ const Map = ({
       } else {
         // dragend, zoomchange 이벤트의 경우 이전 마커의 위치에 마커 유지
         if (hasMarker) {
-          console.log("저기로 안옴???");
           const prevMarkerPosition = new kakao.maps.LatLng(markerLat, markerLng);
           marker.setPosition(prevMarkerPosition);
           marker.setMap(map);
@@ -234,37 +252,21 @@ const Map = ({
       // 상대방이 제어하고나서 나도 제어할 수 있게
       eventDragEnd();
       eventZoomChanged();
-      eventSetMarker();
     }
-  }, [map, movedLat, movedLng, movedZoomLevel, movedMarker]);
+  }, [movedLat, movedLng, movedZoomLevel, movedMarker, map]);
 
-  /** readOnly : 지도 제어 불가능 */
+  /** 공유지도 map block */
   useEffect(() => {
-    console.log("5");
-    if (map && selectedLat && selectedLng) {
-      marker = new kakao.maps.Marker();
-
-      const latlng = new kakao.maps.LatLng(selectedLat, selectedLng);
+    if (path === "block" && disableMapLat && disableMapLng && map) {
+      console.log("block");
+      const latlng = new kakao.maps.LatLng(disableMapLat, disableMapLng);
 
       marker.setMap(map);
       map.setCenter(latlng);
-      marker.setPosition(latlng);
       map.setDraggable(false);
       map.setZoomable(false);
-    } else {
-      // 공유지도에서 더 이상 대화가 안 될 때
-      if (disableMapLat && disableMapLng) {
-        marker = new kakao.maps.Marker();
-
-        const latlng = new kakao.maps.LatLng(disableMapLat, disableMapLng);
-
-        marker.setMap(map);
-        map.setCenter(latlng);
-        map.setDraggable(false);
-        map.setZoomable(false);
-      }
     }
-  }, [map, selectedLat, selectedLng, disableMapLat, disableMapLng]);
+  }, [disableMapLat, disableMapLng, map]);
 
   return <div id="map" css={mapWrapper}></div>;
 };

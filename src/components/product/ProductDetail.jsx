@@ -173,11 +173,18 @@ const ProductDetail = () => {
           setWriterNickname(res.nickName);
           setWriterManner(MannerPoint(res.manner));
           setLevel(calcMannerLevel(res.manner));
-          setMyPoint(res.point);
         })
         .catch((error) => console.log(error));
     }
   }, [writerId]);
+
+  useEffect(() => {
+    if (loginUserId) {
+      getUserDetail(loginUserId).then((res) => {
+        setMyPoint(res.point);
+      });
+    }
+  }, [loginUserId]);
 
   // 내가 이 게시글을 북마크했는지 여부 확인
   useEffect(() => {
@@ -195,7 +202,10 @@ const ProductDetail = () => {
 
   return (
     <div css={wrapper}>
-      {/* <RealDeleteModal /> */}
+      {/* <div css={DeleteWrap}>
+        <RealDeleteModal />
+      </div> */}
+
       <ProductDeatilHeader
         title={title}
         category={category}
@@ -243,7 +253,7 @@ const ProductDetail = () => {
             <h3>희망 공유 장소</h3>
             <span>{location}</span>
           </div>
-          <Map readOnly={true} selectedLat={hopeAreaLat} selectedLng={hopeAreaLng} />
+          <Map readOnly={true} selectedLat={hopeAreaLat} selectedLng={hopeAreaLng} path={"detail"} />
         </div>
       </div>
 
@@ -259,7 +269,25 @@ const wrapper = css`
   display: flex;
   flex-direction: column;
   position: relative;
+  height: 100vh;
 `;
+
+// const DeleteWrap = css`
+//   position: fixed;
+//   width: 500px;
+//   top: 30%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+//   background-color: white;
+//   padding: 20px;
+//   border-radius: 10px;
+//   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
+//   z-index: 9999;
+
+//   display: flex;
+//   flex-direction: column-reverse;
+//   /* justify-content: space-between; */
+// `;
 
 const contentsWrapper = css`
   display: flex;
