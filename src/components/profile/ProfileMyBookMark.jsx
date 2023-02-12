@@ -26,7 +26,6 @@ const ProfileMyBookMark = (props) => {
       {myBookMarkBoard && myBookMarkBoard.length > 0 ? (
         myBookMarkBoard.map((bookMarkData) => {
           const share = bookMarkData.shareListDto;
-
           return (
             <div key={share.id}>
               <ProfileCardView

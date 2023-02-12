@@ -5,7 +5,7 @@ import ProfileEditButton from "./ProfileEditButton";
 import ProfileSummary from "./ProfileSummary";
 import ProfileLocation from "./ProfileLocation";
 import ProfilePoint from "./ProfilePoint";
-import ProfileDday from "./ProfileDday";
+import ProfileDdayComp from "./ProfileDdayComp";
 import { getUserDetail } from "../../api/user";
 import { useRecoilState } from "recoil";
 import { loginUserState } from "../../recoil/atom";
@@ -100,7 +100,7 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
         `}
       >
         <ProfilePoint point={point} />
-        <ProfileDday />
+        <ProfileDdayComp />
       </div>
     </div>
   );

@@ -1,5 +1,4 @@
 import React from "react";
-import ProfileChart from "./ProfileChart";
 import ProfilePointDetails from "./ProfilePointDetails";
 /** @jsxImportSource @emotion/react */
 // import { css } from "@emotion/react";
@@ -7,7 +6,6 @@ import ProfilePointDetails from "./ProfilePointDetails";
 const ProfileMainPoint = () => {
   return (
     <div>
-      <ProfileChart />
       <ProfilePointDetails />
     </div>
   );
