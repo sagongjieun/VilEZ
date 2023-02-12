@@ -64,6 +64,7 @@ class HomeFragment : Fragment() {
 
         if (ApplicationClass.prefs.getLng() != "0.0" && ApplicationClass.prefs.getLat() != "0.0") {
             binding.userLocationValid = true
+            initFilterCheckBox()
             initTabLayout()
             initShareData() // default : 공유글 띄우기
         } else {
@@ -114,6 +115,19 @@ class HomeFragment : Fragment() {
         }*/
     }
 
+    private fun initFilterCheckBox() {
+        binding.checkboxShare.isChecked = false // 디폴트 : 모두 보기
+        binding.checkboxShare.setOnCheckedChangeListener { _, b ->
+            Log.d(TAG, "initSearchBtn: 선택된 탭: ${binding.homeTabLayout.selectedTabPosition}, 공유가능만 보기 필터링")
+            if (b) { // 체크된 경우 => 공유가능만 보기
+                initShareData(true)
+            } else { // 체크 해제된 경우 => 전체보기
+                initShareData(false)
+            }
+
+        }
+    }
+
     var isOpen = false
     fun toggleFloatingBtn(view: View) {
         if(isOpen) { // 원래대로 돌아감
@@ -144,9 +158,11 @@ class HomeFragment : Fragment() {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when(tab!!.position) {
                     TAB_SHARE-> { // 공유 탭
+                        binding.checkboxShare.visibility = View.VISIBLE
                         initShareData()
                     }
                     TAB_ASK -> { // 요청 탭
+                        binding.checkboxShare.visibility = View.GONE
                         initAskData()
                     }
                 }
@@ -191,7 +207,7 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun initShareData() {
+    private fun initShareData(filtered: Boolean = false) {
         // 데이터 가져오기
         shareItems = arrayListOf()
 
@@ -219,7 +235,7 @@ class HomeFragment : Fragment() {
                     max,
                     ApplicationClass.prefs.getId()
                 ).awaitResponse().body();
-            Log.d(TAG, "onViewCreated: 데이터 불러오는중 result : $result")
+            //Log.d(TAG, "onViewCreated: 데이터 불러오는중 result : $result")
             if (result?.flag == "success") {
                 Log.d(TAG, "initList: result: $result")
                 if (result.data.isEmpty()) {
@@ -227,12 +243,13 @@ class HomeFragment : Fragment() {
                     binding.tvNoArticleMsg.visibility = View.VISIBLE
                 }
                 for (data in result.data) {
+                    if(filtered && data.shareListDto.state == 1)  continue // 체크박스 클릭되어 있으면 공유가능만 보기
                     var shareData = ShareDto(
                             data.shareListDto.id,
                             if(data.shareListDto.list.isNullOrEmpty()) Common.DEFAULT_PROFILE_IMG else data.shareListDto.list[0].path,
                             data.shareListDto.title,
                             data.shareListDto.date,
-                            "구미",
+                            "",
                             data.shareListDto.startDay + " ~ "
                                     + data.shareListDto.endDay,
                             Integer.toString(data.listCnt),
