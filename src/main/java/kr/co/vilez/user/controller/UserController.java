@@ -43,7 +43,7 @@ public class UserController {
         HttpVO http = new HttpVO();
 
         try{
-            userService.modifyPassword(email);
+            userService.modifyPassword(email, password);
             http.setFlag("success");
         } catch (Exception e){
             e.printStackTrace();
