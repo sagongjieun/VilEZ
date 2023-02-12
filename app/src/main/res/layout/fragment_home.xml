@@ -105,6 +105,13 @@
 
             </com.google.android.material.tabs.TabLayout>
 
+            <CheckBox
+                android:id="@+id/checkbox_share"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="공유가능만 보기" />
 
         </LinearLayout>
 
@@ -129,6 +136,9 @@
             android:outlineProvider="none"
             android:visibility="@{userLocationValid ? View.VISIBLE : View.GONE}">
 
+
+
+
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swipe_refresh_layout"
                 android:layout_width="match_parent"
@@ -137,7 +147,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_share_list"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:scrollbarFadeDuration="0"
                     android:scrollbarSize="5dp"
                     android:scrollbarThumbVertical="@android:color/darker_gray"
