@@ -31,7 +31,6 @@ interface ShareApi {
     @GET("/vilez/shareboard/my/{userId}")
     fun getMyArticle(@Path("userId")id:Int):Call<RESTMyShareArticleResult>
 
-
     // 모든 공유 게시글을 가져온다. 유저 위치 기반해서 반경 2.5km 이내의 데이터를 가져온다.
     @GET("/vilez/shareboard")
     fun boardList(

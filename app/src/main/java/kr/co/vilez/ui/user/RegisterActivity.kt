@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import kr.co.vilez.R
+import kr.co.vilez.ui.LoginActivity
 
 class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,6 +19,9 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     fun moveToLogin() {
-        startActivity(Intent(this@RegisterActivity, LoginActivity::class.java))
+        val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
     }
 }

@@ -109,7 +109,7 @@ class ShareWriteActivity : AppCompatActivity() {
         when(type) {
             BOARD_TYPE_SHARE -> {
                 CoroutineScope(Dispatchers.Main).launch {
-                    val result = ApplicationClass.shareApi.getBoardDetail(editBoardId).awaitResponse().body()
+                    val result = ApplicationClass.hShareApi.getBoardDetail(editBoardId).awaitResponse().body()
                     if(result?.flag == "success") { // 기존 데이터 불러오기 성공
                         val detail = result.data[0]
                         Log.d(TAG, "initEditView: 기존 데이터 불러오기 성공 : result: $detail")
@@ -134,7 +134,7 @@ class ShareWriteActivity : AppCompatActivity() {
             }
             BOARD_TYPE_ASK -> {
                 CoroutineScope(Dispatchers.Main).launch {
-                    val result = ApplicationClass.askApi.getBoardDetail(editBoardId).awaitResponse().body()
+                    val result = ApplicationClass.hAskApi.getBoardDetail(editBoardId).awaitResponse().body()
                     if(result?.flag == "success") { // 기존 데이터 불러오기 성공
                         val detail = result.data[0]
                         Log.d(TAG, "initEditView: 기존 데이터 불러오기 성공 : result: $detail")
@@ -389,9 +389,9 @@ class ShareWriteActivity : AppCompatActivity() {
                     CoroutineScope(Dispatchers.Main).launch {
                         val result = if(editBoardId != 0) {
                             Log.d(TAG, "savePost: 수정 시작합니닷 editBoardId: $editBoardId , 수정한 보드 정보 : $writeBoard")
-                            ApplicationClass.shareApi.putShareBoard(writeBoard, imgMultiPart).awaitResponse().body()
+                            ApplicationClass.hShareApi.putShareBoard(writeBoard, imgMultiPart).awaitResponse().body()
                         } else {
-                            ApplicationClass.shareApi.postShareBoard(writeBoard, imgMultiPart).awaitResponse().body()
+                            ApplicationClass.hShareApi.postShareBoard(writeBoard, imgMultiPart).awaitResponse().body()
                         }
                         Log.d(TAG, "savePost: 게시글 작성/수정 결과 : $result")
 
@@ -411,10 +411,10 @@ class ShareWriteActivity : AppCompatActivity() {
                     CoroutineScope(Dispatchers.Main).launch {
                         val result = if(editBoardId != 0) {
                             Log.d(TAG, "savePost: 수정 시작합니닷 editBoardId: $editBoardId , 수정한 보드 정보 : $writeBoard")
-                            ApplicationClass.askApi.putBoard(writeBoard, imgMultiPart).awaitResponse().body()
+                            ApplicationClass.hAskApi.putBoard(writeBoard, imgMultiPart).awaitResponse().body()
                         } else {
                             Log.d(TAG, "savePost: 게시글 작성 시작한닷")
-                            ApplicationClass.askApi.postBoard(writeBoard, imgMultiPart).awaitResponse().body()
+                            ApplicationClass.hAskApi.postBoard(writeBoard, imgMultiPart).awaitResponse().body()
                         }
                         Log.d(TAG, "savePost: 게시글 작성/수정 결과 : $result")
                         if(result?.flag == "success") {

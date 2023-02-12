@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentLoginBinding
+import kr.co.vilez.ui.LoginActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.ui.dialog.MyAlertDialog
 import kr.co.vilez.util.*
@@ -29,7 +30,7 @@ import retrofit2.awaitResponse
 private const val TAG = "빌리지_LoginFragment"
 class LoginFragment : Fragment() {
     private lateinit var binding:FragmentLoginBinding
-    private lateinit var loginActivity:LoginActivity
+    private lateinit var loginActivity: LoginActivity
     private val userViewModel by activityViewModels<UserViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,13 +59,13 @@ class LoginFragment : Fragment() {
         val email = binding.inputLoginEmail.editText?.text.toString()
         val password = binding.inputLoginPassword.editText?.text.toString()
 
-        Log.d(TAG, "login: email : $email, password: $password")
+        Log.d(TAG, "login: email : $email, password: $password , hashed password: ${Common.getHash(password)}")
 
         if(email == "" || password == "") {
             val dialog = MyAlertDialog(loginActivity, "아이디 비밀번호를 확인해주세요.")
-            dialog.show(loginActivity.supportFragmentManager, "NaverRegisterFailed")
+            dialog.show(loginActivity.supportFragmentManager, "LoginFailed")
         } else {
-            loginActivity.login(User(email, password))
+            loginActivity.login(User(email, Common.getHash(password)))
         }
     }
 
@@ -216,7 +217,6 @@ class LoginFragment : Fragment() {
         }
     }
 
-
     fun naverLogin(view: View) {
         NaverIdLoginSDK.showDevelopersLog(true)
 
@@ -226,12 +226,6 @@ class LoginFragment : Fragment() {
             , getString(R.string.naver_client_name))
 
         NaverIdLoginSDK.authenticate(loginActivity, oauthLoginCallback)
-    }
-
-
-
-    fun kakaoUserJoin(id: String) {
-
     }
 
 }

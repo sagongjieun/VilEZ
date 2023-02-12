@@ -15,8 +15,6 @@ import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityMainBinding
 import kr.co.vilez.ui.chat.room.ChatlistFragment
 import kr.co.vilez.data.model.RoomlistData
-import kr.co.vilez.ui.ask.AskFragment
-import kr.co.vilez.ui.share.HomeShareFragment
 import kr.co.vilez.ui.user.ProfileFragment
 import kr.co.vilez.ui.user.ProfileMenuActivity
 import kr.co.vilez.util.ApplicationClass
@@ -155,7 +153,7 @@ class MainActivity : AppCompatActivity() {
         when(name) {
             "홈" -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.frame_layout_main, HomeShareFragment())
+                    .replace(R.id.frame_layout_main, HomeFragment())
                     .commit()
             }
             /*"공유 요청" -> {
@@ -188,7 +186,7 @@ class MainActivity : AppCompatActivity() {
             R.id.page_home -> {
                 // Fragment 변경
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.frame_layout_main, HomeShareFragment())
+                    .replace(R.id.frame_layout_main, HomeFragment())
                     .commit()
                 return true
             }

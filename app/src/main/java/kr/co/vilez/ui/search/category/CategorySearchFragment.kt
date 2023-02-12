@@ -102,7 +102,7 @@ class CategorySearchFragment : Fragment() {
         var num = 0
         var max = 10
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.askApi.boardCategoryList(num++, 0, max, ApplicationClass.prefs.getId(), category!!).awaitResponse().body()
+            val result = ApplicationClass.hAskApi.boardCategoryList(num++, 0, max, ApplicationClass.prefs.getId(), category!!).awaitResponse().body()
             Log.d(TAG, "initData: result: $result")
             if (result?.flag == "success") {
                 Log.d(TAG, "initList: result: $result")
@@ -136,7 +136,7 @@ class CategorySearchFragment : Fragment() {
         binding.rvShareSearch.setOnScrollChangeListener { v, _, _, _, _ ->
             if (!v.canScrollVertically(1)) {
                 CoroutineScope(Dispatchers.Main).launch {
-                    val result = ApplicationClass.askApi.boardCategoryList(num++, 0, max, ApplicationClass.prefs.getId(), category!!).awaitResponse().body()
+                    val result = ApplicationClass.hAskApi.boardCategoryList(num++, 0, max, ApplicationClass.prefs.getId(), category!!).awaitResponse().body()
                     Log.d(TAG, "initData: result: $result")
                     if (result?.flag == "success") {
                         Log.d(TAG, "initList: result: $result")
@@ -192,7 +192,7 @@ class CategorySearchFragment : Fragment() {
         Log.d(TAG, "$lat $lng")
         CoroutineScope(Dispatchers.Main).launch {
             val result =
-                ApplicationClass.shareApi.boardCategoryList(
+                ApplicationClass.hShareApi.boardCategoryList(
                     num++,
                     0,
                     max,
@@ -252,7 +252,7 @@ class CategorySearchFragment : Fragment() {
             if (!v.canScrollVertically(1)) {
                 CoroutineScope(Dispatchers.Main).launch {
                     val result =
-                        ApplicationClass.shareApi.boardCategoryList(
+                        ApplicationClass.hShareApi.boardCategoryList(
                             num++,
                             0,
                             max,

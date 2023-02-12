@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentRegisterOauthBinding
+import kr.co.vilez.ui.LoginActivity
 import kr.co.vilez.ui.dialog.MyAlertDialog
 import kr.co.vilez.ui.dialog.AlertDialogInterface
 import kr.co.vilez.ui.dialog.AlertDialogWithCallback

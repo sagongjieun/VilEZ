@@ -54,7 +54,7 @@ class CalendarFragment : Fragment() {
         itemList = arrayListOf()
         calendarList = arrayListOf()
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.appointmentApi.getMyCalendar(ApplicationClass.prefs.getId()).awaitResponse().body()
+            val result = ApplicationClass.hAppointmentApi.getMyCalendar(ApplicationClass.prefs.getId()).awaitResponse().body()
             Log.d(TAG, "initData: 개수: ${result?.data?.get(0)?.size} 데이터 result: $result")
             if(result?.flag == "success") {
                 Log.d(TAG, "initData: success! 개수 : ${result.data[0].size}")

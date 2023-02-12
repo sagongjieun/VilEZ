@@ -107,7 +107,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:onClick="@{fragment::moveFragment}"
-                android:text="비밀번호 찾기"
+                android:text="비밀번호 재설정"
                 android:textColor="@color/text_sub_1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

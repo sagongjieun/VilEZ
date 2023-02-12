@@ -43,9 +43,17 @@ class UserApi(
 //
 //    }
 
+    // 비밀번호를 재설정한다. 쿼리스트링으로 email, password 보내기
+    @PUT("/vilez/users/modify/password")
+    fun changePassword(@Query("email")email:String, @Query("password")password:String):  Call<RESTResult>
+
+    // 유저 정보를 수정한다
+    @PUT("/vilez/users/modify")
+    fun modifyUser(@Body user:User) : Call<RESTResult>
 
     @POST("/vilez/users/logout")
     fun postLogout(@Body user:User): Call<RESTUserResult>
+
 
     @GET("/vilez/users/check")
     fun isUsedUserNickName(@Query("nickname") nickname : String):Call<RESTResult>
@@ -70,10 +78,6 @@ class UserApi(
     /**
      * 아래는 헤더에 access token을 같이 보낼때 사용하는 API : 자동으로 header에 넣어보내고 만료시 refreshtoken을 보내서 갱신시켜주고 재전송함
      */
-
-    // 유저 정보를 수정한다
-    @PUT("/vilez/users/modify")
-    fun modifyUser(@Body user:User) : Call<RESTResult> //
 
 
     // 프로필 이미지를 변경한다
