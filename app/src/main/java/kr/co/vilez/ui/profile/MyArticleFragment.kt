@@ -90,7 +90,7 @@ class MyArticleFragment : Fragment() {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         }
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.askApi.getMyArticle(ApplicationClass.prefs.getId()).awaitResponse().body()
+            val result = ApplicationClass.hAskApi.getMyArticle(ApplicationClass.prefs.getId()).awaitResponse().body()
             Log.d(TAG, "onViewCreated: 공유 검색 데이터 불러오는중 result : $result")
             if (result?.flag == "success") {
                 Log.d(TAG, "initShareData: success!!!!! 검색 결과 개수 : ${result.data.size}")
@@ -127,7 +127,7 @@ class MyArticleFragment : Fragment() {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         }
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.shareApi.getMyArticle(ApplicationClass.prefs.getId()).awaitResponse().body()
+            val result = ApplicationClass.hShareApi.getMyArticle(ApplicationClass.prefs.getId()).awaitResponse().body()
             Log.d(TAG, "onViewCreated: 공유 검색 데이터 불러오는중 result : $result")
             if (result?.flag == "success") {
                 Log.d(TAG, "initShareData: success!!!!! 검색 결과 개수 : ${result.data[0].size}")

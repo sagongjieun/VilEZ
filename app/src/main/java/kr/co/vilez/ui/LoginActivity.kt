@@ -1,4 +1,4 @@
-package kr.co.vilez.ui.user
+package kr.co.vilez.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -14,7 +14,12 @@ import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.ActivityLoginBinding
 import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.ui.dialog.MyAlertDialog
+import kr.co.vilez.ui.user.FindPasswordFragment
+import kr.co.vilez.ui.user.LoginFragment
+import kr.co.vilez.ui.user.RegisterActivity
+import kr.co.vilez.ui.user.RegisterOauthFragment
 import kr.co.vilez.util.ApplicationClass
+import kr.co.vilez.util.Common
 import kr.co.vilez.util.FCMTokenUtil
 import kr.co.vilez.util.StompHelper
 import retrofit2.awaitResponse
@@ -57,6 +62,7 @@ class LoginActivity : AppCompatActivity() {
             }
             3 -> { // 비밀번호 찾기
                 transaction.replace(R.id.frame_layout_login, FindPasswordFragment())
+                    .addToBackStack(null)
             }
             4-> {
                 val intent = Intent(this@LoginActivity, MainActivity::class.java)

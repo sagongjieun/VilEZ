@@ -155,7 +155,7 @@ class AskDetailActivity : AppCompatActivity() {
     private fun initData(){
         var count = 0
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.askApi.getBoardDetail(boardId!!).awaitResponse().body()
+            val result = ApplicationClass.hAskApi.getBoardDetail(boardId!!).awaitResponse().body()
             if (result?.flag =="success") {
                 Log.d(TAG, "init: @@@공유 디테일 ${result.data[0]}")
                 binding.article = result.data[0]
@@ -256,7 +256,7 @@ class AskDetailActivity : AppCompatActivity() {
                 val dialog = ConfirmDialog(object : ConfirmDialogInterface {
                     override fun onYesButtonClick(id: String) {
                         CoroutineScope(Dispatchers.Main).launch {
-                            val result = ApplicationClass.askApi.deleteBoard(boardId!!).awaitResponse().body()
+                            val result = ApplicationClass.hAskApi.deleteBoard(boardId!!).awaitResponse().body()
                             if(result?.flag == "success") { // 삭제 성공
                                 // TODO : 채팅 목록 삭제시키기 (or 채팅종료)
                                 Toast.makeText(this@AskDetailActivity, "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show()

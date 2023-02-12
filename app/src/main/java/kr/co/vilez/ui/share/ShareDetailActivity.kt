@@ -80,7 +80,7 @@ class ShareDetailActivity : AppCompatActivity(){
         if(binding.bookmark!!) {
             // 관심목록에서 삭제
             CoroutineScope(Dispatchers.Main).launch {
-                val result = ApplicationClass.shareApi.deleteBookmark(boardId!!, ApplicationClass.prefs.getId()).awaitResponse().body()
+                val result = ApplicationClass.hShareApi.deleteBookmark(boardId!!, ApplicationClass.prefs.getId()).awaitResponse().body()
                 if(result?.flag == "success") {
                     binding.bookmark = false
                     binding.article!!.bookmarkCnt--
@@ -92,7 +92,7 @@ class ShareDetailActivity : AppCompatActivity(){
         } else {
             // 관심목록에 추가
             CoroutineScope(Dispatchers.Main).launch {
-                val result = ApplicationClass.shareApi.addBookmark(Bookmark(boardId!!, ApplicationClass.prefs.getId())).awaitResponse().body()
+                val result = ApplicationClass.hShareApi.addBookmark(Bookmark(boardId!!, ApplicationClass.prefs.getId())).awaitResponse().body()
                 if(result?.flag == "success") {
                     binding.bookmark = true
                     binding.article!!.bookmarkCnt++
@@ -212,11 +212,11 @@ class ShareDetailActivity : AppCompatActivity(){
     private fun initData(){
         var count = 0
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.shareApi.getBoardDetail(boardId!!).awaitResponse().body()
+            val result = ApplicationClass.hShareApi.getBoardDetail(boardId!!).awaitResponse().body()
 
             // 북마크 정보 가져오기
             Log.d(TAG, "initData 북마크: boardId: $boardId, userId: ${ApplicationClass.prefs.getId()}")
-            val bookmarkResult = ApplicationClass.shareApi.getShareBookmark(boardId!!, ApplicationClass.prefs.getId()).awaitResponse().body()
+            val bookmarkResult = ApplicationClass.hShareApi.getShareBookmark(boardId!!, ApplicationClass.prefs.getId()).awaitResponse().body()
             if(bookmarkResult?.flag == "success") {
                 binding.bookmark = (bookmarkResult.data as List<Bookmark>)[0] != null
             } else {
@@ -337,12 +337,12 @@ class ShareDetailActivity : AppCompatActivity(){
                     override fun onYesButtonClick(id: String) {
                         // 대여중, 예약중인 경우 삭제 불가능하게 하기
                         CoroutineScope(Dispatchers.Main).launch {
-                            val stateResult = ApplicationClass.appointmentApi.getIsSharing(boardId!!, BOARD_TYPE_SHARE).awaitResponse().body()
+                            val stateResult = ApplicationClass.hAppointmentApi.getIsSharing(boardId!!, BOARD_TYPE_SHARE).awaitResponse().body()
                             if(stateResult?.flag == "success") {
                                 if (stateResult.data[0].boardId == boardId) { // 이미 있어서 삭제 불가!
                                     Toast.makeText(this@ShareDetailActivity, "공유중인 게시글이어서 삭제가 불가합니다.", Toast.LENGTH_SHORT).show()
                                 } else { // 게시글 삭제 시작
-                                    val result = ApplicationClass.shareApi.deleteShareBoard(boardId!!).awaitResponse().body()
+                                    val result = ApplicationClass.hShareApi.deleteShareBoard(boardId!!).awaitResponse().body()
                                     if(result?.flag == "success") { // 삭제 성공
                                         Toast.makeText(this@ShareDetailActivity, "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
                                         val intent = Intent(this@ShareDetailActivity, MainActivity::class.java)

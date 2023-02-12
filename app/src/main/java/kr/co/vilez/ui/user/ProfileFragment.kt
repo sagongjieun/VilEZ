@@ -18,6 +18,7 @@ import kr.co.vilez.R
 import kr.co.vilez.data.dto.BoardData
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentProfileBinding
+import kr.co.vilez.ui.LoginActivity
 import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.ui.dialog.*
 import kr.co.vilez.ui.share.ShareToChatAdapter
@@ -64,7 +65,7 @@ class ProfileFragment : Fragment() {
 
         var index = 0
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.appointmentApi.getMyImminent(ApplicationClass.prefs.getId()).awaitResponse().body()
+            val result = ApplicationClass.hAppointmentApi.getMyImminent(ApplicationClass.prefs.getId()).awaitResponse().body()
             Log.d(TAG, "initData: result: $result")
             if (result?.flag == "success") {
                 Log.d(TAG, "initList: success!!!!!  검색 결과 : ${result.data[0].size}  result: $result")

@@ -23,7 +23,7 @@ import kr.co.vilez.R
 import kr.co.vilez.data.model.RESTResult
 import kr.co.vilez.data.model.Token
 import kr.co.vilez.service.*
-import kr.co.vilez.ui.user.LoginActivity
+import kr.co.vilez.ui.LoginActivity
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter

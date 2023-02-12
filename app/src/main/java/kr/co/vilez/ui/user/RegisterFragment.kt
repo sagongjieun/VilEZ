@@ -86,23 +86,6 @@ class RegisterFragment : Fragment() {
 
     @SuppressLint("ResourceAsColor")
     private fun initView() {
-
-//        binding.inputRegisterEmail.editText?.addTextChangedListener {
-//            isValidEmail = Common.verifyEmail(it.toString())
-//            if(isValidEmail) { // 인증하기 버튼 활성화 (회색 -> 흰색)
-//                binding.inputRegisterEmail.error = null
-//                binding.btnRegisterEmailAuth.apply {
-//                    isClickable = true
-//                    //setBackgroundResource(R.drawable.btn_stroke_fill)
-//                    backgroundTintList = context.resources.getColorStateList(R.color.main_1)
-//                    setTextColor(context.resources.getColorStateList(R.color.white))
-//                }
-//            } else { // 에러 메시지
-//                binding.inputRegisterEmail.error = "올바르지 않은 이메일 형식입니다"
-//                binding.btnRegisterEmailAuth.isClickable = false // 버튼 클릭 불가
-//            }
-//        }
-
         binding.inputRegisterPassword.editText?.addTextChangedListener {
             isValidPassword = Common.verifyPassword(it.toString())
             if(isValidPassword) {
@@ -157,8 +140,9 @@ class RegisterFragment : Fragment() {
         } else { // 모두 통과
             val email = binding.inputRegisterEmail.editText?.text.toString()
             val password = binding.inputRegisterPassword.editText?.text.toString()
+            val hashedpassword = Common.getHash(password)
             CoroutineScope(Dispatchers.Main).launch {
-                val user = User(email=email, password = password, nickName = checkedNickname)
+                val user = User(email=email, password = hashedpassword, nickName = checkedNickname)
                 Log.d(TAG, "register: 회원가입 할 유저 정보 : $user")
                 val result = ApplicationClass.userApi.getJoinResult(user).awaitResponse().body()
                 Log.d(TAG, "register: $result")
@@ -192,9 +176,12 @@ class RegisterFragment : Fragment() {
 
             binding.apply {
                 inputRegisterEmail.editText?.isEnabled = false // 이메일 수정 불가
+                inputRegisterEmail.hint = "이메일 인증 완료"
                 btnRegisterEmailAuth.isEnabled = false
                 btnRegisterEmailAuth.isClickable = false
                 inputRegisterEmailAuth.editText?.isEnabled = false // 인증번호 수정 불가
+                inputRegisterEmailAuth.error = null
+                inputRegisterEmailAuth.hint = "인증번호 확인 완료"
             }
 
             // 인증 완료 버튼 클릭 불가
@@ -209,6 +196,7 @@ class RegisterFragment : Fragment() {
             Log.d(TAG, "checkEmailAuth: 이메일 인증번호 맞음")
         } else {
             Log.d(TAG, "checkEmailAuth: 이메일 인증번호 틀림")
+            binding.inputRegisterEmailAuth.error = "인증번호가 올바르지 않습니다."
         }
     }
 

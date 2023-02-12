@@ -1,11 +1,10 @@
-package kr.co.vilez.ui.share
+package kr.co.vilez.ui
 
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,8 +16,7 @@ import kotlinx.coroutines.*
 import kr.co.vilez.R
 import kr.co.vilez.data.dto.AskData
 import kr.co.vilez.data.dto.ShareDto
-import kr.co.vilez.databinding.FragmentHomeShareBinding
-import kr.co.vilez.ui.MainActivity
+import kr.co.vilez.databinding.FragmentHomeBinding
 import kr.co.vilez.ui.ask.AskListAdapter
 import kr.co.vilez.ui.dialog.MyAlertDialog
 import kr.co.vilez.ui.search.SearchActivity
@@ -33,8 +31,8 @@ import kr.co.vilez.util.Common.Companion.BOARD_TYPE_SHARE
 
 private const val TAG = "빌리지_HomeFragment"
 
-class HomeShareFragment : Fragment() {
-    private lateinit var binding: FragmentHomeShareBinding
+class HomeFragment : Fragment() {
+    private lateinit var binding: FragmentHomeBinding
     private lateinit var mainActivity: MainActivity
 
     // 공유글
@@ -60,7 +58,7 @@ class HomeShareFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home_share, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         binding.activity = mainActivity
         binding.fragment = this
 
@@ -223,7 +221,7 @@ class HomeShareFragment : Fragment() {
         Log.d(TAG, "$lat $lng")
         CoroutineScope(Dispatchers.Main).launch {
             val result =
-                ApplicationClass.shareApi.boardList(
+                ApplicationClass.hShareApi.boardList(
                     num++,
                     0,
                     max,
@@ -260,7 +258,7 @@ class HomeShareFragment : Fragment() {
             if (!v.canScrollVertically(1)) {
                 CoroutineScope(Dispatchers.Main).launch {
                     val result =
-                        ApplicationClass.shareApi.boardList(
+                        ApplicationClass.hShareApi.boardList(
                             num++,
                             0,
                             max,
@@ -307,7 +305,7 @@ class HomeShareFragment : Fragment() {
         var num = 0
         var max = 10
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.askApi.boardList(num++, 0, max, ApplicationClass.prefs.getId()).awaitResponse().body()
+            val result = ApplicationClass.hAskApi.boardList(num++, 0, max, ApplicationClass.prefs.getId()).awaitResponse().body()
             Log.d(TAG, "initData: result: $result")
             if (result?.flag == "success") {
                 Log.d(TAG, "initList: result: $result")
@@ -339,7 +337,7 @@ class HomeShareFragment : Fragment() {
         binding.rvShareList.setOnScrollChangeListener { v, _, _, _, _ ->
             if (!v.canScrollVertically(1)) {
                 CoroutineScope(Dispatchers.Main).launch {
-                    val result = ApplicationClass.askApi.boardList(num++, 0, max, ApplicationClass.prefs.getId()).awaitResponse().body()
+                    val result = ApplicationClass.hAskApi.boardList(num++, 0, max, ApplicationClass.prefs.getId()).awaitResponse().body()
                     Log.d(TAG, "initData: result: $result")
                     if (result?.flag == "success") {
                         Log.d(TAG, "initList: result: $result")
