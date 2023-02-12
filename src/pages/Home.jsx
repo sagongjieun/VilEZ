@@ -91,14 +91,22 @@ const FirstWrap = css`
 `;
 
 const FirstBodyWrap = css`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  height: 550px;
+  height: calc(100vh - 70px);
   background-image: url(${mainBackgroundImage});
   background-size: cover;
 `;
 
 const FirstBody = css`
-  padding-top: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   font-size: 40px;
   color: white;
   text-align: center;
@@ -121,6 +129,9 @@ const floating = keyframes`
 `;
 
 const ArrowBox = css`
+  position: absolute;
+  left: calc(50% - 64px);
+  bottom: 0;
   text-align: center;
   margin-top: 100px;
   cursor: pointer;
