@@ -10,6 +10,7 @@ import mapimg from "../assets/images/mapimg.png";
 import chatimg from "../assets/images/chatimg.png";
 import homeBackground from "../assets/images/home_background.jpg";
 import messageGreen from "../assets/images/back.png";
+import TypingText from "../components/common/Typing";
 
 function MainBody() {
   const vilEZ = useRef();
@@ -42,22 +43,13 @@ function MainBody() {
     setScrollPosition(window.scrollY || document.documentElement.scrollTop);
   };
 
-  function moveGradient(e) {
-    const rect = e.target.getBoundingClientRect(); //요소 좌표
-    //clientX는 body 기준 위치
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    e.target.style.setProperty("--x", x + "px");
-    e.target.style.setProperty("--y", y + "px");
-  }
-
   useEffect(() => {
     window.addEventListener("scroll", updateScroll);
   }, []);
 
   return (
     <div>
-      <div css={FirstBodyWrap} onMouseMove={moveGradient} ref={mainBox}>
+      <div css={FirstBodyWrap} ref={mainBox}>
         <div>
           <Animated animationIn="animate__fadeIn" animationInDuration={2700}>
             <div css={FirstBody}>
@@ -69,7 +61,8 @@ function MainBody() {
               </Animated>
               <Animated animationIn="animate__fadeIn" animationInDuration={4200}>
                 <div css={FirstBodyDiv} ref={vilEZ}>
-                  공유마을 <div>빌리지.</div>
+                  공유마을 빌리지.
+                  <TypingText />
                 </div>
               </Animated>
             </div>
@@ -83,6 +76,20 @@ function MainBody() {
         </div>
       </div>
       <a id="movebottom"></a>
+      {/* <div css={blanks}></div>
+      <div
+        css={[
+          test(scrollPosition),
+          scrollPosition > firstHeight + 280 && scrollPosition < secondHeight + 1200
+            ? fixedStyle
+            : relativeStyle(scrollPosition - secondHeight),
+        ]}
+      >
+        <div>4</div>
+        <div>3</div>
+        <div>2</div>
+        <div>1</div>
+      </div> */}
       <div css={[FirstWrap, scrollPosition > firstHeight ? visibleBox : hiddenBox]} ref={firstBox}>
         <div css={ExplainLeft}>
           <div css={ExplainTitle}>따뜻해지는 공유 문화</div>
@@ -175,7 +182,6 @@ const FirstBody = css`
   /* color: white; */
   color: #000;
   text-align: left;
-  color: white;
   text-align: center;
   font-family: "GmarketSansMedium";
 `;
@@ -277,5 +283,49 @@ const visibleBox = css`
   transition: all 1s;
   transform: translateY(0px);
 `;
+
+// const blanks = css`
+//   height: 1000px;
+// `;
+
+// const test = (scroll) => {
+//   return css`
+//     position: relative;
+//     height: 1000px;
+//     background-color: aquamarine;
+//     > div {
+//       position: absolute;
+//       width: 100%;
+//       height: 100vh;
+//     }
+//     > div:nth-of-type(1) {
+//       background-color: red;
+//       opacity: ${scroll - 300}%;
+//     }
+//     > div:nth-of-type(2) {
+//       background-color: green;
+//       opacity: ${scroll - 250}%;
+//     }
+//     > div:nth-of-type(3) {
+//       background-color: #ffffff;
+//       opacity: ${(scroll - 400) / 100};
+//     }
+//     > div:nth-of-type(4) {
+//       background-color: #800000;
+//       opacity: ${(scroll - 400) / 100};
+//     }
+//   `;
+// };
+
+// const fixedStyle = css`
+//   position: fixed;
+//   top: 0;
+// `;
+// const relativeStyle = (scroll) => {
+//   return css`
+//     position: fixed;
+//     bottom: ${scroll - 1200};
+//   `;
+// };
 
 export default MainBody;

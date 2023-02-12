@@ -17,11 +17,11 @@ const ProfileMyWriting = (props) => {
         setMyBoard(response);
         setMyShareBoard(response);
       }
-    });
-    getUserAsk(userId).then((response) => {
-      if (response) {
-        setMyAskBoard(response);
-      }
+      getUserAsk(userId).then((response) => {
+        if (response) {
+          setMyAskBoard(response);
+        }
+      });
     });
   }, []);
   useEffect(() => {

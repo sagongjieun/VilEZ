@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { css } from "@emotion/react";
 import { Link } from "react-router-dom";
 import { HiChevronRight, HiChevronLeft } from "react-icons/hi2";
+import ProfileDDay from "./ProfileDdayComp";
 
 const ProfileDdaySlide = ({ ddaySlideList }) => {
   const SIZE = ddaySlideList.length;
@@ -50,7 +51,13 @@ const ProfileDdaySlide = ({ ddaySlideList }) => {
               <div>잊지 마세요</div>
               <div>{appoint.appointmentDto.title}</div>
               <div>
-                반납까지 <span>2</span>일 남았습니다.
+                {appoint.appointmentDto.status === "마감일 임박!" ? "반납까지" : "대여 시작까지"}{" "}
+                <span>
+                  {appoint.appointmentDto.status === "마감일 임박!"
+                    ? ProfileDDay(appoint.appointmentDto.appointmentEnd)
+                    : ProfileDDay(appoint.appointmentDto.appointmentStart)}
+                </span>
+                일 남았습니다.
               </div>
             </div>
           </div>
@@ -153,6 +160,11 @@ const ddayExp = css`
     // 제목
     & > div:nth-of-type(2) {
       margin-top: 20px;
+      max-width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
       /* font-weight: bold; */
     }
     // 디데이
