@@ -16,6 +16,7 @@ const ChattingModalItem = ({ chat }) => {
     setEnterChatRoom(roomId);
     setModalOpen(!modalOpen);
     navigate(`/product/chat/${roomId}`);
+    location.reload();
   }
 
   return (

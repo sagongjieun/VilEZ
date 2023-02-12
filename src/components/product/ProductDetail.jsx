@@ -99,6 +99,7 @@ const ProductDetail = () => {
       // 채팅방이 이미 존재하면 해당 방으로 이동
       if (res) {
         navigate(`/product/chat/${res[0].id}`);
+        location.reload();
       }
       // 채팅방이 없으면 채팅방 생성
       else {
@@ -112,6 +113,7 @@ const ProductDetail = () => {
               notShareUserId: writerId,
             }).then((res) => {
               navigate(`/product/chat/${res[0].id}`);
+              location.reload();
             })
           : postChatRoom({
               type: type,
@@ -120,6 +122,7 @@ const ProductDetail = () => {
               notShareUserId: loginUserId,
             }).then((res) => {
               navigate(`/product/chat/${res[0].id}`);
+              location.reload();
             });
       }
     });

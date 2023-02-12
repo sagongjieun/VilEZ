@@ -24,6 +24,7 @@ import ShareCancelAskModal from "../modal/ShareCancelAskModal";
 import ShareCancelModal from "../modal/ShareCancelModal";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
+import SequenceCompleteModal from "../modal/SequenceCompleteModal";
 
 const ProductChatting = () => {
   const { roomId } = useParams();
@@ -57,21 +58,21 @@ const ProductChatting = () => {
   });
   const [confirmedStartDate, setConfirmedStartDate] = useState("");
   const [confirmedEndDate, setConfirmedEndDate] = useState("");
-  const [shareState, setShareState] = useState(0);
+  const [shareState, setShareState] = useState(null);
   const [roomState, setRoomState] = useState(0);
   const [isChatEnd, setIsChatEnd] = useState(false);
   const [isOtherLeave, setIsOtherLeave] = useState(false);
   const [myPoint, setMyPoint] = useState(0);
 
+  const [isSequenceComplete, setIsSequenceComplete] = useState(false);
+
   // 채팅 나가기
   function onClickQuit() {
-    // TODO
     // 상대방이 이미 나갔다면 그냥 나가기
     // 방이 이미 터진 방인지 확인
     if (isOtherLeave) {
       deleteChatRoom(roomId, loginUserId).then((res) => {
         if (res) {
-          console.log("deleteChatRoom");
           const client = Stomp.over(function () {
             return new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
           }); // 웹소켓 클라이언트 생성
@@ -173,10 +174,18 @@ const ProductChatting = () => {
     });
   }
 
-  // StompREalTime.jsx에서 변경되는 state값 받기
+  // StompREalTime.jsx에서 변경되는 share state값 받기
   function receiveShareState(state) {
+    console.log("2");
     setShareState(state);
   }
+
+  // StompREalTime.jsx에서 변경되는 room state값 받기
+  function receiveRoomState(state) {
+    console.log("2");
+    setRoomState(state);
+  }
+
   const [isAuthorized, setIsAuthorized] = useState(false);
   useEffect(() => {
     if (loginUserId) {
@@ -196,10 +205,8 @@ const ProductChatting = () => {
 
         setBoardId(res.boardId);
         setBoardType(res.type);
-        if (res.state == -1) {
-          console.log("대화가 종료된 채팅방입니다.");
-          setRoomState(res.state);
-        }
+        console.log("333", res.state);
+        setRoomState(res.state);
 
         // 로그인유저가 공유자면
         if (loginUserId == res.shareUserId) {
@@ -217,9 +224,7 @@ const ProductChatting = () => {
           navigate(`/`);
           return null;
         }
-        // Add a state variable to keep track of the authorization status
 
-        // Update the authorization status based on the result of the API call
         if (loginUserId == res.shareUserId || loginUserId == res.notShareUserId) {
           setIsAuthorized(true);
         }
@@ -234,6 +239,7 @@ const ProductChatting = () => {
         res = res[0];
 
         // 공유 전 상태
+        console.log("1");
         if (res == null) {
           setShareState(-3);
         } else if (res.status == 0) {
@@ -346,6 +352,7 @@ const ProductChatting = () => {
                 sendShareState={receiveShareState}
                 isChatEnd={isChatEnd}
                 sendOtherLeave={receiveOtherLeave}
+                sendRoomState={receiveRoomState}
               />
             )}
           </div>
@@ -398,7 +405,15 @@ const ProductChatting = () => {
             />
           ) : null}
           {isQuit ? <QuitChattingModal close={setIsQuit} roomId={roomId} /> : null}
-          {isOath ? <OathModal close={setIsOath} roomId={roomId} readOnly={false} /> : null}
+          {isOath ? (
+            <OathModal
+              close={setIsOath}
+              roomId={roomId}
+              readOnly={false}
+              sequenceCompleteOpen={setIsSequenceComplete}
+            />
+          ) : null}
+          {isSequenceComplete ? <SequenceCompleteModal close={setIsSequenceComplete} /> : null}
           {isProductReturn ? (
             <ProductReturnModal
               close={setIsProductReturn}
