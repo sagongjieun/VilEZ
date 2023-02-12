@@ -98,7 +98,7 @@ const ProductDetail = () => {
     getCheckMyRoom(boardId, type, loginUserId).then((res) => {
       // 채팅방이 이미 존재하면 해당 방으로 이동
       if (res) {
-        navigate(`/product/chat/${res[0].id}`);
+        window.location.replace(`/product/chat/${res[0].id}`);
       }
       // 채팅방이 없으면 채팅방 생성
       else {
@@ -111,7 +111,7 @@ const ProductDetail = () => {
               shareUserId: loginUserId,
               notShareUserId: writerId,
             }).then((res) => {
-              navigate(`/product/chat/${res[0].id}`);
+              window.location.replace(`/product/chat/${res[0].id}`);
             })
           : postChatRoom({
               type: type,
@@ -119,7 +119,7 @@ const ProductDetail = () => {
               shareUserId: writerId,
               notShareUserId: loginUserId,
             }).then((res) => {
-              navigate(`/product/chat/${res[0].id}`);
+              window.location.replace(`/product/chat/${res[0].id}`);
             });
       }
     });
