@@ -175,6 +175,9 @@ const FirstBody = css`
   /* color: white; */
   color: #000;
   text-align: left;
+  color: white;
+  text-align: center;
+  font-family: "GmarketSansMedium";
 `;
 
 const FirstBodyDiv = css`

@@ -114,5 +114,6 @@ const linkWrapper = css`
 const linkTag = css`
   width: 140px;
   text-align: center;
+  color: black;
 `;
 export default Login;
