@@ -111,9 +111,13 @@ const headerWrapper = css`
 
 const headerLeftSectionWrapper = css`
   & > span:nth-of-type(1) {
+    /* span태그 주의 */
+    display: block;
+    width: 100%;
     font-size: 30px;
     font-weight: bold;
     margin-right: 20px;
+    padding-bottom: 15px;
   }
 
   & > span:nth-of-type(2) {
@@ -129,7 +133,8 @@ const headerLeftSectionWrapper = css`
 
 const headerRightSectionWrapper = css`
   display: flex;
-  flex-direction: row;
+  flex-direction: row-reverse;
+  width: 30%;
   & > span {
     color: #8a8a8a;
     cursor: pointer;
@@ -150,7 +155,7 @@ const headerRightSectionWrapper = css`
 `;
 
 const optionWrap = css`
-  margin-right: 10px;
+  margin-left: 15px;
   color: black;
   cursor: pointer;
 `;
