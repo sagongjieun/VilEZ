@@ -46,12 +46,24 @@ class ProfileFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
         binding.fragment = this
 
-        binding.user = ApplicationClass.prefs.getUser()
+        updateUserDetail() // 유저 디테일 업데이트해서 shared preference에 넣어주기
         binding.userDetail = ApplicationClass.prefs.getUserDetail()
         
         initData() // 현재 대여중인 정보 가져오기
 
         return binding.root
+    }
+
+    private fun updateUserDetail() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val result = ApplicationClass.hUserApi.getUserDetail(ApplicationClass.prefs.getId()).awaitResponse().body()
+            Log.d(TAG, "updateUserDetail: result: $result")
+            if(result?.flag == "success") {
+                val detail = result.data[0]
+                ApplicationClass.prefs.setUserDetail(detail)
+                binding.userDetail = detail
+            }
+        }
     }
     
     private fun initData() {
