@@ -14,15 +14,15 @@ const MyBoxBody = () => {
   const [rentDefaultPages, setRentDefaultPages] = useState(1);
   const [sharePages, setSharePages] = useState(1);
   const [rentPages, setRentPages] = useState(1);
-  function onClickChangeShareType() {
-    if (myShareType === 1) {
+  function onClickChangeShareType(value) {
+    if (value === 2) {
       setMyShareType(2);
     } else {
       setMyShareType(1);
     }
   }
-  function onClickChangeRentType() {
-    if (myRentType === 1) {
+  function onClickChangeRentType(value) {
+    if (value === 2) {
       setMyRentType(2);
     } else {
       setMyRentType(1);
@@ -57,10 +57,20 @@ const MyBoxBody = () => {
         <div>
           <h3>나의 공유 물품</h3>
           <div>
-            <button css={myShareType === 1 ? basic : bordered} onClick={onClickChangeShareType}>
+            <button
+              css={myShareType === 1 ? basic : bordered}
+              onClick={() => {
+                onClickChangeShareType(1);
+              }}
+            >
               공유 중
             </button>
-            <button css={myShareType === 2 ? basic : bordered} onClick={onClickChangeShareType}>
+            <button
+              css={myShareType === 2 ? basic : bordered}
+              onClick={() => {
+                onClickChangeShareType(2);
+              }}
+            >
               공유 예정
             </button>
           </div>
@@ -86,11 +96,21 @@ const MyBoxBody = () => {
         <div>
           <h3>나의 대여 물품</h3>
           <div>
-            <button css={myRentType === 1 ? basic : bordered} onClick={onClickChangeRentType}>
-              공유 중
+            <button
+              css={myRentType === 1 ? basic : bordered}
+              onClick={() => {
+                onClickChangeRentType(1);
+              }}
+            >
+              대여 중
             </button>
-            <button css={myRentType === 2 ? basic : bordered} onClick={onClickChangeRentType}>
-              공유 예정
+            <button
+              css={myRentType === 2 ? basic : bordered}
+              onClick={() => {
+                onClickChangeRentType(2);
+              }}
+            >
+              대여 예정
             </button>
           </div>
         </div>
@@ -116,7 +136,7 @@ const MyBoxBody = () => {
 };
 
 const sectionWrapper = css`
-  padding: 30px 0;
+  padding: 50px 0;
   & > div:nth-of-type(1) {
     height: 40px;
     margin-bottom: 20px;

@@ -9,7 +9,7 @@ import SignupInputBox from "./SignupInputBox";
 import EmailCodeTimer from "./EmailCodeTimer";
 import Validation from "./SignupValidation";
 import useForm from "../../hooks/useForm";
-import { SHA256 } from "./EmailCodeHashFunction";
+import { SHA256 } from "./HashFunction";
 import { postConfirmEmail } from "../../api/email";
 import { getCheckNickName, postUserInformation } from "../../api/user";
 import { useNavigate } from "react-router-dom";
@@ -53,6 +53,7 @@ const SignupForm = () => {
   function onSubmit() {
     const userInformation = {
       email,
+      // password: SHA256(password),
       password,
       nickName,
     };
