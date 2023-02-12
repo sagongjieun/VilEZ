@@ -577,12 +577,17 @@ public class AppointmentController {
     public HashMap<String, Integer> recvCancel(HashMap<String, Integer> payload) {
         int roomId = payload.get("roomId");
         log.info("roomId : " + roomId);
+        System.out.println("recvcancelrecvcancelrecvcancelrecvcancel");
         try {
+        System.out.println("recvcancelrecvcancelrecvcancelrecvcancel");
             appointmentService.cancelAppointment(payload.get("roomId"),payload.get("reason"));
+        System.out.println("recvcancelrecvcancelrecvcancelrecvcancel");
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println("recvcancelrecvcancelrecvcancelrecvcancel");
         sendingOperations.convertAndSend("/sendend/"+roomId,payload);
+        System.out.println("recvcancelrecvcancelrecvcancelrecvcancel");
         return payload;
     }
 
