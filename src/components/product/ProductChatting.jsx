@@ -65,13 +65,11 @@ const ProductChatting = () => {
 
   // 채팅 나가기
   function onClickQuit() {
-    // TODO
     // 상대방이 이미 나갔다면 그냥 나가기
     // 방이 이미 터진 방인지 확인
     if (isOtherLeave) {
       deleteChatRoom(roomId, loginUserId).then((res) => {
         if (res) {
-          console.log("deleteChatRoom");
           const client = Stomp.over(function () {
             return new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
           }); // 웹소켓 클라이언트 생성
