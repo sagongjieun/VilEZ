@@ -288,8 +288,10 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                 R.id.close_room -> {
                     CoroutineScope(Dispatchers.Main).launch {
                         val result = ApplicationClass.hChatApi.getState(roomId).awaitResponse().body()
+                        println(roomId)
                         if(result?.flag == "success") {
                             var data = result.data.get(0)
+                            println(data)
                             if(data.state == 0) {
                                 showDialog("약속된 정보가 있습니다.\n만남을 취소하고 해주세요!")
                                 return@launch
@@ -490,6 +492,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
         binding.btnChatAccept.setOnClickListener {
             if(ApplicationClass.prefs.getId() == room.shareUserId) { // 내가 대여자인 경우 포인트 확인
                 showDialog("만남 확정은 피공유자만 할 수 있습니다.")
+                return@setOnClickListener
             } else if (!checkMyPoint()){ // 피공유자인 경우 포인트 확인
                 return@setOnClickListener
             }
@@ -588,7 +591,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
             if(startDay < realStart) {
                 startDay = realStart
             }
-            calendar.add(Calendar.DATE, 0) // 디폴트 end날짜 : 오늘(하루도 대여 가능)
+            calendar.add(Calendar.DATE, 1) // 디폴트 end날짜 : 오늘(하루도 대여 가능)
             endDay = calendar.timeInMillis
             endDate = calendar
         } else {
@@ -604,7 +607,6 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
 
         }
 
-
         listValidators.add(DateValidatorPointForward.from(realStart))
         listValidators.add(DateValidatorPointBackward.before(SDF.parse(boardEnd).time + 32400000))
         // Build constraints.
@@ -612,7 +614,6 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
             CalendarConstraints.Builder()
                 .setStart(Date().time)
                 .setValidator(CompositeDateValidator.allOf(listValidators))
-
 
         val datePicker =
             MaterialDatePicker.Builder.dateRangePicker()
@@ -787,6 +788,9 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
     }
     fun initCancelButton() {
         binding.btnChatCancel.setOnClickListener {
+            if(room.state == -1) {
+                return@setOnClickListener
+            }
             CoroutineScope(Dispatchers.Main).launch {
                 val result =
                     ApplicationClass.hChatApi.getState(roomId).awaitResponse().body()
@@ -802,26 +806,30 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                         val result =
                             ApplicationClass.hChatApi.getNotShareUserCancel(roomId).awaitResponse().body()
                         if(result?.flag == "success") {
-                            println("ddddddddd" + result.data.size)
                             var da = result.data.get(0)
                             if(da == null) { // 피공유자 요청이 없으면
                                 if(ApplicationClass.prefs.getId() == room.shareUserId) { // 공유자 일방 취소
-                                    var datad = JSONObject()
-                                    datad.put("roomId", roomId)
-                                    datad.put("fromUserId", ApplicationClass.prefs.getId())
-                                    datad.put("toUserId", otherUserId)
-                                    datad.put("content", "예약이 취소되어 대화가 종료됩니다.")
-                                    datad.put("time", System.currentTimeMillis())
-                                    datad.put("system",true)
-                                    itemList.add(ChatlistData(datad.getString("content"), 0,"none",otherUserId))
-                                    roomAdapter.notifyDataSetChanged()
-                                    StompHelper.stompClient.send("/recvchat", datad.toString()).subscribe()
 
-                                    var data = JSONObject()
-                                    data.put("roomId",room.id)
-                                    data.put("reason",1)
-                                    StompHelper.stompClient.send("recvcancel",data.toString()).subscribe()
+                                    val result =
+                                        ApplicationClass.hChatApi.closeRoom(roomId,ApplicationClass.prefs.getId()).awaitResponse().body()
+                                    if(result?.flag == "success") {
+                                        var datad = JSONObject()
+                                        datad.put("roomId", roomId)
+                                        datad.put("fromUserId", ApplicationClass.prefs.getId())
+                                        datad.put("toUserId", otherUserId)
+                                        datad.put("content", "예약이 취소되어 대화가 종료됩니다.")
+                                        datad.put("time", System.currentTimeMillis())
+                                        datad.put("system",true)
+                                        itemList.add(ChatlistData(datad.getString("content"), 0,"none",otherUserId))
+                                        roomAdapter.notifyDataSetChanged()
+                                        StompHelper.stompClient.send("/recvchat", datad.toString()).subscribe()
 
+                                        var data = JSONObject()
+                                        data.put("roomId",room.id)
+                                        data.put("reason",1)
+                                        StompHelper.stompClient.send("/recvcancel",data.toString()).subscribe()
+                                        room.state = -1
+                                    }
                                 } else { // 피공유자 신청
                                     val result =
                                         ApplicationClass.hChatApi.notShareUserCancel(
@@ -856,7 +864,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                                     var data = JSONObject()
                                     data.put("roomId",room.id)
                                     data.put("reason",2)
-                                    StompHelper.stompClient.send("recvcancel",data.toString()).subscribe()
+                                    StompHelper.stompClient.send("/recvcancel",data.toString()).subscribe()
                                 } else {
                                     showDialog("공유자에게 취소를 요청하세요!")
                                 }
