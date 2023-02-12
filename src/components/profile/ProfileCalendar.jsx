@@ -20,6 +20,15 @@ const RenderHeader = ({ currentMonth, prevMonth, nextMonth }) => {
       <button onClick={nextMonth}>
         <IoIosArrowForward />
       </button>
+      <div css={expWrapper}>
+        <div>
+          <span></span>
+          공유 약속
+        </div>
+        <div>
+          <span></span>대여 약속
+        </div>
+      </div>
     </div>
   );
 };
@@ -35,8 +44,8 @@ const RenderDays = () => {
   return <div css={daysWrapper}>{days}</div>;
 };
 
-// const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
-const RenderCells = ({ currentMonth, selectedDate }) => {
+const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
+  // const RenderCells = ({ currentMonth, selectedDate }) => {
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart);
@@ -75,43 +84,12 @@ const RenderCells = ({ currentMonth, selectedDate }) => {
     getAppointmentsByUserId(userId).then((response) => {
       setAppointList(response[0]);
     });
-    // const dummyData = [
-    //   {
-    //     appointmentId: 1,
-    //     appointmentStart: "2023-02-05",
-    //     appointmentEnd: "2023-02-07",
-    //     state: 1,
-    //     title: "내가 공유함",
-    //   },
-    //   {
-    //     appointmentId: 1,
-    //     appointmentStart: "2023-02-06",
-    //     appointmentEnd: "2023-02-10",
-    //     state: 1,
-    //     title: "내가 공유함 전동드리힐힐힐",
-    //   },
-    //   {
-    //     appointmentId: 1,
-    //     appointmentStart: "2023-02-12",
-    //     appointmentEnd: "2023-02-14",
-    //     state: 2,
-    //     title: "내가 대여함",
-    //   },
-    //   {
-    //     appointmentId: 1,
-    //     appointmentStart: "2023-02-15",
-    //     appointmentEnd: "2023-02-17",
-    //     state: 2,
-    //     title: "내가 대여함",
-    //   },
-    // ];
-    // setAppointList(dummyData);
   }, []);
 
   while (day <= endDate) {
     for (let i = 0; i < 7; i++) {
       formattedDate = format(day, "d");
-      // const cloneDay = day;
+      const cloneDay = day;
       days.push(
         <div
           css={
@@ -124,7 +102,7 @@ const RenderCells = ({ currentMonth, selectedDate }) => {
               : valid
           }
           key={day}
-          // onClick={() => onDateClick(parse(cloneDay))}
+          onClick={() => onDateClick(cloneDay)}
         >
           <span css={format(currentMonth, "M") !== format(day, "M") ? notValid : null}>{formattedDate}</span>
           {appointmentsStartForDay(day).map((appoint, idx) => (
@@ -149,7 +127,8 @@ const RenderCells = ({ currentMonth, selectedDate }) => {
 
 const ProfileCalender2 = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const selectedDate = new Date();
+  // const selectedDate = new Date();
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const prevMonth = () => {
     setCurrentMonth(subMonths(currentMonth, 1));
@@ -157,15 +136,16 @@ const ProfileCalender2 = () => {
   const nextMonth = () => {
     setCurrentMonth(addMonths(currentMonth, 1));
   };
-  // const onDateClick = (day) => {
-  //   setSelectedDate(day);
-  // };
+  const onDateClick = (day) => {
+    setSelectedDate(day);
+    console.log(day);
+  };
   return (
     <div css={calendarContainer}>
       <RenderHeader currentMonth={currentMonth} prevMonth={prevMonth} nextMonth={nextMonth} />
       <RenderDays />
-      {/* <RenderCells currentMonth={currentMonth} selectedDate={selectedDate} onDateClick={onDateClick} /> */}
-      <RenderCells currentMonth={currentMonth} selectedDate={selectedDate} />
+      <RenderCells currentMonth={currentMonth} selectedDate={selectedDate} onDateClick={onDateClick} />
+      {/* <RenderCells currentMonth={currentMonth} selectedDate={selectedDate} /> */}
     </div>
   );
 };
@@ -175,6 +155,7 @@ const calendarContainer = css`
 `;
 const headerWrapper = css`
   /* background-color: red; */
+  position: relative;
   height: 40px;
   line-height: 40px;
   display: flex;
@@ -184,6 +165,30 @@ const headerWrapper = css`
     background-color: rgba(0, 0, 0, 0);
     width: 30px;
     border: none;
+  }
+`;
+const expWrapper = css`
+  position: absolute;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  & > div {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    & > span {
+      display: block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+  }
+  & > div:nth-of-type(1) > span {
+    background-color: #66dd9c68;
+  }
+  & > div:nth-of-type(2) > span {
+    background-color: #8fd2f445;
   }
 `;
 const daysWrapper = css`
@@ -243,10 +248,10 @@ const shareEndDay = css`
   /* color: #fff; */
 `;
 const rentStartDay = css`
-  background-color: #8fd2f461;
+  background-color: #8fd2f445;
 `;
 const rentEndDay = css`
-  background-color: #8fd2f461;
+  background-color: #8fd2f445;
   /* color: #fff; */
 `;
 
