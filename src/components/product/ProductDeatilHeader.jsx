@@ -2,29 +2,27 @@ import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import bookmark from "../../assets/images/bookmark.png";
-import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
-import { deleteShareArticleByBoardId, getShareArticleByBoardId } from "../../api/share";
-import { deleteAskArticleByBoardId, getAskArticleDetailByBoardId } from "../../api/ask";
-import { useSetRecoilState } from "recoil";
-import { getAppointmentsByBoardId } from "../../api/appointment";
+import { Link, useLocation, useParams } from "react-router-dom";
+import { getShareArticleByBoardId } from "../../api/share";
+import { getAskArticleDetailByBoardId } from "../../api/ask";
+// import { useSetRecoilState } from "recoil";
+// import { getAppointmentsByBoardId } from "../../api/appointment";
 // import SockJS from "sockjs-client";
 // import { Stomp } from "@stomp/stompjs";
-import { boardState } from "../../recoil/atom";
-// import RealDeleteModal from "./../modal/RealDeleteModal";
 
 // const client = Stomp.over(function () {
 //   return new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
 // });
 
-const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
+const ProductDeatilHeader = ({ title, category, time, bookmarkCount, isShowDelete }) => {
   const userId = localStorage.getItem("id");
   const [thisboardUserId, setThisboardUserId] = useState(null);
-  const [isAppointment, setIsAppointment] = useState(false);
+
   const pathname = useLocation().pathname;
   const boardId = parseInt(useParams().boardId);
   const type = pathname.includes("share") ? 2 : 1;
-  const navigate = useNavigate();
-  const setBoardState = useSetRecoilState(boardState);
+  // const navigate = useNavigate();
+
   useEffect(() => {
     type === 2
       ? getShareArticleByBoardId(boardId).then((res) => {
@@ -41,42 +39,12 @@ const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
         });
   }, []);
   // console.log(isAppointment);
-  function onClickDelete() {
-    if (isAppointment === true) {
-      alert("예약중인 글은 삭제할 수 없어요😱");
-    } else {
-      // client.connect({}, () => {
-      //   var sendMessage = {
-      //     boardId: boardId,
-      //     type: type,
-      //   };
-      //   client.send("/recvdelete", {}, JSON.stringify(sendMessage));
 
-      //   sendMessage = {
-      //     userId: userId,
-      //   };
-      //   client.send("/room_web", {}, JSON.stringify(sendMessage));
-      // });
-
-      setBoardState([boardId, type]);
-      type === 2
-        ? deleteShareArticleByBoardId(boardId).then(() => {
-            navigate(`/product/list/share`);
-          })
-        : deleteAskArticleByBoardId(boardId).then(() => {
-            navigate(`/product/list/share`);
-          });
-    }
+  function onClickshowDeleteModal() {
+    isShowDelete(true);
   }
   // console.log(userId, thisboardUserId, parseInt(userId) === parseInt(thisboardUserId));
-  useEffect(() => {
-    getAppointmentsByBoardId(boardId, type).then((res) => {
-      console.log(res[0].length === 1);
-      if (res[0].length === 1) {
-        setIsAppointment(true);
-      }
-    });
-  }, []);
+
   return (
     <div css={headerWrapper}>
       <div css={headerLeftSectionWrapper}>
@@ -95,7 +63,7 @@ const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
               <Link to={`/product/edit/ask/${boardId}`}>
                 <span css={optionWrap}>수정</span>
               </Link>
-              <span css={optionWrap} onClick={onClickDelete}>
+              <span css={optionWrap} onClick={onClickshowDeleteModal}>
                 삭제
               </span>
             </div>
@@ -112,7 +80,7 @@ const ProductDeatilHeader = ({ title, category, time, bookmarkCount }) => {
             <Link to={`/product/edit/share/${boardId}`}>
               <span css={optionWrap}>수정</span>
             </Link>
-            <span css={optionWrap} onClick={onClickDelete}>
+            <span css={optionWrap} onClick={onClickshowDeleteModal}>
               삭제
             </span>
           </div>
