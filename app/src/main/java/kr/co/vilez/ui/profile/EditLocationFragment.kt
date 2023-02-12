@@ -129,7 +129,7 @@ class EditLocation : Fragment(), MapReverseGeoCoder.ReverseGeoCodingResultListen
             newUser["areaLng"] = uLongitude.toString()
 
             Log.d(TAG, "onAreaSetClick: 동네인증할 사용자: ${newUser.toString()}")
-            val result = ApplicationClass.userApi.updateUserLocation(newUser).awaitResponse()
+            val result = ApplicationClass.hUserApi.updateUserLocation(newUser).awaitResponse()
             Log.d(TAG, "onAreaSetClick: body: ${result.body()}")
             Log.d(
                 TAG,

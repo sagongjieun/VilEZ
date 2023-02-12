@@ -42,10 +42,10 @@ RecyclerView.Adapter<AskToChatAdapter.ShareHolder>(){
             binding.root.setOnClickListener {
                 CoroutineScope(Dispatchers.Main).launch {
                     val intent = Intent(binding.root.context, ChatRoomActivity::class.java)
-                    //val result = ApplicationClass.chatApi.isExistChatroom(item.boardId, item.type, ApplicationClass.prefs.getId()).awaitResponse().body()
+                    //val result = ApplicationClass.hChatApi.isExistChatroom(item.boardId, item.type, ApplicationClass.prefs.getId()).awaitResponse().body()
                         intent.putExtra("roomId", item.roomId)
                         intent.putExtra("otherUserId", item.notShareUserId) // notShareUserId 가 상대
-                        val otherUser = ApplicationClass.userApi.getUserDetail(item.notShareUserId).awaitResponse().body()
+                        val otherUser = ApplicationClass.hUserApi.getUserDetail(item.notShareUserId).awaitResponse().body()
                         if(otherUser?.flag == "success") {
                             intent.putExtra("nickName", otherUser.data[0].nickName) // 채팅 상대의 닉네임
                             intent.putExtra("profile", otherUser.data[0].profile_img) // 채팅 상대의 프로필 이미지
