@@ -79,7 +79,7 @@ class AskDetailActivity : AppCompatActivity() {
             Snackbar.make(view, "예약 요청한 물건 채팅 시작하기", Snackbar.LENGTH_SHORT).show();
             CoroutineScope(Dispatchers.Main).launch {
                 // 먼저 채팅방이 존재하는지 확인하기
-                val isExist = ApplicationClass.chatApi.isExistChatroom(boardId!!, BOARD_TYPE_ASK, ApplicationClass.prefs.getId()).awaitResponse().body()
+                val isExist = ApplicationClass.hChatApi.isExistChatroom(boardId!!, BOARD_TYPE_ASK, ApplicationClass.prefs.getId()).awaitResponse().body()
                 Log.d(TAG, "onChatBtnClick: result: $isExist")
                 if(isExist?.flag == "success") { // 이미 채팅방이 존재함
                     Log.d(TAG, "onChatBtnClick: 채팅방 이미 존재")
@@ -114,7 +114,7 @@ class AskDetailActivity : AppCompatActivity() {
                     // 내가 빌려주는 사람 shareUserId:나, notShareUserId : 요청글 작성자 (=userId)
                     val chatRoom = Chatroom(boardId!!, 0, writerId!!, ApplicationClass.prefs.getId(),BOARD_TYPE_ASK)
                     Log.d(TAG, "onChatBtnClick: chatRoom: ${chatRoom.toString()}")
-                    val result = ApplicationClass.chatApi.createChatroom(chatRoom).awaitResponse().body()
+                    val result = ApplicationClass.hChatApi.createChatroom(chatRoom).awaitResponse().body()
                     Log.d(TAG, "onChatBtnClick: 새로운 채팅방 만들기 result: $result")
                     if(result?.flag == "success") {
                         val fragment = supportFragmentManager.findFragmentById(R.id.share_detail_map)
@@ -167,7 +167,7 @@ class AskDetailActivity : AppCompatActivity() {
                 initMap()
 
                 // 해당 글을 작성한 작성자 데이터 가져오기
-                val userResult = ApplicationClass.userApi.getUserDetail(result.data[0].userId).awaitResponse().body()
+                val userResult = ApplicationClass.hUserApi.getUserDetail(result.data[0].userId).awaitResponse().body()
                 Log.d(TAG, "initData: @@@@@@@@공유글 작성자: ${result.data[0].userId}, ${result.data[0]}")
                 otherUserId = result.data[0].userId
                 if(userResult?.flag == "success") {

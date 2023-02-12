@@ -46,12 +46,13 @@ class ApplicationClass: Application(), LifecycleObserver {
 
         // 전역변수 문법을 통해 Retrofit 인스턴스를 앱 실행 시 1번만 생성하여 사용 (싱글톤 객체)
         lateinit var wRetrofit : Retrofit
-        lateinit var userApi: UserApi
-        lateinit var emailApi: EmailApi
-        lateinit var chatApi: ChatApi
-        lateinit var shareApi: ShareApi
-        lateinit var askApi: AskApi
-        lateinit var appointmentApi: AppointmentApi
+//        lateinit var userApi: UserApi
+//
+//        lateinit var chatApi: ChatApi
+//        lateinit var shareApi: ShareApi
+//        lateinit var askApi: AskApi
+//        lateinit var appointmentApi: AppointmentApi
+//        lateinit var emailApi: EmailApi
         lateinit var fcmTokenApi: FCMTokenApi
 
         // header에 accessTocken 넣는 레트로핏
@@ -115,13 +116,13 @@ class ApplicationClass: Application(), LifecycleObserver {
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(okHttpClient)
             .build()
-        userApi = wRetrofit.create(UserApi::class.java)
-        emailApi = wRetrofit.create(EmailApi::class.java)
-        chatApi = wRetrofit.create(ChatApi::class.java)
-        shareApi = wRetrofit.create(ShareApi::class.java)
+//        userApi = wRetrofit.create(UserApi::class.java)
+//        emailApi = wRetrofit.create(EmailApi::class.java)
+//        chatApi = wRetrofit.create(ChatApi::class.java)
+//        shareApi = wRetrofit.create(ShareApi::class.java)
+//        askApi = wRetrofit.create(AskApi::class.java)
+//        appointmentApi = wRetrofit.create(AppointmentApi::class.java)
         fcmTokenApi = wRetrofit.create(FCMTokenApi::class.java)
-        askApi = wRetrofit.create(AskApi::class.java)
-        appointmentApi = wRetrofit.create(AppointmentApi::class.java)
 
         // 네트워크에 연결되어있는지 확인 후 없으면 앱 종료 시키기위해 네트워크 연결상태 감지 콜백 생성시켜두기
         val network = CheckNetworkState(applicationContext)

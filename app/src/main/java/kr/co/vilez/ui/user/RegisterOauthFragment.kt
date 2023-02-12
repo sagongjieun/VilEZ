@@ -99,7 +99,7 @@ class RegisterOauthFragment : Fragment() {
 
         if(isValidNickname) {
             CoroutineScope(Dispatchers.Main).launch {
-                val result = ApplicationClass.userApi.isUsedUserNickName(nickname).awaitResponse().body()
+                val result = ApplicationClass.hUserApi.isUsedUserNickName(nickname).awaitResponse().body()
                 Log.d(TAG, "checkNickName: 닉네임 중복 확인, result : $result")
                 if(result != null && result.flag == "success") {
                     nicknameCheck = true
@@ -130,7 +130,7 @@ class RegisterOauthFragment : Fragment() {
         CoroutineScope(Dispatchers.Main).launch {
             val naverUser = User(email=id, password = Common.makeRandomPassword(id), nickName = "$checkedNickname", oauth = oauth!!)
             Log.d(TAG, "register: 회원가입 할 네이버 유저 정보 : $naverUser")
-            val result = ApplicationClass.userApi.getJoinResult(naverUser).awaitResponse().body()
+            val result = ApplicationClass.hUserApi.getJoinResult(naverUser).awaitResponse().body()
             Log.d(TAG, "register: $result")
             if(result?.flag == "success") {
                 val dialog = AlertDialogWithCallback(object : AlertDialogInterface {
@@ -158,7 +158,7 @@ class RegisterOauthFragment : Fragment() {
             return;
         } else { // 모두 통과
             CoroutineScope(Dispatchers.Main).launch {
-                val result = ApplicationClass.userApi.isUsedEmail(profileId!!).awaitResponse().body()
+                val result = ApplicationClass.hUserApi.isUsedEmail(profileId!!).awaitResponse().body()
                 Log.d(TAG, "oauth register: $result")
                 if (result?.flag == "success") {
                     if (!(result.data as List<Boolean> )[0]) { // 새로운 회원
