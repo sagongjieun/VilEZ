@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Animated } from "react-animated-css";
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
@@ -8,33 +8,78 @@ import secondbodyimg from "../assets/images/secondbodyimg.png";
 import thirdbodyimg from "../assets/images/thirdbodyimg.png";
 import mapimg from "../assets/images/mapimg.png";
 import chatimg from "../assets/images/chatimg.png";
+import homeBackground from "../assets/images/home_background.jpg";
+import messageGreen from "../assets/images/back.png";
 
 function MainBody() {
+  const firstBox = useRef();
+  const secondBox = useRef();
+  const thirdBox = useRef();
+  const forthBox = useRef();
+  const [firstHeight, setFirstHeight] = useState(0);
+  const [secondHeight, setSecondHeight] = useState(0);
+  const [thirdHeight, setThirdHeight] = useState(0);
+  const [forthHeight, setForthHeight] = useState(0);
+  function toNumber(styleText) {
+    return Number(styleText.height.slice(0, styleText.height.length - 2));
+  }
+
+  useEffect(() => {
+    const firstStyle = window.getComputedStyle(firstBox.current);
+    const secondStyle = window.getComputedStyle(secondBox.current);
+    const thirdStyle = window.getComputedStyle(thirdBox.current);
+    const forthStyle = window.getComputedStyle(forthBox.current);
+    setFirstHeight(toNumber(firstStyle));
+    setSecondHeight(toNumber(firstStyle) + toNumber(secondStyle));
+    setThirdHeight(toNumber(firstStyle) + toNumber(secondStyle) + toNumber(thirdStyle));
+    setForthHeight(toNumber(firstStyle) + toNumber(secondStyle) + toNumber(thirdStyle) + toNumber(forthStyle));
+  }, []);
+
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const updateScroll = () => {
+    setScrollPosition(window.scrollY || document.documentElement.scrollTop);
+  };
+
+  function moveGradient(e) {
+    const rect = e.target.getBoundingClientRect(); //요소 좌표
+    //clientX는 body 기준 위치
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    e.target.style.setProperty("--x", x + "px");
+    e.target.style.setProperty("--y", y + "px");
+  }
+
+  useEffect(() => {
+    window.addEventListener("scroll", updateScroll);
+  }, []);
+
   return (
     <div>
-      <div css={FirstBodyWrap}>
-        <Animated animationIn="animate__fadeIn" animationInDuration={2700}>
-          <div css={FirstBody}>
-            <Animated animationIn="animate__fadeIn" animationInDuration={2200}>
-              <div css={FirstBodyDiv}>쉽게 빌리고</div>
-            </Animated>
-            <Animated animationIn="animate__fadeIn" animationInDuration={3200}>
-              <div css={FirstBodyDiv}>쉽게 빌려주는,</div>
-            </Animated>
-            <Animated animationIn="animate__fadeIn" animationInDuration={4200}>
-              <div css={FirstBodyDiv}>공유마을 빌리지.</div>
-            </Animated>
-          </div>
-        </Animated>
+      <div css={[FirstBodyWrap, moveGradientStyle]} onMouseMove={moveGradient}>
+        <div>
+          <Animated animationIn="animate__fadeIn" animationInDuration={2700}>
+            <div css={FirstBody}>
+              <Animated animationIn="animate__fadeIn" animationInDuration={2200}>
+                <div css={FirstBodyDiv}>쉽게 빌리고</div>
+              </Animated>
+              <Animated animationIn="animate__fadeIn" animationInDuration={3200}>
+                <div css={FirstBodyDiv}>쉽게 빌려주는,</div>
+              </Animated>
+              <Animated animationIn="animate__fadeIn" animationInDuration={4200}>
+                <div css={FirstBodyDiv}>공유마을 빌리지.</div>
+              </Animated>
+            </div>
+          </Animated>
 
-        <div css={ArrowBox}>
-          <a href="#movebottom">
-            <img src={mainarrow} alt="" />
-          </a>
+          <div css={ArrowBox}>
+            <a href="#movebottom">
+              <img src={mainarrow} alt="" />
+            </a>
+          </div>
         </div>
       </div>
       <a id="movebottom"></a>
-      <div css={FirstWrap}>
+      <div css={[FirstWrap, scrollPosition > firstHeight - 150 ? visibleBox : hiddenBox]} ref={firstBox}>
         <div css={ExplainLeft}>
           <div css={ExplainTitle}>따뜻해지는 공유 문화</div>
           <div css={ExplainContent}>필요하지만 구매하기엔 부담스럽고, </div>
@@ -45,7 +90,7 @@ function MainBody() {
           <img css={[ImgHeight, firstImgMargin]} src={secondbodyimg} alt="" />
         </div>
       </div>
-      <div css={ExplainWrap}>
+      <div css={[ExplainWrap, scrollPosition > secondHeight - 150 ? visibleBox : hiddenBox]} ref={secondBox}>
         <div css={[ExplainLeft, ImgHeight]}>
           <img css={ImgHeight} src={thirdbodyimg} alt="" />
         </div>
@@ -55,7 +100,7 @@ function MainBody() {
           <div css={ExplainContent}>안전하게 물건을 빌리고, 빌려줄 수 있어요.</div>
         </div>
       </div>
-      <div css={thirdWrap}>
+      <div css={[thirdWrap, scrollPosition > thirdHeight - 150 ? visibleBox : hiddenBox]} ref={thirdBox}>
         <div css={ExplainLeft}>
           <div css={ExplainTitle}>실시간 장소선정</div>
           <div css={ExplainContent}>장소를 선정할 때 어려웠던 경험,</div>
@@ -66,7 +111,7 @@ function MainBody() {
           <img src={mapimg} alt="" />
         </div>
       </div>
-      <div css={ExplainWrap}>
+      <div css={[ExplainWrap, scrollPosition > forthHeight - 150 ? visibleBox : hiddenBox]} ref={forthBox}>
         <div css={ExplainLeft}>
           <img css={ImgHeight} src={chatimg} alt="" />
         </div>
@@ -95,21 +140,37 @@ const FirstBodyWrap = css`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
   width: 100%;
   height: calc(100vh - 70px);
-  background-image: url(${mainBackgroundImage});
-  background-size: cover;
+  /* height: 100vh; */
+  /* background-image: url(${mainBackgroundImage}); */
+  /* background-image: url(${homeBackground}); */
+  background-image: url(${messageGreen});
+  background-size: 40%;
+  background-repeat: no-repeat;
+  background-position: 200px center;
+  & > div {
+    display: flex;
+    width: 44%;
+    flex-direction: column;
+    justify-content: center;
+    /* width: 100%; */
+    height: 100%;
+    /* background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(102, 221, 156, 0.8) 100%); */
+    background-color: #fff;
+  }
 `;
 
 const FirstBody = css`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  font-size: 40px;
-  color: white;
-  text-align: center;
+  align-items: flex-start;
+  font-size: 60px;
+  /* color: white; */
+  color: #000;
+  text-align: left;
 `;
 
 const FirstBodyDiv = css`
@@ -190,6 +251,47 @@ const thirdWrap = css`
   padding-right: 200px;
   justify-content: space-between;
   height: 600px;
+`;
+
+const hiddenBox = css`
+  opacity: 0;
+  transition: all 1s;
+  transform: translateY(40px);
+`;
+const visibleBox = css`
+  opacity: 1;
+  transition: all 1s;
+  transform: translateY(0px);
+`;
+
+const moveGradientStyle = css`
+  position: relative;
+  color: #fff;
+  font-weight: 500;
+  overflow: hidden;
+  /* background: #66dd9c; */
+  cursor: pointer;
+  border: 0;
+
+  :hover::before {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  ::before {
+    position: absolute;
+    content: "";
+    width: 50vw;
+    height: 50vw;
+    /* background: radial-gradient(circle closest-side, #8fd3f4, transparent); */
+    top: var(--y);
+    left: var(--x);
+    transition: 0.2s;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+  & > div {
+    z-index: 10;
+  }
 `;
 
 export default MainBody;

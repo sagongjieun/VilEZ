@@ -153,6 +153,7 @@ function MainNavBar() {
 }
 const navWrap = css`
   position: sticky;
+  width: 100%;
   top: 0px;
   z-index: 100;
 `;
@@ -160,7 +161,8 @@ const navWrap = css`
 const navStyle = css`
   display: flex;
   height: 70px;
-  background-color: white;
+  backdrop-filter: blur(3px);
+  background-color: #ffffffab;
   border-bottom: 1px solid #e2e2e2;
   flex-direction: row;
   align-items: center;
