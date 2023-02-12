@@ -71,6 +71,7 @@ const StompRealTime = ({
   const [disableMapLng, setDisableMapLng] = useState("");
   const [cancelMessage, setCancelMessage] = useState({});
   const [otherUserProfileImage, setOtherUserProfileImage] = useState("");
+  const [isOtherLeave, setIsOtherLeave] = useState(false);
 
   function onKeyDownSendMessage(e) {
     if (e.keyCode === 13) {
@@ -187,6 +188,7 @@ const StompRealTime = ({
         // 상대방이 채팅방을 나갔다면
         if (JSON.parse(data.body).fromUserId == -1 || JSON.parse(data.body).toUserId == -1) {
           sendOtherLeave(true);
+          setIsOtherLeave(true);
           sendShareState(-1);
           sendRoomState(-1);
         }
@@ -461,23 +463,25 @@ const StompRealTime = ({
       setCheckShareReturn(false);
     }
 
-    // 상대방이 채팅방 나감
+    // 내가 채팅방 나감
     if (checkUserLeave) {
-      const sendMessage = {
-        roomId: chatRoomId,
-        fromUserId: -1,
-        toUserId: otherUserId,
-        content: "대화가 종료됐어요 😥",
-        system: true,
-        time: new Date().getTime(),
-      };
+      if (!isOtherLeave) {
+        const sendMessage = {
+          roomId: chatRoomId,
+          fromUserId: -1,
+          toUserId: otherUserId,
+          content: "대화가 종료됐어요 😥",
+          system: true,
+          time: new Date().getTime(),
+        };
 
-      setShowingMessage((prev) => [...prev, sendMessage]);
+        setShowingMessage((prev) => [...prev, sendMessage]);
 
-      console.log("15");
-      if (roomState == 0) client.send("/recvchat", {}, JSON.stringify(sendMessage));
-      console.log("16");
-      setTimeout(() => client.send("/room_web", {}, JSON.stringify({ userId: myUserId })), 100);
+        console.log("15");
+        if (roomState == 0) client.send("/recvchat", {}, JSON.stringify(sendMessage));
+        console.log("16");
+        setTimeout(() => client.send("/room_web", {}, JSON.stringify({ userId: myUserId })), 100);
+      }
 
       setCheckUserLeave(false);
       navigate(`/product/list/share`);
