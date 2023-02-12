@@ -27,7 +27,7 @@ const ProductImageSelect = ({ sendImageList }) => {
     }
 
     if (imageList.length + e.target.files.length > 4) {
-      alert("사진은 최대 4개 등록 가능합니다.");
+      alert("사진은 최대 4개 등록 할 수 있어요.");
       return;
     }
     setImageList([...imageList, ...e.target.files]);

@@ -108,7 +108,7 @@ function EditProfile({ setIsEditProfileOpen }) {
               }
             });
           }
-          alert("프로필 정보가 변경되었습니다.");
+          alert("프로필 정보가 변경되었어요.");
           setIsEditProfileOpen(false);
           return;
         }

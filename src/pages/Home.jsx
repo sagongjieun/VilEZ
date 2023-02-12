@@ -16,7 +16,7 @@ function MainBody() {
         <Animated animationIn="animate__fadeIn" animationInDuration={2700}>
           <div css={FirstBody}>
             <Animated animationIn="animate__fadeIn" animationInDuration={2200}>
-              <div css={FirstBodyDiv}>쉽게 빌리고</div>
+              <div css={FirstBodyDiv}> 쉽게 빌리고</div>
             </Animated>
             <Animated animationIn="animate__fadeIn" animationInDuration={3200}>
               <div css={FirstBodyDiv}>쉽게 빌려주는,</div>
