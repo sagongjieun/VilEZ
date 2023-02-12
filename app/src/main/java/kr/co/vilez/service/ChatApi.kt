@@ -41,6 +41,13 @@ data class RESTStateResult(
     val `data`: List<State>,
     val flag: String
 )
+
+data class Status(val status: Int)
+data class RESTStatusResult(
+    val `data`: List<Status>,
+    val flag: String
+)
+
 data class CancelAppointmentDto(val roomId: Int)
 data class RESTCancelResult(
     val `data`: List<CancelAppointmentDto>,
@@ -115,6 +122,9 @@ interface ChatApi {
 
     @GET("/vilez/returns/state")
     fun getState(@Query("roomId") roomId: Int) : Call<RESTStateResult>
+
+    @GET("/vilez/returns/{roomId}")
+    fun getStatus(@Path("roomId") roomId: Int) : Call<RESTStatusResult>
 
     @POST("/vilez/appointments/request/cancel")
     fun notShareUserCancel(@Body cancelAppointmentDto: CancelAppointmentDto) : Call<RESTResult>
