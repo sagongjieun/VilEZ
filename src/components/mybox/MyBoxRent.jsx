@@ -17,6 +17,7 @@ const MyBoxRent = (props) => {
       setMyBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.appointmentStart) <= 0));
       setMyBeingRentedBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.appointmentStart) <= 0));
       setMyToBeRentedBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.appointmentStart) > 0));
+      console.log(response);
     });
   }, []);
   useEffect(() => {
@@ -38,8 +39,8 @@ const MyBoxRent = (props) => {
             <MyBoxCardView2
               title={rent.myAppointListVO.title}
               type={rent.myAppointListVO.type}
-              startDay={rent.myAppointListVO.appointmentEnd}
-              endDay={rent.myAppointListVO.appointmentStart}
+              startDay={rent.myAppointListVO.appointmentStart}
+              endDay={rent.myAppointListVO.appointmentEnd}
               date={rent.myAppointListVO.date}
               roomId={rent.myAppointListVO.roomId}
               thumbnail={rent.imgPathList[0].path}
@@ -48,6 +49,7 @@ const MyBoxRent = (props) => {
                   ? MyBoxDDay(rent.myAppointListVO.appointmentEnd)
                   : MyBoxDDay(rent.myAppointListVO.appointmentStart)
               }
+              bookmarkCnt={rent.bookmarkCnt}
             />
           </div>
         ))

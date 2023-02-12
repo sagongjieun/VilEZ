@@ -6,7 +6,7 @@ import { HiCalendar, HiHeart } from "react-icons/hi";
 // import image from "../../assets/images/product_thumbnail.png";
 import elapsedTime from "../product/ProductElapsedTime";
 
-const ProfileCardView = ({ title, endDay, startDay, date, thumbnail, boardType, boardId }) => {
+const ProfileCardView = ({ title, endDay, startDay, date, thumbnail, boardType, boardId, bookMarkCnt }) => {
   const endDayDotted = endDay.slice(0, 4) + "." + endDay.slice(5, 7) + "." + endDay.slice(8, 10);
   const startDayDotted = startDay.slice(0, 4) + "." + startDay.slice(5, 7) + "." + startDay.slice(8, 10);
   return (
@@ -32,7 +32,7 @@ const ProfileCardView = ({ title, endDay, startDay, date, thumbnail, boardType, 
             </small>
             <small>
               <HiHeart />
-              25
+              {bookMarkCnt}
             </small>
           </div>
         </div>

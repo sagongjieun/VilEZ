@@ -7,9 +7,9 @@ import LargeWideButton from "../button/LargeWideButton";
 import ConfirmButton from "./ConfirmButton";
 import SignupInputBox from "./SignupInputBox";
 import EmailCodeTimer from "./EmailCodeTimer";
-import Validation from "./SignupValidation";
+import Validation from "./PasswordValidation";
 import useForm from "../../hooks/useForm";
-import { SHA256 } from "./EmailCodeHashFunction";
+import { SHA256 } from "./HashFunction";
 import { postConfirmEmailForPassword } from "../../api/email";
 import { putUserPasswordByEmail } from "../../api/user";
 import { useEffect } from "react";
@@ -43,12 +43,9 @@ const FindPassword = () => {
     errors.password2 = "";
   }
   function onSubmit() {
-    const userInformation = {
-      email,
-      password,
-    };
     if (isCodeConfirmed) {
-      putUserPasswordByEmail(userInformation).then((response) => {
+      // putUserPasswordByEmail(email, SHA256(password)).then((response) => {
+      putUserPasswordByEmail(email, password).then((response) => {
         if (response) {
           navigate("/login");
         }
@@ -96,7 +93,7 @@ const FindPassword = () => {
   return (
     <div
       css={css`
-        padding: 90px 540px;
+        padding: 90px 200px;
       `}
     >
       <h2
@@ -362,7 +359,10 @@ const caption = css`
   padding-bottom: 10px;
 `;
 const inputContainer = css`
+  box-sizing: border-box;
   padding-top: 20px;
+  padding-left: calc(25% - 210px);
+  padding-right: calc(25% - 210px);
   width: 50%;
 `;
 const inputButtonWrapper = css`
