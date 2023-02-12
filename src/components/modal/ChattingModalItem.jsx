@@ -2,10 +2,12 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import elapsedTime from "./../product/ProductElapsedTime";
+import { useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { modalOpenState, enterChatRoomState } from "../../recoil/atom";
 
 const ChattingModalItem = ({ chat }) => {
+  const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useRecoilState(modalOpenState);
   const setEnterChatRoom = useSetRecoilState(enterChatRoomState);
 
@@ -13,7 +15,8 @@ const ChattingModalItem = ({ chat }) => {
     // 방에 들어갔다는 알림을 주기위한 recoil 데이터 저장
     setEnterChatRoom(roomId);
     setModalOpen(!modalOpen);
-    window.location.replace(`/product/chat/${roomId}`);
+    navigate(`/product/chat/${roomId}`);
+    location.reload();
   }
 
   return (
