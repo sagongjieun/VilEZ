@@ -8,16 +8,24 @@ import ProductDeatilHeader from "./ProductDeatilHeader";
 import Map from "../common/Map";
 import ImageSlide from "../common/ImageSlide";
 import ProductDetailFooter from "./ProductDetailFooter";
-import { getShareArticleByBoardId, getBookmarkStateByUserId, postBookmark, deleteBookmark } from "../../api/share";
+import {
+  getShareArticleByBoardId,
+  getBookmarkStateByUserId,
+  postBookmark,
+  deleteBookmark,
+  deleteShareArticleByBoardId,
+} from "../../api/share";
 import elapsedTime from "./ProductElapsedTime";
 import bookmarkCancel from "../../assets/images/bookmarkCancel.png";
 import { getUserDetail } from "../../api/user";
 import MannerPoint from "../common/MannerPoint";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { postChatRoom } from "../../api/appointment";
-import { getAskArticleDetailByBoardId } from "../../api/ask";
+import { getAppointmentsByBoardId, postChatRoom } from "../../api/appointment";
+import { deleteAskArticleByBoardId, getAskArticleDetailByBoardId } from "../../api/ask";
 import { getCheckMyRoom } from "../../api/appointment";
 // import RealDeleteModal from "../modal/RealDeleteModal";
+import { useSetRecoilState } from "recoil";
+import { boardState } from "../../recoil/atom";
 
 const ProductDetail = () => {
   const navigate = useNavigate();
@@ -44,7 +52,7 @@ const ProductDetail = () => {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [level, setLevel] = useState(0);
   const [myPoint, setMyPoint] = useState(0);
-
+  const [isDelete, setIsDelete] = useState(false);
   // function checkSocialNickName() {
   //   const nickName = localStorage.getItem("nickName");
   //   if (nickName.slice(0, 1) === "바") {
@@ -200,18 +208,67 @@ const ProductDetail = () => {
     }
   }, [boardId, loginUserId]);
 
+  const [isAppointment, setIsAppointment] = useState(false);
+  useEffect(() => {
+    getAppointmentsByBoardId(boardId, type).then((res) => {
+      console.log(res[0].length === 1);
+      if (res[0].length === 1) {
+        setIsAppointment(true);
+      }
+    });
+  }, []);
+  const setBoardState = useSetRecoilState(boardState);
+  function onClickShowDelete() {
+    setIsDelete(!isDelete);
+  }
+  function onClickDelete() {
+    if (isAppointment === true) {
+      alert("예약중인 글은 삭제할 수 없어요😱");
+    } else {
+      // client.connect({}, () => {
+      //   var sendMessage = {
+      //     boardId: boardId,
+      //     type: type,
+      //   };
+      //   client.send("/recvdelete", {}, JSON.stringify(sendMessage));
+
+      //   sendMessage = {
+      //     userId: userId,
+      //   };
+      //   client.send("/room_web", {}, JSON.stringify(sendMessage));
+      // });
+
+      setBoardState([boardId, type]);
+      type === 2
+        ? deleteShareArticleByBoardId(boardId).then(() => {
+            navigate(`/product/list/share`);
+          })
+        : deleteAskArticleByBoardId(boardId).then(() => {
+            navigate(`/product/list/ask`);
+          });
+    }
+  }
   return (
     <div css={wrapper}>
-      {/* <div css={DeleteWrap}>
-        <RealDeleteModal />
-      </div> */}
+      {/* 컴포넌트화 하고 싶은데 position이 잘 안 먹어서 일단 직접 만든 상태 */}
+      {isDelete ? (
+        <div css={DeleteTop}>
+          <div css={DeleteWrap}>
+            <div>글을 삭제하시겠어요?</div>
+            <div css={buttonWrap}>
+              <MiddleWideButton text="아니오" cancel={true} onclick={onClickShowDelete} />
+              <MiddleWideButton text="네" onclick={onClickDelete} />
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       <ProductDeatilHeader
         title={title}
         category={category}
         time={date}
         bookmarkCount={bookmarkCnt}
-        // editt={setIsEdit}
+        isShowDelete={setIsDelete}
       />
 
       <DivideLine />
@@ -266,28 +323,51 @@ const ProductDetail = () => {
 
 const wrapper = css`
   padding: 90px 200px;
-  display: flex;
-  flex-direction: column;
   position: relative;
-  height: 100vh;
 `;
 
-// const DeleteWrap = css`
-//   position: fixed;
-//   width: 500px;
-//   top: 30%;
-//   left: 50%;
-//   transform: translate(-50%, -50%);
-//   background-color: white;
-//   padding: 20px;
-//   border-radius: 10px;
-//   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
-//   z-index: 9999;
+const DeleteTop = css`
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+`;
 
-//   display: flex;
-//   flex-direction: column-reverse;
-//   /* justify-content: space-between; */
-// `;
+const DeleteWrap = css`
+  position: fixed;
+  width: 450px;
+  height: 300px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
+  z-index: 9999;
+  font-size: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+
+  /* justify-content: space-between; */
+`;
+
+const buttonWrap = css`
+  display: flex;
+  width: 350px;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 20px;
+
+  & > button {
+    width: 170px;
+  }
+`;
 
 const contentsWrapper = css`
   display: flex;
