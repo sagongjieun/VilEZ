@@ -9,7 +9,7 @@ import SignupInputBox from "./SignupInputBox";
 import EmailCodeTimer from "./EmailCodeTimer";
 import Validation from "./SignupValidation";
 import useForm from "../../hooks/useForm";
-import { SHA256 } from "./EmailCodeHashFunction";
+import { SHA256 } from "./HashFunction";
 import { postConfirmEmailForPassword } from "../../api/email";
 import { putUserPasswordByEmail } from "../../api/user";
 import { useEffect } from "react";
