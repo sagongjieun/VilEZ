@@ -169,6 +169,7 @@ const Map = ({
   /** 지도 데이터 보내기 */
   useEffect(() => {
     if (!readOnly) {
+      console.log("map 데이터 주기", location, lat, lng, zoomLevel, isMarker);
       sendLocation(location, lat, lng, zoomLevel, isMarker);
     }
   }, [lat, lng, zoomLevel, isMarker]);
@@ -180,11 +181,15 @@ const Map = ({
     if (path === "regist") {
       console.log("regist");
       makeRectangle();
-      eventDragEnd();
-      eventZoomChanged();
+      // eventDragEnd();
+      // eventZoomChanged();
     }
 
-    if (path === "regist" || path === "modify" || path === "stomp") eventSetMarker();
+    if (path === "regist" || path === "modify" || path === "stomp") {
+      eventSetMarker();
+      eventZoomChanged();
+      eventDragEnd();
+    }
   }, []);
 
   /** 게시글 수정 map */
@@ -197,8 +202,8 @@ const Map = ({
       marker.setPosition(latlng);
       marker.setMap(map);
 
-      eventDragEnd();
-      eventZoomChanged();
+      // eventDragEnd();
+      // eventZoomChanged();
     }
   }, [hopeAreaLat, hopeAreaLng, map]);
 
@@ -222,11 +227,13 @@ const Map = ({
   useEffect(() => {
     if (path === "stomp" && movedLat && movedLng && movedZoomLevel && map) {
       console.log("stomp");
+      console.log("map 데이터 받기", movedLat, movedLng, movedZoomLevel, isMarker);
       const locPosition = new kakao.maps.LatLng(movedLat, movedLng);
 
       map.setLevel(movedZoomLevel); // 지도 레벨 동기화
 
       if (movedMarker) {
+        console.log("마커 찍음");
         marker.setPosition(locPosition);
         marker.setMap(map);
         map.panTo(locPosition);
@@ -240,8 +247,10 @@ const Map = ({
           }
         });
       } else {
+        console.log("마커 안찍음");
         // dragend, zoomchange 이벤트의 경우 이전 마커의 위치에 마커 유지
         if (hasMarker) {
+          console.log("마커 안찍음 근데 이미 있었음");
           const prevMarkerPosition = new kakao.maps.LatLng(markerLat, markerLng);
           marker.setPosition(prevMarkerPosition);
           marker.setMap(map);
@@ -250,8 +259,10 @@ const Map = ({
       }
 
       // 상대방이 제어하고나서 나도 제어할 수 있게
-      eventDragEnd();
-      eventZoomChanged();
+      // eventDragEnd();
+      // eventZoomChanged();
+
+      console.log("map 데이터 받기에서는 이 값들을 변경안하는데 ? ", location, lat, lng, zoomLevel, isMarker);
     }
   }, [movedLat, movedLng, movedZoomLevel, movedMarker, map]);
 
