@@ -16,11 +16,15 @@ const style = css`
   @font-face {
     font-family: "LINESeedKR-Bd";
     src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2") format("woff2");
-    font-weight: 700;
+    font-weight: 100;
     font-style: normal;
   }
-  html {
-    scroll-behavior: smooth;
+
+  @font-face {
+    font-family: "Pretendard-Regular";
+    src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff") format("woff");
+    font-weight: 400;
+    font-style: normal;
   }
 
   * {
@@ -28,7 +32,7 @@ const style = css`
     padding: 0;
     /* font-family: "Noto Sans KR", sans-serif; */
     /* font-family: "Spoqa Han Sans Neo", "sans-serif"; */
-    font-family: "LINESeedKR-Bd";
+    font-family: "Pretendard-Regular";
 
     text-decoration: none;
   }

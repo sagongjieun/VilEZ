@@ -61,13 +61,13 @@ async function postLogin(email, password) {
 
     if (data.flag === "success") {
       if (!data.data) {
-        alert("이메일 혹은 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+        alert("이메일 혹은 비밀번호가 일치하지 않네요. 다시 확인해주시겠어요?");
       } else {
         console.log(data);
         return data.data[0];
       }
     } else {
-      alert("이메일 혹은 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+      alert("이메일 혹은 비밀번호가 일치하지 않네요. 다시 확인해주시겠어요?");
       return false;
     }
   } catch (error) {
@@ -120,10 +120,10 @@ async function postUserInformation(userInformation) {
     const { data } = await defaultAxios.post("/users/join", userInformation);
 
     if (data.flag === "success") {
-      alert("회원가입이 완료되었습니다. 로그인을 진행해주세요.");
+      alert("회원가입이 완료되었어요. 로그인을 진행해주시면 돼요.");
       return data.data;
     } else if (data.flag === "fail") {
-      alert("회원가입이 정상적으로 완료되지 않았습니다. 다시 진행해주세요.");
+      alert("회원가입이 정상적으로 완료되지 않았어요. 다시 진행해주시겠어요?");
       return "";
     }
   } catch (error) {
@@ -137,9 +137,9 @@ async function putUserPasswordByEmail(email, password) {
   try {
     const { data } = await defaultAxios.put(`/users/modify/password?email=${email}&password=${password}`);
     if (data.flag === "success") {
-      alert("비밀번호가 성공적으로 변경되었습니다. 로그인을 진행해주세요.");
+      alert("비밀번호가 성공적으로 변경되었어요. 로그인을 진행해주시면 돼요.");
       return data;
-    } else alert("비밀번호가 변경에 실패했습니다. 다시 시도해주세요.");
+    } else alert("비밀번호가 변경에 실패했어요. 다시 시도해주시겠어요?");
   } catch (error) {
     console.log(error);
   }
@@ -151,7 +151,7 @@ async function putUserPasswordNickName(userId, nickName, password) {
     const { data } = await authJsonAxios.put("/users/modify", { id: userId, nickName: nickName, password: password });
     if (data.flag === "success") {
       return data;
-    } else alert("프로필 변경에 실패했습니다. 다시 시도해주세요.");
+    } else alert("프로필 변경에 실패했어요. 다시 시도해주시겠어요?");
   } catch (error) {
     console.log(error);
   }
@@ -162,7 +162,7 @@ async function putUserProfileImage(formData) {
     const { data } = await authFormDataAxios.put("/users/profile", formData);
 
     if (data.flag === "success") return data.data;
-    else alert("프로필 변경에 실패했습니다. 다시 시도해주세요.");
+    else alert("프로필 변경에 실패했어요. 다시 시도해주시겠어요?");
   } catch (error) {
     console.log(error);
   }

@@ -54,7 +54,7 @@ const ProductReturnModal = ({ close, otherUserNickname, otherUserId, roomId }) =
           postShareReturnState(roomId)
             .then((res) => {
               if (res) {
-                alert("물품 반납이 정상적으로 접수되었습니다. 🙂");
+                alert("물품 반납이 정상적으로 접수되었어요. 🙂");
                 setCheckShareReturn(true);
                 close(false);
               }

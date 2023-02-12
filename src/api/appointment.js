@@ -211,7 +211,7 @@ async function postChatRoom(body) {
     const { data } = await authJsonAxios.post(`/appointments/room`, body);
 
     if (data.flag === "success") return data.data;
-    else alert("채팅에 연결하지 못했습니다 😅");
+    else alert("채팅에 연결하지 못했어요 😅");
   } catch (error) {
     console.log(error);
   }
@@ -222,7 +222,7 @@ async function postAppointment(body) {
     const { data } = await authJsonAxios.post(`/appointments`, body);
 
     if (data.flag === "success") return true;
-    else alert("약속 정보 저장에 실패하였습니다. 😅");
+    else alert("약속 정보 저장에 실패했어요. 😅");
   } catch (error) {
     console.log(error);
   }

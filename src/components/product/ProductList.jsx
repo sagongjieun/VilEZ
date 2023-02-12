@@ -175,7 +175,12 @@ const ProductList = () => {
   return (
     <div css={topWrap}>
       <div css={contentWrap}>
-        <h2>{list}</h2>
+        <div css={listWrap}>
+          <h2>{list}</h2>
+          <div css={buttonDiv}>
+            <MiddleWideButton text={"물품 등록"} onclick={onClicktoRegist} />
+          </div>
+        </div>
         <div css={filterWrap}>
           <div css={filterLeftWrap}>
             <ProductCategory isMain={false} sendCategory={receiveCategory} list={true} />
@@ -204,10 +209,6 @@ const ProductList = () => {
           </div>
         </div>
         <DivideLine />
-
-        <div css={buttonDiv}>
-          <MiddleWideButton text={"물품 등록"} onclick={onClicktoRegist} />
-        </div>
 
         {urlId === 2 ? (
           <div css={relatedProductWrapper}>
@@ -274,6 +275,23 @@ const topWrap = css`
 `;
 const contentWrap = css``;
 
+const listWrap = css`
+  display: flex;
+  align-items: center;
+  justify-content: space-between !important;
+
+  width: 100%;
+  & h2:nth-of-type(1) {
+    width: 60%;
+  }
+`;
+const buttonDiv = css`
+  display: flex;
+  width: 150px;
+  float: right;
+  height: 30%;
+  margin-bottom: 20px;
+`;
 const filterWrap = css`
   display: flex;
   justify-content: space-between;
@@ -304,6 +322,7 @@ const MainInputBox = css`
   background-color: #ffffff;
   outline: none;
   padding: 0 20px;
+
   & ::placeholder {
     color: #c4c4c4;
   }
@@ -318,16 +337,6 @@ const searchWrap = css`
     width: 14px;
     top: 12px;
     left: 6px;
-  }
-  & > button {
-    position: absolute;
-    width: 30px;
-    top: 9px;
-    right: 10px;
-    border: none;
-    background-color: white;
-    color: #66dd9c;
-    cursor: pointer;
   }
 `;
 
@@ -345,17 +354,11 @@ const unPossibleWrap = css`
   background-color: white;
 `;
 
-const buttonDiv = css`
-  width: 200px;
-  display: flex;
-  float: right;
-  margin-bottom: 20px;
-`;
-
 const relatedProductWrapper = css`
+  margin-top: 40px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 50px;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 20px;
   width: 100%;
   height: 100%;
   margin-right: 50px;
@@ -365,7 +368,7 @@ const relatedProductWrapper = css`
 
   & > div {
     margin-bottom: 20px;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
     border-radius: 10px;
   }
 `;
@@ -391,6 +394,9 @@ const infoWrapper = css`
 
   & small {
     color: #8a8a8a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   & > div:nth-of-type(1) {
@@ -399,17 +405,39 @@ const infoWrapper = css`
     justify-content: space-between;
     align-items: flex-end;
     margin-bottom: 5px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin-top: 5px;
+  }
+  & > div:nth-of-type(1) span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+    white-space: nowrap;
+    width: 100%;
+
+    font-weight: 100;
   }
 
   & > div:nth-of-type(2) {
     display: flex;
     flex-direction: row;
-
+    overflow: hidden;
+    margin-top: 10px;
+    & > div:nth-of-type(2) span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 100%;
+    }
     & > small {
       margin-right: 10px;
       display: flex;
       flex-direction: row;
       align-items: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
 
       & > svg {
         margin-right: 3px;

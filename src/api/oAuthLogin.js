@@ -10,7 +10,7 @@ async function requestKakaoLogin(code) {
       // localStorage.setItem("id", data.data[0].id);
       return data.data;
     } else {
-      alert("이메일 혹은 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+      alert("이메일 혹은 비밀번호가 일치하지 않네요. 다시 확인해주시겠어요?");
       console.log(data);
     }
   } catch (error) {
@@ -28,7 +28,7 @@ async function requestNaverLogin(code) {
       // localStorage.setItem("id", data.data[0].id);
       return data.data;
     } else {
-      alert("이메일 혹은 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+      alert("이메일 혹은 비밀번호가 일치하지 않네요. 다시 확인해주시겠어요?");
       console.log(data);
     }
   } catch (error) {

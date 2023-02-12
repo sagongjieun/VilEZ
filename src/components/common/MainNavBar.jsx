@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { Link } from "react-router-dom";
 import { FiSearch } from "react-icons/fi";
 import { HiArchiveBox } from "react-icons/hi2";
-// import { CgProfile } from "react-icons/cg";
+
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue, useRecoilState, useResetRecoilState } from "recoil";
 import { loginUserState, isLoginState } from "../../recoil/atom";
@@ -18,16 +18,16 @@ function MainNavBar() {
   const resetLoginUser = useResetRecoilState(loginUserState);
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
 
-  const [isMenu, setIsMenu] = useState(false);
+  // const [isMenu, setIsMenu] = useState(false);
   const menus = [
     { name: "물품 공유 목록", path: "/product/list/share" },
     { name: "물품 요청 목록", path: "/product/list/ask" },
     { name: "글 등록하기", path: "/product/regist" },
   ];
 
-  function onClickShowMenu() {
-    setIsMenu(!isMenu);
-  }
+  // function onClickShowMenu() {
+  //   setIsMenu(!isMenu);
+  // }
 
   function onClickMoveLogin() {
     navigate("/login");
@@ -67,20 +67,15 @@ function MainNavBar() {
             </div>
             <div css={MidWrap}>
               <div>
-                <div css={navMid} onClick={onClickShowMenu}>
-                  마을 글보기
+                <div css={navMid}>마을 글보기</div>
+
+                <div css={MenuWrap}>
+                  {menus.map((menu, idx) => (
+                    <Link to={menu.path} key={idx}>
+                      <div css={navMenu}>{menu.name}</div>
+                    </Link>
+                  ))}
                 </div>
-                {isMenu ? (
-                  <div css={MenuWrap}>
-                    {menus.map((menu, idx) => (
-                      <Link to={menu.path} key={idx} onClick={onClickShowMenu}>
-                        <div css={navMenu}>{menu.name}</div>
-                      </Link>
-                    ))}
-                  </div>
-                ) : (
-                  <></>
-                )}
               </div>
               <div>
                 <div css={midrightWrap}>
@@ -123,20 +118,14 @@ function MainNavBar() {
             </div>
             <div css={MidWrap}>
               <div>
-                <div css={navMid} onClick={onClickShowMenu}>
-                  마을 글보기
+                <div css={navMid}>마을 글보기</div>
+                <div css={MenuWrap}>
+                  {menus.map((menu, idx) => (
+                    <Link to={menu.path} key={idx}>
+                      <div css={navMenu}>{menu.name}</div>
+                    </Link>
+                  ))}
                 </div>
-                {isMenu ? (
-                  <div css={MenuWrap}>
-                    {menus.map((menu, idx) => (
-                      <Link to={menu.path} key={idx} onClick={onClickShowMenu}>
-                        <div css={navMenu}>{menu.name}</div>
-                      </Link>
-                    ))}
-                  </div>
-                ) : (
-                  <></>
-                )}
               </div>
               <div>
                 <div css={midrightWrap}>
@@ -200,16 +189,30 @@ const MidWrap = css`
 `;
 
 const navMid = css`
+  display: inline-block;
   background-color: #66dd9c;
   color: white;
   border-radius: 30px;
   padding: 10px 40px;
   text-align: center;
   cursor: pointer;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    box-shadow: 10px 10px 5px gray;
+    transform: translateY(-3px);
+  }
+  &:hover + div {
+    display: block;
+  }
 `;
 
 const MenuWrap = css`
   position: absolute;
+  display: none;
+  &:hover {
+    display: block;
+  }
 `;
 
 // box-shadox : x(왼->우), y(아->위), 흐린정도, 그림자크기,색상
@@ -227,6 +230,13 @@ const navMenu = css`
   line-height: 35px;
   cursor: pointer;
   margin-top: 5px;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    box-shadow: 10px 10px 5px gray;
+    transform: translateY(-3px);
+    display: block;
+  }
 `;
 
 const midrightWrap = css`
