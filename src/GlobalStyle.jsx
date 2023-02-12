@@ -14,9 +14,9 @@ const style = css`
     font-style: normal;
   }
   @font-face {
-    font-family: "EliceDigitalBaeum-Bd";
-    src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_elice@1.0/EliceDigitalBaeum-Bd.woff2") format("woff2");
-    font-weight: normal;
+    font-family: "LINESeedKR-Bd";
+    src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2") format("woff2");
+    font-weight: 700;
     font-style: normal;
   }
   html {
@@ -27,8 +27,8 @@ const style = css`
     margin: 0;
     padding: 0;
     /* font-family: "Noto Sans KR", sans-serif; */
-    font-family: "Spoqa Han Sans Neo", "sans-serif";
-    /* font-family: "EliceDigitalBaeum-Bd"; */
+    /* font-family: "Spoqa Han Sans Neo", "sans-serif"; */
+    font-family: "LINESeedKR-Bd";
 
     text-decoration: none;
   }
