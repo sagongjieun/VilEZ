@@ -135,10 +135,11 @@ async function postUserInformation(userInformation) {
 
 async function putUserPasswordByEmail(email, password) {
   try {
-    const { data } = await authJsonAxios.put(`/users/modify/password?email=${email}&password=${password}`);
-
-    if (data.flag === "success") alert("비밀번호가 성공적으로 변경되었습니다. 로그인을 진행해주세요.");
-    else alert("비밀번호가 변경에 실패했습니다. 다시 시도해주세요.");
+    const { data } = await defaultAxios.put(`/users/modify/password?email=${email}&password=${password}`);
+    if (data.flag === "success") {
+      alert("비밀번호가 성공적으로 변경되었습니다. 로그인을 진행해주세요.");
+      return data;
+    } else alert("비밀번호가 변경에 실패했습니다. 다시 시도해주세요.");
   } catch (error) {
     console.log(error);
   }

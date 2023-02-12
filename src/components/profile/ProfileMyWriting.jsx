@@ -34,7 +34,7 @@ const ProfileMyWriting = (props) => {
   }, [props.myWritingType]);
   useEffect(() => {
     props.setWritingDefaultPages(myBoard ? parseInt((myBoard?.length - 1) / 3) + 1 : 1);
-    // console.log(myBoard);
+    console.log(myBoard);
   }, [myBoard]);
   return (
     <div css={cardWrapper(props.writingPages)}>
@@ -49,6 +49,7 @@ const ProfileMyWriting = (props) => {
               thumbnail={share.list[0]?.path}
               boardType={props.myWritingType === 1 ? "share" : props.myWritingType === 2 ? "ask" : null}
               boardId={share.id}
+              bookMarkCnt={share.bookmarkCnt}
             />
           </div>
         ))

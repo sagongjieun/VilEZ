@@ -16,6 +16,7 @@ const MyBoxShare = (props) => {
       setMyBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.appointmentStart) <= 0));
       setMySharingBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.appointmentStart) <= 0));
       setMyToBeSharedBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.appointmentStart) > 0));
+      console.log(response);
     });
   }, []);
   useEffect(() => {
@@ -47,6 +48,7 @@ const MyBoxShare = (props) => {
                   ? MyBoxDDay(share.myAppointListVO.appointmentEnd)
                   : MyBoxDDay(share.myAppointListVO.appointmentStart)
               }
+              bookmarkCnt={share.bookmarkCnt}
             />
           </div>
         ))

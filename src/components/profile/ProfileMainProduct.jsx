@@ -13,8 +13,8 @@ const ProfileMainProduct = () => {
   const [bookMarkDefaultPages, setBookMarkDefaultPages] = useState(1);
   const [writingPages, setWritingPages] = useState(1);
   const [bookMarkPages, setBookMarkPages] = useState(1);
-  function onClickChangeType() {
-    if (myWritingType === 1) {
+  function onClickChangeType(value) {
+    if (value === 2) {
       setMyWritingType(2);
     } else {
       setMyWritingType(1);
@@ -49,10 +49,20 @@ const ProfileMainProduct = () => {
         <div>
           <h3>나의 작성글</h3>
           <div>
-            <button css={myWritingType === 1 ? basic : bordered} onClick={onClickChangeType}>
+            <button
+              css={myWritingType === 1 ? basic : bordered}
+              onClick={() => {
+                onClickChangeType(1);
+              }}
+            >
               나의 공유글
             </button>
-            <button css={myWritingType === 2 ? basic : bordered} onClick={onClickChangeType}>
+            <button
+              css={myWritingType === 2 ? basic : bordered}
+              onClick={() => {
+                onClickChangeType(2);
+              }}
+            >
               나의 요청글
             </button>
           </div>

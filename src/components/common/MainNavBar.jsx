@@ -277,7 +277,7 @@ const midrightWrap = css`
       position: absolute;
       box-sizing: border-box;
       top: 36px;
-      left: -30px;
+      left: -25px;
       width: 80px;
       padding: 10px;
       font-size: 12px;
