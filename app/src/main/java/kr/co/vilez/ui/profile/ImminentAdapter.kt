@@ -41,11 +41,11 @@ RecyclerView.Adapter<ImminentAdapter.ShareHolder>(){
             binding.root.setOnClickListener {
                 val intent = Intent(binding.root.context, ChatRoomActivity::class.java)
                 CoroutineScope(Dispatchers.Main).launch {
-                    //val result = ApplicationClass.chatApi.isExistChatroom(item.boardId, item.type, ApplicationClass.prefs.getId()).awaitResponse().body()
+                    //val result = ApplicationClass.hChatApi.isExistChatroom(item.boardId, item.type, ApplicationClass.prefs.getId()).awaitResponse().body()
                     // 무조건 내가 빌리니까 내가 피공유자 => notShareUserId
                     intent.putExtra("roomId", item.roomId)
                     intent.putExtra("otherUserId", item.shareUserId) // shareUserId가 공유자
-                    val otherUser = ApplicationClass.userApi.getUserDetail(item.shareUserId).awaitResponse().body()
+                    val otherUser = ApplicationClass.hUserApi.getUserDetail(item.shareUserId).awaitResponse().body()
                     if(otherUser?.flag == "success") {
                         intent.putExtra("nickName", otherUser.data[0].nickName) // 채팅 상대의 닉네임
                         intent.putExtra("profile", otherUser.data[0].profile_img) // 채팅 상대의 프로필 이미지

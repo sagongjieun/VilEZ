@@ -83,7 +83,7 @@ class EditProfileFragment : Fragment() {
     private fun getUserDetail(userId: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             val result =
-                ApplicationClass.userApi.getUserDetail(userId).awaitResponse().body()
+                ApplicationClass.hUserApi.getUserDetail(userId).awaitResponse().body()
             if (result?.flag == "success") {
                 val data = result.data[0]
                 Log.d(TAG, "user detail 조회 성공, 받아온 user = $data")
@@ -116,7 +116,7 @@ class EditProfileFragment : Fragment() {
                     binding.ivProfileImg.setImageURI(imageUri) // 일단 미리보기 이미지 바뀐 이미지로 변경
                     Toast.makeText(profileMenuActivity, "프로필 이미지 변경을 성공했습니다.", Toast.LENGTH_SHORT).show()
                     // 디테일 갱신
-                    val resultDetail = ApplicationClass.userApi.getUserDetail(ApplicationClass.prefs.getId()).awaitResponse().body()
+                    val resultDetail = ApplicationClass.hUserApi.getUserDetail(ApplicationClass.prefs.getId()).awaitResponse().body()
                     if(resultDetail?.flag == "success") {
                         Log.d(TAG, "프로필 이미지 수정: Detail조회 성공~, result: ${resultDetail.data[0]}")
                         ApplicationClass.prefs.setUserDetail(resultDetail.data[0])
@@ -184,7 +184,7 @@ class EditProfileFragment : Fragment() {
         }
 
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.userApi.isUsedUserNickName(newNickname).awaitResponse().body()
+            val result = ApplicationClass.hUserApi.isUsedUserNickName(newNickname).awaitResponse().body()
             Log.d(TAG, "checkNickName: 닉네임 중복 확인, result : $result")
             if(result?.flag == "success") {
                 Log.d(TAG, "checkNickName: 사용가능한 닉네임")
@@ -225,7 +225,7 @@ class EditProfileFragment : Fragment() {
         CoroutineScope(Dispatchers.Main).launch {
             val user = User(email = ApplicationClass.prefs.getEmail(), password = Common.getHash(curPassword))
             val result =
-                ApplicationClass.userApi.getLoginResult(user).awaitResponse().body()
+                ApplicationClass.hUserApi.getLoginResult(user).awaitResponse().body()
             if (result?.flag == "success") {
                 Log.d(TAG, "checkCurrentPassword: 현재 비밀번호 맞음")
                 binding.inputProfileCurrentPassword.error = null

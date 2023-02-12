@@ -142,7 +142,7 @@ class FindPasswordFragment : Fragment() {
         // 올바른 이메일인 경우 비번 전송 시작
         CoroutineScope(Dispatchers.Main).launch {
             //findPasswordViewModel.sendEmailAuth(email)
-            val result = ApplicationClass.emailApi.getTempPassword2(Email(email)).awaitResponse().body()
+            val result = ApplicationClass.hEmailApi.getTempPassword2(Email(email)).awaitResponse().body()
             if(result?.flag=="success") {
                 Log.d(TAG, "sendEmailAuth: 비번 전송 성공! $result")
                 val data = result.data as ArrayList<*>
@@ -235,7 +235,7 @@ class FindPasswordFragment : Fragment() {
             val hashedpassword = Common.getHash(password)
             Log.d(TAG, "changePassword: 이메일 : $email, 비번: $password, 해시비번: $hashedpassword")
             CoroutineScope(Dispatchers.Main).launch {
-                val result = ApplicationClass.userApi.changePassword(email = email, password = hashedpassword).awaitResponse().body()
+                val result = ApplicationClass.hUserApi.changePassword(email = email, password = hashedpassword).awaitResponse().body()
                 if (result?.flag == "success") {
                     Log.d(TAG, "changePassword: 비밀번호 변경 결과:$result")
 

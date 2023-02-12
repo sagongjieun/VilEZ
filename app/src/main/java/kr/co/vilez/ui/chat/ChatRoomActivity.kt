@@ -91,13 +91,13 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
 
         StompHelper.stompClient.send("/room_enter", data.toString()).subscribe()
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.chatApi.getRoomData(roomId).awaitResponse().body()
+            val result = ApplicationClass.hChatApi.getRoomData(roomId).awaitResponse().body()
             if (result?.flag == "success") {
                 room = result.data.get(0)
                 // 룸 정보 가져왔고 그다음엔
                 // 약속 정보 가져오기
 
-                var result = ApplicationClass.chatApi.getAppointMent(
+                var result = ApplicationClass.hChatApi.getAppointMent(
                     room.boardId, room.notShareUserId,
                     room.shareUserId,room.type
                 ).awaitResponse().body()
@@ -105,7 +105,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                 if(result?.flag == "success") {
                     appointDto = result.data.get(0)
                     if(appointDto == null) {
-                        val result = ApplicationClass.chatApi.getPeriodDto(
+                        val result = ApplicationClass.hChatApi.getPeriodDto(
                             room.boardId, room.notShareUserId,
                             room.shareUserId,room.type
                         ).awaitResponse().body()
@@ -287,7 +287,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
             when(item.itemId) {
                 R.id.close_room -> {
                     CoroutineScope(Dispatchers.Main).launch {
-                        val result = ApplicationClass.chatApi.getState(roomId).awaitResponse().body()
+                        val result = ApplicationClass.hChatApi.getState(roomId).awaitResponse().body()
                         if(result?.flag == "success") {
                             var data = result.data.get(0)
                             if(data.state == 0) {
@@ -295,7 +295,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                                 return@launch
                             } else {
                                 val result =
-                                    ApplicationClass.chatApi.closeRoom(roomId,ApplicationClass.prefs.getId()).awaitResponse().body()
+                                    ApplicationClass.hChatApi.closeRoom(roomId,ApplicationClass.prefs.getId()).awaitResponse().body()
                                 if(result?.flag == "success") {
                                     var data = JSONObject()
                                     data.put("roomId", roomId)
@@ -335,7 +335,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
         }
         CoroutineScope(Dispatchers.Main).launch {
             val result =
-                ApplicationClass.chatApi.loadChatList(roomId).awaitResponse().body()
+                ApplicationClass.hChatApi.loadChatList(roomId).awaitResponse().body()
             if (result?.flag == "success") {
                 var prev_type = -1
                 for (i in 0 until result.data.size) {
@@ -437,7 +437,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
         binding.btnChatCalendar.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
                 if(ApplicationClass.prefs.getId() == room.shareUserId) {
-                    var result = ApplicationClass.chatApi.getAppointMent(room.boardId,room.notShareUserId,room.shareUserId,room.type)
+                    var result = ApplicationClass.hChatApi.getAppointMent(room.boardId,room.notShareUserId,room.shareUserId,room.type)
                         .awaitResponse().body()
                     if(result?.flag == "success") {
                         appointDto = result.data.get(0)
@@ -448,7 +448,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                         }
                     }
                 } else {
-                    var result = ApplicationClass.chatApi.getPeriodDto(room.boardId,room.notShareUserId,room.shareUserId,room.type)
+                    var result = ApplicationClass.hChatApi.getPeriodDto(room.boardId,room.notShareUserId,room.shareUserId,room.type)
                         .awaitResponse().body()
                     if(result?.flag == "success") {
                         setPeriodDto = result.data.get(0)
@@ -494,7 +494,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                 return@setOnClickListener
             }
             CoroutineScope(Dispatchers.Main).launch {
-                val result = ApplicationClass.chatApi.getAppointMent(
+                val result = ApplicationClass.hChatApi.getAppointMent(
                     room.boardId, room.notShareUserId,
                     room.shareUserId,room.type
                 ).awaitResponse().body()
@@ -504,7 +504,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                         showDialog("이미 약속된 정보가 있습니다.")
                         return@launch
                     } else {
-                        val result = ApplicationClass.chatApi.getPeriodDto(
+                        val result = ApplicationClass.hChatApi.getPeriodDto(
                             room.boardId, room.notShareUserId,
                             room.shareUserId,room.type
                         ).awaitResponse().body()
@@ -656,7 +656,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                         }
                     }
                     // 이제 여기서 실제 캘린더 날짜 잡아주기
-                    val result = ApplicationClass.chatApi.setPeriodDto(setPeriodDto!!).awaitResponse().body()
+                    val result = ApplicationClass.hChatApi.setPeriodDto(setPeriodDto!!).awaitResponse().body()
                     if (result?.flag == "success") {
                         var data = JSONObject()
                         data.put("roomId", roomId)
@@ -739,7 +739,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
     fun initReturnButton() {
 
         CoroutineScope(Dispatchers.Main).launch {
-            var result = ApplicationClass.chatApi.getAppointMent(
+            var result = ApplicationClass.hChatApi.getAppointMent(
                 room.boardId, room.notShareUserId,
                 room.shareUserId,room.type
             ).awaitResponse().body()
@@ -749,7 +749,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                 if(appointDto == null) {
                     return@launch
                 }
-                var result = ApplicationClass.chatApi.getReturns(room.id).awaitResponse().body()
+                var result = ApplicationClass.hChatApi.getReturns(room.id).awaitResponse().body()
                 if(result?.flag == "success") {
                     var data = result.data.get(0)
                     if(ApplicationClass.prefs.getId() == room.shareUserId) { // 공유자 입장
@@ -789,7 +789,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
         binding.btnChatCancel.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
                 val result =
-                    ApplicationClass.chatApi.getState(roomId).awaitResponse().body()
+                    ApplicationClass.hChatApi.getState(roomId).awaitResponse().body()
 
                 if(result?.flag == "success") {
                     if(result.data.size == 0) {
@@ -800,7 +800,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                     println(roomId)
                     if(room.state == 0) {
                         val result =
-                            ApplicationClass.chatApi.getNotShareUserCancel(roomId).awaitResponse().body()
+                            ApplicationClass.hChatApi.getNotShareUserCancel(roomId).awaitResponse().body()
                         if(result?.flag == "success") {
                             println("ddddddddd" + result.data.size)
                             var da = result.data.get(0)
@@ -824,7 +824,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
 
                                 } else { // 피공유자 신청
                                     val result =
-                                        ApplicationClass.chatApi.notShareUserCancel(
+                                        ApplicationClass.hChatApi.notShareUserCancel(
                                             CancelAppointmentDto(roomId)
                                         ).awaitResponse().body()
                                     if(result?.flag == "success") {
@@ -916,9 +916,9 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
             var map = HashMap<String,Int>()
             map.put("userId",room.notShareUserId)
             map.put("degree",cnt)
-            val result = ApplicationClass.userApi.setManner(map).awaitResponse().body()
+            val result = ApplicationClass.hUserApi.setManner(map).awaitResponse().body()
             if (result?.flag == "success") {
-                val result = ApplicationClass.chatApi.returnRequest(ReturnRequestDto(roomId)).awaitResponse().body()
+                val result = ApplicationClass.hChatApi.returnRequest(ReturnRequestDto(roomId)).awaitResponse().body()
                 if(result?.flag == "success") {
                     var data = JSONObject()
                     data.put("roomId", roomId)

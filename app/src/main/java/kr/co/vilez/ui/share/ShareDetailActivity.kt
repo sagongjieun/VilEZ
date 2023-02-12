@@ -142,7 +142,7 @@ class ShareDetailActivity : AppCompatActivity(){
         
         CoroutineScope(Dispatchers.Main).launch {
             // 먼저 채팅방이 존재하는지 확인하기
-            val isExist = ApplicationClass.chatApi.isExistChatroom(boardId!!,
+            val isExist = ApplicationClass.hChatApi.isExistChatroom(boardId!!,
                 Common.BOARD_TYPE_SHARE, ApplicationClass.prefs.getId()).awaitResponse().body()
             if(isExist?.flag == "success" ) { // 이미 채팅방이 존재함
                 Log.d(TAG, "onChatBtnClick: 채팅방 이미 존재")
@@ -165,7 +165,7 @@ class ShareDetailActivity : AppCompatActivity(){
                 val chatRoom = Chatroom(boardId!!, 0,  ApplicationClass.prefs.getId(), userId!!,
                     Common.BOARD_TYPE_SHARE
                 )
-                val result = ApplicationClass.chatApi.createChatroom(chatRoom).awaitResponse().body()
+                val result = ApplicationClass.hChatApi.createChatroom(chatRoom).awaitResponse().body()
                 if(result?.flag == "success") {
                     val fragment = supportFragmentManager.findFragmentById(R.id.share_detail_map)
                     if(fragment != null)
@@ -241,7 +241,7 @@ class ShareDetailActivity : AppCompatActivity(){
 
 
                 // 해당 글을 작성한 작성자 데이터 가져오기
-                val userResult = ApplicationClass.userApi.getUserDetail(result.data[0].userId).awaitResponse().body()
+                val userResult = ApplicationClass.hUserApi.getUserDetail(result.data[0].userId).awaitResponse().body()
                 Log.d(TAG, "initData: @@@@@@@@공유글 작성자: ${result.data[0].userId}, ${result.data[0]}")
                 otherUserId = result.data[0].userId
                 if(userResult?.flag == "success") {

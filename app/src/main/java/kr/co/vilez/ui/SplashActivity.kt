@@ -39,11 +39,11 @@ class SplashActivity : AppCompatActivity() {
                     // 로그인해서 유저 정보 넣기
                     val user = ApplicationClass.prefs.getAutoLogin()
                     Log.d(TAG, "onCreate: 자동 로그인 할 email:${user.email}, password:${user.password}")
-                    val result = ApplicationClass.userApi.getLoginResult(user).awaitResponse().body()
+                    val result = ApplicationClass.hUserApi.getLoginResult(user).awaitResponse().body()
                     if (result?.flag == "success" && !result.data.isNullOrEmpty()) {  // 로그인 성공
                         Log.d(TAG, "로그인 성공, 받아온 user = ${result.data[0]}")
                         ApplicationClass.prefs.setUser(result.data[0])
-                        val resultDetail = ApplicationClass.userApi.getUserDetail(result.data[0].id).awaitResponse().body()
+                        val resultDetail = ApplicationClass.hUserApi.getUserDetail(result.data[0].id).awaitResponse().body()
                         if(resultDetail?.flag == "success") {
                             Log.d(TAG, "login: Detail조회도 로그인와 같이 성공~, result: ${resultDetail.data[0]}")
                             ApplicationClass.prefs.setUserDetail(resultDetail.data[0])

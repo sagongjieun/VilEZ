@@ -72,7 +72,7 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
 
     fun subMap(mapView : MapView){
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.chatApi.loadLocationByRoomId(roomId).awaitResponse().body()
+            val result = ApplicationClass.hChatApi.loadLocationByRoomId(roomId).awaitResponse().body()
             if (result?.flag == "success") {
                 println(result.data)
                 var kakao = result.data[0];

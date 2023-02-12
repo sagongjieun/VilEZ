@@ -98,7 +98,7 @@ class LoginFragment : Fragment() {
                         val userId = user.id.toString()
                         CoroutineScope(Dispatchers.Main).launch {
                             Log.d(TAG, "kakaoLogin: 이미 있는 유저인지 확인하기")
-                            val result = ApplicationClass.userApi.isUsedEmail(userId).awaitResponse().body()
+                            val result = ApplicationClass.hUserApi.isUsedEmail(userId).awaitResponse().body()
                             Log.d(TAG, "oauth register: $result")
                             if (result?.flag == "success") {
                                 if (!(result.data as List<Boolean> )[0]) { // 새로운 회원
@@ -186,7 +186,7 @@ class LoginFragment : Fragment() {
             val profileId = response.profile?.id!!
             Log.d(TAG, "onSuccess: id: $profileId")
             CoroutineScope(Dispatchers.Main).launch {
-                val result = ApplicationClass.userApi.isUsedEmail(profileId).awaitResponse().body()
+                val result = ApplicationClass.hUserApi.isUsedEmail(profileId).awaitResponse().body()
                 Log.d(TAG, "oauth register: $result")
                 if (result?.flag == "success") {
                     if (!(result.data as List<Boolean> )[0]) { // 새로운 회원

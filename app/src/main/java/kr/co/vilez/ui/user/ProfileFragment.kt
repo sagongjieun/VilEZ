@@ -179,7 +179,7 @@ class ProfileFragment : Fragment() {
     fun login(view:View) {
         CoroutineScope(Dispatchers.Main).launch {
             val user = User("test@naver.com", "12345")
-            val result = ApplicationClass.userApi.getLoginResult(user).awaitResponse().body()
+            val result = ApplicationClass.hUserApi.getLoginResult(user).awaitResponse().body()
             if (result == null) { // 로그인 실패
                 Log.d(TAG, "login: 로그인 실패, result:$result")
             } else if(result.flag == "success") {  // 로그인 성공
@@ -234,7 +234,7 @@ class ProfileFragment : Fragment() {
                 }
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    val result = ApplicationClass.userApi.postLogout(ApplicationClass.prefs.getUser()).awaitResponse().body()
+                    val result = ApplicationClass.hUserApi.postLogout(ApplicationClass.prefs.getUser()).awaitResponse().body()
                     if(result?.flag == "success") {
                         Log.d(TAG, "logout: 로그아웃 성공")
                         // 로그아웃 후 로그인 화면이동
