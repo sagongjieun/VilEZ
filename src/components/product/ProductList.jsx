@@ -93,8 +93,10 @@ const ProductList = () => {
     } else {
       if (urlId === 1) {
         getAskArticleList(location.areaLat, location.areaLng, categoryToUse, cnt, 15, 0, userId, search).then((res) => {
-          const data = res.filter((article) => article.askDto && article.askDto.state === 0);
-          setAskArticles([...askArticles, ...data[0]]);
+          console.log(res[0]);
+          const data = res[0].filter((article) => article.askDto && article.askDto.state === 0);
+          console.log(data);
+          setAskArticles([...askArticles, ...data]);
           setList("물품 요청 목록");
         });
       } else {
@@ -102,6 +104,7 @@ const ProductList = () => {
           (res) => {
             console.log(res);
             const data = res.filter((article) => article.shareListDto && article.shareListDto.state === 0);
+            console.log();
             setArticles([...getArticle, ...data]);
             setList("물품 공유 목록");
           }
