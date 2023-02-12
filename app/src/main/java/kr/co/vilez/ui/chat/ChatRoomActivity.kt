@@ -793,16 +793,10 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
             }
             CoroutineScope(Dispatchers.Main).launch {
                 val result =
-                    ApplicationClass.hChatApi.getState(roomId).awaitResponse().body()
-
+                    ApplicationClass.hChatApi.getStatus(roomId).awaitResponse().body()
                 if(result?.flag == "success") {
-                    if(result.data.size == 0) {
-                        room.state = 0
-                    } else
-                        room.state = result.data.get(0).state
-                    println(result)
-                    println(roomId)
-                    if(room.state == 0) {
+
+                    if(result.data.get(0) != null && result.data.get(0).status == 0) {
                         val result =
                             ApplicationClass.hChatApi.getNotShareUserCancel(roomId).awaitResponse().body()
                         if(result?.flag == "success") {
@@ -822,6 +816,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                                         datad.put("system",true)
                                         itemList.add(ChatlistData(datad.getString("content"), 0,"none",otherUserId))
                                         roomAdapter.notifyDataSetChanged()
+                                        rv_chat.scrollToPosition(itemList.size - 1)
                                         StompHelper.stompClient.send("/recvchat", datad.toString()).subscribe()
 
                                         var data = JSONObject()
@@ -844,7 +839,9 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                                         datad.put("time", System.currentTimeMillis())
                                         datad.put("system",true)
                                         itemList.add(ChatlistData(datad.getString("content"), 0,"none",otherUserId))
+
                                         roomAdapter.notifyDataSetChanged()
+                                        rv_chat.scrollToPosition(itemList.size - 1)
                                         StompHelper.stompClient.send("/recvchat", datad.toString()).subscribe()
                                     }
                                 }
