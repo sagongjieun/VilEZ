@@ -9,7 +9,7 @@ import { shareDataState, checkAppointmentState } from "../../recoil/atom";
 import { getUserDetail } from "../../api/user";
 
 // https://stackblitz.com/edit/react-signature-canvas-demo?file=index.js
-function OathModal({ close, roomId, readOnly, oathSign }) {
+function OathModal({ close, roomId, readOnly, oathSign, sequenceCopmpleteOpen }) {
   const canvasRef = useRef(null);
   const shareData = useRecoilValue(shareDataState);
   const setCheckAppointment = useSetRecoilState(checkAppointmentState);
@@ -61,6 +61,7 @@ function OathModal({ close, roomId, readOnly, oathSign }) {
     if (isCanvasAccept) {
       setCheckAppointment(true);
       close(false);
+      sequenceCopmpleteOpen(true);
     }
   }, [isCanvasAccept]);
 
