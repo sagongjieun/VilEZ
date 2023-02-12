@@ -154,12 +154,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="   적립 포인트   "/>
+                        android:text="   총 적립 포인트   "/>
                     <TextView
                         android:id="@+id/tv_have_sum"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{pointSum+`p`}"
+                        android:text="@{savePoint+`p`}"
                         android:textColor="@color/main_1"/>
                 </LinearLayout>
                 <LinearLayout
@@ -175,7 +175,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="   사용 포인트   "/>
+                        android:text="   총 사용 포인트   "/>
                     <TextView
                         android:id="@+id/tv_used_sum"
                         android:layout_width="wrap_content"
