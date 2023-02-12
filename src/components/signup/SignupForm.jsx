@@ -54,7 +54,6 @@ const SignupForm = () => {
     const userInformation = {
       email,
       password: SHA256(password),
-      // password,
       nickName,
     };
     if (isNickNameAvailable && isCodeConfirmed) {
