@@ -63,6 +63,8 @@ const ProductChatting = () => {
   const [isOtherLeave, setIsOtherLeave] = useState(false);
   const [myPoint, setMyPoint] = useState(0);
 
+  const [isSequenceComplete, setIsSequenceComplete] = useState(false);
+
   // 채팅 나가기
   function onClickQuit() {
     // 상대방이 이미 나갔다면 그냥 나가기
@@ -402,7 +404,15 @@ const ProductChatting = () => {
             />
           ) : null}
           {isQuit ? <QuitChattingModal close={setIsQuit} roomId={roomId} /> : null}
-          {isOath ? <OathModal close={setIsOath} roomId={roomId} readOnly={false} /> : null}
+          {isOath ? (
+            <OathModal
+              close={setIsOath}
+              roomId={roomId}
+              readOnly={false}
+              sequenceCopmpleteOpen={setIsSequenceComplete}
+            />
+          ) : null}
+          {isSequenceComplete ? null : null}
           {isProductReturn ? (
             <ProductReturnModal
               close={setIsProductReturn}
