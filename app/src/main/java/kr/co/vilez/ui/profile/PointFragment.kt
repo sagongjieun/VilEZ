@@ -92,7 +92,7 @@ class PointFragment : Fragment() {
         // 리사이클러뷰에 어댑터 등록
         binding.rvPointRecord.apply {
             adapter = pointAdapter
-            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, true) // 최신순으로
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false) // 최신순으로
             addItemDecoration(DividerItemDecoration(context, LinearLayout.VERTICAL))
         }
     }
