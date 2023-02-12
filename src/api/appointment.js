@@ -119,7 +119,7 @@ async function getLatestMapLocation(chatRoomId) {
     const { data } = await authJsonAxios.get(`/appointments/map/${chatRoomId}`);
 
     if (data.flag === "success") return data.data;
-    else console.log("이전 위치 내역이 없습니다. 😅");
+    else return false;
   } catch (error) {
     console.log(error);
   }
