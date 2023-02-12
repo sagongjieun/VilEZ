@@ -57,7 +57,7 @@ const ProductChatting = () => {
   });
   const [confirmedStartDate, setConfirmedStartDate] = useState("");
   const [confirmedEndDate, setConfirmedEndDate] = useState("");
-  const [shareState, setShareState] = useState(0);
+  const [shareState, setShareState] = useState(null);
   const [roomState, setRoomState] = useState(0);
   const [isChatEnd, setIsChatEnd] = useState(false);
   const [isOtherLeave, setIsOtherLeave] = useState(false);
@@ -173,10 +173,18 @@ const ProductChatting = () => {
     });
   }
 
-  // StompREalTime.jsx에서 변경되는 state값 받기
+  // StompREalTime.jsx에서 변경되는 share state값 받기
   function receiveShareState(state) {
+    console.log("2");
     setShareState(state);
   }
+
+  // StompREalTime.jsx에서 변경되는 room state값 받기
+  function receiveRoomState(state) {
+    console.log("2");
+    setRoomState(state);
+  }
+
   const [isAuthorized, setIsAuthorized] = useState(false);
   useEffect(() => {
     if (loginUserId) {
@@ -196,10 +204,8 @@ const ProductChatting = () => {
 
         setBoardId(res.boardId);
         setBoardType(res.type);
-        if (res.state == -1) {
-          console.log("대화가 종료된 채팅방입니다.");
-          setRoomState(res.state);
-        }
+        console.log("333", res.state);
+        setRoomState(res.state);
 
         // 로그인유저가 공유자면
         if (loginUserId == res.shareUserId) {
@@ -217,9 +223,7 @@ const ProductChatting = () => {
           navigate(`/`);
           return null;
         }
-        // Add a state variable to keep track of the authorization status
 
-        // Update the authorization status based on the result of the API call
         if (loginUserId == res.shareUserId || loginUserId == res.notShareUserId) {
           setIsAuthorized(true);
         }
@@ -234,6 +238,7 @@ const ProductChatting = () => {
         res = res[0];
 
         // 공유 전 상태
+        console.log("1");
         if (res == null) {
           setShareState(-3);
         } else if (res.status == 0) {
@@ -346,6 +351,7 @@ const ProductChatting = () => {
                 sendShareState={receiveShareState}
                 isChatEnd={isChatEnd}
                 sendOtherLeave={receiveOtherLeave}
+                sendRoomState={receiveRoomState}
               />
             )}
           </div>

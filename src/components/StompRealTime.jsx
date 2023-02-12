@@ -42,6 +42,7 @@ const StompRealTime = ({
   sendShareState,
   isChatEnd,
   sendOtherLeave,
+  sendRoomState,
 }) => {
   const scrollRef = useRef();
   const myUserId = localStorage.getItem("id");
@@ -115,6 +116,7 @@ const StompRealTime = ({
 
   // Map에서 받은 데이터로 서버에 전송
   function receiveLocation(location, lat, lng, zoomLevel, isMarker) {
+    console.log("map으로부터 데이터받기", location, lat, lng, zoomLevel, isMarker);
     if (lat && lng && isMarker) {
       searchDetailAddrFromCoords(lat, lng, function (result, status) {
         if (status === kakao.maps.services.Status.OK) {
@@ -167,7 +169,6 @@ const StompRealTime = ({
   useEffect(() => {
     // 웹소켓과 연결됐을 때 동작하는 콜백함수들
     client.connect({}, () => {
-      console.log("여기가먼저??");
       // 다른 유저의 채팅을 구독
       let payload = {
         roomId: chatRoomId,
@@ -187,7 +188,7 @@ const StompRealTime = ({
         if (JSON.parse(data.body).fromUserId == -1 || JSON.parse(data.body).toUserId == -1) {
           sendOtherLeave(true);
           sendShareState(-1);
-          roomState = -1;
+          sendRoomState(-1);
         }
         setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
         let payload = {
@@ -275,6 +276,7 @@ const StompRealTime = ({
       });
       /** 채팅방의 마지막 공유지도 장소 받기 */
       getLatestMapLocation(chatRoomId).then((res) => {
+        console.log("마지막 공유지도 장소 받기: ", shareState, roomState);
         // 마지막 장소가 있다면
         if (res) {
           res = res[0];
@@ -321,6 +323,7 @@ const StompRealTime = ({
 
   useEffect(() => {
     /* state : 0 예약 후, -1 반납 후, -2 예약 취소 후, -3 예약 전 */
+    console.log("채팅방 막기 : ", shareState, roomState);
     if (shareState == -1 || shareState == -2 || roomState == -1) {
       // 채팅방 막기
       const messageInput = document.getElementById("messageInput");
