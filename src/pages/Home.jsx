@@ -177,7 +177,6 @@ const FirstBody = css`
   justify-content: center;
   align-items: flex-start;
   font-size: 60px;
-  /* color: white; */
   color: #000;
   text-align: left;
   text-align: center;
