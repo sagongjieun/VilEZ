@@ -99,7 +99,7 @@ async function postShareArticle(formData) {
     const { data } = await authFormDataAxios.post(`/shareboard`, formData);
 
     if (data.flag === "success") return data.data;
-    else alert("공유 글 등록에 실패하였습니다 😥");
+    else alert("공유 글 등록에 실패했어요 😥");
   } catch (error) {
     console.log(error);
   }
@@ -109,8 +109,8 @@ async function postBookmark(boardId, userId) {
   try {
     const { data } = await authJsonAxios.post(`/shareboard/bookmark`, { boardId, userId });
 
-    if (data.flag === "success") alert("이 게시글을 북마크로 등록하였습니다. 😀");
-    else alert("북마크 등록에 실패하였습니다 😥");
+    if (data.flag === "success") alert("이 게시글을 관심 글로 남겨졌어요. 😀");
+    else alert("관심 글 등록에 실패했어요 😥");
   } catch (error) {
     console.log(error);
   }
@@ -123,8 +123,8 @@ async function deleteBookmark(boardId, userId) {
     const { data } = await authJsonAxios.delete(`/shareboard/bookmark/${boardId}/${userId}`);
 
     if (data.flag === "success") {
-      alert("북마크를 취소하였습니다. 😀");
-    } else alert("북마크 취소에 실패하였습니다 😥");
+      alert("관심 글 등록울 취소했어요 😀");
+    } else alert("관심 글 등록 취소에 실패했어요 😥");
   } catch (error) {
     console.log(error);
   }
@@ -134,8 +134,8 @@ async function deleteShareArticleByBoardId(boardId) {
   try {
     const { data } = await authJsonAxios.delete(`/shareboard/${boardId}`);
 
-    if (data.flag === "success") alert("게시글 삭제에 성공하였습니다. 😀");
-    else alert("게시글 삭제에 실패하였습니다 😥");
+    if (data.flag === "success") alert("게시글 삭제에 성공했어요. 😀");
+    else alert("게시글 삭제에 실패했어요 😥");
   } catch (error) {
     console.log(error);
   }
@@ -148,9 +148,9 @@ async function putShareArticle(formData) {
     const { data } = await authFormDataAxios.put(`/shareboard`, formData);
     // console.log(formData);
     if (data.flag === "success") {
-      alert("수정되었습니다 😀");
+      alert("수정되었어요 😀");
       return data.data;
-    } else alert("공유 글 수정에 실패하였습니다 😥");
+    } else alert("공유 글 수정에 실패했어요 😥");
   } catch (error) {
     console.log(error);
   }

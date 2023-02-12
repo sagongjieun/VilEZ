@@ -84,7 +84,7 @@ authJsonAxios.interceptors.response.use(
       }
       // 리프레시 토큰도 만료됐으면
       else {
-        alert("로그인이 만료되었습니다. 다시 로그인 해주세요!");
+        alert("로그인이 만료되었어요. 다시 로그인 해주세요!");
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         window.location.href = "/login";
@@ -127,7 +127,7 @@ authFormDataAxios.interceptors.response.use(
       }
       // 리프레시 토큰도 만료됐으면
       else {
-        alert("로그인이 만료되었습니다. 다시 로그인 해주세요!");
+        alert("로그인이 만료되었어요. 다시 로그인 해주세요!");
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         window.location.href = "/login";

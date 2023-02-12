@@ -152,7 +152,7 @@ const StompRealTime = ({
         setOathSign(res.sign);
         setIsOathModalOpen(!isOathModalOpen);
       } else {
-        alert("작성된 서약서가 없습니다.");
+        alert("작성된 서약서가 없어요.");
       }
     });
   }

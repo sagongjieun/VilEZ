@@ -48,7 +48,7 @@ const CalendarModal = ({ setCalendarModalOpen, boardId, shareState }) => {
 
       putShareDate(body).then((res) => {
         if (res) {
-          alert("공유 기간을 설정하였습니다. 😀");
+          alert("공유 기간을 설정했어요. 😀");
           setCheckShareDate(true);
           onClickCloseModal();
         }

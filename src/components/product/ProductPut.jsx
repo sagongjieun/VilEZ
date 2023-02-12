@@ -146,7 +146,7 @@ const ProductPut = () => {
     }
 
     if (content.length > 300) {
-      alert("물품에 대한 설명은 최대 300자 입력 가능합니다.");
+      alert("물품에 대한 설명은 최대 300자 입력 가능해요.");
       return;
     }
     if (imageList.length === 0) {

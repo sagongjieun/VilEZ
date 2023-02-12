@@ -114,7 +114,7 @@ function EditNickNameModal({ url }) {
           }
           console.log(nickName, "nickName");
           localStorage.setItem("nickName", nickName);
-          alert("프로필 정보가 변경되었습니다.");
+          alert("프로필 정보가 변경되었어요.");
           navigate(url);
           return;
         }
@@ -126,7 +126,7 @@ function EditNickNameModal({ url }) {
         setNickNameError("중복 확인을 진행해주세요.");
       }
     } else if (!nickName) {
-      alert("닉네임을 변경해주세요.");
+      alert("닉네임을 변경해주시겠어요?");
     }
   }
   useEffect(() => {
