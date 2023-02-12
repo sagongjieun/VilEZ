@@ -24,6 +24,7 @@ import ShareCancelAskModal from "../modal/ShareCancelAskModal";
 import ShareCancelModal from "../modal/ShareCancelModal";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
+import SequenceCompleteModal from "../modal/SequenceCompleteModal";
 
 const ProductChatting = () => {
   const { roomId } = useParams();
@@ -409,10 +410,10 @@ const ProductChatting = () => {
               close={setIsOath}
               roomId={roomId}
               readOnly={false}
-              sequenceCopmpleteOpen={setIsSequenceComplete}
+              sequenceCompleteOpen={setIsSequenceComplete}
             />
           ) : null}
-          {isSequenceComplete ? null : null}
+          {isSequenceComplete ? <SequenceCompleteModal close={setIsSequenceComplete} /> : null}
           {isProductReturn ? (
             <ProductReturnModal
               close={setIsProductReturn}
