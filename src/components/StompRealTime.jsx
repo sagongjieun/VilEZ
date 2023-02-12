@@ -218,6 +218,7 @@ const StompRealTime = ({
 
       // 공유 종료를 구독
       client.subscribe(`/sendend/${chatRoomId}`, () => {
+        setIsOtherLeave(true);
         sendShareState(-1);
       });
 
