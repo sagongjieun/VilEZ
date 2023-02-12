@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityMainBinding
-import kr.co.vilez.ui.chat.room.ChatlistFragment
+import kr.co.vilez.ui.chat.room.RoomListFragment
 import kr.co.vilez.data.model.RoomlistData
 import kr.co.vilez.ui.user.ProfileFragment
 import kr.co.vilez.ui.user.ProfileMenuActivity
@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding:ActivityMainBinding
     private var waitTime = 0L
     var notifyInterface : NotifyInterface?? = null
-    var chatListFragment = ChatlistFragment()
+    var chatListFragment = RoomListFragment()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -156,21 +156,9 @@ class MainActivity : AppCompatActivity() {
                     .replace(R.id.frame_layout_main, HomeFragment())
                     .commit()
             }
-            /*"공유 요청" -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.frame_layout_main, AskFragment())
-                    .commit()
-
-                binding.bottomNavigation.menu.apply {
-                    findItem(R.id.page_home).setIcon(R.drawable.home_line)
-                    findItem(R.id.page_share).setIcon(R.drawable.share_request_fill)
-                    findItem(R.id.page_chat).setIcon(R.drawable.message_line)
-                    findItem(R.id.page_profile).setIcon(R.drawable.user_line)
-                }
-            }*/
             "채팅" -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.frame_layout_main, ChatlistFragment())
+                    .replace(R.id.frame_layout_main, RoomListFragment())
                     .commit()
             }
             "나의 빌리지" -> {
@@ -190,13 +178,6 @@ class MainActivity : AppCompatActivity() {
                     .commit()
                 return true
             }
-            /*R.id.page_share -> {
-                // Fragment 변경
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.frame_layout_main, AskFragment())
-                    .commit()
-                return true
-            }*/
             R.id.page_chat -> {
                 this.notifyInterface = chatListFragment
                 // Fragment 변경 인터페이스 넣기
@@ -220,16 +201,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun initView() {
         // 가장 첫 화면은 홈 화면의 Fragment로 지정
-        /*supportFragmentManager.beginTransaction()
-            .replace(R.id.frame_layout_main, HomeFragment())
-            .commit()
-
-        binding.bottomNavigation.menu.apply {
-            findItem(R.id.page_home).setIcon(R.drawable.home_fill)
-            findItem(R.id.page_share).setIcon(R.drawable.share_request_line)
-            findItem(R.id.page_chat).setIcon(R.drawable.message_line)
-            findItem(R.id.page_profile).setIcon(R.drawable.user_line)
-        }*/
         binding.bottomNavigation.apply {
             itemIconTintList = null // 클릭해도 아이콘 테마색으로 변경되는거 막기
             setOnItemSelectedListener { item ->

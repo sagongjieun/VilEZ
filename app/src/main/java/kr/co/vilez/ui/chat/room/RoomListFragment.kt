@@ -5,38 +5,33 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
-import kr.co.vilez.data.model.RoomlistData
+import kr.co.vilez.databinding.FragmentRoomlistBinding
 import kr.co.vilez.ui.NotifyInterface
 import kr.co.vilez.ui.chat.ChatRoomActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.DataState
-import kr.co.vilez.util.StompHelper
-import org.json.JSONArray
-import org.json.JSONObject
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ChatlistFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class ChatlistFragment : Fragment(), NotifyInterface {
+private const val TAG = "빌리지_RoomListFragment"
+class RoomListFragment : Fragment(), NotifyInterface {
+    private lateinit var binding:FragmentRoomlistBinding
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -83,12 +78,16 @@ class ChatlistFragment : Fragment(), NotifyInterface {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_roomlist, container, false)
+        binding.fragment = this
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_roomlist, container, false)
         rv_room = rootView.findViewById(R.id.rv_room) as RecyclerView
         roomAdapter = RoomAdapter(DataState.itemList)
         rv_room.adapter = roomAdapter
         rv_room.layoutManager = LinearLayoutManager(requireContext())
+
+
         for (index in 0 until DataState.itemList.size) {
             val chat = DataState.itemList.get(index)
             set.add(chat.roomId)
@@ -98,9 +97,12 @@ class ChatlistFragment : Fragment(), NotifyInterface {
             override fun onClick(v: View, position: Int) {
                 if(SystemClock.elapsedRealtime() - mLastClickTime > 1000) {
                     if(DataState.itemList.size == 0) {
+                        Log.d(TAG, "onClick: @@@@@@@@@@@@채팅 목록 없슴")
+                        binding.tvWarnNoResult.visibility = View.VISIBLE
                         roomAdapter.notifyDataSetChanged()
                         return
                     }
+                    binding.tvWarnNoResult.visibility = View.GONE
                     var intent = Intent(mContext, ChatRoomActivity::class.java)
                     intent.putExtra("roomId", DataState.itemList[position].roomId)
                     intent.putExtra("otherUserId", DataState.itemList[position].otherUserId)
@@ -185,7 +187,7 @@ class ChatlistFragment : Fragment(), NotifyInterface {
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            ChatlistFragment().apply {
+            RoomListFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)

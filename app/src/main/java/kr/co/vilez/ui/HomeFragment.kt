@@ -125,10 +125,6 @@ class HomeFragment : Fragment() {
                 duration = 400
                 start()
             }
-            /*ObjectAnimator.ofFloat(binding.floatingActionButton, View.ROTATION, 45f,0f).apply {
-                duration = 300
-                start()
-            }*/
         } else { //펼쳐짐
             ObjectAnimator.ofFloat(binding.btnWriteAsk, "translationY", -130f).apply {
                 duration = 400
@@ -138,10 +134,6 @@ class HomeFragment : Fragment() {
                 duration = 400
                 start()
             }
-            /*ObjectAnimator.ofFloat(binding.floatingActionButton, View.ROTATION, 0f,45f).apply {
-                duration = 300
-                start()
-            }*/
         }
         isOpen = !isOpen
 
