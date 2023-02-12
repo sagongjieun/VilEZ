@@ -13,7 +13,7 @@ import java.util.List;
 public interface UserMapper {
     void setRefreshToken(UserDto refreshToken) throws SQLException;
     void logout(UserDto userDto) throws SQLException;
-    void modifyPassword(String email) throws SQLException;
+    void modifyPassword(String email, String password) throws SQLException;
     void setManner(int userId, int degree) throws SQLException;
     void saveLocation(LocationDto locationDto) throws SQLException;
     void saveLocationMobile(HashMap<String,Object> map) throws SQLException;
