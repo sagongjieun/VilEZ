@@ -636,7 +636,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
             CoroutineScope(Dispatchers.Main).launch {
 
 
-                val appointmentList = ApplicationClass.appointmentApi.getBoardAppointments(room.boardId, room.type).awaitResponse().body()
+                val appointmentList = ApplicationClass.hAppointmentApi.getBoardAppointments(room.boardId, room.type).awaitResponse().body()
                 if(appointmentList?.flag=="success") {
                     for(element in appointmentList.data[0]) {
                         Log.d(TAG, "onCalendarClick: 이미 예약된 날짜 :${element.appointmentStart} ~ ${element.appointmentEnd}")

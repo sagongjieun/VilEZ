@@ -87,7 +87,7 @@ class MyShareFragment : Fragment() { // 내가 빌린것들 목록
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         }
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.appointmentApi.getMyAppointment(ApplicationClass.prefs.getId()).awaitResponse().body()
+            val result = ApplicationClass.hAppointmentApi.getMyAppointment(ApplicationClass.prefs.getId()).awaitResponse().body()
             if (result?.flag == "success") {
                 Log.d(TAG, "initShareData: success!!!!! 검색 결과 개수 : ${result.data[0].size}")
 
@@ -134,7 +134,7 @@ class MyShareFragment : Fragment() { // 내가 빌린것들 목록
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         }
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.appointmentApi.getMyAppointment(ApplicationClass.prefs.getId()).awaitResponse().body()
+            val result = ApplicationClass.hAppointmentApi.getMyAppointment(ApplicationClass.prefs.getId()).awaitResponse().body()
             if (result?.flag == "success") {
                 Log.d(TAG, "initShareData: success!!!!! 검색 결과 개수 : ${result.data[0].size}")
 

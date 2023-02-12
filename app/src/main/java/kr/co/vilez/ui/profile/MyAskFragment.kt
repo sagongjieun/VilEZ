@@ -85,7 +85,7 @@ class MyAskFragment : Fragment() { // 대여 물품 (appointments/my/give/{userI
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         }
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.appointmentApi.getMyGiveList(
+            val result = ApplicationClass.hAppointmentApi.getMyGiveList(
                 ApplicationClass.prefs.getId()).awaitResponse().body()
             if (result?.flag == "success") {
                 Log.d(TAG, "initShareData: success!!!!! 검색 결과 개수 : ${result.data[0].size}")
@@ -133,7 +133,7 @@ class MyAskFragment : Fragment() { // 대여 물품 (appointments/my/give/{userI
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         }
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.appointmentApi.getMyGiveList(ApplicationClass.prefs.getId()).awaitResponse().body()
+            val result = ApplicationClass.hAppointmentApi.getMyGiveList(ApplicationClass.prefs.getId()).awaitResponse().body()
             if (result?.flag == "success") {
                 Log.d(TAG, "initShareData: success!!!!! 검색 결과 개수 : ${result.data[0].size}")
 
