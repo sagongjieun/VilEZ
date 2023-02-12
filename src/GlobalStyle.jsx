@@ -19,8 +19,12 @@ const style = css`
     font-weight: 100;
     font-style: normal;
   }
-  html {
-    scroll-behavior: smooth;
+
+  @font-face {
+    font-family: "Pretendard-Regular";
+    src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff") format("woff");
+    font-weight: 400;
+    font-style: normal;
   }
 
   * {
@@ -28,7 +32,7 @@ const style = css`
     padding: 0;
     /* font-family: "Noto Sans KR", sans-serif; */
     /* font-family: "Spoqa Han Sans Neo", "sans-serif"; */
-    font-family: "LINESeedKR-Bd";
+    font-family: "Pretendard-Regular";
 
     text-decoration: none;
   }

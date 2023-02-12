@@ -110,10 +110,12 @@ const FirstBody = css`
   font-size: 40px;
   color: white;
   text-align: center;
+  font-family: "GmarketSansMedium";
 `;
 
 const FirstBodyDiv = css`
   padding: 10px;
+  font-family: "GmarketSansMedium";
 `;
 
 const floating = keyframes`
@@ -147,15 +149,18 @@ const ExplainWrap = css`
   padding-right: 200px;
   justify-content: space-between;
   height: 800px;
+  font-family: "GmarketSansMedium";
 `;
 
 const ExplainLeft = css`
   height: 584px;
+  font-family: "GmarketSansMedium";
 `;
 
 const ExplainRight = css`
   width: 50%;
   height: 584px;
+  font-family: "GmarketSansMedium";
 `;
 
 const ExplainRightCenter = css`
@@ -163,17 +168,20 @@ const ExplainRightCenter = css`
   justify-content: center;
   flex-direction: column;
   text-align: right;
+  font-family: "GmarketSansMedium";
 `;
 
 const ExplainTitle = css`
   font-size: 40px;
   color: #66dd9c;
   margin-bottom: 20px;
+  font-family: "GmarketSansMedium";
 `;
 
 const ExplainContent = css`
   font-size: 28px;
   padding-bottom: 20px;
+  font-family: "GmarketSansMedium";
 `;
 
 const ImgHeight = css`
