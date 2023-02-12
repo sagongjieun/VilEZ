@@ -59,7 +59,7 @@ class InterestFragment : Fragment() {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         }
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.shareApi.getBookmark(ApplicationClass.prefs.getId()).awaitResponse().body()
+            val result = ApplicationClass.hShareApi.getBookmark(ApplicationClass.prefs.getId()).awaitResponse().body()
             Log.d(TAG, "onViewCreated: 공유 검색 데이터 불러오는중 result : $result")
             if (result?.flag == "success") {
                 Log.d(TAG, "initShareData: success!!!!! 검색 결과 개수 : ${result.data.size}")

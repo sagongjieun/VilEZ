@@ -18,6 +18,7 @@ import kr.co.vilez.R
 import kr.co.vilez.data.dto.BoardData
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentProfileBinding
+import kr.co.vilez.ui.LoginActivity
 import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.ui.dialog.*
 import kr.co.vilez.ui.share.ShareToChatAdapter

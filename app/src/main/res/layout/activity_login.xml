@@ -6,7 +6,7 @@
     <data>
         <variable
             name="activity"
-            type="kr.co.vilez.ui.user.LoginActivity" />
+            type="kr.co.vilez.ui.LoginActivity" />
 
     </data>
 

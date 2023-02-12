@@ -9,7 +9,6 @@ import androidx.databinding.DataBindingUtil
 import com.kakao.util.maps.helper.Utility
 import kr.co.vilez.R
 import kr.co.vilez.databinding.ActivityIntroBinding
-import kr.co.vilez.ui.user.LoginActivity
 import kr.co.vilez.ui.user.RegisterActivity
 
 class IntroActivity : AppCompatActivity() {

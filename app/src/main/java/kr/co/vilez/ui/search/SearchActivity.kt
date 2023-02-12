@@ -183,7 +183,7 @@ class SearchActivity : AppCompatActivity() {
         val lng = ApplicationClass.prefs.getLng();
         Log.d(TAG, "$lat $lng")
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.shareApi.boardSearchList(
+            val result = ApplicationClass.hShareApi.boardSearchList(
                 num++,
                 0,
                 max,
@@ -222,7 +222,7 @@ class SearchActivity : AppCompatActivity() {
         binding.rvShareSearch.setOnScrollChangeListener { v, scollX, scrollY, oldScrollX, oldScrollY ->
             if (!v.canScrollVertically(1)) {
                 CoroutineScope(Dispatchers.Main).launch {
-                    val result = ApplicationClass.shareApi.boardSearchList(
+                    val result = ApplicationClass.hShareApi.boardSearchList(
                         num++,
                         0,
                         max,
@@ -277,7 +277,7 @@ class SearchActivity : AppCompatActivity() {
         var num = 0
         var max = 10
         CoroutineScope(Dispatchers.Main).launch {
-            val result = ApplicationClass.askApi.boardSearchList(
+            val result = ApplicationClass.hAskApi.boardSearchList(
                 num++, 0, max, ApplicationClass.prefs.getId(), keyword,
                 category,
             ).awaitResponse().body()
@@ -314,7 +314,7 @@ class SearchActivity : AppCompatActivity() {
         binding.rvShareSearch.setOnScrollChangeListener { v, _, _, _, _ ->
             if (!v.canScrollVertically(1)) {
                 CoroutineScope(Dispatchers.Main).launch {
-                    val result = ApplicationClass.askApi.boardSearchList(
+                    val result = ApplicationClass.hAskApi.boardSearchList(
                         num++, 0, max, ApplicationClass.prefs.getId(), keyword,
                         category,
                     ).awaitResponse().body()

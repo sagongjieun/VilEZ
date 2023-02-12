@@ -20,9 +20,9 @@ import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.model.User
 import kr.co.vilez.databinding.FragmentEditProfileBinding
+import kr.co.vilez.ui.LoginActivity
 import kr.co.vilez.ui.MainActivity
 import kr.co.vilez.util.BindingAdapter
-import kr.co.vilez.ui.user.LoginActivity
 import kr.co.vilez.ui.user.ProfileMenuActivity
 import kr.co.vilez.util.ApplicationClass
 import kr.co.vilez.util.ChangeMultipartUtil
@@ -107,11 +107,6 @@ class EditProfileFragment : Fragment() {
 
             Log.d(TAG, "body: $body")
             CoroutineScope(Dispatchers.Main).launch {
-//                val result = ApplicationClass.retrofitUserService.modifyProfileImage(
-//                    ApplicationClass.prefs.getUserAccessToken(),
-//                    ApplicationClass.prefs.getId(),
-//                    body
-//                ).awaitResponse().body()
                 val result = ApplicationClass.hUserApi.modifyProfileImage(
                     ApplicationClass.prefs.getId(),
                     body
@@ -228,7 +223,7 @@ class EditProfileFragment : Fragment() {
         val curPassword = binding.inputProfileCurrentPassword.editText?.text.toString()
 
         CoroutineScope(Dispatchers.Main).launch {
-            val user = User(email = ApplicationClass.prefs.getEmail(), password = curPassword)
+            val user = User(email = ApplicationClass.prefs.getEmail(), password = Common.getHash(curPassword))
             val result =
                 ApplicationClass.userApi.getLoginResult(user).awaitResponse().body()
             if (result?.flag == "success") {
@@ -237,7 +232,7 @@ class EditProfileFragment : Fragment() {
                 val resultModify = ApplicationClass.hUserApi.modifyUser(newUser).awaitResponse().body()
 
                 if(resultModify?.flag == "success") {
-                    Toast.makeText(mContext, "비밀번호 수정이 완료되었습니다.\n재로그인 해주세요", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(mContext, "비밀번호 재설정이 완료되었습니다.\n재로그인 해주세요", Toast.LENGTH_SHORT).show()
                     Log.d(TAG, "logout: 로그아웃 성공")
 
                     // 로그아웃 후 로그인 화면이동
@@ -249,7 +244,7 @@ class EditProfileFragment : Fragment() {
                     startActivity(intent)
 
                 } else {
-                    Toast.makeText(mContext, "비밀번호 수정을 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(mContext, "비밀번호 재설정을 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
                 }
 
             } else {

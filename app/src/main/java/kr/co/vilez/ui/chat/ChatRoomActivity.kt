@@ -116,13 +116,13 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                 }
 
                 if(room.type == 2) {
-                    var result = ApplicationClass.shareApi.getBoardDetail(room.boardId).awaitResponse().body()
+                    var result = ApplicationClass.hShareApi.getBoardDetail(room.boardId).awaitResponse().body()
                     if(result?.flag == "success") {
                         boardStart = result.data.get(0).startDay
                         boardEnd = result.data.get(0).endDay
                     }
                 } else {
-                    var result = ApplicationClass.askApi.getBoardDetail(room.boardId).awaitResponse().body()
+                    var result = ApplicationClass.hAskApi.getBoardDetail(room.boardId).awaitResponse().body()
                     if(result?.flag == "success") {
                         boardStart = result.data.get(0).startDay
                         boardEnd = result.data.get(0).endDay
@@ -487,13 +487,12 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
             return
         }
 
-        if(ApplicationClass.prefs.getId() == room.shareUserId) { // 내가 대여자인 경우 포인트 확인
-            showDialog("만남 확정은 피공유자만 할 수 있습니다.")
-        } else if (!checkMyPoint()){ // 피공유자인 경우 포인트 확인
-            return
-        }
-
         binding.btnChatAccept.setOnClickListener {
+            if(ApplicationClass.prefs.getId() == room.shareUserId) { // 내가 대여자인 경우 포인트 확인
+                showDialog("만남 확정은 피공유자만 할 수 있습니다.")
+            } else if (!checkMyPoint()){ // 피공유자인 경우 포인트 확인
+                return@setOnClickListener
+            }
             CoroutineScope(Dispatchers.Main).launch {
                 val result = ApplicationClass.chatApi.getAppointMent(
                     room.boardId, room.notShareUserId,
@@ -512,7 +511,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                         if (result?.flag == "success") {
                             setPeriodDto = result.data.get(0)
                             if(setPeriodDto != null) {
-                                var resultSign = ApplicationClass.chatApi.getSign(roomId).awaitResponse().body()
+                                var resultSign = ApplicationClass.hChatApi.getSign(roomId).awaitResponse().body()
                                 if(resultSign?.flag == "success") {
                                     var sign = resultSign.data.get(0)
                                     if(sign == null) {
