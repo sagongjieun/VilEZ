@@ -16,6 +16,7 @@
 
     <string name="home_no_article_message">근처에 대여 가능한 물품이 더 없네요.😥\n\n요청 게시글을 작성해 보는 건 어때요?</string>
     <string name="share_no_article_message">근처에 공유를 원하는 사람이 없네요 😥\n\n요청 게시글을 직접 작성해 보는 건 어때요?</string>
+    <string name="no_chatlist_warn_msg">진행중인 채팅이 없습니다.\n주민들과 새로운 공유를 시작해보세요😊</string>
 
 
 </resources>
