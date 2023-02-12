@@ -11,7 +11,7 @@ import useForm from "../../hooks/useForm";
 import { postLogin } from "../../api/user";
 import { useSetRecoilState } from "recoil";
 import { loginUserState, isLoginState } from "../../recoil/atom";
-import { SHA256 } from "../signup/HashFunction";
+// import { SHA256 } from "../signup/HashFunction";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -20,7 +20,8 @@ const LoginForm = () => {
 
   // 로그인
   const onSubmit = (values) => {
-    postLogin(values.email, SHA256(values.password)).then((res) => {
+    // postLogin(values.email, SHA256(values.password)).then((res) => {
+    postLogin(values.email, values.password).then((res) => {
       if (!res) return;
 
       // localstorage와 login에 유저 정보 저장

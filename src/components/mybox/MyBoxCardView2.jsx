@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { HiCalendar, HiHeart } from "react-icons/hi";
-import elapsedTime from "../product/ProductElapsedTime";
+// import elapsedTime from "../product/ProductElapsedTime";
 // import { getCheckMyRoom } from "../../api/appointment";
 
-const MyBoxCardView = ({ title, endDay, startDay, date, thumbnail, dDay, roomId }) => {
+const MyBoxCardView = ({ title, endDay, startDay, thumbnail, dDay, roomId, bookmarkCnt }) => {
   const endDayDotted = endDay?.slice(0, 4) + "." + endDay?.slice(5, 7) + "." + endDay?.slice(8, 10);
   const startDayDotted = startDay?.slice(0, 4) + "." + startDay?.slice(5, 7) + "." + startDay?.slice(8, 10);
   // const [myRoomId, setMyRoomId] = useState(0);
@@ -30,7 +30,7 @@ const MyBoxCardView = ({ title, endDay, startDay, date, thumbnail, dDay, roomId 
         <div css={infoWrapper}>
           <div>
             <span>{title}</span>
-            <small css={timeWrapper}>{elapsedTime(date)}</small>
+            {/* <small css={timeWrapper}>{elapsedTime(date)}</small> */}
           </div>
           <div>
             <small>
@@ -39,7 +39,7 @@ const MyBoxCardView = ({ title, endDay, startDay, date, thumbnail, dDay, roomId 
             </small>
             <small>
               <HiHeart />
-              25
+              {bookmarkCnt}
             </small>
           </div>
         </div>
@@ -90,10 +90,10 @@ const thumbnailWrapper = css`
   }
 `;
 
-const timeWrapper = css`
-  width: 70px;
-  text-align: right;
-`;
+// const timeWrapper = css`
+//   width: 70px;
+//   text-align: right;
+// `;
 
 const infoWrapper = css`
   height: 80px;

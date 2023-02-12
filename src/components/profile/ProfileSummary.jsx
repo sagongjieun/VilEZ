@@ -100,7 +100,7 @@ const gaugeBar = css`
   overflow: hidden;
 `;
 const bar = (props) => css`
-  width: ${(props.manner % 10) * 10}%;
+  width: ${props.manner % 10 === 0 ? 100 : (props.manner % 10) * 10}%;
   height: 10px;
   background-color: #66dd9c;
 `;
