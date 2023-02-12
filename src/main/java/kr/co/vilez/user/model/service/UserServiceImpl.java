@@ -34,8 +34,8 @@ public class UserServiceImpl implements UserService {
     List<Object> data = null;
 
     @Override
-    public void modifyPassword(String email) throws Exception {
-        userMapper.modifyPassword(email);
+    public void modifyPassword(String email, String password) throws Exception {
+        userMapper.modifyPassword(email, password);
     }
 
     @Override
