@@ -289,15 +289,19 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
             when(item.itemId) {
                 R.id.close_room -> {
                     CoroutineScope(Dispatchers.Main).launch {
-                        val result = ApplicationClass.hChatApi.getState(roomId).awaitResponse().body()
-                        println(roomId)
+                        val result = ApplicationClass.hChatApi.getStatus(roomId).awaitResponse().body()
                         if(result?.flag == "success") {
                             var data = result.data.get(0)
                             println(data)
-                            if(data.state == 0) {
+                            if(result.data.get(0) != null && data.status == 0) {
                                 showDialog("약속된 정보가 있습니다.\n만남을 취소하고 해주세요!")
                                 return@launch
                             } else {
+                                if(data == null) {
+                                    room.state = 0
+                                } else {
+                                    room.state = -1
+                                }
                                 val result =
                                     ApplicationClass.hChatApi.closeRoom(roomId,ApplicationClass.prefs.getId()).awaitResponse().body()
                                 if(result?.flag == "success") {
