@@ -656,7 +656,9 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                         // 그리고
                         // 선택한 end(it.second)가 startTime보다 작아야함
                         // : it.first <= endTime || it.second >= startTime
-                        if(it.first <= endTime || it.second >= startTime) { // 안된다고 하기
+                        if((it.first <= endTime && it.first >= startTime)
+                            || (it.first < startTime && it.second >= startTime)
+                            ) { // 안된다고 하기
                             val failDialog = MyAlertDialog(this@ChatRoomActivity, "이미 대여중인 날짜(${element.appointmentStart}~${element.appointmentEnd})는 선택할 수 없습니다.")
                             failDialog.show(supportFragmentManager, "CalenderPickerFail")
                             return@launch
