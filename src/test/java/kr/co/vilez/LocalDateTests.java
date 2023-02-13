@@ -17,10 +17,11 @@ public class LocalDateTests {
 
         System.out.println(period.getDays());
 
-        if(date1.isAfter(date)){
+        if(date1.isAfter(date)) {
             System.out.println("success");
         }
-
-
     }
+
+
+
 }

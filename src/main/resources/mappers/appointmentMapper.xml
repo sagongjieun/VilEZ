@@ -197,16 +197,21 @@
         select
             a.board_id as id, r.id as room_id, title, hope_area_lat,
             hope_area_lng, start_day, end_day, appointment_id, r.share_user_id,
-            r.not_share_user_id, appointment_start, appointment_end
+            r.not_share_user_id, appointment_start, appointment_end, appointment_id
         from sharing_view as s
                  right join(
             select *
             from appointment
-            where not_share_user_id = #{userId}
+            where not_share_user_id = #{userId} and state >= 0
         ) as a
         on a.board_id = s.id
-        join room as r
-        on a.type = r.type and s.id = r.board_id and a.share_user_id = r.share_user_id and a.not_share_user_id = r.not_share_user_id
+                 join
+             (
+                 select *
+                 from room
+                 where state >= 0
+             ) as r
+             on a.type = r.type and s.id = r.board_id and a.share_user_id = r.share_user_id and a.not_share_user_id = r.not_share_user_id
         where a.state >= 0 and a.type = 2;
     </select>
     <select id="getMyAppointmentListAsk" parameterType="int" resultMap="mylist">
@@ -215,14 +220,19 @@
             hope_area_lng, start_day, end_day, appointment_id, r.share_user_id,
             r.not_share_user_id, appointment_start, appointment_end
         from ask_view as s
-        right join(
+                 right join(
             select *
             from appointment
             where not_share_user_id = #{userId}
         ) as a
         on a.board_id = s.id
-        join room as r
-        on a.type = r.type and s.id = r.board_id and a.share_user_id = r.share_user_id and a.not_share_user_id = r.not_share_user_id
+        join
+        (
+            select *
+            from room
+            where state >= 0
+        ) as r
+             on a.type = r.type and s.id = r.board_id and a.share_user_id = r.share_user_id and a.not_share_user_id = r.not_share_user_id
         where a.state >= 0 and a.type = 1;
     </select>
 
