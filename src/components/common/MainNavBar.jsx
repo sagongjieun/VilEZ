@@ -199,20 +199,20 @@ const navMid = css`
   transition: all 0.3s ease-in-out;
 
   &:hover {
-    /* box-shadow: 10px 10px 5px gray;
-    transform: translateY(-3px); */
+    box-shadow: 10px 10px 5px gray;
+    transform: translateY(-3px);
   }
-  /* &:hover + div {
+  &:hover + div {
     display: block;
-  } */
+  }
 `;
 
 const MenuWrap = css`
   position: absolute;
   display: none;
-  /* &:hover {
+  &:hover {
     display: block;
-  } */
+  }
 `;
 
 // box-shadox : x(왼->우), y(아->위), 흐린정도, 그림자크기,색상
@@ -233,9 +233,9 @@ const navMenu = css`
   transition: all 0.3s ease-in-out;
 
   &:hover {
-    /* box-shadow: 10px 10px 5px gray;
-    transform: translateY(-3px); */
-    /* display: block; */
+    box-shadow: 10px 10px 5px gray;
+    transform: translateY(-3px);
+    display: block;
   }
 `;
 
