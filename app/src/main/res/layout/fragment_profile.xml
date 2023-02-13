@@ -240,7 +240,7 @@
                 android:id="@+id/tv_user_area"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{userDetail.areaLat ==`0.0` ? `인증이 안된 사용자` : `인증 완료된 사용자`}"
+                android:text="@{userDetail.areaLat == null ? `인증이 안된 사용자` : `인증 완료된 사용자`}"
                 android:textColor="@color/main_1"
                 app:layout_constraintStart_toStartOf="@+id/textView4"
                 app:layout_constraintTop_toBottomOf="@+id/textView4" />
