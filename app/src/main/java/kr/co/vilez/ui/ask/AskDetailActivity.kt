@@ -76,7 +76,6 @@ class AskDetailActivity : AppCompatActivity() {
 
     fun onChatBtnClick(view: View) {
         if(binding.article!!.state == 0) { // 예약 안 한 물건만 빌려줄 수 있음~
-            Snackbar.make(view, "예약 요청한 물건 채팅 시작하기", Snackbar.LENGTH_SHORT).show();
             CoroutineScope(Dispatchers.Main).launch {
                 // 먼저 채팅방이 존재하는지 확인하기
                 val isExist = ApplicationClass.hChatApi.isExistChatroom(boardId!!, BOARD_TYPE_ASK, ApplicationClass.prefs.getId()).awaitResponse().body()

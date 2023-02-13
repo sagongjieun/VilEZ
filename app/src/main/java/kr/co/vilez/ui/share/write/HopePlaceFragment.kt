@@ -158,7 +158,7 @@ class HopePlaceFragment : Fragment(), MapView.MapViewEventListener,
         if(PermissionUtil().checkLocationPermission(activity)) {
             getCurrentLocation()
         } else {
-            PermissionUtil().checkLocationPermission(activity)
+            PermissionUtil().requestLocationPermissions(activity)
         }
     }
 

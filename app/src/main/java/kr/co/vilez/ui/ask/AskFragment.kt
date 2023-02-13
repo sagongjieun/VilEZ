@@ -75,7 +75,6 @@ class AskFragment : Fragment() {
         when (item.itemId) {
             R.id.option_menu_menu -> {
                 Log.d(TAG, "onContextItemSelected: ${item.title} clicked")
-                Toast.makeText(activity, "${item.title} 클릭", Toast.LENGTH_SHORT).show()
                 val intent = Intent(activity, MenuCategoryActivity::class.java)
                 intent.putExtra("type", BOARD_TYPE_ASK)
                 startActivity(intent)
