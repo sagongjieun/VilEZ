@@ -19,7 +19,7 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
   const [location, setLocation] = useState("동네를 인증해주세요");
   const [profileImage, setProfileImage] = useState("");
   const [nickName, setNickName] = useState("");
-  const [manner, setManner] = useState(0);
+  const [manner, setManner] = useState(21);
   const [point, setPoint] = useState(0);
   function onClickEditProfileOpen() {
     setIsEditProfileOpen(true);
@@ -81,7 +81,7 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
         localStorage.setItem("areaLat", response.areaLat);
         localStorage.setItem("areaLng", response.areaLng);
       });
-    }, 100);
+    }, 1000);
   }, [isQrCodeOpen, isEditProfileOpen, location]);
   // useEffect(() => {
   //   // getAddr(areaLng, areaLat);

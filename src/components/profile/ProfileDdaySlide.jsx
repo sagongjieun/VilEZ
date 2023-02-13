@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { css } from "@emotion/react";
 import { Link } from "react-router-dom";
 import { HiChevronRight, HiChevronLeft } from "react-icons/hi2";
-import ProfileDDay from "./ProfileDdayComp";
+import DDay from "./DDay";
 
 const ProfileDdaySlide = ({ ddaySlideList }) => {
   const SIZE = ddaySlideList.length;
@@ -51,11 +51,11 @@ const ProfileDdaySlide = ({ ddaySlideList }) => {
               <div>잊지 마세요</div>
               <div>{appoint.appointmentDto.title}</div>
               <div>
-                {appoint.appointmentDto.status === "마감일 임박!" ? "반납까지" : "대여 시작까지"}{" "}
+                {appoint.appointmentDto.status === "마감일 임박!" ? "반납까지" : "대여 시작까지"}
                 <span>
                   {appoint.appointmentDto.status === "마감일 임박!"
-                    ? ProfileDDay(appoint.appointmentDto.appointmentEnd)
-                    : ProfileDDay(appoint.appointmentDto.appointmentStart)}
+                    ? DDay(appoint.appointmentDto.appointmentEnd)
+                    : DDay(appoint.appointmentDto.appointmentStart)}
                 </span>
                 일 남았습니다.
               </div>
