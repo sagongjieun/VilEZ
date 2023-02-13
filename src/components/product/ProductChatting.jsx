@@ -157,7 +157,14 @@ const ProductChatting = () => {
 
   // 반납 확인 (공유자에 의해)
   function onClickCheckReturn() {
-    setIsProductReturn(!isProductReturn);
+    // 공유자가 반납 확인을 이미 눌렀는지 확인
+    getShareReturnState(roomId).then((res) => {
+      if (res == "true") {
+        alert("이미 반납 확인을 했어요. 😀");
+      } else {
+        setIsProductReturn(!isProductReturn);
+      }
+    });
   }
 
   // 공유 종료 (피공유자에 의해)
