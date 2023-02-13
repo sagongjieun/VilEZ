@@ -32,7 +32,7 @@ public class EmailServiceImpl implements EmailService{
         MimeMessage  message = emailSender.createMimeMessage();
 
         message.addRecipients(RecipientType.TO, to);//보내는 대상
-        message.setSubject("이메일 인증 테스트");//제목
+        message.setSubject("Vilez 이메일 인증");//제목
 
         String msgg="";
         msgg+= "<div style='margin:20px;'>";
