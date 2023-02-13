@@ -17,6 +17,7 @@ function MainBody() {
   const firstBox = useRef();
   const secondBox = useRef();
   const thirdBox = useRef();
+  const [mainHeight, setMainHeight] = useState(0);
   const [firstHeight, setFirstHeight] = useState(0);
   const [secondHeight, setSecondHeight] = useState(0);
   const [thirdHeight, setThirdHeight] = useState(0);
@@ -31,10 +32,13 @@ function MainBody() {
     const firstStyle = window.getComputedStyle(firstBox.current);
     const secondStyle = window.getComputedStyle(secondBox.current);
     const thirdStyle = window.getComputedStyle(thirdBox.current);
-    setFirstHeight(toNumber(mainStyle) - 200);
-    setSecondHeight(toNumber(mainStyle) + toNumber(firstStyle) - 200);
-    setThirdHeight(toNumber(mainStyle) + toNumber(firstStyle) + toNumber(secondStyle) - 200);
-    setForthHeight(toNumber(mainStyle) + toNumber(firstStyle) + toNumber(secondStyle) + toNumber(thirdStyle) - 200);
+    setMainHeight(toNumber(mainStyle) + 80);
+    setFirstHeight(toNumber(mainStyle) + 5000 - 200);
+    setSecondHeight(toNumber(mainStyle) + toNumber(firstStyle) + 5000 - 200);
+    setThirdHeight(toNumber(mainStyle) + toNumber(firstStyle) + toNumber(secondStyle) + 5000 - 200);
+    setForthHeight(
+      toNumber(mainStyle) + toNumber(firstStyle) + toNumber(secondStyle) + toNumber(thirdStyle) + 5000 - 200
+    );
   }, []);
 
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -45,6 +49,10 @@ function MainBody() {
   useEffect(() => {
     window.addEventListener("scroll", updateScroll);
   }, []);
+
+  // useEffect(() => {
+  //   console.log(scrollPosition);
+  // }, [scrollPosition]);
 
   return (
     <div>
@@ -74,20 +82,33 @@ function MainBody() {
         </div>
       </div>
       <a id="movebottom"></a>
-      {/* <div css={blanks}></div>
-      <div
-        css={[
-          test(scrollPosition),
-          scrollPosition > firstHeight + 280 && scrollPosition < secondHeight + 1200
-            ? fixedStyle
-            : relativeStyle(scrollPosition - secondHeight),
-        ]}
-      >
-        <div>4</div>
-        <div>3</div>
-        <div>2</div>
-        <div>1</div>
-      </div> */}
+      <div css={blanks}>
+        <div
+          css={[
+            test(scrollPosition),
+            scrollPosition > mainHeight - 200 && scrollPosition < firstHeight + 80
+              ? fixedStyle
+              : scrollPosition > firstHeight + 80 || scrollPosition < mainHeight - 200
+              ? hiddenStyle
+              : relativeStyle(scrollPosition - mainHeight),
+          ]}
+        >
+          <div>
+            <div>잠깐 필요한 물품이 없어 곤란했던 경험.</div>
+            <div>당장 쓰지 않는 물건을 빌려줘서</div>
+            <div>이웃이 기뻐하는 모습.</div>
+          </div>
+          <div>
+            <div>이 모습을 경험한다면 어떻게 될까요?</div>
+            <div>이웃끼리 따뜻함도 공유되지 않을까요?</div>
+          </div>
+          <div>
+            <div>빌리지의 이웃들과 함께</div>
+            <div>공유하기를 통해 물품을 빌려주고,</div>
+            <div>공유하기를 통해 물품을 빌려보세요.</div>
+          </div>
+        </div>
+      </div>
       <div css={[FirstWrap, scrollPosition > firstHeight ? visibleBox : hiddenBox]} ref={firstBox}>
         <div css={ExplainLeft}>
           <div css={ExplainTitle}>따뜻해지는 공유 문화</div>
@@ -202,13 +223,18 @@ const floating = keyframes`
 
 const ArrowBox = css`
   position: absolute;
-  left: calc(50% - 64px);
+  left: calc(50% - 40px);
   bottom: 0;
+  width: 80px;
   text-align: center;
   margin-top: 100px;
   cursor: pointer;
   animation: slideInDown;
   animation: ${floating} 2s ease infinite;
+  & img {
+    width: 100%;
+    object-fit: contain;
+  }
 `;
 
 // SecondBody
@@ -281,48 +307,78 @@ const visibleBox = css`
   transform: translateY(0px);
 `;
 
-// const blanks = css`
-//   height: 1000px;
-// `;
+const blanks = css`
+  height: 5000px;
+  background-color: #fff;
+`;
 
-// const test = (scroll) => {
-//   return css`
-//     position: relative;
-//     height: 1000px;
-//     background-color: aquamarine;
-//     > div {
-//       position: absolute;
-//       width: 100%;
-//       height: 100vh;
-//     }
-//     > div:nth-of-type(1) {
-//       background-color: red;
-//       opacity: ${scroll - 300}%;
-//     }
-//     > div:nth-of-type(2) {
-//       background-color: green;
-//       opacity: ${scroll - 250}%;
-//     }
-//     > div:nth-of-type(3) {
-//       background-color: #ffffff;
-//       opacity: ${(scroll - 400) / 100};
-//     }
-//     > div:nth-of-type(4) {
-//       background-color: #800000;
-//       opacity: ${(scroll - 400) / 100};
-//     }
-//   `;
-// };
+const test = (scroll) => {
+  return css`
+    /* position: relative; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+    background-image: url(${homeBackground});
+    background-size: cover;
+    background-color: bisque;
+    opacity: ${(scroll / 5 - 150) / 100};
+    > div {
+      position: relative;
+      width: 100%;
+      height: calc(100vh / 5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 30px;
+      font-weight: bold;
+    }
+    ::before {
+      position: absolute;
+      display: block;
+      content: "";
+      background-color: rgba(0, 0, 0, 0.8);
+      opacity: ${(scroll / 5 - 300) / 100};
+      width: 100%;
+      height: 100vh;
+    }
+    ::after {
+      position: absolute;
+      display: block;
+      content: "";
+      background-color: #fff;
+      opacity: ${(scroll / 5 - 900) / 100};
+      width: 100%;
+      height: 100vh;
+    }
+    > div:nth-of-type(1) {
+      opacity: ${(scroll / 5 - 400) / 100};
+    }
+    > div:nth-of-type(2) {
+      opacity: ${(scroll / 5 - 550) / 100};
+    }
+    > div:nth-of-type(3) {
+      opacity: ${(scroll / 5 - 700) / 100};
+    }
+  `;
+};
 
-// const fixedStyle = css`
-//   position: fixed;
-//   top: 0;
-// `;
-// const relativeStyle = (scroll) => {
-//   return css`
-//     position: fixed;
-//     bottom: ${scroll - 1200};
-//   `;
-// };
+const fixedStyle = css`
+  position: sticky;
+  top: 0;
+`;
+const relativeStyle = (scroll) => {
+  return css`
+    position: fixed;
+    bottom: ${scroll - 1200};
+    bottom: 0;
+  `;
+};
+
+const hiddenStyle = css`
+  visibility: hidden;
+`;
 
 export default MainBody;

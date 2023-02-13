@@ -151,8 +151,8 @@ const navStyle = css`
   display: flex;
   height: 70px;
   backdrop-filter: blur(3px);
-  background-color: #ffffffab;
-  border-bottom: 1px solid #e2e2e2;
+  background-color: rgba(255, 255, 255, 0);
+  border-bottom: 1px solid #0e0e0e14;
   flex-direction: row;
   align-items: center;
   padding: 0 200px 0 0;
@@ -199,20 +199,20 @@ const navMid = css`
   transition: all 0.3s ease-in-out;
 
   &:hover {
-    box-shadow: 10px 10px 5px gray;
-    transform: translateY(-3px);
+    /* box-shadow: 10px 10px 5px gray;
+    transform: translateY(-3px); */
   }
-  &:hover + div {
+  /* &:hover + div {
     display: block;
-  }
+  } */
 `;
 
 const MenuWrap = css`
   position: absolute;
   display: none;
-  &:hover {
+  /* &:hover {
     display: block;
-  }
+  } */
 `;
 
 // box-shadox : x(왼->우), y(아->위), 흐린정도, 그림자크기,색상
@@ -233,9 +233,9 @@ const navMenu = css`
   transition: all 0.3s ease-in-out;
 
   &:hover {
-    box-shadow: 10px 10px 5px gray;
-    transform: translateY(-3px);
-    display: block;
+    /* box-shadow: 10px 10px 5px gray;
+    transform: translateY(-3px); */
+    /* display: block; */
   }
 `;
 
