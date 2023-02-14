@@ -60,6 +60,8 @@ const SignupForm = () => {
       postUserInformation(userInformation).then(() => {
         navigate("/login");
       });
+    } else if (isCodeConfirmed) {
+      alert("이메일 인증을 완료해주세요😊");
     }
   }
   function onSubmitEmail() {

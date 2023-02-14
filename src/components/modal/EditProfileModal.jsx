@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { AiOutlineEyeInvisible, AiOutlineEye, AiOutlineExclamationCircle } from "react-icons/ai";
 import { BsCheck2Circle } from "react-icons/bs";
 import { IoIosCloseCircle } from "react-icons/io";
+// import bazzie from "../../assets/images/bazzi.jpg";
 import ProfileImageSelect from "../profile/ProfileImageSelect";
 import { getCheckNickName } from "../../api/user";
 import { getUserDetail } from "../../api/user";
@@ -16,8 +17,8 @@ import { SHA256 } from "../signup/HashFunction";
 
 function EditProfile({ setIsEditProfileOpen }) {
   const userId = localStorage.getItem("id");
+  const oauth = localStorage.getItem("oauth");
   const setLoginUser = useSetRecoilState(loginUserState);
-
   const [userNickName, setUserNickName] = useState("");
   const [userProfileImage, setUserProfileImage] = useState("");
   const [nickName, setNickName] = useState("");
@@ -34,35 +35,28 @@ function EditProfile({ setIsEditProfileOpen }) {
   const [imageList, setImageList] = useState([]);
   const [isNickNameOpen, setIsNickNameOpen] = useState(false);
   const [isPasswordOpen, setIsPasswordOpen] = useState(false);
-
   function onKeyDown(event) {
     if (event.key === "Enter") {
       event.preventDefault();
     }
   }
-
   function onChangeNickName(event) {
     setNickName(event.target.value);
     setIsNickNameAvailable(false);
     setNickNameCheck("");
   }
-
   function onChangePassword(event) {
     setPassword(event.target.value);
   }
-
   function onChangePassword2(event) {
     setPassword2(event.target.value);
   }
-
   function onClickNickName() {
     setIsNickNameOpen(true);
   }
-
   function onClickPassword() {
     setIsPasswordOpen(true);
   }
-
   function onClickNickNameCheck() {
     if ((!nickNameError || nickNameError === "중복 확인을 진행해주세요.") && nickName) {
       getCheckNickName(nickName).then((response) => {
@@ -72,32 +66,28 @@ function EditProfile({ setIsEditProfileOpen }) {
       });
     }
   }
-
   function onClickVisible() {
     setIsVisible((prev) => !prev);
   }
-
   function onClickDeleteNickName() {
     setNickName("");
     setNickNameCheck("");
     setIsNickNameOpen(false);
+    console.log("here");
   }
-
   function onClickDeletePassword() {
     setIsDeleted(true);
     setPassword("");
     setPassword2("");
     setIsPasswordOpen(false);
+    console.log("here");
   }
-
   function receiveImageList(imageList) {
     setImageList(imageList);
   }
-
   function onClickCancle() {
     setIsEditProfileOpen(false);
   }
-
   function onSubmit() {
     if ((isNickNameAvailable || !isNickNameOpen) && !passwordError && !password2Error) {
       putUserPasswordNickName(userId, nickName, SHA256(password)).then((response) => {
@@ -113,6 +103,7 @@ function EditProfile({ setIsEditProfileOpen }) {
             const formData = new FormData();
             formData.append("image", imageList[0]);
             formData.append("userId", new Blob([JSON.stringify(userId)], { type: "application/json" }));
+            console.log(formData);
             putUserProfileImage(formData).then((response) => {
               if (response) {
                 setIsEditProfileOpen(false);
@@ -132,14 +123,12 @@ function EditProfile({ setIsEditProfileOpen }) {
       }
     }
   }
-
   useEffect(() => {
     getUserDetail(userId).then((response) => {
       setUserNickName(response.nickName);
       setUserProfileImage(response.profile_img);
     });
   }, []);
-
   useEffect(() => {
     if (nickName === userNickName && nickName) {
       setNickNameError(`${nickName}"은(는) 현재 닉네임과 동일합니다.`);
@@ -149,7 +138,6 @@ function EditProfile({ setIsEditProfileOpen }) {
       setNickNameError("");
     }
   }, [nickName]);
-
   useEffect(() => {
     if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/i.test(password) && password) {
       setPasswordError("영어 소문자, 숫자 조합 8~16자리로 입력해주세요.");
@@ -157,7 +145,6 @@ function EditProfile({ setIsEditProfileOpen }) {
       setPasswordError("");
     }
   }, [password]);
-
   useEffect(() => {
     if (password !== password2 && password2) {
       setPassword2Error("비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
@@ -170,7 +157,6 @@ function EditProfile({ setIsEditProfileOpen }) {
       setIsDeleted(true);
     }
   }, [password, password2]);
-
   useEffect(() => {
     if (password && password2 && !passwordError && !password2Error) {
       setIsPasswordConfirmed("비밀번호가 일치합니다.");
@@ -178,9 +164,8 @@ function EditProfile({ setIsEditProfileOpen }) {
       setIsPasswordConfirmed("");
     }
   }, [passwordError, password2Error]);
-
   return (
-    <form css={EditProfileBox}>
+    <form css={EditProfileBox} autoComplete="off">
       <h3>프로필 수정</h3>
 
       {/* 닉네임 파트 */}
@@ -192,13 +177,14 @@ function EditProfile({ setIsEditProfileOpen }) {
         <div css={doubleCheckBox}>
           <input
             name="nickName"
-            type="text"
+            type={isNickNameOpen ? "text" : "button"}
             placeholder={isNickNameOpen ? "닉네임을 입력해주세요." : "수정을 원하면 클릭해주세요."}
             css={isNickNameOpen ? inputBox : [inputBox, disabled]}
             onClick={onClickNickName}
             onChange={onChangeNickName}
             onKeyDown={onKeyDown}
-            value={nickName}
+            value={isNickNameOpen ? nickName : "수정을 원하면 클릭해주세요."}
+            // disabled={!isNickNameOpen}
           />
           <button
             css={duplicateCheck}
@@ -229,72 +215,75 @@ function EditProfile({ setIsEditProfileOpen }) {
       </div>
 
       {/* 비밀번호 파트 */}
-      <div css={secondWrap}>
-        <div css={subTitleWrap}>
-          <strong>비밀번호</strong>
-        </div>
-        <div css={condition}>8자 이상 16자 이하 영소문자와 숫자로만 작성해주세요</div>
-        <div css={passwordWrapper}>
-          <input
-            name="password"
-            type={isVisible ? "text" : "password"}
-            placeholder={isPasswordOpen ? "비밀번호를 입력해주세요." : "수정을 원하면 클릭해주세요."}
-            css={isPasswordOpen ? inputBox : [inputBox, disabled]}
-            onChange={onChangePassword}
-            onClick={() => {
-              onClickPassword();
-            }}
-            value={password}
-            // disabled={!isPasswordOpen}
-          />
-          {passwordError ? (
-            <small css={errorWrapper({ color: "#fc0101" })}>
-              <AiOutlineExclamationCircle size={12} />
-              {passwordError}
-            </small>
-          ) : null}
-          <div
-            onClick={() => {
-              onClickVisible();
-            }}
-          >
-            {isVisible ? (
-              <AiOutlineEye size="28" color="#66dd9c" />
-            ) : (
-              <AiOutlineEyeInvisible size="28" color="#66dd9c" />
-            )}
+      {!oauth ? (
+        <div css={secondWrap}>
+          <div css={subTitleWrap}>
+            <strong>비밀번호</strong>
+          </div>
+          <div css={condition}>8자 이상 16자 이하 영소문자와 숫자로만 작성해주세요</div>
+          <div css={passwordWrapper}>
+            <input
+              name="password"
+              type={isPasswordOpen ? "text" : "button"}
+              placeholder={isPasswordOpen ? "비밀번호를 입력해주세요." : "수정을 원하면 클릭해주세요."}
+              css={isPasswordOpen ? inputBox : [inputBox, disabled]}
+              onChange={onChangePassword}
+              onClick={() => {
+                onClickPassword();
+              }}
+              value={isPasswordOpen ? password : "수정을 원하면 클릭해주세요."}
+              // disabled={!isPasswordOpen}
+            />
+            {passwordError ? (
+              <small css={errorWrapper({ color: "#fc0101" })}>
+                <AiOutlineExclamationCircle size={12} />
+                {passwordError}
+              </small>
+            ) : null}
+            <div
+              onClick={() => {
+                onClickVisible();
+              }}
+            >
+              {isVisible ? (
+                <AiOutlineEye size="28" color="#66dd9c" />
+              ) : (
+                <AiOutlineEyeInvisible size="28" color="#66dd9c" />
+              )}
+            </div>
+          </div>
+          <div css={passwordWrapper}>
+            <input
+              name="password2"
+              type={isPasswordOpen ? (isVisible ? "text" : "password") : "button"}
+              placeholder={isPasswordOpen ? "비밀번호를 재입력해주세요." : null}
+              css={isPasswordOpen ? inputBox : [inputBox, disabled]}
+              onChange={onChangePassword2}
+              value={password2}
+              // disabled={!isPasswordOpen}
+            />
+            {password2Error ? (
+              <small css={errorWrapper({ color: "#fc0101" })}>
+                <AiOutlineExclamationCircle size={12} />
+                {password2Error}
+              </small>
+            ) : null}
+            {isPasswordConfirmed ? (
+              <small css={errorWrapper({ color: "#66dd9c" })}>
+                <BsCheck2Circle />
+                {isPasswordConfirmed}
+              </small>
+            ) : null}
+            <div
+              onClick={() => {
+                onClickDeletePassword();
+              }}
+            >
+              {isDeleted ? null : <IoIosCloseCircle />}
+            </div>
           </div>
         </div>
-        <div css={passwordWrapper}>
-          <input
-            name="password2"
-            type={isVisible ? "text" : "password"}
-            placeholder={isPasswordOpen ? "비밀번호를 재입력해주세요." : null}
-            css={isPasswordOpen ? inputBox : [inputBox, disabled]}
-            onChange={onChangePassword2}
-            value={password2}
-          />
-          {password2Error ? (
-            <small css={errorWrapper({ color: "#fc0101" })}>
-              <AiOutlineExclamationCircle size={12} />
-              {password2Error}
-            </small>
-          ) : null}
-          {isPasswordConfirmed ? (
-            <small css={errorWrapper({ color: "#66dd9c" })}>
-              <BsCheck2Circle />
-              {isPasswordConfirmed}
-            </small>
-          ) : null}
-          <div
-            onClick={() => {
-              onClickDeletePassword();
-            }}
-          >
-            {isDeleted ? null : <IoIosCloseCircle />}
-          </div>
-        </div>
-      </div>
+      ) : null}
 
       {/* 프로필 사진 파트 */}
       <div css={thirdWrap}>
@@ -324,30 +313,26 @@ const EditProfileBox = css`
   border-radius: 10px;
   background-color: #fff;
   box-shadow: 1px 1px 2px;
-
   & > h3 {
     text-align: center;
     padding-bottom: 10px;
   }
 `;
-
 const firstWrap = css`
   display: flex;
   flex-direction: column;
   width: 100%;
 `;
-
 const subTitleWrap = css`
   font-size: 18px;
   padding-top: 20px;
 `;
-
 const condition = css`
   color: #c4c4c4;
   font-size: 12px;
 `;
-
 const doubleCheckBox = css`
+  /* width: 100%; */
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -372,7 +357,6 @@ const inputBox = css`
   outline: none;
   padding: 0 10px;
   margin: 6px 0 0;
-
   ::placeholder {
     color: #c4c4c4;
   }
@@ -381,6 +365,7 @@ const inputBox = css`
 const disabled = css`
   background-color: #e7e7e7;
   cursor: pointer;
+  text-align: left;
 `;
 
 const duplicateCheck = css`
@@ -434,7 +419,6 @@ const commitButtonWrapper = css`
   justify-content: space-between;
   padding-top: 20px;
   margin-top: 10px;
-
   & > button {
     cursor: pointer;
     font-size: 14px;
@@ -446,14 +430,11 @@ const commitButtonWrapper = css`
     font-size: 14px;
     width: 48%;
   }
-
   & > button:nth-of-type(1) {
     background-color: #d7d9dc;
   }
-
   & > button:nth-of-type(2) {
     background-color: #66dd9c;
   }
 `;
-
 export default EditProfile;
