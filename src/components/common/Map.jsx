@@ -57,7 +57,6 @@ const Map = ({
     // 드래그 이동
     kakao.maps.event.addListener(map, "dragend", function () {
       const center = map.getCenter();
-
       setLat(center.getLat());
       setLng(center.getLng());
       setZoomLevel(map.getLevel());
@@ -82,7 +81,6 @@ const Map = ({
     kakao.maps.event.addListener(map, "rightclick", function (mouseEvent) {
       const latlng = mouseEvent.latLng;
       let failToSelect = false;
-
       if (path === "regist" || path === "modify") {
         if (
           latlng.getLat() > parseFloat(areaLat) - 0.03 &&

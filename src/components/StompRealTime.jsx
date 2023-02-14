@@ -126,7 +126,7 @@ const StompRealTime = ({
       setHopeLocation(location);
     }
 
-    if (lat && lng && zoomLevel && location !== "마우스 우클릭으로 장소를 선택해주시면 돼요") {
+    if (lat && lng && zoomLevel) {
       const sendMapData = {
         roomId: chatRoomId,
         toUserId: otherUserId,
@@ -135,7 +135,6 @@ const StompRealTime = ({
         zoomLevel: zoomLevel,
         isMarker: isMarker,
       };
-
       client.send("/recvmap", {}, JSON.stringify(sendMapData));
     }
   }
