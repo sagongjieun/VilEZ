@@ -59,7 +59,7 @@ const StompRealTime = ({
 
   const [chatMessage, setChatMessage] = useState(""); // 클라이언트가 입력하는 메시지
   const [showingMessage, setShowingMessage] = useState([]); // 서버로부터 받는 메시지
-  const [hopeLocation, setHopeLocation] = useState("");
+  const [hopeLocation, setHopeLocation] = useState("마우스 우클릭으로 장소를 선택해주시면 돼요");
   const [movedLat, setMovedLat] = useState("");
   const [movedLng, setMovedLng] = useState("");
   const [movedZoomLevel, setMovedZoomLevel] = useState(0);
@@ -72,6 +72,7 @@ const StompRealTime = ({
   const [cancelMessage, setCancelMessage] = useState({});
   const [otherUserProfileImage, setOtherUserProfileImage] = useState("");
   const [isOtherLeave, setIsOtherLeave] = useState(false);
+  const [count, setCount] = useState(0);
 
   function onKeyDownSendMessage(e) {
     if (e.keyCode === 13) {
@@ -205,10 +206,11 @@ const StompRealTime = ({
       setHopeLocation(location);
     }
 
-    console.log(location, lat, lng, zoomLevel, isMarker);
-
     if (zoomLevel) {
-      setTimeout(() => {
+      // 첫 연결 시 stomp connect 오류 수정을 위함
+      if (count === 0) {
+        setCount(count + 1);
+      } else {
         const sendMapData = {
           roomId: chatRoomId,
           toUserId: otherUserId,
@@ -218,9 +220,8 @@ const StompRealTime = ({
           isMarker: isMarker,
         };
 
-        connectStomp();
         client.send("/recvmap", {}, JSON.stringify(sendMapData));
-      }, 100);
+      }
     }
   }
 
