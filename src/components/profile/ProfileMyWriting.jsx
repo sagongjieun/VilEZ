@@ -7,7 +7,7 @@ import ProfileCardView from "./ProfileCardView";
 
 // const id = localStorage.getItem("id");
 const ProfileMyWriting = (props) => {
-  const userId = localStorage.getItem("id");
+  const userId = window.localStorage.getItem("id");
   const [myBoard, setMyBoard] = useState([]);
   const [myShareBoard, setMyShareBoard] = useState([]);
   const [myAskBoard, setMyAskBoard] = useState([]);

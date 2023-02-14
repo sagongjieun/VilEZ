@@ -7,7 +7,7 @@ import { getShareArticleByBoardId } from "../../api/share";
 import { getAskArticleDetailByBoardId } from "../../api/ask";
 
 const ProductDeatilHeader = ({ title, category, time, bookmarkCount, isShowDelete }) => {
-  const userId = localStorage.getItem("id");
+  const userId = window.localStorage.getItem("id");
   const [thisboardUserId, setThisboardUserId] = useState(null);
 
   const pathname = useLocation().pathname;

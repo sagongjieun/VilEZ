@@ -17,7 +17,7 @@ import { getUserDetail } from "../../api/user";
 const { kakao } = window;
 
 const ProductRegist = () => {
-  const loginUserId = localStorage.getItem("id");
+  const loginUserId = window.localStorage.getItem("id");
   const navigate = useNavigate();
   const loc = useLocation();
 
@@ -36,7 +36,7 @@ const ProductRegist = () => {
 
   // 소셜 로그인 시 닉네임 변경
   function checkSocialNickName() {
-    const nickName = localStorage.getItem("nickName");
+    const nickName = window.localStorage.getItem("nickName");
     if (nickName.slice(0, 1) === "#") {
       alert("닉네임 변경을 진행해주세요.");
       navigate("/socialnickname", { state: { url: "/product/regist" } });

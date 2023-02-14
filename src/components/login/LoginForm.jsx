@@ -25,15 +25,17 @@ const LoginForm = () => {
     postLogin(values.email, SHA256(values.password)).then((res) => {
       if (!res) return;
 
+      console.log("@@@@@@@@@@@@@@@@@", res);
+
       // localstorage와 login에 유저 정보 저장
-      localStorage.setItem("accessToken", res.accessToken);
-      localStorage.setItem("refreshToken", res.refreshToken);
-      localStorage.setItem("id", res.id);
-      localStorage.setItem("nickName", res.nickName);
-      localStorage.setItem("profileImg", res.profileImg);
-      localStorage.setItem("areaLat", res.areaLat);
-      localStorage.setItem("areaLng", res.areaLng);
-      localStorage.setItem("oauth", res.oauth);
+      window.localStorage.setItem("accessToken", res.accessToken);
+      window.localStorage.setItem("refreshToken", res.refreshToken);
+      window.localStorage.setItem("id", res.id);
+      window.localStorage.setItem("nickName", res.nickName);
+      window.localStorage.setItem("profileImg", res.profileImg);
+      window.localStorage.setItem("areaLat", res.areaLat);
+      window.localStorage.setItem("areaLng", res.areaLng);
+      window.localStorage.setItem("oauth", res.oauth);
 
       setLoginUser({
         id: res.id,

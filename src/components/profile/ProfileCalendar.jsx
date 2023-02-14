@@ -50,7 +50,7 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart);
   const endDate = endOfWeek(monthEnd);
-  const userId = localStorage.getItem("id");
+  const userId = window.localStorage.getItem("id");
 
   const rows = [];
   let days = [];

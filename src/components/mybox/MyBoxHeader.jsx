@@ -5,8 +5,8 @@ import villageLandscape from "../../assets/images/village_landscape.png";
 import { getAppointmentsByUserId } from "../../api/appointment";
 
 const MyBoxHeader = () => {
-  const userId = localStorage.getItem("id");
-  const userNickName = localStorage.getItem("nickName");
+  const userId = window.localStorage.getItem("id");
+  const userNickName = window.localStorage.getItem("nickName");
 
   const [allAppointments, setAllAppointments] = useState([]);
   const [shareCnt, setShareCnt] = useState(0);

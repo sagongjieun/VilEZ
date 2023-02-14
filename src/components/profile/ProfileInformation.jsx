@@ -12,7 +12,7 @@ import { loginUserState } from "../../recoil/atom";
 
 const { kakao } = window;
 const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpen, isEditProfileOpen }) => {
-  const id = localStorage.getItem("id");
+  const id = window.localStorage.getItem("id");
   const [loginUser, setLoginUser] = useRecoilState(loginUserState);
   // const [areaLng, setAreaLng] = useState("");
   // const [areaLat, setAreaLat] = useState("");
@@ -28,8 +28,8 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
   // 불러온 유저정보 활용
   // https://apis.map.kakao.com/web/sample/coord2addr/ 참조하였음.
 
-  const localLat = localStorage.getItem("areaLat");
-  const localLng = localStorage.getItem("areaLng");
+  const localLat = window.localStorage.getItem("areaLat");
+  const localLng = window.localStorage.getItem("areaLng");
 
   var coords = new kakao.maps.LatLng(localLat, localLng);
   useEffect(() => {
@@ -61,10 +61,10 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
           ...loginUser,
           profileImg: response.profile_img,
         });
-        localStorage.setItem("profileImg", response.profile_img);
-        localStorage.setItem("nickName", response.nickName);
-        localStorage.setItem("areaLat", response.areaLat);
-        localStorage.setItem("areaLng", response.areaLng);
+        window.localStorage.setItem("profileImg", response.profile_img);
+        window.localStorage.setItem("nickName", response.nickName);
+        window.localStorage.setItem("areaLat", response.areaLat);
+        window.localStorage.setItem("areaLng", response.areaLng);
       });
     }, 1000);
   }, [isQrCodeOpen, isEditProfileOpen, location]);

@@ -16,7 +16,7 @@ const Profile = () => {
   const [move, setMove] = useState("calc(50% - 55px)");
   const navigate = useNavigate();
   function checkSocialNickName() {
-    const nickName = localStorage.getItem("nickName");
+    const nickName = window.localStorage.getItem("nickName");
     if (nickName.slice(0, 1) === "#") {
       alert("닉네임 변경을 진행해주세요.");
       navigate("/socialnickname", { state: { url: "/mybox" } });

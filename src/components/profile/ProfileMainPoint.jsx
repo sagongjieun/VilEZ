@@ -6,7 +6,7 @@ import ProfilePointGraph from "./ProfilePointGraph";
 import { getPointListByUserId } from "../../api/appointment";
 
 const ProfileMainPoint = () => {
-  const userId = localStorage.getItem("id");
+  const userId = window.localStorage.getItem("id");
   const [data, setData] = useState([]);
 
   useEffect(() => {

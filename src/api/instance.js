@@ -55,9 +55,12 @@ export const authFormDataAxios = authFormDataInstance();
 // axios 요청이 처리되기 전 요청 가로채기
 authJsonAxios.interceptors.request.use(
   (config) => {
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = window.localStorage.getItem("accessToken");
+    console.log("^^^^^^^^^^^^", accessToken);
 
-    if (accessToken) {
+    if (!accessToken) {
+      return;
+    } else {
       config.headers["access-token"] = `${accessToken}`;
     }
 
@@ -76,8 +79,8 @@ authJsonAxios.interceptors.response.use(
 
       // 갱신된 accessToken을 받으면
       if (response) {
-        localStorage.setItem("accessToken", response.accessToken); // 새로운 토큰 localStorage 저장
-        localStorage.setItem("refreshToken", response.refreshToken);
+        window.localStorage.setItem("accessToken", response.accessToken); // 새로운 토큰 localStorage 저장
+        window.localStorage.setItem("refreshToken", response.refreshToken);
         error.config.headers["access-token"] = response; // 원래 api 요청의 headers의 accessToken도 변경
         const originalResponse = await authJsonAxios.request(error.config); // 원래 api 요청하기
         return originalResponse; // 원래 api 요청의 response return
@@ -87,7 +90,7 @@ authJsonAxios.interceptors.response.use(
         alert("로그인이 만료되었어요. 다시 로그인 해주세요!");
         // localStorage.removeItem("accessToken");
         // localStorage.removeItem("refreshToken");
-        localStorage.clear();
+        window.localStorage.clear();
         window.location.href = "/login";
       }
     }
@@ -99,9 +102,11 @@ authJsonAxios.interceptors.response.use(
 // axios 요청이 처리되기 전 요청 가로채기
 authFormDataAxios.interceptors.request.use(
   (config) => {
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = window.localStorage.getItem("accessToken");
 
-    if (accessToken) {
+    if (!accessToken) {
+      return;
+    } else {
       config.headers["access-token"] = `${accessToken}`;
     }
 
@@ -120,8 +125,8 @@ authFormDataAxios.interceptors.response.use(
 
       // 갱신된 accessToken을 받으면
       if (response) {
-        localStorage.setItem("accessToken", response.accessToken); // 새로운 토큰 localStorage 저장
-        localStorage.setItem("refreshToken", response.refreshToken);
+        window.localStorage.setItem("accessToken", response.accessToken); // 새로운 토큰 localStorage 저장
+        window.localStorage.setItem("refreshToken", response.refreshToken);
         error.config.headers["access-token"] = response; // 원래 api 요청의 headers의 accessToken도 변경
         const originalResponse = await authFormDataInstance.request(error.config); // 원래 api 요청하기
         return originalResponse; // 원래 api 요청의 response return
@@ -131,7 +136,7 @@ authFormDataAxios.interceptors.response.use(
         alert("로그인이 만료되었습니다. 다시 로그인 해주세요!");
         // localStorage.removeItem("accessToken");
         // localStorage.removeItem("refreshToken");
-        localStorage.clear();
+        window.localStorage.clear();
         window.location.href = "/login";
       }
     }

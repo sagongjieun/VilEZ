@@ -17,14 +17,17 @@ const OAuthNaver = () => {
   function onNaverLogin(code) {
     requestNaverLogin(code).then((response) => {
       const resData = response[0];
-      localStorage.setItem("accessToken", resData.accessToken);
-      localStorage.setItem("refreshToken", resData.refreshToken);
-      localStorage.setItem("id", resData.id);
-      localStorage.setItem("nickName", resData.nickName);
-      localStorage.setItem("profileImg", resData.profileImg);
-      localStorage.setItem("areaLat", resData.areaLat);
-      localStorage.setItem("areaLng", resData.areaLng);
-      localStorage.setItem("oauth", resData.oauth);
+
+      console.log("%%%%%%%%%%%", resData);
+
+      window.localStorage.setItem("accessToken", resData.accessToken);
+      window.localStorage.setItem("refreshToken", resData.refreshToken);
+      window.localStorage.setItem("id", resData.id);
+      window.localStorage.setItem("nickName", resData.nickName);
+      window.localStorage.setItem("profileImg", resData.profileImg);
+      window.localStorage.setItem("areaLat", resData.areaLat);
+      window.localStorage.setItem("areaLng", resData.areaLng);
+      window.localStorage.setItem("oauth", resData.oauth);
       setNickname(resData.nickName);
 
       console.log(response[0]);

@@ -45,7 +45,7 @@ const StompRealTime = ({
   sendRoomState,
 }) => {
   const scrollRef = useRef();
-  const myUserId = localStorage.getItem("id");
+  const myUserId = window.localStorage.getItem("id");
   const chatRoomId = roomId;
   const navigate = useNavigate();
   const shareData = useRecoilValue(shareDataState);
@@ -166,76 +166,7 @@ const StompRealTime = ({
 
   useEffect(() => {
     // 웹소켓과 연결됐을 때 동작하는 콜백함수들
-    client.connect({}, () => {
-      // 다른 유저의 채팅을 구독
-      let payload = {
-        roomId: chatRoomId,
-        userId: myUserId,
-      };
-      client.send("/room_enter", {}, JSON.stringify(payload));
-
-      payload = {
-        userId: myUserId,
-      };
-      client.send("/room_web", {}, JSON.stringify(payload));
-
-      client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
-        // 상대방이 채팅방을 나갔다면
-        if (JSON.parse(data.body).fromUserId == -1 || JSON.parse(data.body).toUserId == -1) {
-          sendOtherLeave(true);
-          setIsOtherLeave(true);
-          sendShareState(-1);
-          sendRoomState(-1);
-        }
-        setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
-        let payload = {
-          roomId: chatRoomId,
-          userId: myUserId,
-        };
-        client.send("/room_enter", {}, JSON.stringify(payload));
-        payload = {
-          userId: myUserId,
-        };
-        setTimeout(() => client.send("/room_web", {}, JSON.stringify(payload)), 100);
-      });
-
-      // 예약 확정을 구독
-      client.subscribe(`/sendappoint/${chatRoomId}`, () => {
-        sendShareState(0);
-      });
-
-      // 예약 취소를 구독
-      client.subscribe(`/sendcancel/${chatRoomId}`, () => {
-        sendShareState(-2);
-      });
-
-      // 공유 종료를 구독
-      client.subscribe(`/sendend/${chatRoomId}`, () => {
-        setIsOtherLeave(true);
-        sendShareState(-1);
-      });
-
-      // 공유지도를 구독
-      client.subscribe(`/sendmap/${chatRoomId}/${myUserId}`, (data) => {
-        data = JSON.parse(data.body);
-
-        // 다른 유저가 움직인 지도의 데이터들
-        setMovedLat(data.lat);
-        setMovedLng(data.lng);
-        setMovedZoomLevel(data.zoomLevel);
-
-        if (data.isMarker) {
-          setMovedMarker(true);
-          searchDetailAddrFromCoords(data.lat, data.lng, function (result, status) {
-            if (status === kakao.maps.services.Status.OK) {
-              setHopeLocation(result[0].address.address_name);
-            }
-          });
-        } else {
-          setMovedMarker(false);
-        }
-      });
-    });
+    connectStomp();
     client.debug = () => {};
   }, []);
 
@@ -258,6 +189,7 @@ const StompRealTime = ({
             };
 
             setShowingMessage([sendMessage]);
+            connectStomp();
             client.send("/recvchat", {}, JSON.stringify(sendMessage));
             var payload = {
               userId: otherUserId,
@@ -496,6 +428,78 @@ const StompRealTime = ({
     checkUserLeave,
     isChatEnd,
   ]);
+  function connectStomp() {
+    client.connect({}, () => {
+      // 다른 유저의 채팅을 구독
+      let payload = {
+        roomId: chatRoomId,
+        userId: myUserId,
+      };
+      client.send("/room_enter", {}, JSON.stringify(payload));
+
+      payload = {
+        userId: myUserId,
+      };
+      client.send("/room_web", {}, JSON.stringify(payload));
+
+      client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
+        // 상대방이 채팅방을 나갔다면
+        if (JSON.parse(data.body).fromUserId == -1 || JSON.parse(data.body).toUserId == -1) {
+          sendOtherLeave(true);
+          setIsOtherLeave(true);
+          sendShareState(-1);
+          sendRoomState(-1);
+        }
+        setShowingMessage((prev) => [...prev, JSON.parse(data.body)]);
+        let payload = {
+          roomId: chatRoomId,
+          userId: myUserId,
+        };
+        client.send("/room_enter", {}, JSON.stringify(payload));
+        payload = {
+          userId: myUserId,
+        };
+        setTimeout(() => client.send("/room_web", {}, JSON.stringify(payload)), 100);
+      });
+
+      // 예약 확정을 구독
+      client.subscribe(`/sendappoint/${chatRoomId}`, () => {
+        sendShareState(0);
+      });
+
+      // 예약 취소를 구독
+      client.subscribe(`/sendcancel/${chatRoomId}`, () => {
+        sendShareState(-2);
+      });
+
+      // 공유 종료를 구독
+      client.subscribe(`/sendend/${chatRoomId}`, () => {
+        setIsOtherLeave(true);
+        sendShareState(-1);
+      });
+
+      // 공유지도를 구독
+      client.subscribe(`/sendmap/${chatRoomId}/${myUserId}`, (data) => {
+        data = JSON.parse(data.body);
+
+        // 다른 유저가 움직인 지도의 데이터들
+        setMovedLat(data.lat);
+        setMovedLng(data.lng);
+        setMovedZoomLevel(data.zoomLevel);
+
+        if (data.isMarker) {
+          setMovedMarker(true);
+          searchDetailAddrFromCoords(data.lat, data.lng, function (result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+              setHopeLocation(result[0].address.address_name);
+            }
+          });
+        } else {
+          setMovedMarker(false);
+        }
+      });
+    });
+  }
 
   useEffect(() => {
     if (cancelMessage.roomId && cancelMessage.reason) {
@@ -510,7 +514,7 @@ const StompRealTime = ({
         <div>
           {shareState == -1 || shareState == -2 || roomState == -1 ? (
             // 공유지도 막기
-            <Map readOnly={true} disableMapLat={disableMapLat} disableMapLng={disableMapLng} path={"block"} />
+            <Map readOnly={true} disableMapLat={disableMapLat} disableMapLng={disableMapLng} path="block" />
           ) : (
             <Map
               readOnly={false}
@@ -519,7 +523,7 @@ const StompRealTime = ({
               movedLng={movedLng}
               movedZoomLevel={movedZoomLevel}
               movedMarker={movedMarker}
-              path={"stomp"}
+              path="stomp"
             />
           )}
         </div>
@@ -669,20 +673,25 @@ const chatWrapper = css`
 
 const systemMessageWrapper = css`
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 
   & > span {
-    font-size: 13px;
+    font-size: 12px;
   }
 `;
 
 const myMessageWrapper = css`
-  text-align: right;
-  margin-bottom: 10px;
+  text-align: left;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
   margin-right: 10px;
 
   & > span {
-    font-size: 16px;
+    font-size: 14px;
+    padding: 5px 8px;
+    background-color: #66dd9c50;
+    border-radius: 5px;
   }
 `;
 
@@ -691,7 +700,7 @@ const yourMessageWrapper = css`
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   justify-content: flex-start;
 
   & > img {
@@ -705,8 +714,15 @@ const yourMessageWrapper = css`
     display: flex;
     flex-direction: column;
 
+    & > small {
+      font-size: 12px;
+    }
+
     & > span {
-      font-size: 16px;
+      font-size: 14px;
+      padding: 5px 8px;
+      background-color: #ededed;
+      border-radius: 5px;
     }
   }
 `;

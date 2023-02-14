@@ -6,7 +6,7 @@ import MyBoxDDay from "./MyBoxDDay";
 import { getMyShareAppointments } from "../../api/appointment";
 
 const MyBoxShare = (props) => {
-  const userId = localStorage.getItem("id");
+  const userId = window.localStorage.getItem("id");
   const [myBoard, setMyBoard] = useState([]);
   const [mySharingBoard, setMySharingBoard] = useState([]);
   const [myToBeSharedBoard, setMyToBeSharedBoard] = useState([]);

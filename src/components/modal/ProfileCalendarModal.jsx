@@ -6,7 +6,7 @@ import MiddleWideButton from "../button/MiddleWideButton";
 import { IoCloseSharp } from "react-icons/io5";
 
 function ProfileCalendarModal({ setIsQrCodeOpen }) {
-  const userId = localStorage.getItem("id");
+  const userId = window.localStorage.getItem("id");
   const [qrCode, setQrCode] = useState("");
 
   function onClickClose() {

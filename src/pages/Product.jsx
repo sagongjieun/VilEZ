@@ -8,10 +8,10 @@ import ProductPut from "../components/product/ProductPut";
 import { useNavigate } from "react-router-dom";
 
 const Product = () => {
-  const accessToken = localStorage.getItem("accessToken");
-  const nickName = localStorage.getItem("nickName");
-  const areaLat = localStorage.getItem("areaLat");
-  const areaLng = localStorage.getItem("areaLng");
+  const accessToken = window.localStorage.getItem("accessToken");
+  const nickName = window.localStorage.getItem("nickName");
+  const areaLat = window.localStorage.getItem("areaLat");
+  const areaLng = window.localStorage.getItem("areaLng");
   const navigate = useNavigate();
 
   useEffect(() => {

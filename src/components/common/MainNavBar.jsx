@@ -12,8 +12,8 @@ import { postLogout } from "../../api/user";
 
 function MainNavBar() {
   const navigate = useNavigate();
-  const nickName = localStorage.getItem("nickName");
-  const profileImg = localStorage.getItem("profileImg");
+  const nickName = window.localStorage.getItem("nickName");
+  const profileImg = window.localStorage.getItem("profileImg");
   const loginUser = useRecoilValue(loginUserState);
   const resetLoginUser = useResetRecoilState(loginUserState);
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
@@ -44,7 +44,7 @@ function MainNavBar() {
     postLogout(loginUser.id).then((res) => {
       if (res) {
         // localstorage와 recoil값 초기화
-        localStorage.clear();
+        window.localStorage.clear();
         resetLoginUser();
         setIsLogin(false);
         window.location.replace("/");

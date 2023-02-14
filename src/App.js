@@ -20,18 +20,16 @@ import { loginUserState, isLoginState } from "./recoil/atom";
 function App() {
   const setLoginUser = useSetRecoilState(loginUserState);
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
-  // const [isModal, setIsModal] = useState(false);
-  // function onClickMenu() {
-  //   const accessToken = localStorage.getItem("accessToken");
-  //   if (!accessToken) {
-  //     setIsModal(true);
-  //   }
-  // }
+
   // 로그인 유지
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = window.localStorage.getItem("accessToken");
 
-    if (accessToken) {
+    console.log("&&&&&&&&&&&&", accessToken);
+
+    if (!accessToken) {
+      window.localStorage.clear();
+    } else {
       getCheckValidToken().then((res) => {
         // 유효한 토큰이면 유저 정보를 recoil에 담기
         if (res) {
@@ -52,6 +50,30 @@ function App() {
         }
       });
     }
+
+    // if (accessToken !== "undefined" && accessToken !== "null" && accessToken) {
+    //   getCheckValidToken().then((res) => {
+    //     // 유효한 토큰이면 유저 정보를 recoil에 담기
+    //     if (res) {
+    //       setLoginUser((prev) => {
+    //         return {
+    //           ...prev,
+    //           id: res.id,
+    //           nickName: res.nickName,
+    //           manner: res.manner,
+    //           point: res.point,
+    //           profileImg: res.profileImg,
+    //           areaLng: res.areaLng,
+    //           areaLat: res.areaLat,
+    //         };
+    //       });
+
+    //       setIsLogin(true);
+    //     }
+    //   });
+    // } else {
+    //   window.localStorage.clear();
+    // }
   }, []);
 
   return (
