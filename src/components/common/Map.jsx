@@ -37,6 +37,8 @@ const Map = ({
   function initMap() {
     // 지도를 표시할 공간과 초기 중심좌표, 레벨 세팅
     container = document.getElementById("map");
+    console.log("readOnly", readOnly);
+    console.log("path", path);
 
     if (path === "regist" || path === "modify") {
       options = {
@@ -57,7 +59,7 @@ const Map = ({
     // 드래그 이동
     kakao.maps.event.addListener(map, "dragend", function () {
       const center = map.getCenter();
-
+      console.log("드래그");
       setLat(center.getLat());
       setLng(center.getLng());
       setZoomLevel(map.getLevel());
@@ -82,7 +84,7 @@ const Map = ({
     kakao.maps.event.addListener(map, "rightclick", function (mouseEvent) {
       const latlng = mouseEvent.latLng;
       let failToSelect = false;
-
+      console.log("마커");
       if (path === "regist" || path === "modify") {
         if (
           latlng.getLat() > parseFloat(areaLat) - 0.03 &&
@@ -167,9 +169,13 @@ const Map = ({
 
   /** 지도 데이터 보내기 */
   useEffect(() => {
+    console.log("들어옵니다.1");
     if (!readOnly) {
+      console.log("들어옵니다.2");
       sendLocation(location, lat, lng, zoomLevel, isMarker);
+      console.log("들어옵니다.3");
     }
+    console.log("들어옵니다.4");
   }, [lat, lng, zoomLevel, isMarker]);
 
   useEffect(() => {

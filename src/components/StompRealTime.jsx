@@ -116,7 +116,9 @@ const StompRealTime = ({
 
   // Map에서 받은 데이터로 서버에 전송
   function receiveLocation(location, lat, lng, zoomLevel, isMarker) {
+    console.log("확인1");
     if (lat && lng && isMarker) {
+      console.log("확인2");
       searchDetailAddrFromCoords(lat, lng, function (result, status) {
         if (status === kakao.maps.services.Status.OK) {
           setHopeLocation(result[0].address.address_name);
@@ -125,6 +127,7 @@ const StompRealTime = ({
     } else {
       setHopeLocation(location);
     }
+    console.log("확인3");
 
     if (lat && lng && zoomLevel && location !== "마우스 우클릭으로 장소를 선택해주시면 돼요") {
       const sendMapData = {
@@ -136,7 +139,9 @@ const StompRealTime = ({
         isMarker: isMarker,
       };
 
+      console.log("확인4");
       client.send("/recvmap", {}, JSON.stringify(sendMapData));
+      console.log("확인5");
     }
   }
 
