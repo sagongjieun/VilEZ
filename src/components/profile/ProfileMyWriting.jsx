@@ -11,19 +11,26 @@ const ProfileMyWriting = (props) => {
   const [myBoard, setMyBoard] = useState([]);
   const [myShareBoard, setMyShareBoard] = useState([]);
   const [myAskBoard, setMyAskBoard] = useState([]);
+  const [endAxios, setEndAxios] = useState(false);
   useEffect(() => {
     getUserShare(userId).then((response) => {
       if (response) {
         setMyBoard(response);
         setMyShareBoard(response);
       }
+      setEndAxios(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (endAxios) {
       getUserAsk(userId).then((response) => {
         if (response) {
           setMyAskBoard(response);
         }
       });
-    });
-  }, []);
+    }
+  }, [endAxios]);
   useEffect(() => {
     props.setWritingPages(1);
     if (props.myWritingType === 1) {

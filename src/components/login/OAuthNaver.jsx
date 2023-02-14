@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
@@ -12,6 +12,7 @@ const OAuthNaver = () => {
   const code = new URL(window.location.href).searchParams.get("code");
   const setLoginUser = useSetRecoilState(loginUserState);
   const setIsLogin = useSetRecoilState(isLoginState);
+  const [nickname, setNickname] = useState("");
 
   function onNaverLogin(code) {
     requestNaverLogin(code).then((response) => {
@@ -23,6 +24,8 @@ const OAuthNaver = () => {
       localStorage.setItem("profileImg", resData.profileImg);
       localStorage.setItem("areaLat", resData.areaLat);
       localStorage.setItem("areaLng", resData.areaLng);
+      localStorage.setItem("oauth", resData.oauth);
+      setNickname(resData.nickName);
 
       setLoginUser({
         id: resData.id,
@@ -32,6 +35,7 @@ const OAuthNaver = () => {
         profileImg: resData.profileImg,
         areaLng: resData.areaLng,
         areaLat: resData.areaLat,
+        oauth: resData.oauth,
       });
 
       setIsLogin(true);
@@ -42,10 +46,15 @@ const OAuthNaver = () => {
     onNaverLogin(code);
   }, []);
 
-  setTimeout(() => {
-    navigate("/");
-  }, 1500);
-
+  useEffect(() => {
+    if (nickname !== "") {
+      setTimeout(() => {
+        if (nickname.includes("#")) {
+          navigate("/socialnickname", { state: { url: "/" } });
+        } else navigate("/");
+      }, 1500);
+    }
+  }, [nickname]);
   return (
     <div css={container}>
       <LoginLoadingModal />

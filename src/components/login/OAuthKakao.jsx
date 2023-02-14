@@ -12,7 +12,6 @@ const OAuthKakao = () => {
   const code = new URL(window.location.href).searchParams.get("code");
   const setLoginUser = useSetRecoilState(loginUserState);
   const setIsLogin = useSetRecoilState(isLoginState);
-
   const [nickname, setNickname] = useState("");
 
   function onKakaoLogin(code) {
@@ -26,6 +25,7 @@ const OAuthKakao = () => {
       localStorage.setItem("profileImg", resData.profileImg);
       localStorage.setItem("areaLat", resData.areaLat);
       localStorage.setItem("areaLng", resData.areaLng);
+      localStorage.setItem("oauth", resData.oauth);
       setNickname(resData.nickName);
 
       setLoginUser({
@@ -36,6 +36,7 @@ const OAuthKakao = () => {
         profileImg: resData.profileImg,
         areaLng: resData.areaLng,
         areaLat: resData.areaLat,
+        oauth: resData.oauth,
       });
 
       setIsLogin(true);

@@ -158,9 +158,11 @@ async function putUserPasswordNickName(userId, nickName, password) {
 async function putUserProfileImage(formData) {
   try {
     const { data } = await authFormDataAxios.put("/users/profile", formData);
-
     if (data.flag === "success") return data.data;
-    else alert("프로필 변경에 실패했어요. 다시 시도해주시겠어요?");
+    else {
+      console.log(data);
+      alert("이미지 변경에 실패했어요. 다시 시도해주시겠어요?");
+    }
   } catch (error) {
     console.log(error);
   }
