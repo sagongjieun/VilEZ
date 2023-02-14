@@ -11,8 +11,6 @@ const ProductImageSelect = ({ sendImageList }) => {
   const boardId = parseInt(useParams().boardId);
   const type = pathname.includes("regist") ? 100 : pathname.includes("edit") ? 3 : 102;
   const listType = pathname.includes("share") ? 2 : 1;
-  // console.log(type);
-  // console.log(type);
   const [imageList, setImageList] = useState([]);
 
   function onClickFileUpload() {
@@ -45,12 +43,10 @@ const ProductImageSelect = ({ sendImageList }) => {
       listType === 2
         ? getShareArticleByBoardId(boardId).then((res) => {
             const data = res[0].list;
-            // console.log("@@@@@@", data);
             setImageList(data);
           })
         : getAskArticleDetailByBoardId(boardId).then((res) => {
             const data = res[0].list;
-            // console.log("@@@@@@", data);
             setImageList(data);
           });
     }

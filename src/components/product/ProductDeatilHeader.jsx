@@ -27,23 +27,15 @@ const ProductDeatilHeader = ({ title, category, time, bookmarkCount, isShowDelet
     type === 2
       ? getShareArticleByBoardId(boardId).then((res) => {
           setThisboardUserId(res[0].userId);
-          // console.log(res[0]);
-          // console.log(res[0].state);
-
-          // console.log(res[0].userId);
-          //
         })
       : getAskArticleDetailByBoardId(boardId).then((res) => {
-          // console.log(res[0]);
           setThisboardUserId(res[0].userId);
         });
   }, []);
-  // console.log(isAppointment);
 
   function onClickshowDeleteModal() {
     isShowDelete(true);
   }
-  // console.log(userId, thisboardUserId, parseInt(userId) === parseInt(thisboardUserId));
 
   return (
     <div css={headerWrapper}>

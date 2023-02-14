@@ -218,7 +218,6 @@ const ProductDetail = () => {
   const [isAppointment, setIsAppointment] = useState(false);
   useEffect(() => {
     getAppointmentsByBoardId(boardId, type).then((res) => {
-      console.log(res[0].length === 1);
       if (res[0].length === 1) {
         setIsAppointment(true);
       }

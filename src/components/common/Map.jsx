@@ -178,10 +178,7 @@ const Map = ({
     marker = new kakao.maps.Marker();
 
     if (path === "regist") {
-      console.log("regist");
       makeRectangle();
-      // eventDragEnd();
-      // eventZoomChanged();
     }
 
     if (path === "regist" || path === "modify" || path === "stomp") {
@@ -194,22 +191,17 @@ const Map = ({
   /** 게시글 수정 map */
   useEffect(() => {
     if (path === "modify" && hopeAreaLat && hopeAreaLng && map) {
-      console.log("modify", hopeAreaLat, hopeAreaLng);
       makeRectangle();
       const latlng = new kakao.maps.LatLng(hopeAreaLat, hopeAreaLng);
 
       marker.setPosition(latlng);
       marker.setMap(map);
-
-      // eventDragEnd();
-      // eventZoomChanged();
     }
   }, [hopeAreaLat, hopeAreaLng, map]);
 
   /** 게시글 디테일 map */
   useEffect(() => {
     if (path === "detail" && selectedLat && selectedLng && map) {
-      console.log("detail");
       marker = new kakao.maps.Marker();
 
       const latlng = new kakao.maps.LatLng(selectedLat, selectedLng);
@@ -225,8 +217,6 @@ const Map = ({
   /** 공유 지도 map 데이터 받기 */
   useEffect(() => {
     if (path === "stomp" && movedLat && movedLng && movedZoomLevel && map) {
-      console.log("stomp");
-      console.log("stomp로 데이터받기 : ", movedLat, movedLng, movedZoomLevel, movedMarker);
       const locPosition = new kakao.maps.LatLng(movedLat, movedLng);
 
       map.setLevel(movedZoomLevel); // 지도 레벨 동기화
@@ -253,17 +243,12 @@ const Map = ({
           map.panTo(locPosition);
         }
       }
-
-      // 상대방이 제어하고나서 나도 제어할 수 있게
-      // eventDragEnd();
-      // eventZoomChanged();
     }
   }, [movedLat, movedLng, movedZoomLevel, movedMarker, map]);
 
   /** 공유지도 map block */
   useEffect(() => {
     if (path === "block" && disableMapLat && disableMapLng && map) {
-      console.log("block");
       const latlng = new kakao.maps.LatLng(disableMapLat, disableMapLng);
 
       marker.setMap(map);

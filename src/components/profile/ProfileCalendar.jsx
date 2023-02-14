@@ -138,7 +138,6 @@ const ProfileCalender2 = () => {
   };
   const onDateClick = (day) => {
     setSelectedDate(day);
-    console.log(day);
   };
   return (
     <div css={calendarContainer}>

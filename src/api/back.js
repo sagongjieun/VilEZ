@@ -18,7 +18,7 @@ async function getShareState(roomId) {
     const { data } = await authJsonAxios.get(`/returns/state?roomId=${roomId}`);
 
     if (data.flag === "success") return data.data[0];
-    else console.log(data);
+    else return false;
   } catch (error) {
     console.log(error);
   }
@@ -29,7 +29,7 @@ async function getShareReturnState(roomId) {
     const { data } = await authJsonAxios.get(`/returns?roomId=${roomId}`);
 
     if (data.flag === "success") return data.data[0].state;
-    else console.log(data);
+    else return false;
   } catch (error) {
     console.log(error);
   }

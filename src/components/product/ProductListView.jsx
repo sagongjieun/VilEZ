@@ -19,7 +19,6 @@ const ProductListView = () => {
   useEffect(() => {
     getShareArticleList("디지털/가전", 0, 100, 0, "").then((res) => {
       const data = res;
-      console.log(data);
       setArticles(data);
     });
   }, []);

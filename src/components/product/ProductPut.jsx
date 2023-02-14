@@ -33,12 +33,11 @@ const ProductPut = () => {
   const type = pathname.includes("share") ? 2 : 1;
   const [tempSday, setTempSday] = useState("");
   const [tempEday, setTempEday] = useState("");
-  // console.log(boardId);
+
   useEffect(() => {
     type === 2
       ? getShareArticleByBoardId(boardId).then((res) => {
           const data = res[0];
-          // console.log(data);
           setTitle(data.title);
           setCategory(data.category);
 
@@ -187,7 +186,6 @@ const ProductPut = () => {
       putShareArticle(formData)
         .then((res) => {
           res = res[0];
-          console.log(res);
           navigate(`/product/detail/share/${res.id}`);
         })
         .catch((error) => {
@@ -196,14 +194,12 @@ const ProductPut = () => {
     } else if (registType === "물품 요청 등록") {
       putAskArticle(formData)
         .then((res) => {
-          // console.log(res);
           navigate(`/product/detail/ask/${res[0].id}`);
         })
         .catch((error) => {
           console.log(error);
         });
     }
-    console.log(imageList);
   }
 
   return (

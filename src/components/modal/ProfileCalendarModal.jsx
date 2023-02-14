@@ -15,7 +15,6 @@ function ProfileCalendarModal({ setIsQrCodeOpen }) {
   useEffect(() => {
     getQrCode(userId).then((response) => {
       setQrCode(response[0].path);
-      console.log(response[0].path);
     });
   }, []);
   return (
