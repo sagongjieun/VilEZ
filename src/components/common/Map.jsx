@@ -27,7 +27,6 @@ const Map = ({
   const [zoomLevel, setZoomLevel] = useState(0);
   const [isMarker, setIsMarker] = useState(false);
   const [hasMarker, setHasMarker] = useState(false);
-  const [isOtherControl, setIsOtherControl] = useState(false);
 
   const [markerLat, setMarkerLat] = useState("");
   const [markerLng, setMarkerLng] = useState("");
@@ -68,14 +67,12 @@ const Map = ({
   function eventZoomChanged() {
     // 지도 레벨 변경
     kakao.maps.event.addListener(map, "zoom_changed", function () {
-      if (!isOtherControl) {
-        const center = map.getCenter();
+      const center = map.getCenter();
 
-        setLat(center.getLat());
-        setLng(center.getLng());
-        setZoomLevel(map.getLevel());
-        setIsMarker(false);
-      }
+      setLat(center.getLat());
+      setLng(center.getLng());
+      setZoomLevel(map.getLevel());
+      setIsMarker(false);
     });
   }
 
@@ -166,16 +163,6 @@ const Map = ({
     rectangle.setMap(map);
   }
 
-  /** 지도 데이터 보내기 */
-  useEffect(() => {
-    if (!readOnly) {
-      if (!isOtherControl && lat && lng) {
-        setIsOtherControl(false);
-        sendLocation(location, lat, lng, zoomLevel, isMarker);
-      }
-    }
-  }, [lat, lng, zoomLevel, isMarker]);
-
   useEffect(() => {
     initMap();
     marker = new kakao.maps.Marker();
@@ -190,6 +177,13 @@ const Map = ({
       eventDragEnd();
     }
   }, []);
+
+  /** 지도 데이터 보내기 */
+  useEffect(() => {
+    if (!readOnly && lat && lng) {
+      sendLocation(location, lat, lng, zoomLevel, isMarker);
+    }
+  }, [lat, lng, zoomLevel, isMarker]);
 
   /** 게시글 수정 map */
   useEffect(() => {
@@ -223,7 +217,6 @@ const Map = ({
       const locPosition = new kakao.maps.LatLng(movedLat, movedLng);
 
       map.setLevel(movedZoomLevel); // 지도 레벨 동기화
-      setIsOtherControl(true);
 
       if (movedMarker) {
         marker.setPosition(locPosition);
