@@ -24,7 +24,6 @@ public class UserInterceptor implements HandlerInterceptor {
                              HttpServletResponse response,
                              Object handler) throws Exception{
 
-        log.warn(request.getRemoteAddr());
 
         if(request.getMethod().equals("OPTIONS")) {
             return true;
