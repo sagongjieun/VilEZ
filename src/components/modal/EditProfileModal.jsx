@@ -91,7 +91,6 @@ function EditProfile({ setIsEditProfileOpen }) {
   function onSubmit() {
     if ((isNickNameAvailable || !isNickNameOpen) && !passwordError && !password2Error) {
       putUserPasswordNickName(userId, nickName, SHA256(password)).then((response) => {
-        // putUserPasswordNickName(userId, nickName, password).then((response) => {
         if (response) {
           setLoginUser((prev) => {
             return {
