@@ -34,6 +34,7 @@ const LoginForm = () => {
       localStorage.setItem("profileImg", res.profileImg);
       localStorage.setItem("areaLat", res.areaLat);
       localStorage.setItem("areaLng", res.areaLng);
+      localStorage.setItem("oauth", res.oauth);
 
       setLoginUser({
         id: res.id,

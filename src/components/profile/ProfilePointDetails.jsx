@@ -2,11 +2,9 @@ import React, { useState, useEffect } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import receiptSide from "../../assets/images/receipt_side.png";
-import { getPointListByUserId } from "../../api/appointment";
 import ProfilePointCategory from "./ProfilePointCategory";
 
-const ProfilePointDetails = () => {
-  const userId = localStorage.getItem("id");
+const ProfilePointDetails = ({ data }) => {
   const [pointList, setPointList] = useState([]);
   const [filteredPointList, setFilteredPointList] = useState([]);
   const [category, setCategory] = useState("");
@@ -21,15 +19,15 @@ const ProfilePointDetails = () => {
   }
 
   useEffect(() => {
-    getPointListByUserId(userId)
-      .then((response) => {
-        setPointList(response[0].sort(sortDate));
-        setFilteredPointList(response[0].sort(sortDate));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+    // getPointListByUserId(userId)
+    //   .then((response) => {
+    setPointList(data.sort(sortDate));
+    setFilteredPointList(data.sort(sortDate));
+    // })
+    // .catch((error) => {
+    //   console.log(error);
+    // });
+  }, [data]);
 
   useEffect(() => {
     if (category === "전체") {
