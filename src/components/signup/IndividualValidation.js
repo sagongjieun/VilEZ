@@ -3,7 +3,7 @@
 
 const IndividualValidation = (value) => {
   const error = {};
-  console.log(value);
+
   if (Object.keys(value).includes("email")) {
     if (!value.email) {
       error.email = "이메일을 입력해주세요.";

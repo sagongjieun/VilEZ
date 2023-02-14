@@ -37,7 +37,6 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
     geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), (result, status) => {
       if (status === kakao.maps.services.Status.OK) {
         const data = result[0];
-        // console.log(data);
 
         // useState에 기본값에 "동네를 인증해주세요."를 넣어놓아도 반응이 없어서, 분기하였음
         if (data.region_1depth_name.length === 0) {
@@ -47,22 +46,8 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
         }
       }
     });
-    // console.log(localLat);
   }, [localLat]);
 
-  // 좌표로 주소 불러오기
-  // state에 있는, areaLat, areaLng를 불러와서 사용할건데, useEffect()에서 그 불러온 두 값은 이렇게 사용이 될거야.
-  // function getAddr(areaLat, areaLng) {
-  //   console.log("**************");
-  //   const geocoder = new kakao.maps.services.Geocoder();
-  //   function callback(result, status) {
-  //     if (status === kakao.maps.services.Status.OK) {
-  //       const data = result[0].address;
-  //       setLocation(data.region_1depth_name + " " + data.region_2depth_name + " " + data.region_3depth_name);
-  //     }
-  //   }
-  //   geocoder.coord2Address(areaLng, areaLat, callback);
-  // }
   useEffect(() => {
     setTimeout(() => {
       getUserDetail(id).then((response) => {
@@ -83,11 +68,7 @@ const ProfileInformation = ({ setIsQrCodeOpen, setIsEditProfileOpen, isQrCodeOpe
       });
     }, 1000);
   }, [isQrCodeOpen, isEditProfileOpen, location]);
-  // useEffect(() => {
-  //   // getAddr(areaLng, areaLat);
-  //   // console.log(areaLng, areaLat);
-  //   setLocation("동네를 설정해주세요");
-  // }, [areaLng, areaLat]);
+
   return (
     <div css={profileWrapper}>
       <ProfileEditButton text="프로필 수정하기" onClick={onClickEditProfileOpen} />

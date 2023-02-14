@@ -8,7 +8,6 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { shareDataState, checkAppointmentState } from "../../recoil/atom";
 import { getUserDetail } from "../../api/user";
 
-// https://stackblitz.com/edit/react-signature-canvas-demo?file=index.js
 function OathModal({ close, roomId, readOnly, oathSign, sequenceCompleteOpen }) {
   const canvasRef = useRef(null);
   const shareData = useRecoilValue(shareDataState);

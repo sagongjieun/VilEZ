@@ -18,13 +18,14 @@ const LoginForm = () => {
   const setLoginUser = useSetRecoilState(loginUserState);
   const setIsLogin = useSetRecoilState(isLoginState);
 
+  const [visible, setVisible] = useState(false);
+
   // 로그인
   const onSubmit = (values) => {
     postLogin(values.email, SHA256(values.password)).then((res) => {
       if (!res) return;
 
       // localstorage와 login에 유저 정보 저장
-      // 원래는 localstorage에는 token만 저장 -> 추후 수정
       localStorage.setItem("accessToken", res.accessToken);
       localStorage.setItem("refreshToken", res.refreshToken);
       localStorage.setItem("id", res.id);
@@ -32,6 +33,7 @@ const LoginForm = () => {
       localStorage.setItem("profileImg", res.profileImg);
       localStorage.setItem("areaLat", res.areaLat);
       localStorage.setItem("areaLng", res.areaLng);
+      localStorage.setItem("oauth", res.oauth);
 
       setLoginUser({
         id: res.id,
@@ -49,11 +51,11 @@ const LoginForm = () => {
     });
   };
 
-  const [visible, setVisible] = useState(false);
   const onClickVisible = (event) => {
     event.preventDefault();
     setVisible((prev) => !prev);
   };
+
   const { errors, handleChange, handleSubmit } = useForm({
     initialValues: {
       password: "",
@@ -62,6 +64,7 @@ const LoginForm = () => {
     onSubmit,
     Validation,
   });
+
   return (
     <form onSubmit={handleSubmit}>
       <div css={inputContainer}>
@@ -121,9 +124,11 @@ const loginLabelFont = css`
   font-weight: Bold;
   margin-bottom: 10px;
 `;
+
 const inputContainer = css`
   margin-bottom: 14px;
 `;
+
 const visibleButton = css`
   position: absolute;
   right: 24px;
@@ -132,6 +137,7 @@ const visibleButton = css`
   border: none;
   background-color: rgba(0, 0, 0, 0);
 `;
+
 const alertWrapper = css`
   color: red;
   display: flex;
@@ -139,6 +145,7 @@ const alertWrapper = css`
   padding-top: 3px;
   height: 21px;
 `;
+
 const alert = css`
   margin-right: 3px;
   display: flex;

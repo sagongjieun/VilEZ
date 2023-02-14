@@ -23,7 +23,6 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { getAppointmentsByBoardId, postChatRoom } from "../../api/appointment";
 import { deleteAskArticleByBoardId, getAskArticleDetailByBoardId } from "../../api/ask";
 import { getCheckMyRoom } from "../../api/appointment";
-// import RealDeleteModal from "../modal/RealDeleteModal";
 import { useSetRecoilState } from "recoil";
 import { boardState } from "../../recoil/atom";
 
@@ -34,6 +33,7 @@ const ProductDetail = () => {
   const loginUserId = localStorage.getItem("id"); // 로그인유저 id
   const type = pathname.includes("share") ? 2 : 1;
   const [writerId, setWriterId] = useState(""); // 공유자 id
+  const setBoardState = useSetRecoilState(boardState);
 
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
@@ -53,13 +53,8 @@ const ProductDetail = () => {
   const [level, setLevel] = useState(0);
   const [myPoint, setMyPoint] = useState(0);
   const [isDelete, setIsDelete] = useState(false);
-  // function checkSocialNickName() {
-  //   const nickName = localStorage.getItem("nickName");
-  //   if (nickName.slice(0, 1) === "바") {
-  //     alert("닉네임 변경을 진행해주세요.");
-  //     navigate("/socialnickname", { state: { url: "/mybox" } });
-  //   }
-  // }
+  const [isAppointment, setIsAppointment] = useState(false);
+
   function checkSocialNickName() {
     const nickName = localStorage.getItem("nickName");
     if (nickName.slice(0, 1) === "#") {
@@ -215,36 +210,22 @@ const ProductDetail = () => {
     }
   }, [boardId, loginUserId]);
 
-  const [isAppointment, setIsAppointment] = useState(false);
   useEffect(() => {
     getAppointmentsByBoardId(boardId, type).then((res) => {
-      console.log(res[0].length === 1);
       if (res[0].length === 1) {
         setIsAppointment(true);
       }
     });
   }, []);
-  const setBoardState = useSetRecoilState(boardState);
+
   function onClickShowDelete() {
     setIsDelete(!isDelete);
   }
+
   function onClickDelete() {
     if (isAppointment === true) {
       alert("예약중인 글은 삭제할 수 없어요😱");
     } else {
-      // client.connect({}, () => {
-      //   var sendMessage = {
-      //     boardId: boardId,
-      //     type: type,
-      //   };
-      //   client.send("/recvdelete", {}, JSON.stringify(sendMessage));
-
-      //   sendMessage = {
-      //     userId: userId,
-      //   };
-      //   client.send("/room_web", {}, JSON.stringify(sendMessage));
-      // });
-
       setBoardState([boardId, type]);
       type === 2
         ? deleteShareArticleByBoardId(boardId).then(() => {
@@ -257,7 +238,6 @@ const ProductDetail = () => {
   }
   return (
     <div css={wrapper}>
-      {/* 컴포넌트화 하고 싶은데 position이 잘 안 먹어서 일단 직접 만든 상태 */}
       {isDelete ? (
         <div css={DeleteTop}>
           <div css={DeleteWrap}>
@@ -360,8 +340,6 @@ const DeleteWrap = css`
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-
-  /* justify-content: space-between; */
 `;
 
 const buttonWrap = css`
@@ -402,7 +380,6 @@ const nickNameWrapper = css`
     height: 90px;
     margin-right: 20px;
     border-radius: 100%;
-    /* 화면 꽉 차게 해주는. */
     object-fit: cover;
   }
 
@@ -502,27 +479,5 @@ const hopeAreaWrapper = css`
     height: 479px;
   }
 `;
-
-// const relatedProductWrapper = css`
-//   margin: 50px 0;
-//   display: flex;
-//   flex-direction: column;
-
-//   & > div {
-//     display: flex;
-//     flex-direction: row;
-//   }
-
-//   & > div:nth-of-type(1) {
-//     margin-bottom: 30px;
-//     justify-content: space-between;
-//     align-items: flex-end;
-
-//     & > a {
-//       cursor: pointer;
-//       font-size: 18px;
-//     }
-//   }
-// `;
 
 export default ProductDetail;

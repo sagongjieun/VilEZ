@@ -20,6 +20,7 @@ const QrCodeTimer = (props) => {
       initialTime.current -= 1;
       setSec(padNumber(initialTime.current % 60, 1));
     }, 1000);
+
     return () => clearInterval(interval.current);
   }, []);
 
@@ -31,6 +32,7 @@ const QrCodeTimer = (props) => {
       clearInterval(interval.current);
     }
   }, [sec]);
+
   return (
     <div css={timerWrapper}>
       <div>
@@ -47,13 +49,16 @@ const timerWrapper = css`
   display: flex;
   flex-direction: column;
   align-items: center;
+
   & > div {
     color: #66dd9c;
+
     & > span {
       font-weight: bold;
       font-size: 14px;
     }
   }
+
   & > button {
     margin-left: 4px;
     margin-top: 10px;

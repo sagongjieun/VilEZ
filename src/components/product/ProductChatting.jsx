@@ -63,7 +63,6 @@ const ProductChatting = () => {
   const [isChatEnd, setIsChatEnd] = useState(false);
   const [isOtherLeave, setIsOtherLeave] = useState(false);
   const [myPoint, setMyPoint] = useState(0);
-
   const [isSequenceComplete, setIsSequenceComplete] = useState(false);
 
   // 채팅 나가기
@@ -183,13 +182,11 @@ const ProductChatting = () => {
 
   // StompREalTime.jsx에서 변경되는 share state값 받기
   function receiveShareState(state) {
-    console.log("2");
     setShareState(state);
   }
 
   // StompREalTime.jsx에서 변경되는 room state값 받기
   function receiveRoomState(state) {
-    console.log("2");
     setRoomState(state);
   }
 
@@ -212,7 +209,6 @@ const ProductChatting = () => {
 
         setBoardId(res.boardId);
         setBoardType(res.type);
-        console.log("333", res.state);
         setRoomState(res.state);
 
         // 로그인유저가 공유자면
@@ -246,7 +242,6 @@ const ProductChatting = () => {
         res = res[0];
 
         // 공유 전 상태
-        console.log("1");
         if (res == null) {
           setShareState(-3);
         } else if (res.status == 0) {

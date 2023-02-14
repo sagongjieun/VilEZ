@@ -16,7 +16,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 const { kakao } = window;
 
 const ProductPut = () => {
-  // const loginUserId = localStorage.getItem("id");
   const navigate = useNavigate();
   const boardId = parseInt(useParams().boardId);
   const [registType, setRegistType] = useState();
@@ -33,12 +32,11 @@ const ProductPut = () => {
   const type = pathname.includes("share") ? 2 : 1;
   const [tempSday, setTempSday] = useState("");
   const [tempEday, setTempEday] = useState("");
-  // console.log(boardId);
+
   useEffect(() => {
     type === 2
       ? getShareArticleByBoardId(boardId).then((res) => {
           const data = res[0];
-          // console.log(data);
           setTitle(data.title);
           setCategory(data.category);
 
@@ -62,10 +60,12 @@ const ProductPut = () => {
           setLocation(data.address);
         });
   }, []);
+
   function isValidDate(dateStr) {
     const date = new Date(dateStr);
     return !isNaN(date.getTime());
   }
+
   useEffect(() => {
     if (!isValidDate(startDay) || !isValidDate(endDay)) {
       return;
@@ -81,13 +81,15 @@ const ProductPut = () => {
   }
 
   function onChangeTitle(value) {
-    setTitle(value);
+    if (title.length > 30) {
+      alert("제목은 최대 30자 등록 가능해요 😥");
+    } else setTitle(value);
   }
 
   function receiveCategory(category) {
     setCategory(category);
   }
-  // 불변성 찾아보기 (배열, 객체)
+
   function receiveImageList(imageList) {
     setImageList(imageList);
   }
@@ -187,7 +189,6 @@ const ProductPut = () => {
       putShareArticle(formData)
         .then((res) => {
           res = res[0];
-          console.log(res);
           navigate(`/product/detail/share/${res.id}`);
         })
         .catch((error) => {
@@ -196,19 +197,17 @@ const ProductPut = () => {
     } else if (registType === "물품 요청 등록") {
       putAskArticle(formData)
         .then((res) => {
-          // console.log(res);
           navigate(`/product/detail/ask/${res[0].id}`);
         })
         .catch((error) => {
           console.log(error);
         });
     }
-    console.log(imageList);
   }
 
   return (
     <div css={wrapper}>
-      <ProductRegistType sendRegistType={receiveRegistType} type={registType} />
+      <ProductRegistType sendRegistType={receiveRegistType} type={registType} path={"modify"} />
       <DivideLine />
       <div css={titleWrapper}>
         <h3>
