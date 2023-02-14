@@ -72,8 +72,6 @@ const StompRealTime = ({
   const [cancelMessage, setCancelMessage] = useState({});
   const [otherUserProfileImage, setOtherUserProfileImage] = useState("");
   const [isOtherLeave, setIsOtherLeave] = useState(false);
-  const [isFirstChat, setIsFirstChat] = useState(true);
-  const [count, setCount] = useState(0);
 
   function onKeyDownSendMessage(e) {
     if (e.keyCode === 13) {
@@ -203,30 +201,20 @@ const StompRealTime = ({
           setHopeLocation(result[0].address.address_name);
         }
       });
-    } else {
-      setHopeLocation(location);
     }
 
-    console.log(count);
-    console.log(isFirstChat);
-    // console.log(lat, lng, zoomLevel, isMarker);
+    console.log(location, lat, lng, zoomLevel, isMarker);
 
-    if (zoomLevel) {
-      if (isFirstChat && count > 0) {
-        setCount(count + 1);
-      } else {
-        const sendMapData = {
-          roomId: chatRoomId,
-          toUserId: otherUserId,
-          lat: lat,
-          lng: lng,
-          zoomLevel: zoomLevel,
-          isMarker: isMarker,
-        };
+    const sendMapData = {
+      roomId: chatRoomId,
+      toUserId: otherUserId,
+      lat: lat,
+      lng: lng,
+      zoomLevel: zoomLevel,
+      isMarker: isMarker,
+    };
 
-        client.send("/recvmap", {}, JSON.stringify(sendMapData));
-      }
-    }
+    client.send("/recvmap", {}, JSON.stringify(sendMapData));
   }
 
   function onClickOpenCalendarModal() {
@@ -304,8 +292,6 @@ const StompRealTime = ({
               setHopeLocation(result[0].address.address_name);
             }
           });
-
-          setIsFirstChat(false);
         }
         // 마지막 장소가 없다면
         else {
@@ -317,8 +303,6 @@ const StompRealTime = ({
 
           setDisableMapLat(37.56682870560737);
           setDisableMapLng(126.9786409384806);
-
-          setIsFirstChat(true);
         }
       });
     }
