@@ -19,6 +19,7 @@ const ProductCalendar = ({ sendStartDate, sendEndDate }) => {
       sendEndDate(endDate);
     }
   }, [endDate]);
+
   return (
     <div
       css={css`

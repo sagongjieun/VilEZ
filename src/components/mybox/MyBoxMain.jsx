@@ -15,15 +15,19 @@ const MyBoxMain = () => {
     </div>
   );
 };
+
 const mainWrapper = css`
   padding: 30px 0;
+
   > div:nth-of-type(1) {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     & > h2 {
       padding-bottom: 10px;
     }
+
     & > div {
       width: 140px;
       display: flex;

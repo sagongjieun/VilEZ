@@ -3,11 +3,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-// import { useLocation, useParams } from "react-router-dom";
-// import { getShareArticleByBoardId } from "../../api/share";
 
 const ProductCalendar = ({ sendStartDate, sendEndDate, defaultStartDay, defaultEndDay }) => {
-  //
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
 
@@ -22,6 +19,7 @@ const ProductCalendar = ({ sendStartDate, sendEndDate, defaultStartDay, defaultE
       sendStartDate(startDate);
     }
   }, [startDate]);
+
   useEffect(() => {
     if (endDate) {
       sendEndDate(endDate);

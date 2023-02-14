@@ -16,7 +16,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 const { kakao } = window;
 
 const ProductPut = () => {
-  // const loginUserId = localStorage.getItem("id");
   const navigate = useNavigate();
   const boardId = parseInt(useParams().boardId);
   const [registType, setRegistType] = useState();
@@ -61,10 +60,12 @@ const ProductPut = () => {
           setLocation(data.address);
         });
   }, []);
+
   function isValidDate(dateStr) {
     const date = new Date(dateStr);
     return !isNaN(date.getTime());
   }
+
   useEffect(() => {
     if (!isValidDate(startDay) || !isValidDate(endDay)) {
       return;
@@ -86,7 +87,7 @@ const ProductPut = () => {
   function receiveCategory(category) {
     setCategory(category);
   }
-  // 불변성 찾아보기 (배열, 객체)
+
   function receiveImageList(imageList) {
     setImageList(imageList);
   }

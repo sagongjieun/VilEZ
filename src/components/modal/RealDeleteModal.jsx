@@ -40,7 +40,6 @@ const DeleteWrap = css`
 
   display: flex;
   flex-direction: column-reverse;
-  /* justify-content: space-between; */
 `;
 
 const buttonWrap = css`

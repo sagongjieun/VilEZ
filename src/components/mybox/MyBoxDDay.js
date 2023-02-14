@@ -5,4 +5,5 @@ function MyBoxDDay(specificDay) {
   const result = Math.ceil(gap / (1000 * 60 * 60 * 24));
   return result;
 }
+
 export default MyBoxDDay;
