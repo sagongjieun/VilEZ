@@ -25,6 +25,7 @@ function ReportConfirm() {
   }
   return null;
 }
+
 const confirmWrap = css`
   font-size: 20px;
   margin: auto;
@@ -38,10 +39,12 @@ const confirmWrap = css`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
   > div {
     padding: 10px;
   }
 `;
+
 const goodbutton = css`
   width: 105px;
   background-color: #66dd9c;
@@ -53,4 +56,5 @@ const goodbutton = css`
   margin-top: 20px;
   cursor: pointer;
 `;
+
 export default ReportConfirm;

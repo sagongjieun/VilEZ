@@ -31,7 +31,6 @@ const ProductDetailFooter = () => {
         <span>맨 위로 이동하기</span>
         <HiChevronRight size="22" />
       </div>
-      {/* <span>{showReport ? <Report close={setShowReport} /> : null}</span> */}
     </div>
   );
 };

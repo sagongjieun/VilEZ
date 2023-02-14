@@ -3,18 +3,11 @@ import { Link } from "react-router-dom";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { HiCalendar, HiHeart } from "react-icons/hi";
-// import elapsedTime from "../product/ProductElapsedTime";
-// import { getCheckMyRoom } from "../../api/appointment";
 
 const MyBoxCardView = ({ title, endDay, startDay, thumbnail, dDay, roomId, bookmarkCnt }) => {
   const endDayDotted = endDay?.slice(0, 4) + "." + endDay?.slice(5, 7) + "." + endDay?.slice(8, 10);
   const startDayDotted = startDay?.slice(0, 4) + "." + startDay?.slice(5, 7) + "." + startDay?.slice(8, 10);
-  // const [myRoomId, setMyRoomId] = useState(0);
-  // useEffect(() => {
-  //   getCheckMyRoom(boardId, type, userId).then((response) => {
-  //     setMyRoomId(response[0].id);
-  //   });
-  // }, [appId]);
+
   return (
     <Link
       to={`/product/chat/${roomId}`}
@@ -30,7 +23,6 @@ const MyBoxCardView = ({ title, endDay, startDay, thumbnail, dDay, roomId, bookm
         <div css={infoWrapper}>
           <div>
             <span>{title}</span>
-            {/* <small css={timeWrapper}>{elapsedTime(date)}</small> */}
           </div>
           <div>
             <small>
@@ -59,6 +51,7 @@ const relatedProductWrapper = css`
   flex-direction: column;
   justify-content: space-between;
   transition: all 0.3s;
+
   :hover {
     transform: scale(1.02) translateY(-4px);
     transition: all 0.3s;
@@ -71,6 +64,7 @@ const thumbnailWrapper = css`
   height: 170px;
   background: #d9d9d9;
   border-radius: 10px 10px 0 0;
+
   & > div {
     position: absolute;
     background-color: #66dd9c;
@@ -82,6 +76,7 @@ const thumbnailWrapper = css`
     text-align: center;
     color: #fff;
   }
+
   & > img {
     width: 100%;
     height: 170px;
@@ -89,11 +84,6 @@ const thumbnailWrapper = css`
     border-radius: 10px 10px 0 0;
   }
 `;
-
-// const timeWrapper = css`
-//   width: 70px;
-//   text-align: right;
-// `;
 
 const infoWrapper = css`
   height: 80px;
@@ -108,6 +98,7 @@ const infoWrapper = css`
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
   & small {
     color: #8a8a8a;
     font-size: 12px;

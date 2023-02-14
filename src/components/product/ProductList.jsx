@@ -20,7 +20,6 @@ const ProductList = () => {
   const [search, setSearch] = useState("");
   const [getArticle, setArticles] = useState([]); // 공유 글
   const [askArticles, setAskArticles] = useState([]); // 요청 글
-  // const [originalArticle, setOriginalArticle] = useState([]);
 
   // 무한 스크롤 관련 변수. cnt가 페이지번호를 담당, 일정 기준 이상 스크롤시 cnt 증가, 페이지 숫자가 증가하는 것
   const [cnt, setCnt] = useState(0);
@@ -34,22 +33,18 @@ const ProductList = () => {
   // 무한 스크롤 관련
   useEffect(() => {
     const handleScroll = () => {
-      // get the scroll position and the height of the page
       const scrollTop = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
       const clientHeight = document.documentElement.clientHeight || window.innerHeight;
       const scrollHeight =
         (document.documentElement && document.documentElement.scrollHeight) || document.body.scrollHeight;
 
-      // check if the scroll position is at the bottom of the page and there are more articles to load
       if (scrollTop + clientHeight >= scrollHeight && getArticle.length) {
         setCnt(cnt + 1);
       }
     };
 
-    // add the scroll event listener
     window.addEventListener("scroll", handleScroll);
 
-    // remove the scroll event listener when unmounting the component
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -122,7 +117,6 @@ const ProductList = () => {
     setCnt(0);
     setArticles([]);
     setAskArticles([]);
-    // setOriginalArticle([]);
   }
 
   const allowedCharsRegex = /^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣 ]*$/;
@@ -171,7 +165,7 @@ const ProductList = () => {
 
   return (
     <div css={topWrap}>
-      <div css={contentWrap}>
+      <div>
         <div css={listWrap}>
           <h2>{list}</h2>
           <div css={buttonDiv}>
@@ -270,18 +264,18 @@ const topWrap = css`
   margin-top: 70px;
   height: 100%;
 `;
-const contentWrap = css``;
 
 const listWrap = css`
   display: flex;
   align-items: center;
   justify-content: space-between !important;
-
   width: 100%;
+
   & h2:nth-of-type(1) {
     width: 60%;
   }
 `;
+
 const buttonDiv = css`
   display: flex;
   width: 150px;
@@ -289,10 +283,10 @@ const buttonDiv = css`
   height: 30%;
   margin-bottom: 20px;
 `;
+
 const filterWrap = css`
   display: flex;
   justify-content: space-between;
-  /* padding-bottom: 30px; */
   margin-top: 35px;
   position: relative;
 `;
@@ -308,6 +302,7 @@ const filterRighWrap = css`
   justify-content: right;
   align-items: center;
 `;
+
 const MainInputBox = css`
   box-sizing: border-box;
   display: block;
@@ -329,6 +324,7 @@ const searchWrap = css`
   width: 50%;
   padding: 1px;
   position: relative;
+
   & > img {
     position: absolute;
     width: 14px;
@@ -360,7 +356,6 @@ const relatedProductWrapper = css`
   height: 100%;
   margin-right: 50px;
   border-radius: 10px;
-
   cursor: pointer;
 
   & > div {
@@ -406,13 +401,13 @@ const infoWrapper = css`
     overflow: hidden;
     margin-top: 5px;
   }
+
   & > div:nth-of-type(1) span {
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 180px;
     white-space: nowrap;
     width: 100%;
-
     font-weight: 100;
   }
 
@@ -421,12 +416,14 @@ const infoWrapper = css`
     flex-direction: row;
     overflow: hidden;
     margin-top: 10px;
+
     & > div:nth-of-type(2) span {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       width: 100%;
     }
+
     & > small {
       margin-right: 10px;
       display: flex;

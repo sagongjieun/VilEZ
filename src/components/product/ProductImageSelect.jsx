@@ -6,6 +6,7 @@ import MiddleWideButton from "../button/MiddleWideButton";
 import { useLocation, useParams } from "react-router-dom";
 import { getShareArticleByBoardId } from "../../api/share";
 import { getAskArticleDetailByBoardId } from "../../api/ask";
+
 const ProductImageSelect = ({ sendImageList }) => {
   const pathname = useLocation().pathname;
   const boardId = parseInt(useParams().boardId);
@@ -61,7 +62,6 @@ const ProductImageSelect = ({ sendImageList }) => {
       <div>
         {imageList.map((image, index) => (
           <small key={index}>
-            {/* 등록글 - name으로 // 수정글 - 이미 있는 리스트는 fileName 메서드 // 추후 코드리뷰 해야. */}
             {type === 100 ? image.name : typeof image.fileName !== "undefined" ? image.fileName : image.name}
 
             <AiOutlineClose onClick={() => onClickDeleteImage(image)} />

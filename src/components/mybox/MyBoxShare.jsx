@@ -10,6 +10,7 @@ const MyBoxShare = (props) => {
   const [myBoard, setMyBoard] = useState([]);
   const [mySharingBoard, setMySharingBoard] = useState([]);
   const [myToBeSharedBoard, setMyToBeSharedBoard] = useState([]);
+
   useEffect(() => {
     getMyShareAppointments(userId).then((response) => {
       setMyBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.appointmentStart) <= 0));
@@ -17,6 +18,7 @@ const MyBoxShare = (props) => {
       setMyToBeSharedBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.appointmentStart) > 0));
     });
   }, []);
+
   useEffect(() => {
     props.setSharePages(1);
     if (props.myShareType === 1) {
@@ -25,9 +27,11 @@ const MyBoxShare = (props) => {
       setMyBoard(myToBeSharedBoard);
     }
   }, [props.myShareType]);
+
   useEffect(() => {
     props.setShareDefaultPages(parseInt((myBoard?.length - 1) / 3) + 1);
   }, [myBoard]);
+
   return (
     <div css={cardWrapper(props.sharePages)}>
       {myBoard?.length > 0 ? (
@@ -69,8 +73,10 @@ const appear = keyframes`
     opacity: 1;
   }
 `;
+
 const cardWrapper = (pages) => {
   const cards = pages * 3;
+
   return css`
     position: relative;
     display: grid;
@@ -79,12 +85,14 @@ const cardWrapper = (pages) => {
     column-gap: 20px;
     height: calc(6px + ${pages}* 274px);
     transition: all 0.5s;
+
     & > div {
       display: none;
       opacity: 1;
       min-width: 300px;
       transition: all 0.3s;
     }
+
     & > div:nth-of-type(-n + ${cards}) {
       display: block;
       animation-name: ${appear};
