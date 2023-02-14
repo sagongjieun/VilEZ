@@ -147,22 +147,21 @@ const Map = ({
     var sw = new kakao.maps.LatLng(parseFloat(areaLat) - 0.03, parseFloat(areaLng) - 0.045), // 사각형 영역의 남서쪽 좌표
       ne = new kakao.maps.LatLng(parseFloat(areaLat) + 0.03, parseFloat(areaLng) + 0.045); // 사각형 영역의 북동쪽 좌표
 
-    // 사각형을 구성하는 영역정보를 생성합니다
-    // 사각형을 생성할 때 영역정보는 LatLngBounds 객체로 넘겨줘야 합니다
+    // 사각형을 구성하는 영역정보를 생성
     var rectangleBounds = new kakao.maps.LatLngBounds(sw, ne);
 
-    // 지도에 표시할 사각형을 생성합니다
+    // 지도에 표시할 사각형을 생성
     rectangle = new kakao.maps.Rectangle({
-      bounds: rectangleBounds, // 그려질 사각형의 영역정보입니다
-      strokeWeight: 2, // 선의 두께입니다
-      strokeColor: "#66DD9C", // 선의 색깔입니다
-      strokeOpacity: 0.3, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-      strokeStyle: "shortdashdot", // 선의 스타일입니다
-      fillColor: "#ACF0CB", // 채우기 색깔입니다
-      fillOpacity: 0.45, // 채우기 불투명도 입니다
+      bounds: rectangleBounds, // 그려질 사각형의 영역정보
+      strokeWeight: 2, // 선의 두께
+      strokeColor: "#66DD9C", // 선의 색깔
+      strokeOpacity: 0.3, // 선의 불투명도 (1에서 0 사이의 값이며 0에 가까울수록 투명)
+      strokeStyle: "shortdashdot", // 선의 스타일
+      fillColor: "#ACF0CB", // 채우기 색깔
+      fillOpacity: 0.45, // 채우기 불투명도
     });
 
-    // 지도에 사각형을 표시합니다
+    // 지도에 사각형을 표시
     rectangle.setMap(map);
   }
 

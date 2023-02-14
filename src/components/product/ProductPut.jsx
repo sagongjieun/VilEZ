@@ -204,7 +204,7 @@ const ProductPut = () => {
 
   return (
     <div css={wrapper}>
-      <ProductRegistType sendRegistType={receiveRegistType} type={registType} />
+      <ProductRegistType sendRegistType={receiveRegistType} type={registType} path={"modify"} />
       <DivideLine />
       <div css={titleWrapper}>
         <h3>
