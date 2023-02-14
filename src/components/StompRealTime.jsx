@@ -114,12 +114,8 @@ const StompRealTime = ({
     geocoder.coord2Address(lng, lat, callback);
   }
 
-  const [counter, setCounter] = useState(0);
-
   // Map에서 받은 데이터로 서버에 전송
   function receiveLocation(location, lat, lng, zoomLevel, isMarker) {
-    setCounter(counter + 1);
-
     if (lat && lng && isMarker) {
       searchDetailAddrFromCoords(lat, lng, function (result, status) {
         if (status === kakao.maps.services.Status.OK) {
@@ -130,19 +126,19 @@ const StompRealTime = ({
       setHopeLocation(location);
     }
 
-    if (counter > 1) {
-      if (lat && lng && zoomLevel) {
-        const sendMapData = {
-          roomId: chatRoomId,
-          toUserId: otherUserId,
-          lat: lat,
-          lng: lng,
-          zoomLevel: zoomLevel,
-          isMarker: isMarker,
-        };
+    console.log(location, lat, lng, zoomLevel, isMarker);
 
-        client.send("/recvmap", {}, JSON.stringify(sendMapData));
-      }
+    if (lat && lng && zoomLevel) {
+      const sendMapData = {
+        roomId: chatRoomId,
+        toUserId: otherUserId,
+        lat: lat,
+        lng: lng,
+        zoomLevel: zoomLevel,
+        isMarker: isMarker,
+      };
+
+      client.send("/recvmap", {}, JSON.stringify(sendMapData));
     }
   }
 
