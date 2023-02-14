@@ -19,7 +19,6 @@ const CalendarModal = ({ setCalendarModalOpen, boardId, shareState }) => {
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-
   const [selectedStartDay, setSelectedStartDay] = useState("");
   const [selectedEndDay, setSelectedEndDay] = useState("");
   const [blockDate, setBlockDate] = useState([]);
@@ -80,11 +79,11 @@ const CalendarModal = ({ setCalendarModalOpen, boardId, shareState }) => {
   }, []);
 
   useEffect(() => {
-    // readOnly
     if (shareState != -3) {
       getAppointmentDate(boardId, shareData.notShareUserId, shareData.shareUserId, shareData.boardType).then((res) => {
         if (res) {
-          const start = res.appointmentStart; // "yyyy-mm-dd"
+          // "yyyy-mm-dd"
+          const start = res.appointmentStart;
           const end = res.appointmentEnd;
           setStartDate(new Date(start));
           setEndDate(new Date(end));

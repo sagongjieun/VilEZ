@@ -63,7 +63,6 @@ const ProductChatting = () => {
   const [isChatEnd, setIsChatEnd] = useState(false);
   const [isOtherLeave, setIsOtherLeave] = useState(false);
   const [myPoint, setMyPoint] = useState(0);
-
   const [isSequenceComplete, setIsSequenceComplete] = useState(false);
 
   // 채팅 나가기

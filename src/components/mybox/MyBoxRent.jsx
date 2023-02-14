@@ -10,6 +10,7 @@ const MyBoxRent = (props) => {
   const [myBoard, setMyBoard] = useState([]);
   const [myBeingRentedBoard, setMyBeingRentedBoard] = useState([]);
   const [myToBeRentedBoard, setMyToBeRentedBoard] = useState([]);
+
   useEffect(() => {
     getMyRentAppointments(userId).then((response) => {
       setMyBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.appointmentStart) <= 0));
@@ -17,6 +18,7 @@ const MyBoxRent = (props) => {
       setMyToBeRentedBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.appointmentStart) > 0));
     });
   }, []);
+
   useEffect(() => {
     props.setRentPages(1);
     if (props.myRentType === 1) {
@@ -25,9 +27,11 @@ const MyBoxRent = (props) => {
       setMyBoard(myToBeRentedBoard);
     }
   }, [props.myRentType]);
+
   useEffect(() => {
     props.setRentDefaultPages(parseInt((myBoard?.length - 1) / 3) + 1);
   }, [myBoard]);
+
   return (
     <div css={cardWrapper(props.rentPages)}>
       {myBoard?.length > 0 ? (
@@ -69,8 +73,10 @@ const appear = keyframes`
     opacity: 1;
   }
 `;
+
 const cardWrapper = (pages) => {
   const cards = pages * 3;
+
   return css`
     position: relative;
     display: grid;
@@ -79,12 +85,14 @@ const cardWrapper = (pages) => {
     column-gap: 20px;
     height: calc(6px + ${pages}* 274px);
     transition: all 0.5s;
+
     & > div {
       display: none;
       opacity: 1;
       min-width: 300px;
       transition: all 0.3s;
     }
+
     & > div:nth-of-type(-n + ${cards}) {
       display: block;
       animation-name: ${appear};

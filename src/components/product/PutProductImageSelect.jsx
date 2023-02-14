@@ -7,9 +7,7 @@ import { useLocation } from "react-router-dom";
 
 const ProductImageSelect = ({ sendImageList }) => {
   const pathname = useLocation().pathname;
-
   const type = pathname.includes("regist") ? 100 : pathname.includes("edit") ? 3 : 102;
-
   const [imageList, setImageList] = useState([]);
 
   function onClickFileUpload() {
@@ -48,7 +46,6 @@ const ProductImageSelect = ({ sendImageList }) => {
       <div>
         {imageList.map((image, index) => (
           <small key={index}>
-            {/* 등록글 - name으로 // 수정글 - 이미 있는 리스트는 fileName 메서드 // 추후 코드리뷰 해야. */}
             {type === 100 ? image.name : typeof image.fileName !== "undefined" ? image.fileName : image.name}
 
             <AiOutlineClose onClick={() => onClickDeleteImage(image)} />

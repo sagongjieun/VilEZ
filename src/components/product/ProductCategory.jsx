@@ -36,6 +36,7 @@ const ProductCategory = ({ isMain, sendCategory, list }) => {
 
   const [openCategory, setOpenCategory] = useState(false);
   const [category, setCategory] = useState(list === true ? "전체" : "카테고리");
+
   function onClickOpenCategory() {
     if (openCategory) {
       setOpenCategory(false);
@@ -52,13 +53,7 @@ const ProductCategory = ({ isMain, sendCategory, list }) => {
   useEffect(() => {
     sendCategory(category);
   }, [category]);
-  // const getLeftValue = () => {
-  //   if (categoryTypeList.length >= 10 || categoryType.length >= 10) {
-  //     return 210;
-  //   } else {
-  //     return 130;
-  //   }
-  // };
+
   return (
     <div css={isMain ? categoryWrapper : noBorder}>
       <span>{category}</span>
