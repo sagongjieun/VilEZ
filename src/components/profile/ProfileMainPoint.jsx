@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ProfilePointDetails from "./ProfilePointDetails";
-// import ProfilePointGraph from "./ProfilePointGraph";
+import ProfilePointGraph from "./ProfilePointGraph";
 /** @jsxImportSource @emotion/react */
 // import { css } from "@emotion/react";
 import { getPointListByUserId } from "../../api/appointment";
@@ -17,7 +17,7 @@ const ProfileMainPoint = () => {
   return (
     <div>
       <ProfilePointDetails data={data} />
-      {/* <ProfilePointGraph data={data} /> */}
+      <ProfilePointGraph data={data} />
     </div>
   );
 };

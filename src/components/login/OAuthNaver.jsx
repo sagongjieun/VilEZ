@@ -27,6 +27,8 @@ const OAuthNaver = () => {
       localStorage.setItem("oauth", resData.oauth);
       setNickname(resData.nickName);
 
+      console.log(response[0]);
+
       setLoginUser({
         id: resData.id,
         nickName: resData.nickName,
