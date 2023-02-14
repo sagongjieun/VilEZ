@@ -5,7 +5,7 @@ import { HiChevronDown, HiChevronUp } from "react-icons/hi2";
 import DivideLine from "./../common/DivideLine";
 import { useLocation } from "react-router-dom";
 
-const ProductRegistType = ({ sendRegistType, sendType }) => {
+const ProductRegistType = ({ sendRegistType, sendType, path }) => {
   const pathname = useLocation().pathname;
   const type = pathname.includes("share")
     ? "물품 공유 등록"
@@ -49,9 +49,11 @@ const ProductRegistType = ({ sendRegistType, sendType }) => {
   return (
     <div css={registTypeWrapper}>
       <h2>{registType}</h2>
-      <button onClick={onClickOpenRegistType}>
-        {openRegistType ? <HiChevronUp size="18" /> : <HiChevronDown size="18" />}
-      </button>
+      {path !== "modify" && (
+        <button onClick={onClickOpenRegistType}>
+          {openRegistType ? <HiChevronUp size="18" /> : <HiChevronDown size="18" />}
+        </button>
+      )}
       {openRegistType ? (
         <div>
           <span onClick={() => onClickRegistType(1)}>물품 공유 등록</span>

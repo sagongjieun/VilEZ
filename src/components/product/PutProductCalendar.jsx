@@ -7,14 +7,10 @@ import { css } from "@emotion/react";
 // import { getShareArticleByBoardId } from "../../api/share";
 
 const ProductCalendar = ({ sendStartDate, sendEndDate, defaultStartDay, defaultEndDay }) => {
-  // console.log("=======1=======");
-  // console.log(defaultStartDay);
-  // console.log(defaultEndDay);
   //
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
-  // console.log(typeof defaultStartDay);
-  // invalid day...
+
   useEffect(() => {
     if (defaultStartDay && defaultEndDay) {
       setDateRange([defaultStartDay, defaultEndDay]);

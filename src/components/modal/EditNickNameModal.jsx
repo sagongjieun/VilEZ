@@ -67,33 +67,23 @@ function EditNickNameModal({ url }) {
       });
     }
   }
-  // function onClickVisible() {
-  //   setIsVisible((prev) => !prev);
-  // }
+
   function onClickDeleteNickName() {
     setNickName("");
     setNickNameCheck("");
     setIsNickNameOpen(false);
-    console.log("here");
   }
-  // function onClickDeletePassword() {
-  //   setIsDeleted(true);
-  // setPassword("");
-  // setPassword2("");
-  // setIsPasswordOpen(false);
-  //   console.log("here");
-  // }
+
   function receiveImageList(imageList) {
     setImageList(imageList);
   }
+
   function onClickCancle() {
-    // setIsEditProfileOpen(false);
     navigate("/");
   }
+
   function onSubmit() {
-    // if ((isNickNameAvailable || !isNickNameOpen) && !passwordError && !password2Error && nickName) {
     if ((isNickNameAvailable || !isNickNameOpen) && nickName) {
-      // putUserPasswordNickName(userId, nickName, password).then((response) => {
       putUserPasswordNickName(userId, nickName).then((response) => {
         if (response) {
           setLoginUser((prev) => {
@@ -112,7 +102,7 @@ function EditNickNameModal({ url }) {
               }
             });
           }
-          console.log(nickName, "nickName");
+
           localStorage.setItem("nickName", nickName);
           alert("프로필 정보가 변경되었어요.");
           navigate(url);
@@ -135,6 +125,7 @@ function EditNickNameModal({ url }) {
       setUserProfileImage(response.profile_img);
     });
   }, []);
+
   useEffect(() => {
     if (nickName === userNickName && nickName) {
       setNickNameError(`${nickName}"은(는) 현재 닉네임과 동일합니다.`);
@@ -144,35 +135,7 @@ function EditNickNameModal({ url }) {
       setNickNameError("");
     }
   }, [nickName]);
-  // useEffect(() => {
-  //   if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/i.test(password) && password) {
-  //     setPasswordError("영어 소문자, 숫자 조합 8~16자리로 입력해주세요.");
-  //   } else {
-  //     setPasswordError("");
-  //   }
-  // }, [password]);
-  // useEffect(() => {
-  //   if (password !== password2 && password2) {
-  //     setPassword2Error("비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
-  //   } else {
-  //     setPassword2Error("");
-  //   }
-  //   if (password || password2) {
-  //     setIsDeleted(false);
-  //   } else {
-  //     setIsDeleted(true);
-  //   }
-  // }, [password, password2]);
-  // useEffect(() => {
-  //   if (password && password2 && !passwordError && !password2Error) {
-  //     setIsPasswordConfirmed("비밀번호가 일치합니다.");
-  //   } else {
-  //     setIsPasswordConfirmed("");
-  //   }
-  // }, [passwordError, password2Error]);
-  useEffect(() => {
-    console.log(imageList);
-  }, [imageList]);
+
   return (
     <form css={EditProfileBox}>
       <h3>프로필 수정</h3>

@@ -57,8 +57,7 @@ const SignupForm = () => {
       nickName,
     };
     if (isNickNameAvailable && isCodeConfirmed) {
-      postUserInformation(userInformation).then((response) => {
-        console.log(response);
+      postUserInformation(userInformation).then(() => {
         navigate("/login");
       });
     }

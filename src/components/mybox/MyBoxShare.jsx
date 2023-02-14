@@ -12,11 +12,9 @@ const MyBoxShare = (props) => {
   const [myToBeSharedBoard, setMyToBeSharedBoard] = useState([]);
   useEffect(() => {
     getMyShareAppointments(userId).then((response) => {
-      // setMyBoard(response.filter((res) => new Date(res.myAppointListVO.startDay) < new Date()));
       setMyBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.appointmentStart) <= 0));
       setMySharingBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.appointmentStart) <= 0));
       setMyToBeSharedBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.appointmentStart) > 0));
-      console.log(response);
     });
   }, []);
   useEffect(() => {

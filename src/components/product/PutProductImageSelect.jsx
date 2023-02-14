@@ -11,13 +11,6 @@ const ProductImageSelect = ({ sendImageList }) => {
   const type = pathname.includes("regist") ? 100 : pathname.includes("edit") ? 3 : 102;
 
   const [imageList, setImageList] = useState([]);
-  // console.log("자식컴포넌트", imageList);
-  // useEffect(() => {
-  //   if (imageList) {
-  //     setImageList(defaultImageList);
-  //     console.log("IF");
-  //   }
-  // }, []);
 
   function onClickFileUpload() {
     const fileInput = document.getElementById("file-input");

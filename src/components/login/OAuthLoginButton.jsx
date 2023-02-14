@@ -27,6 +27,7 @@ const oauthButton = css`
   padding: 0 20px;
   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
 `;
+
 const socialLogo = css`
   position: absolute;
   left: 20px;
@@ -37,6 +38,7 @@ const socialLogo = css`
   justify-content: center;
   align-items: center;
 `;
+
 const socialName = css`
   width: 100%;
   text-align: center;

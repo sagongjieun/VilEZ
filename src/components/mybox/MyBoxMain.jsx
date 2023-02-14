@@ -2,31 +2,9 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import MyBoxHeader from "./MyBoxHeader";
-// import { Routes, Route } from "react-router-dom";
-// import { getAppointmentsByUserId } from "../../api/appointment";
 import MyBoxBody from "./MyBoxBody";
 
 const MyBoxMain = () => {
-  // const userId = localStorage.getItem("id");
-  // const [myShareList, setMyShareList] = useState([]);
-  // const [myRentList, setMyRentList] = useState([]);
-  // const [myAppointList, setMyAppointList] = useState([]);
-  // console.log(myShareList, myRentList, myAppointList);
-
-  // useEffect(() => {
-  //   getAppointmentsByUserId(userId).then((response) => {
-  //     setMyAppointList([]);
-  //     console.log(response);
-  //   });
-  //   getShareListByUserId(userId).then((response) => {
-  //     console.log(response);
-  //     setMyShareList([]);
-  //   });
-  //   getNotShareListByUserId(userId).then((response) => {
-  //     console.log(response);
-  //     setMyRentList([]);
-  //   });
-  // }, []);
   return (
     <div css={mainWrapper}>
       <div>
@@ -53,34 +31,5 @@ const mainWrapper = css`
     }
   }
 `;
-// const basicButton = css`
-//   cursor: pointer;
-//   height: 35px;
-//   background-color: #66dd9c;
-//   width: 100%;
-//   font-size: 14px;
-//   border: 1px solid #66dd9c;
-//   color: #fff;
-// `;
-// const borderedButton = css`
-//   cursor: pointer;
-//   height: 35px;
-//   background-color: #fff;
-//   width: 100%;
-//   font-size: 14px;
-//   border: 1px solid #66dd9c;
-//   color: #66dd9c;
-//   :hover {
-//     background-color: #acf0cb32;
-//   }
-// `;
-// const squareButton = css`
-//   border-radius: 5px;
-// `;
-// const roundButton = css`
-//   border-radius: 20px;
-// `;
-
-// const appointContainer = css``;
 
 export default MyBoxMain;

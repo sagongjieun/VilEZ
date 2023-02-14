@@ -5,7 +5,6 @@ import MyBoxCardView2 from "./MyBoxCardView2";
 import { getMyRentAppointments } from "../../api/appointment";
 import MyBoxDDay from "./MyBoxDDay";
 
-// const id = localStorage.getItem("id");
 const MyBoxRent = (props) => {
   const userId = localStorage.getItem("id");
   const [myBoard, setMyBoard] = useState([]);
@@ -13,11 +12,9 @@ const MyBoxRent = (props) => {
   const [myToBeRentedBoard, setMyToBeRentedBoard] = useState([]);
   useEffect(() => {
     getMyRentAppointments(userId).then((response) => {
-      // setMyBoard(response.filter((res) => new Date(res.myAppointListVO.startDay) < new Date()));
       setMyBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.appointmentStart) <= 0));
       setMyBeingRentedBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.appointmentStart) <= 0));
       setMyToBeRentedBoard(response.filter((res) => MyBoxDDay(res.myAppointListVO.appointmentStart) > 0));
-      console.log(response);
     });
   }, []);
   useEffect(() => {

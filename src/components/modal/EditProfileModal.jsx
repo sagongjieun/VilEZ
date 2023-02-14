@@ -72,14 +72,12 @@ function EditProfile({ setIsEditProfileOpen }) {
     setNickName("");
     setNickNameCheck("");
     setIsNickNameOpen(false);
-    console.log("here");
   }
   function onClickDeletePassword() {
     setIsDeleted(true);
     setPassword("");
     setPassword2("");
     setIsPasswordOpen(false);
-    console.log("here");
   }
   function receiveImageList(imageList) {
     setImageList(imageList);
