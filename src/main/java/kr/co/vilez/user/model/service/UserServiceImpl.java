@@ -124,7 +124,7 @@ public class UserServiceImpl implements UserService {
             return http;
         }
 
-        String [] formats = {".jpeg", ".png", ".bmp", ".jpg"};
+        String [] formats = {".jpeg", ".png", ".bmp", ".jpg", ".PNG", ".JPEG"};
         // 원래 파일 이름 추출
         String origName = multipartFile.getOriginalFilename();
 
