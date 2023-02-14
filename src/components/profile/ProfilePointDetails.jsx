@@ -145,6 +145,7 @@ const pointListWrapper = css`
   align-items: center;
 `;
 const pointItem = css`
+  box-sizing: border-box;
   height: 100px;
   width: 100%;
   display: flex;
@@ -154,6 +155,7 @@ const pointItem = css`
   padding: 10px 0;
 
   & > div {
+    box-sizing: border-box;
     display: flex;
     justify-content: space-between;
     align-items: end;

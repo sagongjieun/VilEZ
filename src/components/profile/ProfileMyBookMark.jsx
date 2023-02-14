@@ -24,19 +24,18 @@ const ProfileMyBookMark = (props) => {
   return (
     <div css={cardWrapper(props.bookMarkPages)}>
       {myBookMarkBoard && myBookMarkBoard.length > 0 ? (
-        myBookMarkBoard.map((bookMarkData) => {
-          const share = bookMarkData.shareListDto;
+        myBookMarkBoard.map((bookMarkData, idx) => {
           return (
-            <div key={share.id}>
+            <div key={idx}>
               <ProfileCardView
-                title={share.title}
-                endDay={share.endDay}
-                startDay={share.startDay}
-                date={share.date}
-                thumbnail={share.list[0]?.path}
+                title={bookMarkData.shareListDto.title}
+                endDay={bookMarkData.shareListDto.endDay}
+                startDay={bookMarkData.shareListDto.startDay}
+                date={bookMarkData.shareListDto.date}
+                thumbnail={bookMarkData.shareListDto.list[0]?.path}
                 boardType={"share"}
-                boardId={share.id}
-                bookMarkCnt={share.bookmarkCnt}
+                boardId={bookMarkData.shareListDto.id}
+                bookMarkCnt={bookMarkData.shareListDto.bookmarkCnt}
               />
             </div>
           );

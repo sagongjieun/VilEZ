@@ -152,7 +152,7 @@ const navStyle = css`
   height: 70px;
   backdrop-filter: blur(3px);
   background-color: rgba(255, 255, 255, 0);
-  border-bottom: 1px solid #0e0e0e14;
+  /* border-bottom: 1px solid #0e0e0e14; */
   flex-direction: row;
   align-items: center;
   padding: 0 200px 0 0;
