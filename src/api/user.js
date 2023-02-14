@@ -15,7 +15,7 @@ async function getUserDetail(userId) {
 
 async function getCheckNickName(nickName) {
   try {
-    const { data } = await authJsonAxios.get(`/users/check?nickname=${nickName}`);
+    const { data } = await defaultAxios.get(`/users/check?nickname=${nickName}`);
 
     if (data.flag === "success") {
       return { text: `"${nickName}"은(는) 사용 가능한 닉네임입니다.`, isNickNameAvailable: true };
