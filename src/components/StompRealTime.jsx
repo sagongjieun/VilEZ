@@ -669,20 +669,25 @@ const chatWrapper = css`
 
 const systemMessageWrapper = css`
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 
   & > span {
-    font-size: 13px;
+    font-size: 12px;
   }
 `;
 
 const myMessageWrapper = css`
-  text-align: right;
-  margin-bottom: 10px;
+  text-align: left;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
   margin-right: 10px;
 
   & > span {
-    font-size: 16px;
+    font-size: 14px;
+    padding: 5px 8px;
+    background-color: #66dd9c50;
+    border-radius: 5px;
   }
 `;
 
@@ -691,7 +696,7 @@ const yourMessageWrapper = css`
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   justify-content: flex-start;
 
   & > img {
@@ -705,8 +710,15 @@ const yourMessageWrapper = css`
     display: flex;
     flex-direction: column;
 
+    & > small {
+      font-size: 12px;
+    }
+
     & > span {
-      font-size: 16px;
+      font-size: 14px;
+      padding: 5px 8px;
+      background-color: #ededed;
+      border-radius: 5px;
     }
   }
 `;
