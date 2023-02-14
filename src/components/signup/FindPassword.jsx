@@ -12,7 +12,6 @@ import useForm from "../../hooks/useForm";
 import { SHA256 } from "./HashFunction";
 import { postConfirmEmailForPassword } from "../../api/email";
 import { putUserPasswordByEmail } from "../../api/user";
-import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const FindPassword = () => {
@@ -45,7 +44,6 @@ const FindPassword = () => {
   function onSubmit() {
     if (isCodeConfirmed) {
       putUserPasswordByEmail(email, SHA256(password)).then((response) => {
-        // putUserPasswordByEmail(email, password).then((response) => {
         if (response) {
           navigate("/login");
         }
@@ -78,7 +76,7 @@ const FindPassword = () => {
     event.preventDefault();
     setIsVisible((prev) => !prev);
   };
-  useEffect(() => {}, []);
+
   const { errors, handleChange, handleSubmit } = useForm({
     initialValues: {
       password: "",

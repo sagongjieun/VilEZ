@@ -21,7 +21,6 @@ const LoginForm = () => {
   // 로그인
   const onSubmit = (values) => {
     postLogin(values.email, SHA256(values.password)).then((res) => {
-      // postLogin(values.email, values.password).then((res) => {
       if (!res) return;
 
       // localstorage와 login에 유저 정보 저장
