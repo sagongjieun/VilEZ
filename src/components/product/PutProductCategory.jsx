@@ -115,7 +115,6 @@ const categoryWrapper = css`
 const noBorder = css`
   display: flex;
   flex-direction: row;
-  /* border: 1px solid #ededed; */
   border-radius: 5px;
   width: 200px;
   height: 55px;

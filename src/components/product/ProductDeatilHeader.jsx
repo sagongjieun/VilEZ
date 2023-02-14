@@ -5,14 +5,6 @@ import bookmark from "../../assets/images/bookmark.png";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { getShareArticleByBoardId } from "../../api/share";
 import { getAskArticleDetailByBoardId } from "../../api/ask";
-// import { useSetRecoilState } from "recoil";
-// import { getAppointmentsByBoardId } from "../../api/appointment";
-// import SockJS from "sockjs-client";
-// import { Stomp } from "@stomp/stompjs";
-
-// const client = Stomp.over(function () {
-//   return new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
-// });
 
 const ProductDeatilHeader = ({ title, category, time, bookmarkCount, isShowDelete }) => {
   const userId = localStorage.getItem("id");
@@ -21,29 +13,20 @@ const ProductDeatilHeader = ({ title, category, time, bookmarkCount, isShowDelet
   const pathname = useLocation().pathname;
   const boardId = parseInt(useParams().boardId);
   const type = pathname.includes("share") ? 2 : 1;
-  // const navigate = useNavigate();
 
   useEffect(() => {
     type === 2
       ? getShareArticleByBoardId(boardId).then((res) => {
           setThisboardUserId(res[0].userId);
-          // console.log(res[0]);
-          // console.log(res[0].state);
-
-          // console.log(res[0].userId);
-          //
         })
       : getAskArticleDetailByBoardId(boardId).then((res) => {
-          // console.log(res[0]);
           setThisboardUserId(res[0].userId);
         });
   }, []);
-  // console.log(isAppointment);
 
   function onClickshowDeleteModal() {
     isShowDelete(true);
   }
-  // console.log(userId, thisboardUserId, parseInt(userId) === parseInt(thisboardUserId));
 
   return (
     <div css={headerWrapper}>
@@ -135,6 +118,7 @@ const headerRightSectionWrapper = css`
   display: flex;
   flex-direction: row-reverse;
   width: 30%;
+
   & > span {
     color: #8a8a8a;
     cursor: pointer;

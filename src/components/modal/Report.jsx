@@ -12,6 +12,7 @@ function Report({ close }) {
   const onClickClose = () => {
     close(false);
   };
+
   return (
     <div css={ReportWrap}>
       <div css={reportWrap}>
@@ -53,12 +54,15 @@ const reportWrap = css`
   text-align: center;
   background-color: white;
 `;
+
 const reportContentWrap = css`
   display: flex;
   flex-direction: column;
+
   & > div:first-of-type {
     margin-top: 30px;
   }
+
   & input {
     margin-top: 70px;
   }
@@ -77,6 +81,7 @@ const goodbutton = css`
   font-size: 14px;
   border-radius: 5px;
 `;
+
 const badbutton = css`
   width: 105px;
   background-color: #aeaeae;
@@ -100,4 +105,5 @@ const inputBox = css`
     color: 8A8A8A;
   }
 `;
+
 export default Report;

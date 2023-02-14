@@ -3,23 +3,14 @@ import React, { useState, useEffect } from "react";
 import { css } from "@emotion/react";
 import { HiLocationMarker, HiCalendar, HiHeart } from "react-icons/hi";
 import image from "../../assets/images/mainBackgroundImage.png";
-// import { useLocation } from "react-router-dom";
 import { getShareArticleList } from "../../api/share";
-// import { useNavigate } from "react-router-dom";
 
 const ProductListView = () => {
-  // const navigate = useNavigate();
-  // const pathname = useLocation().pathname;
   const [getArticle, setArticles] = useState([]);
-  // const [title, setTitle] = useState("");
-  // const [content, setContent] = useState("");
-  // const [date, setDate] = useState("");
-  // const [startDay, setStartday] = useState("");
-  // const [endDay, setEndDay] = useState("");
+
   useEffect(() => {
     getShareArticleList("디지털/가전", 0, 100, 0, "").then((res) => {
       const data = res;
-      console.log(data);
       setArticles(data);
     });
   }, []);
@@ -65,6 +56,7 @@ const relatedProductWrapper = css`
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   cursor: pointer;
 `;
+
 const topWrap = css`
   margin-bottom: 50px;
   height: 100%;

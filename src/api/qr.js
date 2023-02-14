@@ -7,7 +7,7 @@ async function getQrCode(userId) {
     const { data } = await authJsonAxios.post(`/qrcodes?userId=${userId}`);
 
     if (data.flag === "success") return data.data;
-    else console.log(data.flag);
+    else return false;
   } catch (error) {
     console.log(error);
   }
@@ -15,9 +15,7 @@ async function getQrCode(userId) {
 
 async function deleteQrCode(imgUrl) {
   try {
-    const { data } = await authJsonAxios.delete(`/qrcodes?imgUrl=${imgUrl}`);
-
-    console.log(data.flag);
+    await authJsonAxios.delete(`/qrcodes?imgUrl=${imgUrl}`);
   } catch (error) {
     console.log(error);
   }

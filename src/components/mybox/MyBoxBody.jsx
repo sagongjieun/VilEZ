@@ -5,7 +5,6 @@ import MyBoxShare from "./MyBoxShare";
 import MyBoxRent from "./MyBoxRent";
 import { useEffect } from "react";
 
-// const id = localStorage.getItem("id");
 const MyBoxBody = () => {
   const [section, setSection] = useState("");
   const [myShareType, setMyShareType] = useState(1);
@@ -14,6 +13,7 @@ const MyBoxBody = () => {
   const [rentDefaultPages, setRentDefaultPages] = useState(1);
   const [sharePages, setSharePages] = useState(1);
   const [rentPages, setRentPages] = useState(1);
+
   function onClickChangeShareType(value) {
     if (value === 2) {
       setMyShareType(2);
@@ -21,6 +21,7 @@ const MyBoxBody = () => {
       setMyShareType(1);
     }
   }
+
   function onClickChangeRentType(value) {
     if (value === 2) {
       setMyRentType(2);
@@ -28,6 +29,7 @@ const MyBoxBody = () => {
       setMyRentType(1);
     }
   }
+
   function onClickShareMore() {
     if (shareDefaultPages > sharePages) {
       setSharePages((prev) => prev + 1);
@@ -36,6 +38,7 @@ const MyBoxBody = () => {
     }
     setSection("share");
   }
+
   function onClickRentMore() {
     if (rentDefaultPages > rentPages) {
       setRentPages((prev) => prev + 1);
@@ -44,6 +47,7 @@ const MyBoxBody = () => {
     }
     setSection("product");
   }
+
   useEffect(() => {
     if (section === "share") {
       setRentPages(1);
@@ -51,6 +55,7 @@ const MyBoxBody = () => {
       setSharePages(1);
     }
   }, [section]);
+
   return (
     <div>
       <div css={sectionWrapper}>
@@ -137,17 +142,20 @@ const MyBoxBody = () => {
 
 const sectionWrapper = css`
   padding: 50px 0;
+
   & > div:nth-of-type(1) {
     height: 40px;
     margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     & > div {
       width: 210px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+
       & > button {
         cursor: pointer;
         border: 1px solid #66dd9c;
@@ -165,6 +173,7 @@ const basic = css`
   background-color: #66dd9c;
   color: #fff;
 `;
+
 const bordered = css`
   background-color: #fff;
   color: #66dd9c;

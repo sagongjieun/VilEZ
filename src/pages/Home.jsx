@@ -50,10 +50,6 @@ function MainBody() {
     window.addEventListener("scroll", updateScroll);
   }, []);
 
-  // useEffect(() => {
-  //   console.log(scrollPosition);
-  // }, [scrollPosition]);
-
   return (
     <div>
       <div css={FirstBodyWrap} ref={mainBox}>

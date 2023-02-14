@@ -6,9 +6,8 @@ import EditNickNameModal from "../components/modal/EditNickNameModal";
 
 const SocialNickName = () => {
   const location = useLocation();
-  // console.log(url);
   const url = location.state.url;
-  console.log(url);
+
   return (
     <div css={modalWrapper}>
       <EditNickNameModal url={url} />

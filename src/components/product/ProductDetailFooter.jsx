@@ -3,17 +3,9 @@ import React from "react";
 import { css } from "@emotion/react";
 import { HiChevronRight } from "react-icons/hi2";
 import { useLocation } from "react-router-dom";
-// import Report from "../modal/Report";
 
 const ProductDetailFooter = () => {
   const location = useLocation();
-  // const [showReport, setShowReport] = useState(false);
-
-  // function onClickReportArticle() {
-  //   /** 모달 띄우기 */
-  //   alert("정말 신고하시겠습니까?");
-  //   setShowReport(!showReport);
-  // }
 
   async function onClickShareArticle(url) {
     try {
@@ -21,7 +13,7 @@ const ProductDetailFooter = () => {
 
       alert("링크를 클립보드에 복사했어요.");
     } catch (error) {
-      console.log("URL 복사 실패 : ", error);
+      console.log(error);
     }
   }
 
@@ -31,10 +23,6 @@ const ProductDetailFooter = () => {
 
   return (
     <div css={menusWrapper}>
-      {/* <div onClick={onClickReportArticle}>
-        <span>이 게시물 신고하기</span>
-        <HiChevronRight size="22" />
-      </div> */}
       <div onClick={() => onClickShareArticle(`https://i8d111.p.ssafy.io${location.pathname}`)}>
         <span>이 게시물 공유하기</span>
         <HiChevronRight size="22" />
@@ -43,7 +31,6 @@ const ProductDetailFooter = () => {
         <span>맨 위로 이동하기</span>
         <HiChevronRight size="22" />
       </div>
-      {/* <span>{showReport ? <Report close={setShowReport} /> : null}</span> */}
     </div>
   );
 };

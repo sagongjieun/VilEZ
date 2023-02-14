@@ -52,6 +52,7 @@ const OAuthNaver = () => {
     </div>
   );
 };
+
 const container = css`
   position: absolute;
   top: 0;
@@ -64,4 +65,5 @@ const container = css`
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 100;
 `;
+
 export default OAuthNaver;

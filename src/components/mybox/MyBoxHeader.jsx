@@ -7,11 +7,11 @@ import { getAppointmentsByUserId } from "../../api/appointment";
 const MyBoxHeader = () => {
   const userId = localStorage.getItem("id");
   const userNickName = localStorage.getItem("nickName");
-  // const shareCnt = 10;
-  // const rentCnt = 5;
+
   const [allAppointments, setAllAppointments] = useState([]);
   const [shareCnt, setShareCnt] = useState(0);
   const [rentCnt, setRentCnt] = useState(0);
+
   useEffect(() => {
     getAppointmentsByUserId(userId).then((response) => {
       setAllAppointments(response[0]);
@@ -19,6 +19,7 @@ const MyBoxHeader = () => {
       setRentCnt(response[0].filter((appoint) => appoint.state === 0).length);
     });
   }, []);
+
   return (
     <div css={headerWrapper}>
       <div>
@@ -37,6 +38,7 @@ const MyBoxHeader = () => {
     </div>
   );
 };
+
 const moveUpDown = keyframes`
 	0% {
 		transform: translateY(0px);
@@ -45,6 +47,7 @@ const moveUpDown = keyframes`
 		transform: translateY(-12px);
 	}
 `;
+
 const headerWrapper = css`
   box-sizing: border-box;
   position: relative;
@@ -54,18 +57,22 @@ const headerWrapper = css`
   border-radius: 10px;
   background-color: #66dd9c;
   background-image: linear-gradient(120deg, #66dd9c 0%, #8fd3f4 100%);
+
   > div:nth-of-type(1) {
     color: #fff;
     font-size: 26px;
   }
+
   > div:nth-of-type(2) {
     height: 40px;
     line-height: 40px;
+
     > div {
       font-size: 18px;
       padding-top: 20px;
       height: 40px;
       line-height: 40px;
+
       > div {
         display: inline;
         font-size: 26px;
@@ -74,6 +81,7 @@ const headerWrapper = css`
       }
     }
   }
+
   > img {
     position: absolute;
     right: -20px;
@@ -81,4 +89,5 @@ const headerWrapper = css`
     animation: ${moveUpDown} 1.4s ease-in-out infinite alternate;
   }
 `;
+
 export default MyBoxHeader;

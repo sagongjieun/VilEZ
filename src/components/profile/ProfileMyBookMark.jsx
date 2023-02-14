@@ -19,7 +19,6 @@ const ProfileMyBookMark = (props) => {
   }, []);
   useEffect(() => {
     props.setBookMarkDefaultPages(myBookMarkBoard ? parseInt((myBookMarkBoard?.length - 1) / 3) + 1 : 1);
-    console.log(myBookMarkBoard);
   }, [myBookMarkBoard]);
   return (
     <div css={cardWrapper(props.bookMarkPages)}>

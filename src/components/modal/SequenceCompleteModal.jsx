@@ -49,4 +49,5 @@ const sequenceWrap = css`
   overflow-y: scroll;
   font-size: 20px;
 `;
+
 export default SequenceCompleteModal;

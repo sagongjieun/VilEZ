@@ -21,7 +21,6 @@ function useForm({ initialValues, onSubmit, Validation }) {
     setIsLoading(true);
     await new Promise((r) => setTimeout(r, 100));
     setErrors(Validation(values));
-    console.log("Hi");
   };
 
   useEffect(() => {

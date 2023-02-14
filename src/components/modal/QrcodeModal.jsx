@@ -17,20 +17,22 @@ function Qrcode({ setIsQrCodeOpen }) {
   const [qrCode, setQrCode] = useState("");
   const [isTimeOut, setIsTimeOut] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
+
   function onClickClose() {
     setIsQrCodeOpen(false);
     deleteQrCode(qrCode.slice(42, qrCode.length));
   }
+
   function redirectQrCode() {
     getQrCode(userId).then((response) => {
       setQrCode(response[0].path);
     });
     setIsTimeOut(false);
   }
+
   useEffect(() => {
     getQrCode(userId).then((response) => {
       setQrCode(response[0].path);
-      console.log(response[0].path);
     });
 
     const sockJS = new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
@@ -38,18 +40,19 @@ function Qrcode({ setIsQrCodeOpen }) {
 
     // 웹소켓과 연결됐을 때 동작하는 콜백함수들
     client.connect({}, () => {
-      client.subscribe(`/sendloc/${userId}`, (data) => {
+      client.subscribe(`/sendloc/${userId}`, () => {
         // 상대방이 메시지 보낼 때만 새로운 메시지 알림
-        console.log(data);
         setIsVerified(true);
       });
     });
   }, []);
+
   useEffect(() => {
     if (isTimeOut) {
       deleteQrCode(qrCode.slice(42, qrCode.length));
     }
   }, [isTimeOut]);
+
   return (
     <div css={qrWrap}>
       <h3>동네 인증하기</h3>
@@ -92,6 +95,7 @@ function Qrcode({ setIsQrCodeOpen }) {
     </div>
   );
 }
+
 const qrWrap = css`
   position: relative;
   padding: 60px 20px 30px;
@@ -100,22 +104,27 @@ const qrWrap = css`
   border-radius: 10px;
   background-color: #fff;
   box-shadow: 1px 1px 2px;
+
   & > h3 {
     text-align: center;
     padding-bottom: 10px;
   }
+
   & > div {
     display: flex;
     justify-content: center;
     font-size: 14px;
   }
+
   & > div:nth-of-type(1) {
     padding-top: 14px;
   }
+
   & > div:nth-of-type(2) {
     position: relative;
     height: 200px;
     margin-top: 20px;
+
     & > img {
       box-sizing: border-box;
       width: 180px;
@@ -123,6 +132,7 @@ const qrWrap = css`
       border: 10px solid #66dd9c;
       border-radius: 10px;
     }
+
     & > div {
       cursor: pointer;
       position: absolute;
@@ -138,6 +148,7 @@ const qrWrap = css`
         background-color: #66dd9c;
       }
     }
+
     & button {
       cursor: pointer;
       display: flex;
@@ -151,6 +162,7 @@ const qrWrap = css`
       height: 30px;
       border-radius: 5px;
       background-color: rgba(0, 0, 0, 0);
+
       & > div {
         display: flex;
         justify-content: center;
@@ -163,9 +175,11 @@ const qrWrap = css`
       }
     }
   }
+
   & > div:nth-of-type(3) {
     padding-top: 4px;
   }
+
   & > button:nth-of-type(1) {
     cursor: pointer;
     position: absolute;
@@ -174,14 +188,18 @@ const qrWrap = css`
     border: none;
     background-color: rgba(0, 0, 0, 0);
   }
+
   & > button:nth-of-type(2) {
     margin-top: 40px;
   }
 `;
+
 const timeOutWrapper = css`
   color: #fc0101;
 `;
+
 const verifiedWrapper = css`
   color: #66dd9c;
 `;
+
 export default Qrcode;

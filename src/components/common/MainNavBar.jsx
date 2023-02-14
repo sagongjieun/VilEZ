@@ -18,16 +18,11 @@ function MainNavBar() {
   const resetLoginUser = useResetRecoilState(loginUserState);
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
 
-  // const [isMenu, setIsMenu] = useState(false);
   const menus = [
     { name: "물품 공유 목록", path: "/product/list/share" },
     { name: "물품 요청 목록", path: "/product/list/ask" },
     { name: "글 등록하기", path: "/product/regist" },
   ];
-
-  // function onClickShowMenu() {
-  //   setIsMenu(!isMenu);
-  // }
 
   function onClickMoveLogin() {
     navigate("/login");
@@ -100,7 +95,6 @@ function MainNavBar() {
                       </div>
                     </div>
                   </div>
-                  {/* <CgProfile onClick={onClickMoveMyPage} /> */}
                 </div>
                 <span onClick={onClickLogout} css={logout}>
                   로그아웃
@@ -110,7 +104,6 @@ function MainNavBar() {
           </div>
         </nav>
       ) : (
-        // false(not login 상태)
         <nav css={navWrap}>
           <div css={navStyle}>
             <div>
@@ -140,6 +133,7 @@ function MainNavBar() {
     </>
   );
 }
+
 const navWrap = css`
   position: sticky;
   width: 100%;
@@ -210,7 +204,6 @@ const navMid = css`
 const MenuWrap = css`
   position: absolute;
   display: none;
-  /* background-color: blue; */
   top: 50px;
   &:hover {
     display: block;
