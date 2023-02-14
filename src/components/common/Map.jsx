@@ -169,8 +169,6 @@ const Map = ({
   useEffect(() => {
     if (!readOnly) {
       sendLocation(location, lat, lng, zoomLevel, isMarker);
-    } else {
-      console.log("무조건 여깁니다.");
     }
   }, [lat, lng, zoomLevel, isMarker]);
 
