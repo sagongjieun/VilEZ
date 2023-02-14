@@ -28,7 +28,7 @@ const ProductRegist = () => {
   const [content, setContent] = useState("");
   const [startDay, setStartDay] = useState("");
   const [endDay, setEndDay] = useState("");
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState("마우스 우클릭으로 장소를 선택해주시면 돼요");
   const [hopeAreaLat, setHopeAreaLat] = useState("");
   const [hopeAreaLng, setHopeAreaLng] = useState("");
   const [imageList, setImageList] = useState([]);
