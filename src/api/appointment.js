@@ -211,7 +211,7 @@ async function postChatRoom(body) {
     const { data } = await authJsonAxios.post(`/appointments/room`, body);
 
     if (data.flag === "success") return data.data;
-    else alert("채팅에 연결하지 못했어요 😅");
+    else return false;
   } catch (error) {
     console.log(error);
   }

@@ -210,6 +210,8 @@ const navMid = css`
 const MenuWrap = css`
   position: absolute;
   display: none;
+  /* background-color: blue; */
+  top: 50px;
   &:hover {
     display: block;
   }
@@ -225,7 +227,7 @@ const navMenu = css`
   width: 125px;
   height: 35px;
   padding: 5px 15px;
-  font-size: 17px;
+  font-size: 16px;
   text-align: center;
   line-height: 35px;
   cursor: pointer;
