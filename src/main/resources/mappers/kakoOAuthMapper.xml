@@ -34,7 +34,7 @@
 
     <select id="getOAuthUser" parameterType="string" resultMap="oauth">
         SELECT id, email, nickName, point, manner, profile_img, date, oauth, access_token, refresh_token
-        ,area_lat,area_lng
+        ,area_lat,area_lng, state
         FROM user
         WHERE email = #{email}
     </select>

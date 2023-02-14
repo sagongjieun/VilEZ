@@ -69,6 +69,10 @@ public class OAuthController {
             OAuthUserDto oAuthUser = oAuthService.getOAuthUser(kaKaoUserInfoDto.getId());
             // 해당 회원정보가 이미 존재하는지 조회
 
+            if(oAuthUser.getState() == -2){
+                throw new Exception("강퇴당한 유저입니다.");
+            }
+
             // null 이면 회원가입 가능한 이메일
             if(oAuthUser == null){
                 String tempNickName = "#KAKAO"+kaKaoUserInfoDto.getId();
@@ -152,6 +156,10 @@ public class OAuthController {
 
             // 기존 회원정보가 존재하는지 확인
             OAuthUserDto userDto = naverOAuthService.getOAuthUser(userInfoDto.getId());
+
+            if(userDto.getState() == -2){
+                throw new Exception("강퇴당한 유저입니다.");
+            }
 
             // 기존 회원정보가 존재하지않으면 회원가입을 자동으로 진행하고, 그렇지 않으면 로그인을 시도한다.
             if(userDto == null){
