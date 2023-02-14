@@ -129,7 +129,7 @@ public class ShareServiceImpl implements ShareService{
         List<ShareListDto> shareListDtos = shareMapper.loadMyShareList(userId);
         for(ShareListDto shareListDto : shareListDtos){
             shareListDto.setList(shareDao.list(shareListDto.getId()));
-            shareListDto.setBookmarkCnt(shareDao.list(shareListDto.getId()).size());
+            shareListDto.setBookmarkCnt(shareDao.selectBookmarkList(shareListDto.getId()).size());
         }
 
 
@@ -270,7 +270,7 @@ public class ShareServiceImpl implements ShareService{
 
             List<ImgPath> imgPaths = shareDao.list(dto.getId());
             dto.setList(imgPaths);
-            totalListShare.setListCnt(shareDao.countBookMark(dto.getId()));
+            totalListShare.setListCnt(shareDao.selectBookmarkList(dto.getId()).size());
             totalListShare.setShareListDto(dto);
             data.add(totalListShare);
         }
