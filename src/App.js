@@ -20,13 +20,7 @@ import { loginUserState, isLoginState } from "./recoil/atom";
 function App() {
   const setLoginUser = useSetRecoilState(loginUserState);
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
-  // const [isModal, setIsModal] = useState(false);
-  // function onClickMenu() {
-  //   const accessToken = localStorage.getItem("accessToken");
-  //   if (!accessToken) {
-  //     setIsModal(true);
-  //   }
-  // }
+
   // 로그인 유지
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
@@ -51,6 +45,8 @@ function App() {
           setIsLogin(true);
         }
       });
+    } else {
+      localStorage.clear();
     }
   }, []);
 
