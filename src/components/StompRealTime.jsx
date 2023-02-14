@@ -514,7 +514,7 @@ const StompRealTime = ({
         <div>
           {shareState == -1 || shareState == -2 || roomState == -1 ? (
             // 공유지도 막기
-            <Map readOnly={true} disableMapLat={disableMapLat} disableMapLng={disableMapLng} path={"block"} />
+            <Map readOnly={true} disableMapLat={disableMapLat} disableMapLng={disableMapLng} path="block" />
           ) : (
             <Map
               readOnly={false}
@@ -523,7 +523,7 @@ const StompRealTime = ({
               movedLng={movedLng}
               movedZoomLevel={movedZoomLevel}
               movedMarker={movedMarker}
-              path={"stomp"}
+              path="stomp"
             />
           )}
         </div>
