@@ -137,13 +137,13 @@ function EditNickNameModal({ url }) {
         <div css={doubleCheckBox}>
           <input
             name="nickName"
-            type="text"
+            type={isNickNameOpen ? "text" : "button"}
             placeholder={isNickNameOpen ? "닉네임을 입력해주세요." : "수정을 원하면 클릭해주세요."}
             css={isNickNameOpen ? inputBox : [inputBox, disabled]}
             onClick={onClickNickName}
             onChange={onChangeNickName}
             onKeyDown={onKeyDown}
-            value={nickName}
+            value={isNickNameOpen ? nickName : "수정을 원하면 클릭해주세요."}
           />
           <button
             css={duplicateCheck}
