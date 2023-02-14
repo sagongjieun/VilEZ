@@ -72,7 +72,7 @@ const StompRealTime = ({
   const [cancelMessage, setCancelMessage] = useState({});
   const [otherUserProfileImage, setOtherUserProfileImage] = useState("");
   const [isOtherLeave, setIsOtherLeave] = useState(false);
-  const [count, setCount] = useState(0);
+  // const [count, setCount] = useState(0);
 
   function onKeyDownSendMessage(e) {
     if (e.keyCode === 13) {
@@ -206,22 +206,35 @@ const StompRealTime = ({
       setHopeLocation(location);
     }
 
+    // console.log(count);
+    console.log(lat, lng, zoomLevel, isMarker);
+
     if (zoomLevel) {
       // 첫 연결 시 stomp connect 오류 수정을 위함
-      if (count === 0) {
-        setCount(count + 1);
-      } else {
-        const sendMapData = {
-          roomId: chatRoomId,
-          toUserId: otherUserId,
-          lat: lat,
-          lng: lng,
-          zoomLevel: zoomLevel,
-          isMarker: isMarker,
-        };
+      // if (count === 0) {
+      //   setCount(count + 1);
+      // } else {
+      //   const sendMapData = {
+      //     roomId: chatRoomId,
+      //     toUserId: otherUserId,
+      //     lat: lat,
+      //     lng: lng,
+      //     zoomLevel: zoomLevel,
+      //     isMarker: isMarker,
+      //   };
 
-        client.send("/recvmap", {}, JSON.stringify(sendMapData));
-      }
+      //   client.send("/recvmap", {}, JSON.stringify(sendMapData));
+      // }
+      const sendMapData = {
+        roomId: chatRoomId,
+        toUserId: otherUserId,
+        lat: lat,
+        lng: lng,
+        zoomLevel: zoomLevel,
+        isMarker: isMarker,
+      };
+
+      client.send("/recvmap", {}, JSON.stringify(sendMapData));
     }
   }
 
