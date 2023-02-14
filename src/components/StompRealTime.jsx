@@ -130,8 +130,6 @@ const StompRealTime = ({
       setHopeLocation(location);
     }
 
-    console.log(location, lat, lng, zoomLevel, isMarker);
-
     if (counter > 1) {
       if (lat && lng && zoomLevel) {
         const sendMapData = {
