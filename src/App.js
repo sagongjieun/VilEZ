@@ -25,6 +25,8 @@ function App() {
   useEffect(() => {
     const accessToken = window.localStorage.getItem("accessToken");
 
+    console.log("&&&&&&&&&&&&", accessToken);
+
     if (accessToken) {
       getCheckValidToken().then((res) => {
         // 유효한 토큰이면 유저 정보를 recoil에 담기

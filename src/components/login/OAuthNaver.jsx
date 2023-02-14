@@ -17,6 +17,9 @@ const OAuthNaver = () => {
   function onNaverLogin(code) {
     requestNaverLogin(code).then((response) => {
       const resData = response[0];
+
+      console.log("%%%%%%%%%%%", resData);
+
       window.localStorage.setItem("accessToken", resData.accessToken);
       window.localStorage.setItem("refreshToken", resData.refreshToken);
       window.localStorage.setItem("id", resData.id);

@@ -56,6 +56,7 @@ export const authFormDataAxios = authFormDataInstance();
 authJsonAxios.interceptors.request.use(
   (config) => {
     const accessToken = window.localStorage.getItem("accessToken");
+    console.log("^^^^^^^^^^^^", accessToken);
 
     if (accessToken) {
       config.headers["access-token"] = `${accessToken}`;
