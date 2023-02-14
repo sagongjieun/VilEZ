@@ -268,9 +268,11 @@ public class ShareServiceImpl implements ShareService{
 
             TotalListShare totalListShare = new TotalListShare();
 
+
             List<ImgPath> imgPaths = shareDao.list(dto.getId());
             dto.setList(imgPaths);
-            totalListShare.setListCnt(shareDao.selectBookmarkList(dto.getId()).size());
+            dto.setBookmarkCnt(shareDao.selectBookmarkList(dto.getId()).size());
+            totalListShare.setListCnt(shareDao.list(dto.getId()).size());
             totalListShare.setShareListDto(dto);
             data.add(totalListShare);
         }
