@@ -58,7 +58,9 @@ authJsonAxios.interceptors.request.use(
     const accessToken = window.localStorage.getItem("accessToken");
     console.log("^^^^^^^^^^^^", accessToken);
 
-    if (accessToken) {
+    if (!accessToken) {
+      return;
+    } else {
       config.headers["access-token"] = `${accessToken}`;
     }
 
@@ -102,7 +104,9 @@ authFormDataAxios.interceptors.request.use(
   (config) => {
     const accessToken = window.localStorage.getItem("accessToken");
 
-    if (accessToken) {
+    if (!accessToken) {
+      return;
+    } else {
       config.headers["access-token"] = `${accessToken}`;
     }
 
