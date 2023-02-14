@@ -71,6 +71,7 @@ async function postLogin(email, password) {
     }
   } catch (error) {
     console.log(error);
+    alert("꺼져");
   }
 }
 

@@ -11,6 +11,7 @@ async function requestKakaoLogin(code) {
     }
   } catch (error) {
     console.log(error);
+    alert("꺼져");
   }
 }
 
@@ -25,6 +26,7 @@ async function requestNaverLogin(code) {
     }
   } catch (error) {
     console.log(error);
+    alert("꺼져");
   }
 }
 
