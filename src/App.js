@@ -25,8 +25,6 @@ function App() {
   useEffect(() => {
     const accessToken = window.localStorage.getItem("accessToken");
 
-    console.log("&&&&&&&&&&&&", accessToken);
-
     if (!accessToken) {
       window.localStorage.clear();
     } else {

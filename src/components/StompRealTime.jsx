@@ -116,7 +116,7 @@ const StompRealTime = ({
 
   // Map에서 받은 데이터로 서버에 전송
   function receiveLocation(location, lat, lng, zoomLevel, isMarker) {
-    if (lat && lng && isMarker) {
+    if (lat && lng) {
       searchDetailAddrFromCoords(lat, lng, function (result, status) {
         if (status === kakao.maps.services.Status.OK) {
           setHopeLocation(result[0].address.address_name);
