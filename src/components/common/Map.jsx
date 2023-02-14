@@ -27,7 +27,7 @@ const Map = ({
   const [zoomLevel, setZoomLevel] = useState(0);
   const [isMarker, setIsMarker] = useState(false);
   const [hasMarker, setHasMarker] = useState(false);
-  const [isReceived, setIsReceived] = useState(false);
+  const [isOtherControl, setIsOtherControl] = useState(false);
 
   const [markerLat, setMarkerLat] = useState("");
   const [markerLng, setMarkerLng] = useState("");
@@ -68,7 +68,7 @@ const Map = ({
   function eventZoomChanged() {
     // 지도 레벨 변경
     kakao.maps.event.addListener(map, "zoom_changed", function () {
-      if (!isReceived) {
+      if (!isOtherControl) {
         const center = map.getCenter();
 
         setLat(center.getLat());
@@ -169,8 +169,10 @@ const Map = ({
   /** 지도 데이터 보내기 */
   useEffect(() => {
     if (!readOnly) {
-      setIsReceived(false);
-      sendLocation(location, lat, lng, zoomLevel, isMarker);
+      if (!isOtherControl && lat && lng) {
+        setIsOtherControl(false);
+        sendLocation(location, lat, lng, zoomLevel, isMarker);
+      }
     }
   }, [lat, lng, zoomLevel, isMarker]);
 
@@ -221,7 +223,7 @@ const Map = ({
       const locPosition = new kakao.maps.LatLng(movedLat, movedLng);
 
       map.setLevel(movedZoomLevel); // 지도 레벨 동기화
-      setIsReceived(true);
+      setIsOtherControl(true);
 
       if (movedMarker) {
         marker.setPosition(locPosition);
