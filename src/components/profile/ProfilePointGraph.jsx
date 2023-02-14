@@ -7,17 +7,17 @@ const ProfilePointGraph = ({ data }) => {
   const [currentPoint, setCurrentPoint] = useState(0);
   const graph = useRef();
 
-  var ctx = graph.current.getContext("2d");
+  // var ctx = graph.current.getContext("2d");
 
-  ctx.moveTo(50, 60);
-  ctx.arc(50, 60, 60, 0, (90 * Math.PI) / 180, false);
-  ctx.closePath();
-  ctx.stroke();
+  // ctx.moveTo(50, 60);
+  // ctx.arc(50, 60, 60, 0, (90 * Math.PI) / 180, false);
+  // ctx.closePath();
+  // ctx.stroke();
 
-  ctx.moveTo(180, 60);
-  ctx.arc(180, 60, 60, 0, (90 * Math.PI) / 180, true);
-  ctx.closePath();
-  ctx.stroke();
+  // ctx.moveTo(180, 60);
+  // ctx.arc(180, 60, 60, 0, (90 * Math.PI) / 180, true);
+  // ctx.closePath();
+  // ctx.stroke();
 
   useEffect(() => {
     let [plus, minus, total, current] = [0, 0, 0];
