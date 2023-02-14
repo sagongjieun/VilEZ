@@ -27,8 +27,6 @@ const OAuthKakao = () => {
       localStorage.setItem("areaLng", resData.areaLng);
       localStorage.setItem("oauth", resData.oauth);
 
-      console.log(response[0]);
-
       setNickname(resData.nickName);
 
       setLoginUser({
