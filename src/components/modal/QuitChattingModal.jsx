@@ -7,7 +7,7 @@ import { checkUserLeaveState } from "../../recoil/atom";
 import { useSetRecoilState } from "recoil";
 
 function QuitChattingModal({ close, roomId }) {
-  const loginUserId = localStorage.getItem("id");
+  const loginUserId = window.localStorage.getItem("id");
   const setCheckUserLeave = useSetRecoilState(checkUserLeaveState);
 
   function onClickCancel() {

@@ -13,7 +13,7 @@ const client = Stomp.over(function () {
 });
 
 function ChatOpenIcon() {
-  const loginUserId = localStorage.getItem("id");
+  const loginUserId = window.localStorage.getItem("id");
   const [modalOpen, setModalOpen] = useRecoilState(modalOpenState);
   const [isNewMessage, setIsNewMessage] = useState(false);
   const [enterChatRoom, setEnterChatRoom] = useRecoilState(enterChatRoomState);

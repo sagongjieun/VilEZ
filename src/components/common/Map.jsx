@@ -31,8 +31,8 @@ const Map = ({
   const [markerLat, setMarkerLat] = useState("");
   const [markerLng, setMarkerLng] = useState("");
 
-  const areaLat = localStorage.getItem("areaLat");
-  const areaLng = localStorage.getItem("areaLng");
+  const areaLat = window.localStorage.getItem("areaLat");
+  const areaLng = window.localStorage.getItem("areaLng");
 
   function initMap() {
     // 지도를 표시할 공간과 초기 중심좌표, 레벨 세팅

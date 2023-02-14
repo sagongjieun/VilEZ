@@ -45,7 +45,7 @@ const StompRealTime = ({
   sendRoomState,
 }) => {
   const scrollRef = useRef();
-  const myUserId = localStorage.getItem("id");
+  const myUserId = window.localStorage.getItem("id");
   const chatRoomId = roomId;
   const navigate = useNavigate();
   const shareData = useRecoilValue(shareDataState);

@@ -28,7 +28,7 @@ import SequenceCompleteModal from "../modal/SequenceCompleteModal";
 
 const ProductChatting = () => {
   const { roomId } = useParams();
-  const loginUserId = localStorage.getItem("id");
+  const loginUserId = window.localStorage.getItem("id");
   const navigate = useNavigate();
 
   const setShareData = useSetRecoilState(shareDataState);

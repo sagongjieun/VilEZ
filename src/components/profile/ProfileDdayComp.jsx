@@ -6,7 +6,7 @@ import { getAppointmentsWithinAWeek } from "../../api/appointment";
 import ProfileDdaySlide from "./ProfileDdaySlide";
 
 const ProfileDday = () => {
-  const userId = localStorage.getItem("id");
+  const userId = window.getItem("id");
   const [appointmentsWithinAWeek, setAppointmentsWithinAWeek] = useState([]);
   useEffect(() => {
     getAppointmentsWithinAWeek(userId).then((response) => {

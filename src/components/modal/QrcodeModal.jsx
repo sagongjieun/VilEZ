@@ -13,7 +13,7 @@ import { Stomp } from "@stomp/stompjs";
 let client;
 
 function Qrcode({ setIsQrCodeOpen }) {
-  const userId = localStorage.getItem("id");
+  const userId = window.localStorage.getItem("id");
   const [qrCode, setQrCode] = useState("");
   const [isTimeOut, setIsTimeOut] = useState(false);
   const [isVerified, setIsVerified] = useState(false);

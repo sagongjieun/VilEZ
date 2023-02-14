@@ -30,7 +30,7 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const boardId = parseInt(useParams().boardId);
   const pathname = useLocation().pathname;
-  const loginUserId = localStorage.getItem("id"); // 로그인유저 id
+  const loginUserId = window.localStorage.getItem("id"); // 로그인유저 id
   const type = pathname.includes("share") ? 2 : 1;
   const [writerId, setWriterId] = useState(""); // 공유자 id
   const setBoardState = useSetRecoilState(boardState);
@@ -56,7 +56,7 @@ const ProductDetail = () => {
   const [isAppointment, setIsAppointment] = useState(false);
 
   function checkSocialNickName() {
-    const nickName = localStorage.getItem("nickName");
+    const nickName = window.getItem("nickName");
     if (nickName.slice(0, 1) === "#") {
       return true;
     }

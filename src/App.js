@@ -23,7 +23,7 @@ function App() {
 
   // 로그인 유지
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = window.localStorage.getItem("accessToken");
 
     if (accessToken) {
       getCheckValidToken().then((res) => {
@@ -46,7 +46,7 @@ function App() {
         }
       });
     } else {
-      localStorage.clear();
+      window.localStorage.clear();
     }
   }, []);
 

@@ -14,7 +14,7 @@ import elapsedTime from "./ProductElapsedTime";
 import MiddleWideButton from "./../button/MiddleWideButton";
 
 const ProductList = () => {
-  const userId = localStorage.getItem("id");
+  const userId = window.localStorage.getItem("id");
   const [isAll, setIsAll] = useState(true);
   const [category, setCategory] = useState("");
   const [search, setSearch] = useState("");

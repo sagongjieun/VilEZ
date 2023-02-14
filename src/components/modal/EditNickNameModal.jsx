@@ -16,7 +16,7 @@ import { useSetRecoilState } from "recoil";
 import { loginUserState } from "../../recoil/atom";
 
 function EditNickNameModal({ url }) {
-  const userId = localStorage.getItem("id");
+  const userId = window.localStorage.getItem("id");
   const setLoginUser = useSetRecoilState(loginUserState);
   const navigate = useNavigate();
 
@@ -90,7 +90,7 @@ function EditNickNameModal({ url }) {
             });
           }
 
-          localStorage.setItem("nickName", nickName);
+          window.localStorage.setItem("nickName", nickName);
           alert("프로필 정보가 변경되었어요.");
           navigate(url);
           return;

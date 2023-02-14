@@ -6,7 +6,7 @@ import { getMyRentAppointments } from "../../api/appointment";
 import MyBoxDDay from "./MyBoxDDay";
 
 const MyBoxRent = (props) => {
-  const userId = localStorage.getItem("id");
+  const userId = window.localStorage.getItem("id");
   const [myBoard, setMyBoard] = useState([]);
   const [myBeingRentedBoard, setMyBeingRentedBoard] = useState([]);
   const [myToBeRentedBoard, setMyToBeRentedBoard] = useState([]);

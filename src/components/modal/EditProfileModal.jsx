@@ -16,8 +16,8 @@ import { loginUserState } from "../../recoil/atom";
 import { SHA256 } from "../signup/HashFunction";
 
 function EditProfile({ setIsEditProfileOpen }) {
-  const userId = localStorage.getItem("id");
-  const oauth = localStorage.getItem("oauth");
+  const userId = window.localStorage.getItem("id");
+  const oauth = window.localStorage.getItem("oauth");
   const setLoginUser = useSetRecoilState(loginUserState);
   const [userNickName, setUserNickName] = useState("");
   const [userProfileImage, setUserProfileImage] = useState("");

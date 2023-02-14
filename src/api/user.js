@@ -89,7 +89,7 @@ async function postLogout(id) {
 async function postRefreshToken() {
   try {
     // 리프레쉬 토큰을 이용해 액세스 토큰을 갱신
-    const refreshToken = localStorage.getItem("refreshToken");
+    const refreshToken = window.localStorage.getItem("refreshToken");
     const headers = {
       "Content-Type": "application/json;charset=utf-8",
       "refresh-token": refreshToken,
