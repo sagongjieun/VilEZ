@@ -81,7 +81,9 @@ const ProductPut = () => {
   }
 
   function onChangeTitle(value) {
-    setTitle(value);
+    if (title.length > 30) {
+      alert("제목은 최대 30자 등록 가능해요 😥");
+    } else setTitle(value);
   }
 
   function receiveCategory(category) {
