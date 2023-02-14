@@ -30,7 +30,6 @@ function Qrcode({ setIsQrCodeOpen }) {
   useEffect(() => {
     getQrCode(userId).then((response) => {
       setQrCode(response[0].path);
-      console.log(response[0].path);
     });
 
     const sockJS = new SockJS(`${process.env.REACT_APP_API_BASE_URL}/chat`); // STOMP 서버가 구현돼있는 url
@@ -38,9 +37,8 @@ function Qrcode({ setIsQrCodeOpen }) {
 
     // 웹소켓과 연결됐을 때 동작하는 콜백함수들
     client.connect({}, () => {
-      client.subscribe(`/sendloc/${userId}`, (data) => {
+      client.subscribe(`/sendloc/${userId}`, () => {
         // 상대방이 메시지 보낼 때만 새로운 메시지 알림
-        console.log(data);
         setIsVerified(true);
       });
     });

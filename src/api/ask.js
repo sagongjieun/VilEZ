@@ -9,7 +9,7 @@ async function getAskArticleList(areaLat, areaLng, category, cnt, high, low, use
     );
 
     if (data.flag === "success") return data.data;
-    else console.log("요청 글 목록을 불러오는 데 실패하였습니다. 😥");
+    else return false;
   } catch (error) {
     console.log(error);
   }
@@ -20,7 +20,7 @@ async function getAskArticleDetailByBoardId(boardId) {
     const { data } = await authJsonAxios.get(`/askboard/detail/${boardId}`);
 
     if (data.flag === "success") return data.data;
-    else console.log("일치하는 게시글이 없습니다. 😥");
+    else return false;
   } catch (error) {
     console.log(error);
   }
@@ -31,7 +31,7 @@ async function getMyAskArticle(userId) {
     const { data } = await authJsonAxios.get(`/askboard/my/${userId}`);
 
     if (data.flag === "success") return data.data;
-    else console.log("일치하는 회원이 없습니다. 😥");
+    else return false;
   } catch (error) {
     console.log(error);
   }
@@ -42,7 +42,7 @@ async function getUserAsk(userId) {
     const { data } = await authJsonAxios.get(`/askboard/my/${userId}`);
 
     if (data.flag === "success") return data.data;
-    else console.log("일치하는 작성글 정보가 없습니다.");
+    else return false;
   } catch (error) {
     console.log(error);
   }

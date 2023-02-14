@@ -7,7 +7,7 @@ async function getUserDetail(userId) {
     const { data } = await authJsonAxios.get(`/users/detail/${userId}`);
 
     if (data.flag === "success") return data.data[0];
-    else console.log("일치하는 유저 정보가 없습니다.");
+    else return false;
   } catch (error) {
     console.log(error);
   }
@@ -63,7 +63,6 @@ async function postLogin(email, password) {
       if (!data.data) {
         alert("이메일 혹은 비밀번호가 일치하지 않네요. 다시 확인해주시겠어요?");
       } else {
-        console.log(data);
         return data.data[0];
       }
     } else {
@@ -80,7 +79,7 @@ async function postLogout(id) {
     const { data } = await defaultAxios.post("users/logout", { id: id });
 
     if (data.flag === "success") return true;
-    else console.log("로그아웃이 정상적으로 완료되지 않았습니다.");
+    else return false;
   } catch (error) {
     console.log(error);
   }
@@ -106,7 +105,7 @@ async function postRefreshToken() {
     if (data.flag === "success") {
       return data.data[0];
     } else if (data.flag === "fail") {
-      console.log(data);
+      return false;
     } else {
       return false;
     }
@@ -147,7 +146,6 @@ async function putUserPasswordByEmail(email, password) {
 
 async function putUserPasswordNickName(userId, nickName, password) {
   try {
-    console.log(userId, nickName, password, "여기요");
     const { data } = await authJsonAxios.put("/users/modify", { id: userId, nickName: nickName, password: password });
     if (data.flag === "success") {
       return data;

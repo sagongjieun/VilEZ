@@ -3,15 +3,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-// import { useLocation, useParams } from "react-router-dom";
-// import { getShareArticleByBoardId } from "../../api/share";
 
 const ProductCalendar = ({ sendStartDate, sendEndDate }) => {
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
-  // const pathname = useLocation().pathname;
-  // const boardId = parseInt(useParams().boardId);
-  // const type = pathname.includes("share") ? 2 : 1;
 
   useEffect(() => {
     if (startDate) {
@@ -24,18 +19,6 @@ const ProductCalendar = ({ sendStartDate, sendEndDate }) => {
       sendEndDate(endDate);
     }
   }, [endDate]);
-  // console.log("@@@@@", startDate, endDate);
-  // useEffect(() => {
-  //   type === 2
-  //     ? getShareArticleByBoardId(boardId).then((res) => {
-  //         const data = res[0].list;
-  //         // console.log("@@@@@@", data);
-  //         // const tempimage = data.map((d) => d);
-  //         // const filename = tempimage.map((obj) => obj.fileName);
-  //         setImageList(data);
-  //       })
-  //     : null;
-  // }, []);
   return (
     <div
       css={css`

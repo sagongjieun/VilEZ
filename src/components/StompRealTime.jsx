@@ -104,7 +104,6 @@ const StompRealTime = ({
 
     setShowingMessage((prev) => [...prev, sendMessage]);
 
-    console.log("1");
     client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
     setChatMessage("");
@@ -117,7 +116,6 @@ const StompRealTime = ({
 
   // Map에서 받은 데이터로 서버에 전송
   function receiveLocation(location, lat, lng, zoomLevel, isMarker) {
-    console.log("map으로부터 데이터받기", location, lat, lng, zoomLevel, isMarker);
     if (lat && lng && isMarker) {
       searchDetailAddrFromCoords(lat, lng, function (result, status) {
         if (status === kakao.maps.services.Status.OK) {
@@ -138,7 +136,6 @@ const StompRealTime = ({
         isMarker: isMarker,
       };
 
-      console.log("2");
       client.send("/recvmap", {}, JSON.stringify(sendMapData));
     }
   }
@@ -175,13 +172,11 @@ const StompRealTime = ({
         roomId: chatRoomId,
         userId: myUserId,
       };
-      console.log("5");
       client.send("/room_enter", {}, JSON.stringify(payload));
 
       payload = {
         userId: myUserId,
       };
-      console.log("6");
       client.send("/room_web", {}, JSON.stringify(payload));
 
       client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
@@ -197,12 +192,10 @@ const StompRealTime = ({
           roomId: chatRoomId,
           userId: myUserId,
         };
-        console.log("7");
         client.send("/room_enter", {}, JSON.stringify(payload));
         payload = {
           userId: myUserId,
         };
-        console.log("8");
         setTimeout(() => client.send("/room_web", {}, JSON.stringify(payload)), 100);
       });
 
@@ -265,13 +258,11 @@ const StompRealTime = ({
             };
 
             setShowingMessage([sendMessage]);
-            console.log("3");
             client.send("/recvchat", {}, JSON.stringify(sendMessage));
             var payload = {
               userId: otherUserId,
             };
             setTimeout(() => {
-              console.log("4");
               client.send("/room_web", {}, JSON.stringify(payload));
             }, 100);
           }, 100);
@@ -279,7 +270,6 @@ const StompRealTime = ({
       });
       /** 채팅방의 마지막 공유지도 장소 받기 */
       getLatestMapLocation(chatRoomId).then((res) => {
-        console.log("마지막 공유지도 장소 받기: ", shareState, roomState);
         // 마지막 장소가 있다면
         if (res) {
           res = res[0];
@@ -326,7 +316,6 @@ const StompRealTime = ({
 
   useEffect(() => {
     /* state : 0 예약 후, -1 반납 후, -2 예약 취소 후, -3 예약 전 */
-    console.log("채팅방 막기 : ", shareState, roomState);
     if (shareState == -1 || shareState == -2 || roomState == -1) {
       // 채팅방 막기
       const messageInput = document.getElementById("messageInput");
@@ -353,7 +342,6 @@ const StompRealTime = ({
 
       setShowingMessage((prev) => [...prev, sendMessage]);
 
-      console.log("9");
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
       setCheckShareDate(false);
@@ -382,9 +370,7 @@ const StompRealTime = ({
 
       setShowingMessage((prev) => [...prev, sendMessage]);
 
-      console.log("10");
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
-      console.log("11");
       client.send("/recvappoint", {}, JSON.stringify(appointMessage));
 
       setCheckAppointment(false);
@@ -403,7 +389,6 @@ const StompRealTime = ({
 
       setShowingMessage((prev) => [...prev, sendMessage]);
 
-      console.log("12");
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
       setCheckShareCancelAsk(false);
@@ -439,7 +424,6 @@ const StompRealTime = ({
 
       setShowingMessage((prev) => [...prev, sendMessage]);
 
-      console.log("13");
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
       setCheckShareCancel(false);
@@ -458,7 +442,6 @@ const StompRealTime = ({
 
       setShowingMessage((prev) => [...prev, sendMessage]);
 
-      console.log("14");
       client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
       setCheckShareReturn(false);
@@ -478,9 +461,7 @@ const StompRealTime = ({
 
         setShowingMessage((prev) => [...prev, sendMessage]);
 
-        console.log("15");
         if (roomState == 0) client.send("/recvchat", {}, JSON.stringify(sendMessage));
-        console.log("16");
         setTimeout(() => client.send("/room_web", {}, JSON.stringify({ userId: myUserId })), 100);
       }
 
@@ -502,9 +483,7 @@ const StompRealTime = ({
 
         setShowingMessage((prev) => [...prev, sendMessage]);
 
-        console.log("17");
         client.send("/recvchat", {}, JSON.stringify(sendMessage));
-        console.log("18");
         client.send("/recvend", {}, JSON.stringify({ roomId: roomId }));
       }
     }
@@ -520,7 +499,6 @@ const StompRealTime = ({
 
   useEffect(() => {
     if (cancelMessage.roomId && cancelMessage.reason) {
-      console.log("19");
       client.send("/recvcancel", {}, JSON.stringify(cancelMessage));
     }
   }, [cancelMessage]);

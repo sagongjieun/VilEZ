@@ -2,8 +2,7 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-// props 옵션 설정
-//outline(boolean) 전달해주면 true일 때 outline 있는 버튼으로 스타일 변경
+// props로 outline(boolean) 전달해주면 true일 때 outline 있는 버튼으로 스타일 변경
 const LargeWideButton = ({ text, outline, onClick }) => {
   return (
     <button css={outline ? outlinedButton : basicButton} onClick={onClick}>
@@ -38,4 +37,5 @@ const outlinedButton = css`
   padding: 0 20px;
   color: #66dd9c;
 `;
+
 export default LargeWideButton;
