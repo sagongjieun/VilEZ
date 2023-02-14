@@ -56,7 +56,7 @@ const ProductDetail = () => {
   const [isAppointment, setIsAppointment] = useState(false);
 
   function checkSocialNickName() {
-    const nickName = window.getItem("nickName");
+    const nickName = window.localStorage.getItem("nickName");
     if (nickName.slice(0, 1) === "#") {
       return true;
     }
