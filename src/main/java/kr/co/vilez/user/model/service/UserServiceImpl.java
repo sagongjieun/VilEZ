@@ -218,13 +218,14 @@ public class UserServiceImpl implements UserService {
         http = new HttpVO();
         data = new ArrayList<>();
 
-        if(user.getState() == -2){
-            throw new Exception("강퇴당한 유저입니다.");
-        }
 
         String accessToken = null;
         String refreshToken = null;
         if(user != null){
+            if(user.getState() == -2){
+                throw new Exception("강퇴당한 유저입니다.");
+            }
+
             accessToken = jwtProvider.createToken(user.getId(), user.getNickName());
             refreshToken = jwtProvider.createRefreshToken(user.getId(), user.getNickName());
 
