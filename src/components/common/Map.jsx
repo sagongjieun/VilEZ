@@ -253,6 +253,10 @@ const Map = ({
           marker.setMap(map);
           map.panTo(locPosition);
         }
+        // 이전에 마커가 없었다면
+        else {
+          map.panTo(locPosition);
+        }
       }
     }
   }, [movedLat, movedLng, movedZoomLevel, movedMarker, map]);
