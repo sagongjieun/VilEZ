@@ -49,22 +49,26 @@ const Map = ({
 
       map = new kakao.maps.Map(container, options);
     } else {
+      options = {
+        center: new kakao.maps.LatLng(37.56682870560737, 126.9786409384806),
+        level: 4,
+      };
+
+      map = new kakao.maps.Map(container, options);
+
       getLatestMapLocation(chatRoomId).then((res) => {
         if (res) {
           res = res[0];
 
-          options = {
-            center: new kakao.maps.LatLng(res.lat, res.lng),
-            level: res.zoomLevel,
-          };
-
-          map = new kakao.maps.Map(container, options);
+          const latlng = new kakao.maps.LatLng(res.lat, res.lng);
 
           if (res.isMarker) {
-            const latlng = new kakao.maps.LatLng(res.lat, res.lng);
             marker.setMap(map);
             marker.setPosition(latlng);
           }
+
+          map.panTo(latlng);
+          map.setLevel(res.zoomLevel); // 지도 레벨 동기화
         }
       });
     }
