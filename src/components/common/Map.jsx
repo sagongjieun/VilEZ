@@ -99,15 +99,15 @@ const Map = ({
         console.log("dddddd", zoom);
         zoom = false;
         return;
+      } else {
+        const center = map.getCenter();
+
+        setLat(center.getLat());
+        setLng(center.getLng());
+        setZoomLevel(map.getLevel());
+        setIsMarker(false);
+        console.log("ssssss오면ㄴ도답", zoom);
       }
-
-      const center = map.getCenter();
-
-      setLat(center.getLat());
-      setLng(center.getLng());
-      setZoomLevel(map.getLevel());
-      setIsMarker(false);
-      console.log("ssssss오면ㄴ도답", zoom);
     });
   }
 
