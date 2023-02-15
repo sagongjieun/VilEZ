@@ -93,7 +93,7 @@ const Map = ({
 
   function eventZoomChanged() {
     // 지도 레벨 변경
-    kakao.maps.event.addListener(map, "zoom_changed", function () {
+    kakao.maps.event.addListener(map, "zoom_changed", () => {
       console.log("줌", zoom);
       if (!zoom) {
         console.log("dddddd", zoom);
