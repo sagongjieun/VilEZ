@@ -180,7 +180,13 @@ const Map = ({
 
   /** 지도 데이터 보내기 */
   useEffect(() => {
-    if (!readOnly && lat !== 0 && lng !== 0 && zoomLevel !== 0) {
+    if (
+      !readOnly &&
+      location !== "마우스 우클릭으로 장소를 선택해주시면 돼요" &&
+      lat !== 0 &&
+      lng !== 0 &&
+      zoomLevel !== 0
+    ) {
       sendLocation(location, lat, lng, zoomLevel, isMarker);
     }
   }, [lat, lng, zoomLevel, isMarker]);
