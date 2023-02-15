@@ -2,14 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 import { Animated } from "react-animated-css";
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
-import mainBackgroundImage from "../assets/images/mainBackgroundImage.png";
 import mainarrow from "../assets/images/mainarrow.png";
 import secondbodyimg from "../assets/images/secondbodyimg.png";
 import thirdbodyimg from "../assets/images/thirdbodyimg.png";
 import mapimg from "../assets/images/mapimg.png";
 import chatimg from "../assets/images/chatimg.png";
 import homeBackground from "../assets/images/home_background.jpg";
-import messageGreen from "../assets/images/back.png";
+import messageGreen from "../assets/images/mockup2.png";
+import backGradient from "../assets/images/back_gradient2.png";
 
 function MainBody() {
   const vilEZ = useRef();
@@ -53,6 +53,9 @@ function MainBody() {
   return (
     <div>
       <div css={FirstBodyWrap} ref={mainBox}>
+        <div css={mockUp}>
+          <img src={messageGreen} alt="" />
+        </div>
         <div>
           <Animated animationIn="animate__fadeIn" animationInDuration={2700}>
             <div css={FirstBody}>
@@ -161,30 +164,38 @@ const FirstWrap = css`
   height: 700px;
 `;
 
+const mockUp = css`
+  width: 50%;
+  > img {
+    width: 100%;
+    object-fit: contain;
+  }
+`;
+
 const FirstBodyWrap = css`
   position: relative;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: flex-end;
   width: 100%;
-  height: calc(100vh - 70px);
-  /* height: 100vh; */
-  /* background-image: url(${mainBackgroundImage}); */
-  /* background-image: url(${homeBackground}); */
-  background-image: url(${messageGreen});
-  background-size: 40%;
-  background-repeat: no-repeat;
-  background-position: 200px center;
+  height: calc(100vh);
+  /* background-color: #66dd9c68; */
+  background-image: url(${backGradient});
+  background-size: cover;
+  background-position-y: bottom;
+
   & > div {
     display: flex;
-    width: 44%;
     flex-direction: column;
     justify-content: center;
     /* width: 100%; */
     height: 100%;
     /* background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(102, 221, 156, 0.8) 100%); */
-    background-color: #fff;
+    /* background-color: #fff; */
+  }
+  & > div:nth-of-type(2) {
+    font-size: 48px;
+    color: #fff;
   }
 `;
 
@@ -193,7 +204,6 @@ const FirstBody = css`
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  font-size: 60px;
   color: #000;
   text-align: left;
   text-align: center;
