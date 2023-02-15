@@ -49,7 +49,7 @@ const Map = ({
     } else {
       options = {
         center: new kakao.maps.LatLng(areaLat, areaLng),
-        level: 4,
+        level: 3,
       };
 
       map = new kakao.maps.Map(container, options);
@@ -93,7 +93,6 @@ const Map = ({
   function eventZoomChanged() {
     // 지도 레벨 변경
     kakao.maps.event.addListener(map, "zoom_changed", () => {
-      console.log("들어가나");
       const center = map.getCenter();
 
       setLat(center.getLat());
