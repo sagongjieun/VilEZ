@@ -24,7 +24,7 @@ const Map = ({
   const [location, setLocation] = useState("");
   const [lat, setLat] = useState(0);
   const [lng, setLng] = useState(0);
-  const [zoomLevel, setZoomLevel] = useState(0);
+  const [zoomLevel, setZoomLevel] = useState(-10);
   const [isMarker, setIsMarker] = useState(false);
   const [hasMarker, setHasMarker] = useState(false);
 
@@ -183,7 +183,7 @@ const Map = ({
   /** 지도 데이터 보내기 */
   useEffect(() => {
     console.log("통과 안됨 : ", location, lat, lng, zoomLevel);
-    if (!readOnly && location !== "" && lat !== 0 && lng !== 0 && zoomLevel !== 0) {
+    if (!readOnly && location !== "" && lat !== 0 && lng !== 0 && zoomLevel !== -10) {
       console.log("통과 됨 : ", location, lat, lng, zoomLevel);
       sendLocation(location, lat, lng, zoomLevel, isMarker);
     }
