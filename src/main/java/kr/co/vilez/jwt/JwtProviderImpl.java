@@ -23,8 +23,8 @@ public class JwtProviderImpl implements JwtProvider {
         return instacne;
     }
 
-    private long tokenValidTime = Duration.ofMinutes(5).toMillis();
-    private long refreshTokenValidTime = Duration.ofMinutes(10).toMillis();
+    private long tokenValidTime = Duration.ofMinutes(2).toMillis();
+    private long refreshTokenValidTime = Duration.ofDays(90).toMillis();
 
     @PostConstruct
     protected void init() {
