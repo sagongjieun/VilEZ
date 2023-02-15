@@ -75,6 +75,7 @@ const Map = ({
   function eventDragEnd() {
     // 드래그 이동
     kakao.maps.event.addListener(map, "dragend", function () {
+      console.log("드래그");
       if (markerFlag) {
         setMarkerFlag(false);
         return;
@@ -93,6 +94,7 @@ const Map = ({
   function eventZoomChanged() {
     // 지도 레벨 변경
     kakao.maps.event.addListener(map, "zoom_changed", function () {
+      console.log("줌");
       if (zoom) {
         setZoom(false);
         return;
@@ -110,6 +112,7 @@ const Map = ({
   function eventSetMarker() {
     // 마커 찍기
     kakao.maps.event.addListener(map, "rightclick", function (mouseEvent) {
+      console.log("마커");
       const latlng = mouseEvent.latLng;
 
       if (path === "regist" || path === "modify") {
