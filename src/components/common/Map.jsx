@@ -66,7 +66,7 @@ const Map = ({
           }
 
           map.panTo(latlng);
-          map.setLevel(res.zoomLevel); // 지도 레벨 동기화
+          // map.setLevel(res.zoomLevel); // 지도 레벨 동기화
         }
       });
     }
@@ -93,7 +93,7 @@ const Map = ({
   function eventZoomChanged() {
     // 지도 레벨 변경
     kakao.maps.event.addListener(map, "zoom_changed", () => {
-      console.log(";;;;;설마");
+      console.log("들어가나");
       const center = map.getCenter();
 
       setLat(center.getLat());
