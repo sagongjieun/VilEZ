@@ -95,19 +95,18 @@ const Map = ({
     // 지도 레벨 변경
     kakao.maps.event.addListener(map, "zoom_changed", () => {
       console.log("줌", zoom);
-      if (!zoom) {
+      if (zoom) {
         console.log("dddddd", zoom);
         zoom = false;
         return;
-      } else {
-        const center = map.getCenter();
-
-        setLat(center.getLat());
-        setLng(center.getLng());
-        setZoomLevel(map.getLevel());
-        setIsMarker(false);
-        console.log("ssssss오면ㄴ도답", zoom);
       }
+      const center = map.getCenter();
+
+      setLat(center.getLat());
+      setLng(center.getLng());
+      setZoomLevel(map.getLevel());
+      setIsMarker(false);
+      console.log("ssssss오면ㄴ도답", zoom);
     });
   }
 
@@ -252,6 +251,7 @@ const Map = ({
       zoom = true;
 
       console.log("zoom의 상태 ", zoom);
+      map.setLevel(movedZoomLevel); // 지도 레벨 동기화
 
       if (movedMarker) {
         marker.setPosition(locPosition);
@@ -269,8 +269,6 @@ const Map = ({
         map.panTo(locPosition);
         setMarkerFlag(true);
       }
-
-      map.setLevel(movedZoomLevel); // 지도 레벨 동기화
     }
   }, [movedLat, movedLng, movedZoomLevel, movedMarker, map]);
 
