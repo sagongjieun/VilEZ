@@ -59,7 +59,7 @@ const StompRealTime = ({
 
   const [chatMessage, setChatMessage] = useState(""); // 클라이언트가 입력하는 메시지
   const [showingMessage, setShowingMessage] = useState([]); // 서버로부터 받는 메시지
-  const [hopeLocation, setHopeLocation] = useState("마우스 우클릭으로 장소를 선택해주시면 돼요");
+  const [hopeLocation, setHopeLocation] = useState("우클릭으로 지도에 마커를 찍어 공유지도를 시작해보세요!");
   const [movedLat, setMovedLat] = useState("");
   const [movedLng, setMovedLng] = useState("");
   const [movedZoomLevel, setMovedZoomLevel] = useState(0);
@@ -72,6 +72,8 @@ const StompRealTime = ({
   const [cancelMessage, setCancelMessage] = useState({});
   const [otherUserProfileImage, setOtherUserProfileImage] = useState("");
   const [isOtherLeave, setIsOtherLeave] = useState(false);
+  const [isZoomChanged, setIsZoomChanged] = useState(false);
+  const [myZoomLevel, setMyZoomLevel] = useState(-10);
 
   function onKeyDownSendMessage(e) {
     if (e.keyCode === 13) {
@@ -121,12 +123,15 @@ const StompRealTime = ({
         roomId: chatRoomId,
         userId: myUserId,
       };
+
       client.send("/room_enter", {}, JSON.stringify(payload));
 
-      payload = {
-        userId: myUserId,
-      };
-      client.send("/room_web", {}, JSON.stringify(payload));
+      setTimeout(() => {
+        payload = {
+          userId: myUserId,
+        };
+        client.send("/room_web", {}, JSON.stringify(payload));
+      }, 100);
 
       client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
         // 상대방이 채팅방을 나갔다면
@@ -168,6 +173,10 @@ const StompRealTime = ({
       client.subscribe(`/sendmap/${chatRoomId}/${myUserId}`, (data) => {
         data = JSON.parse(data.body);
 
+        if (myZoomLevel !== movedZoomLevel) {
+          setIsZoomChanged(true);
+        }
+
         // 다른 유저가 움직인 지도의 데이터들
         setMovedLat(data.lat);
         setMovedLng(data.lng);
@@ -205,6 +214,13 @@ const StompRealTime = ({
 
     console.log(location, lat, lng, zoomLevel, isMarker);
 
+    setMyZoomLevel(zoomLevel);
+
+    if (isZoomChanged) {
+      setIsZoomChanged(false);
+      return;
+    }
+
     const sendMapData = {
       roomId: chatRoomId,
       toUserId: otherUserId,
@@ -241,6 +257,9 @@ const StompRealTime = ({
     });
   }
 
+  const areaLat = window.localStorage.getItem("areaLat");
+  const areaLng = window.localStorage.getItem("areaLng");
+
   useEffect(() => {
     if (chatRoomId) {
       getChatHistory(chatRoomId).then((res) => {
@@ -261,14 +280,16 @@ const StompRealTime = ({
 
             setShowingMessage([sendMessage]);
             connectStomp();
-            client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
             var payload = {
               userId: otherUserId,
             };
 
             setTimeout(() => {
-              client.send("/room_web", {}, JSON.stringify(payload));
+              client.send("/recvchat", {}, JSON.stringify(sendMessage));
+              setTimeout(() => {
+                client.send("/room_web", {}, JSON.stringify(payload));
+              }, 100);
             }, 100);
           }, 100);
         }
@@ -279,10 +300,10 @@ const StompRealTime = ({
         if (res) {
           res = res[0];
 
-          setMovedLat(res.lat);
-          setMovedLng(res.lng);
-          setMovedZoomLevel(res.zoomLevel);
-          setMovedMarker(res.isMarker);
+          // setMovedLat(res.lat);
+          // setMovedLng(res.lng);
+          // setMovedZoomLevel(res.zoomLevel);
+          // setMovedMarker(res.isMarker);
 
           setDisableMapLat(res.lat);
           setDisableMapLng(res.lng);
@@ -296,13 +317,13 @@ const StompRealTime = ({
         // 마지막 장소가 없다면
         else {
           // 서울시청 좌표
-
           // setMovedLat(37.56682870560737);
           // setMovedLng(126.9786409384806);
           // setMovedZoomLevel(4);
 
-          setDisableMapLat(37.56682870560737);
-          setDisableMapLng(126.9786409384806);
+          // 현재 사용자 위치로 지도 블락하기
+          setDisableMapLat(areaLat);
+          setDisableMapLng(areaLng);
         }
       });
     }
@@ -516,7 +537,13 @@ const StompRealTime = ({
         <div>
           {shareState == -1 || shareState == -2 || roomState == -1 ? (
             // 공유지도 막기
-            <Map readOnly={true} disableMapLat={disableMapLat} disableMapLng={disableMapLng} path="block" />
+            <Map
+              readOnly={true}
+              disableMapLat={disableMapLat}
+              disableMapLng={disableMapLng}
+              path="block"
+              chatRoomId={chatRoomId}
+            />
           ) : (
             <Map
               readOnly={false}
@@ -526,6 +553,7 @@ const StompRealTime = ({
               movedZoomLevel={movedZoomLevel}
               movedMarker={movedMarker}
               path="stomp"
+              chatRoomId={chatRoomId}
             />
           )}
         </div>

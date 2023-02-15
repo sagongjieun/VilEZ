@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { getLatestMapLocation } from "../../api/appointment";
 
 const { kakao } = window;
 
@@ -20,16 +21,15 @@ const Map = ({
   path,
   hopeAreaLat,
   hopeAreaLng,
+  chatRoomId,
 }) => {
-  const [location, setLocation] = useState("마우스 우클릭으로 장소를 선택해주시면 돼요");
+  const [location, setLocation] = useState("");
   const [lat, setLat] = useState(0);
   const [lng, setLng] = useState(0);
-  const [zoomLevel, setZoomLevel] = useState(0);
+  const [zoomLevel, setZoomLevel] = useState(-10);
   const [isMarker, setIsMarker] = useState(false);
-  const [hasMarker, setHasMarker] = useState(false);
-
-  const [markerLat, setMarkerLat] = useState("");
-  const [markerLng, setMarkerLng] = useState("");
+  const [markerFlag, setMarkerFlag] = useState(false);
+  const [flag, setFlag] = useState(true);
 
   const areaLat = window.localStorage.getItem("areaLat");
   const areaLng = window.localStorage.getItem("areaLng");
@@ -37,26 +37,59 @@ const Map = ({
   function initMap() {
     // 지도를 표시할 공간과 초기 중심좌표, 레벨 세팅
     container = document.getElementById("map");
+    marker = new kakao.maps.Marker();
 
     if (path === "regist" || path === "modify") {
       options = {
         center: new kakao.maps.LatLng(areaLat, areaLng),
         level: 7,
       };
+
+      map = new kakao.maps.Map(container, options);
+    } else if (path === "detail") {
+      options = {
+        center: new kakao.maps.LatLng(areaLat, areaLng),
+        level: 2,
+      };
+
+      map = new kakao.maps.Map(container, options);
     } else {
       options = {
         center: new kakao.maps.LatLng(areaLat, areaLng),
-        level: 4,
+        level: 3,
       };
-    }
 
-    map = new kakao.maps.Map(container, options);
+      map = new kakao.maps.Map(container, options);
+
+      getLatestMapLocation(chatRoomId).then((res) => {
+        if (res) {
+          res = res[0];
+
+          const latlng = new kakao.maps.LatLng(res.lat, res.lng);
+
+          if (res.isMarker) {
+            marker.setMap(map);
+            marker.setPosition(latlng);
+          }
+
+          map.panTo(latlng);
+          // map.setLevel(res.zoomLevel); // 지도 레벨 동기화
+        }
+      });
+    }
   }
 
   function eventDragEnd() {
     // 드래그 이동
     kakao.maps.event.addListener(map, "dragend", function () {
+      if (markerFlag) {
+        setMarkerFlag(false);
+        return;
+      }
+
       const center = map.getCenter();
+
+      setLocation("dragend");
       setLat(center.getLat());
       setLng(center.getLng());
       setZoomLevel(map.getLevel());
@@ -66,7 +99,7 @@ const Map = ({
 
   function eventZoomChanged() {
     // 지도 레벨 변경
-    kakao.maps.event.addListener(map, "zoom_changed", function () {
+    kakao.maps.event.addListener(map, "zoom_changed", () => {
       const center = map.getCenter();
 
       setLat(center.getLat());
@@ -80,7 +113,7 @@ const Map = ({
     // 마커 찍기
     kakao.maps.event.addListener(map, "rightclick", function (mouseEvent) {
       const latlng = mouseEvent.latLng;
-      let failToSelect = false;
+
       if (path === "regist" || path === "modify") {
         if (
           latlng.getLat() > parseFloat(areaLat) - 0.03 &&
@@ -101,8 +134,6 @@ const Map = ({
           map.panTo(latlng);
         } else {
           alert("현재 위치를 기반으로 가능한 범위내의 장소를 선택해야해요!");
-          map.setCenter(new kakao.maps.LatLng(areaLat, areaLng)); // 본인 위치 중앙으로 렌더링
-          failToSelect = true;
           return;
         }
       } else {
@@ -113,23 +144,14 @@ const Map = ({
         marker.setPosition(latlng);
         marker.setMap(map);
 
+        setLocation("marker");
         setLat(latlng.getLat());
         setLng(latlng.getLng());
         setZoomLevel(map.getLevel());
         setIsMarker(true);
-        setHasMarker(true);
-        setMarkerLat(latlng.getLat());
-        setMarkerLng(latlng.getLng());
 
+        setMarkerFlag(true);
         map.panTo(latlng);
-      }
-
-      if (!failToSelect) {
-        searchDetailAddrFromCoords(mouseEvent.latLng, function (result, status) {
-          if (status === kakao.maps.services.Status.OK) {
-            setLocation(result[0].address.address_name);
-          }
-        });
       }
     });
   }
@@ -165,7 +187,6 @@ const Map = ({
 
   useEffect(() => {
     initMap();
-    marker = new kakao.maps.Marker();
 
     if (path === "regist") {
       makeRectangle();
@@ -180,14 +201,16 @@ const Map = ({
 
   /** 지도 데이터 보내기 */
   useEffect(() => {
-    if (
-      !readOnly &&
-      location !== "마우스 우클릭으로 장소를 선택해주시면 돼요" &&
-      lat !== 0 &&
-      lng !== 0 &&
-      zoomLevel !== 0
-    ) {
-      sendLocation(location, lat, lng, zoomLevel, isMarker);
+    if (!readOnly) {
+      if (path === "stomp") {
+        if (flag) {
+          setFlag(false);
+          return;
+        }
+        sendLocation(location, lat, lng, zoomLevel, isMarker);
+      } else {
+        sendLocation(location, lat, lng, zoomLevel, isMarker);
+      }
     }
   }, [lat, lng, zoomLevel, isMarker]);
 
@@ -227,10 +250,8 @@ const Map = ({
       if (movedMarker) {
         marker.setPosition(locPosition);
         marker.setMap(map);
+        setMarkerFlag(true);
         map.panTo(locPosition);
-        setHasMarker(true);
-        setMarkerLat(locPosition.getLat());
-        setMarkerLng(locPosition.getLng());
 
         searchDetailAddrFromCoords(locPosition, function (result, status) {
           if (status === kakao.maps.services.Status.OK) {
@@ -238,13 +259,9 @@ const Map = ({
           }
         });
       } else {
-        // dragend, zoomchange 이벤트의 경우 이전 마커의 위치에 마커 유지
-        if (hasMarker) {
-          const prevMarkerPosition = new kakao.maps.LatLng(markerLat, markerLng);
-          marker.setPosition(prevMarkerPosition);
-          marker.setMap(map);
-          map.panTo(locPosition);
-        }
+        // dragend, zoomchange 이벤트의 경우
+        map.panTo(locPosition);
+        setMarkerFlag(true);
       }
     }
   }, [movedLat, movedLng, movedZoomLevel, movedMarker, map]);
