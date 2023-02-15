@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Animated } from "react-animated-css";
+// import { Animated } from "react-animated-css";
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
-import mainBackgroundImage from "../assets/images/mainBackgroundImage.png";
 import mainarrow from "../assets/images/mainarrow.png";
 import secondbodyimg from "../assets/images/secondbodyimg.png";
 import thirdbodyimg from "../assets/images/thirdbodyimg.png";
 import mapimg from "../assets/images/mapimg.png";
 import chatimg from "../assets/images/chatimg.png";
 import homeBackground from "../assets/images/home_background.jpg";
-import messageGreen from "../assets/images/back.png";
+import mockUpImage from "../assets/images/mockup3.png";
+import backGradient from "../assets/images/back_gradient.png";
+import backScroll from "../assets/images/back_scroll.png";
 
 function MainBody() {
-  const vilEZ = useRef();
   const mainBox = useRef();
   const firstBox = useRef();
   const secondBox = useRef();
@@ -53,28 +53,22 @@ function MainBody() {
   return (
     <div>
       <div css={FirstBodyWrap} ref={mainBox}>
-        <div>
-          <Animated animationIn="animate__fadeIn" animationInDuration={2700}>
-            <div css={FirstBody}>
-              <Animated animationIn="animate__fadeIn" animationInDuration={2200}>
-                <div css={FirstBodyDiv}>쉽게 빌리고</div>
-              </Animated>
-              <Animated animationIn="animate__fadeIn" animationInDuration={3200}>
-                <div css={FirstBodyDiv}>쉽게 빌려주는,</div>
-              </Animated>
-              <Animated animationIn="animate__fadeIn" animationInDuration={4200}>
-                <div css={FirstBodyDiv} ref={vilEZ}>
-                  공유마을 빌리지.
-                </div>
-              </Animated>
-            </div>
-          </Animated>
-
-          <div css={ArrowBox}>
-            <a href="#movebottom">
-              <img src={mainarrow} alt="" />
-            </a>
+        <div css={slogan}>
+          {/* <div>내 손 안의 작은 선행</div> */}
+          <div>쉽게 빌리고 쉽게 빌려주는</div>
+          <div>내 손 안의 작은 선행</div>
+          <div>
+            VilEZ <span>[빌리지]</span>
           </div>
+          <div></div>
+        </div>
+        <div css={mockUp}>
+          <img src={mockUpImage} alt="" />
+        </div>
+        <div css={ArrowBox}>
+          <a href="#movebottom">
+            <img src={mainarrow} alt="" />
+          </a>
         </div>
       </div>
       <a id="movebottom"></a>
@@ -152,57 +146,79 @@ function MainBody() {
   );
 }
 
-const FirstWrap = css`
-  display: flex;
-  margin-top: 186px;
-  padding-left: 200px;
-  padding-right: 200px;
-  justify-content: space-between;
-  height: 700px;
+const appear = keyframes`
+  0% {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
 `;
 
 const FirstBodyWrap = css`
   position: relative;
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
   width: 100%;
-  height: calc(100vh - 70px);
-  /* height: 100vh; */
-  /* background-image: url(${mainBackgroundImage}); */
-  /* background-image: url(${homeBackground}); */
-  background-image: url(${messageGreen});
-  background-size: 40%;
-  background-repeat: no-repeat;
-  background-position: 200px center;
+  height: calc(100vh);
+  /* background-image: linear-gradient(90deg, #66dd9c50, #66dd9c50, #66dd9c90); */
+  background-image: url(${backGradient});
+  overflow-x: hidden;
+  background-size: cover;
+  background-position: center center;
+`;
+
+const slogan = css`
+  box-sizing: border-box;
+  width: 50%;
+  font-size: 50px;
+  color: #000;
+  padding-left: 120px;
   & > div {
-    display: flex;
-    width: 44%;
-    flex-direction: column;
-    justify-content: center;
-    /* width: 100%; */
-    height: 100%;
-    /* background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(102, 221, 156, 0.8) 100%); */
-    background-color: #fff;
+    opacity: 0;
+    font-family: "GmarketSansMedium";
+    animation-name: ${appear};
+    animation-duration: 1.5s;
+    animation-fill-mode: forwards;
+  }
+  & > div:nth-of-type(1) {
+    font-size: 24px;
+  }
+  & > div:nth-of-type(2) {
+    font-size: 42px;
+    letter-spacing: -3px;
+    animation-delay: 0.4s;
+  }
+  & > div:nth-of-type(3) {
+    font-family: Pretendard-Regular;
+    font-weight: 900;
+    font-size: 160px;
+    color: #66dd9c;
+    animation-delay: 0.9s;
+    & > span {
+      display: inline-block;
+      transform: translateX(-20px);
+      width: fit-content;
+      color: #888;
+      font-size: 24px;
+      font-family: "GmarketSansMedium";
+    }
+  }
+  & > div:nth-of-type(4) {
+    font-family: Pretendard-Regular;
   }
 `;
 
-const FirstBody = css`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  font-size: 60px;
-  color: #000;
-  text-align: left;
-  text-align: center;
-  font-family: "GmarketSansMedium";
-`;
-
-const FirstBodyDiv = css`
-  padding: 10px;
-  font-family: "GmarketSansMedium";
+const mockUp = css`
+  width: 40%;
+  > img {
+    width: 150%;
+    height: 100%;
+    object-fit: contain;
+  }
 `;
 
 const floating = keyframes`
@@ -231,6 +247,15 @@ const ArrowBox = css`
     width: 100%;
     object-fit: contain;
   }
+`;
+
+const FirstWrap = css`
+  display: flex;
+  margin-top: 186px;
+  padding-left: 200px;
+  padding-right: 200px;
+  justify-content: space-between;
+  height: 700px;
 `;
 
 // SecondBody
@@ -305,7 +330,8 @@ const visibleBox = css`
 
 const blanks = css`
   height: 5000px;
-  background-color: #fff;
+  background-image: url(${backScroll});
+  background-size: 100% 100%;
 `;
 
 const test = (scroll) => {
@@ -318,7 +344,7 @@ const test = (scroll) => {
     background-image: url(${homeBackground});
     background-size: cover;
     background-color: bisque;
-    opacity: ${(scroll / 5 - 150) / 100};
+    opacity: ${(scroll / 5 - 130) / 100};
     > div {
       position: relative;
       width: 100%;

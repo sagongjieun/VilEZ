@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
+/** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
 import ProductRegist from "../components/product/ProductRegist";
 import ProductDetail from "../components/product/ProductDetail";
 import ProductChatting from "../components/product/ProductChatting";
@@ -33,7 +35,11 @@ const Product = () => {
   }, []);
 
   return (
-    <div>
+    <div
+      css={css`
+        padding-top: 70px;
+      `}
+    >
       <Routes>
         <Route path="/regist" element={<ProductRegist />} />
         <Route path="/detail/share/:boardId" element={<ProductDetail />} />

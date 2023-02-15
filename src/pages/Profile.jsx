@@ -86,7 +86,7 @@ const Profile = () => {
 };
 
 const ProfileWrapper = css`
-  margin: 60px 200px;
+  margin: 130px 200px 60px;
 `;
 const linkWrapper = (props) => css`
   position: relative;

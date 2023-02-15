@@ -7,11 +7,10 @@ async function requestKakaoLogin(code) {
     if (data.flag === "oauth_join_success & login_success" || data.flag === "login_success") {
       return data.data;
     } else {
-      alert("이메일 혹은 비밀번호가 일치하지 않네요. 다시 확인해주시겠어요?");
+      alert("로그인이 정상적으로 완료되지 않았습니다. 다시 시도해주시겠어요?");
     }
   } catch (error) {
     console.log(error);
-    alert("꺼져");
   }
 }
 
@@ -22,11 +21,10 @@ async function requestNaverLogin(code) {
     if (data.flag === "oauth_join_success & login_success" || data.flag === "login_success") {
       return data.data;
     } else {
-      alert("이메일 혹은 비밀번호가 일치하지 않네요. 다시 확인해주시겠어요?");
+      alert("로그인이 정상적으로 완료되지 않았습니다. 다시 시도해주시겠어요?");
     }
   } catch (error) {
     console.log(error);
-    alert("꺼져");
   }
 }
 
