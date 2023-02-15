@@ -14,6 +14,12 @@ const style = css`
     font-style: normal;
   }
   @font-face {
+    font-family: "GmarketSansBold";
+    src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff") format("woff");
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
     font-family: "LINESeedKR-Bd";
     src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2") format("woff2");
     font-weight: 100;
@@ -24,6 +30,20 @@ const style = css`
     font-family: "Pretendard-Regular";
     src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff") format("woff");
     font-weight: 400;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: "Pretendard-Black";
+    src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Black.woff") format("woff");
+    font-weight: 900;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: "Pretendard-Bold";
+    src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff") format("woff");
+    font-weight: 700;
     font-style: normal;
   }
 
