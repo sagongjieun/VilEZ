@@ -123,17 +123,17 @@ function MainBody() {
         </div>
         <div css={ExplainRight}>
           <div css={ExplainTitle}>위치 기반 서비스</div>
-          <div css={ExplainContent}>위치 인증을 통해 </div>
+          <div css={ExplainContent}>GPS 기반 위치 인증을 통해 </div>
           <div css={ExplainContent}>내 주변에 있는 이웃들의</div>
           <div css={ExplainContent}>공유 물품을 한 눈에 볼 수 있어요.</div>
         </div>
       </div>
       <div css={[ExplainWrap, scrollPosition > secondHeight ? visibleBox : hiddenBox]} ref={secondBox}>
         <div css={[ExplainLeft, ExplainLeftCenter]}>
-          <div css={ExplainTitle}>다른 곳 갈 필요 없어요</div>
-          <div css={ExplainContent}>빌리지 안에서 약속을 잡고,</div>
-          <div css={ExplainContent}>화상으로 물품 상태를 확인해서</div>
-          <div css={ExplainContent}>귀찮음을 없애드려요</div>
+          <div css={ExplainTitle}>이웃과 실시간 채팅</div>
+          <div css={ExplainContent}>게시글로 물품 상태를 확인하고</div>
+          <div css={ExplainContent}>이웃과의 실시간 채팅을 통해</div>
+          <div css={ExplainContent}>공유 약속을 잡을 수 있어요.</div>
         </div>
         <div css={ExplainRight}>
           <img css={ImgHeight} src={chatimg} alt="" />
@@ -144,17 +144,17 @@ function MainBody() {
           <img src={mapCapture} alt="" />
         </div>
         <div css={ExplainRight}>
-          <div css={ExplainTitle}>실시간 장소선정</div>
-          <div css={ExplainContent}>장소를 선정할 때 어려웠던 경험,</div>
-          <div css={ExplainContent}>실시간으로 장소를 같이</div>
-          <div css={ExplainContent}>선택할 수 있게 빌리지가 도와줄게요.</div>
+          <div css={ExplainTitle}>실시간 공유 지도</div>
+          <div css={ExplainContent}>만남 장소를 선정할 때 어려웠던 경험,</div>
+          <div css={ExplainContent}>실시간 공유 지도를 사용해</div>
+          <div css={ExplainContent}>편하게 선택할 수 있도록 빌리지가 도와줄게요.</div>
         </div>
       </div>
       <div css={[ExplainWrap, scrollPosition > forthHeight ? visibleBox : hiddenBox]}>
         <div css={[ExplainLeft, ExplainLeftCenter]}>
           <div css={ExplainTitle}>안전한 공유방식</div>
-          <div css={ExplainContent}>이웃간의 약속을 통해</div>
-          <div css={ExplainContent}>안전하게 물건을 빌리고, 빌려줄 수 있어요.</div>
+          <div css={ExplainContent}>빌리지만의 공유 방식을 통해</div>
+          <div css={ExplainContent}>내 물품을 안전하게 공유할 수 있어요.</div>
         </div>
         <div css={ExplainRight}>
           <img css={ImgHeight} src={signModal} alt="" />
@@ -279,7 +279,7 @@ const stepBar = css`
   box-sizing: border-box;
   height: 140px;
   padding-bottom: 20px;
-  background-color: #fff;
+  /* background-color: #fff; */
   /* background-color: #66dd9c; */
   position: sticky;
   top: 0;
