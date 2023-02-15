@@ -252,27 +252,30 @@ const Map = ({
       console.log("상대방으로부터 데이터받음 : ", location, lat, lng, zoomLevel, isMarker);
 
       setZoom(true);
-      console.log("1");
-      map.setLevel(movedZoomLevel); // 지도 레벨 동기화
-      console.log("2");
 
-      if (movedMarker) {
-        marker.setPosition(locPosition);
-        marker.setMap(map);
-        setMarkerFlag(true);
-        map.panTo(locPosition);
+      setTimeout(() => {
+        console.log("1");
+        map.setLevel(movedZoomLevel); // 지도 레벨 동기화
+        console.log("2");
 
-        searchDetailAddrFromCoords(locPosition, function (result, status) {
-          if (status === kakao.maps.services.Status.OK) {
-            setLocation(result[0].address.address_name);
-          }
-        });
-      } else {
-        // dragend, zoomchange 이벤트의 경우
-        map.panTo(locPosition);
-        setMarkerFlag(true);
-        // setZoom(true);
-      }
+        if (movedMarker) {
+          marker.setPosition(locPosition);
+          marker.setMap(map);
+          setMarkerFlag(true);
+          map.panTo(locPosition);
+
+          searchDetailAddrFromCoords(locPosition, function (result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+              setLocation(result[0].address.address_name);
+            }
+          });
+        } else {
+          // dragend, zoomchange 이벤트의 경우
+          map.panTo(locPosition);
+          setMarkerFlag(true);
+          // setZoom(true);
+        }
+      }, 100);
     }
   }, [movedLat, movedLng, movedZoomLevel, movedMarker, map]);
 
