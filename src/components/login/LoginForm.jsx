@@ -25,8 +25,6 @@ const LoginForm = () => {
     postLogin(values.email, SHA256(values.password)).then((res) => {
       if (!res) return;
 
-      console.log("@@@@@@@@@@@@@@@@@", res);
-
       // localstorage와 login에 유저 정보 저장
       window.localStorage.setItem("accessToken", res.accessToken);
       window.localStorage.setItem("refreshToken", res.refreshToken);

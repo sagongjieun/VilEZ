@@ -1,10 +1,10 @@
-import { authJsonAxios } from "./instance";
+import { defaultAxios } from "./instance";
 
 // POST
 
 async function postConfirmEmail(email) {
   try {
-    const { data } = await authJsonAxios.post("/emailConfirm", { email: email });
+    const { data } = await defaultAxios.post("/emailConfirm", { email: email });
 
     if (data.flag === "success") {
       alert("이메일 전송에 성공했어요! 메일함에서 인증 번호를 확인해주세요.");
@@ -21,7 +21,7 @@ async function postConfirmEmail(email) {
 
 async function postConfirmEmailForPassword(email) {
   try {
-    const { data } = await authJsonAxios.post("/passowrd", { email: email });
+    const { data } = await defaultAxios.post("/passowrd", { email: email });
 
     if (data.flag === "success") {
       alert("이메일 전송에 성공했어요. 메일함에서 인증 번호를 확인해주시겠어요?");

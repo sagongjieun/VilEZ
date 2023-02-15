@@ -22,8 +22,8 @@ const Map = ({
   hopeAreaLng,
 }) => {
   const [location, setLocation] = useState("마우스 우클릭으로 장소를 선택해주시면 돼요");
-  const [lat, setLat] = useState("");
-  const [lng, setLng] = useState("");
+  const [lat, setLat] = useState(0);
+  const [lng, setLng] = useState(0);
   const [zoomLevel, setZoomLevel] = useState(0);
   const [isMarker, setIsMarker] = useState(false);
   const [hasMarker, setHasMarker] = useState(false);
@@ -163,13 +163,6 @@ const Map = ({
     rectangle.setMap(map);
   }
 
-  /** 지도 데이터 보내기 */
-  useEffect(() => {
-    if (!readOnly) {
-      sendLocation(location, lat, lng, zoomLevel, isMarker);
-    }
-  }, [lat, lng, zoomLevel, isMarker]);
-
   useEffect(() => {
     initMap();
     marker = new kakao.maps.Marker();
@@ -184,6 +177,19 @@ const Map = ({
       eventDragEnd();
     }
   }, []);
+
+  /** 지도 데이터 보내기 */
+  useEffect(() => {
+    if (
+      !readOnly &&
+      location !== "마우스 우클릭으로 장소를 선택해주시면 돼요" &&
+      lat !== 0 &&
+      lng !== 0 &&
+      zoomLevel !== 0
+    ) {
+      sendLocation(location, lat, lng, zoomLevel, isMarker);
+    }
+  }, [lat, lng, zoomLevel, isMarker]);
 
   /** 게시글 수정 map */
   useEffect(() => {
