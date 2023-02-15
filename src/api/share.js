@@ -134,7 +134,7 @@ async function deleteShareArticleByBoardId(boardId) {
   try {
     const { data } = await authJsonAxios.delete(`/shareboard/${boardId}`);
 
-    if (data.flag === "success") alert("게시글이 삭제되었어요 😀");
+    if (data.flag === "success") return true;
     else alert("게시글 삭제에 실패했어요 😥");
   } catch (error) {
     console.log(error);
@@ -146,7 +146,7 @@ async function deleteShareArticleByBoardId(boardId) {
 async function putShareArticle(formData) {
   try {
     const { data } = await authFormDataAxios.put(`/shareboard`, formData);
-    // console.log(formData);
+
     if (data.flag === "success") {
       return data.data;
     } else alert("공유 글 수정에 실패했어요 😥");
