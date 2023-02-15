@@ -96,6 +96,7 @@ const Map = ({
     kakao.maps.event.addListener(map, "zoom_changed", function () {
       console.log("줌");
       if (zoom) {
+        console.log("dddddd", zoom);
         zoom = false;
         return;
       }
@@ -106,6 +107,7 @@ const Map = ({
       setLng(center.getLng());
       setZoomLevel(map.getLevel());
       setIsMarker(false);
+      console.log("ssssss오면ㄴ도답", zoom);
     });
   }
 
