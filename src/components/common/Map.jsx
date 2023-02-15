@@ -30,8 +30,8 @@ const Map = ({
   const [isMarker, setIsMarker] = useState(false);
   const [hasMarker, setHasMarker] = useState(false);
 
-  const [markerLat, setMarkerLat] = useState("");
-  const [markerLng, setMarkerLng] = useState("");
+  // const [markerLat, setMarkerLat] = useState("");
+  // const [markerLng, setMarkerLng] = useState("");
 
   const areaLat = window.localStorage.getItem("areaLat");
   const areaLng = window.localStorage.getItem("areaLng");
@@ -140,8 +140,8 @@ const Map = ({
         setZoomLevel(map.getLevel());
         setIsMarker(true);
         setHasMarker(true);
-        setMarkerLat(latlng.getLat());
-        setMarkerLng(latlng.getLng());
+        // setMarkerLat(latlng.getLat());
+        // setMarkerLng(latlng.getLng());
 
         map.panTo(latlng);
       }
@@ -243,8 +243,8 @@ const Map = ({
         marker.setMap(map);
         map.panTo(locPosition);
         setHasMarker(true);
-        setMarkerLat(locPosition.getLat());
-        setMarkerLng(locPosition.getLng());
+        // setMarkerLat(locPosition.getLat());
+        // setMarkerLng(locPosition.getLng());
 
         searchDetailAddrFromCoords(locPosition, function (result, status) {
           if (status === kakao.maps.services.Status.OK) {
@@ -254,9 +254,9 @@ const Map = ({
       } else {
         // dragend, zoomchange 이벤트의 경우 이전 마커의 위치에 마커 유지
         if (hasMarker) {
-          const prevMarkerPosition = new kakao.maps.LatLng(markerLat, markerLng);
-          marker.setPosition(prevMarkerPosition);
-          marker.setMap(map);
+          // const prevMarkerPosition = new kakao.maps.LatLng(markerLat, markerLng);
+          // marker.setPosition(prevMarkerPosition);
+          // marker.setMap(map);
           map.panTo(locPosition);
         }
         // 이전에 마커가 없었다면
