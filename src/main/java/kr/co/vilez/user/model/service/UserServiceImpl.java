@@ -100,9 +100,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public HttpVO modifyUserInfo(HashMap<String,?> userDto) throws Exception {
         http = new HttpVO();
-        http.setFlag("success");
+
+        System.out.println("userDto = " + userDto);
         userMapper.modifyUserInfo(userDto);
 
+        http.setFlag("success");
         return http;
     }
 
