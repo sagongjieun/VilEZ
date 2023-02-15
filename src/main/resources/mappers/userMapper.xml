@@ -71,7 +71,7 @@
     <select id="list" resultMap="user">
         select * from user;
     </select>
-    <select id="refreshCheck" parameterType="map" resultMap="user">
+    <select id="refreshCheck" parameterType="kr.co.vilez.user.model.vo.TokenVO" resultMap="user">
         SELECT id, email, nickname
         FROM user
         WHERE id = #{userId} and refresh_token = #{token};

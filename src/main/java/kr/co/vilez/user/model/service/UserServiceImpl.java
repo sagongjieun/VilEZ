@@ -9,7 +9,9 @@ import kr.co.vilez.tool.OSUpload;
 import kr.co.vilez.user.model.dto.LocationDto;
 import kr.co.vilez.user.model.dto.UserDto;
 import kr.co.vilez.user.model.mapper.UserMapper;
+import kr.co.vilez.user.model.vo.TokenVO;
 import lombok.RequiredArgsConstructor;
+import org.apache.el.parser.Token;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
@@ -184,18 +186,18 @@ public class UserServiceImpl implements UserService {
         http = new HttpVO();
         List<Object> data = new ArrayList<>();
 
-        String userId = jwtProvider.getUserId(token);
+        int userId = Integer.parseInt(jwtProvider.getUserId(token));
+        System.out.println("nickname = " + userId);
         String nickname = jwtProvider.getUserNickname(token);
-        
-        HashMap<String, String> map = new HashMap<>();
-        map.put("userId", userId);
-        map.put("token", token);
+        System.out.println("nickname = " + nickname);
 
-        UserDto user = userMapper.refreshCheck(map);
+        TokenVO vo = new TokenVO(userId, token);
+
+        UserDto user = userMapper.refreshCheck(vo);
         System.out.println("user = " + user);
         
         if(user != null){
-            System.out.println("user = " + user);
+//            System.out.println("user = " + user);
             http.setFlag("success");
 
             String accessToken = jwtProvider.createToken(user.getId(), user.getNickName());
