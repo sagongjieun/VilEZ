@@ -94,7 +94,7 @@ const Map = ({
   function eventZoomChanged() {
     // 지도 레벨 변경
     kakao.maps.event.addListener(map, "zoom_changed", function () {
-      console.log("줌");
+      console.log("줌", zoom);
       if (zoom) {
         console.log("dddddd", zoom);
         zoom = false;
@@ -252,7 +252,6 @@ const Map = ({
       zoom = true;
 
       console.log("zoom의 상태 ", zoom);
-      map.setLevel(movedZoomLevel); // 지도 레벨 동기화
 
       if (movedMarker) {
         marker.setPosition(locPosition);
@@ -270,6 +269,8 @@ const Map = ({
         map.panTo(locPosition);
         setMarkerFlag(true);
       }
+
+      map.setLevel(movedZoomLevel); // 지도 레벨 동기화
     }
   }, [movedLat, movedLng, movedZoomLevel, movedMarker, map]);
 
