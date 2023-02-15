@@ -28,8 +28,8 @@ const Map = ({
   const [lng, setLng] = useState(0);
   const [zoomLevel, setZoomLevel] = useState(-10);
   const [isMarker, setIsMarker] = useState(false);
-  const [zoom, setZoom] = useState(false);
   const [markerFlag, setMarkerFlag] = useState(false);
+  let zoom = false;
 
   const areaLat = window.localStorage.getItem("areaLat");
   const areaLng = window.localStorage.getItem("areaLng");
@@ -95,14 +95,10 @@ const Map = ({
     // 지도 레벨 변경
     kakao.maps.event.addListener(map, "zoom_changed", function () {
       console.log("줌");
-      console.log("들어가기전 : ", zoom);
       if (zoom) {
-        console.log("들어갔다면 : ", zoom);
-        setZoom(false);
+        zoom = false;
         return;
       }
-
-      console.log("!!!!! : ", zoom);
 
       const center = map.getCenter();
 
@@ -251,32 +247,27 @@ const Map = ({
       const locPosition = new kakao.maps.LatLng(movedLat, movedLng);
       console.log("상대방으로부터 데이터받음 : ", location, lat, lng, zoomLevel, isMarker);
 
-      setZoom(true);
+      zoom = true;
 
-      setTimeout(() => {
-        console.log("1");
-        console.log("이거안바뀌면 노답", zoom);
-        map.setLevel(movedZoomLevel); // 지도 레벨 동기화
-        console.log("2");
+      console.log("zoom의 상태 ", zoom);
+      map.setLevel(movedZoomLevel); // 지도 레벨 동기화
 
-        if (movedMarker) {
-          marker.setPosition(locPosition);
-          marker.setMap(map);
-          setMarkerFlag(true);
-          map.panTo(locPosition);
+      if (movedMarker) {
+        marker.setPosition(locPosition);
+        marker.setMap(map);
+        setMarkerFlag(true);
+        map.panTo(locPosition);
 
-          searchDetailAddrFromCoords(locPosition, function (result, status) {
-            if (status === kakao.maps.services.Status.OK) {
-              setLocation(result[0].address.address_name);
-            }
-          });
-        } else {
-          // dragend, zoomchange 이벤트의 경우
-          map.panTo(locPosition);
-          setMarkerFlag(true);
-          // setZoom(true);
-        }
-      }, 1000);
+        searchDetailAddrFromCoords(locPosition, function (result, status) {
+          if (status === kakao.maps.services.Status.OK) {
+            setLocation(result[0].address.address_name);
+          }
+        });
+      } else {
+        // dragend, zoomchange 이벤트의 경우
+        map.panTo(locPosition);
+        setMarkerFlag(true);
+      }
     }
   }, [movedLat, movedLng, movedZoomLevel, movedMarker, map]);
 
