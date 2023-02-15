@@ -57,6 +57,8 @@ const Map = ({
     // 드래그 이동
     kakao.maps.event.addListener(map, "dragend", function () {
       const center = map.getCenter();
+
+      setLocation("dragend");
       setLat(center.getLat());
       setLng(center.getLng());
       setZoomLevel(map.getLevel());
@@ -69,6 +71,7 @@ const Map = ({
     kakao.maps.event.addListener(map, "zoom_changed", function () {
       const center = map.getCenter();
 
+      setLocation("zoomchanged");
       setLat(center.getLat());
       setLng(center.getLng());
       setZoomLevel(map.getLevel());
@@ -182,10 +185,17 @@ const Map = ({
 
   /** 지도 데이터 보내기 */
   useEffect(() => {
-    console.log("통과 안됨 : ", location, lat, lng, zoomLevel);
-    if (!readOnly && location !== "" && lat !== 0 && lng !== 0 && zoomLevel !== -10) {
-      console.log("통과 됨 : ", location, lat, lng, zoomLevel);
-      sendLocation(location, lat, lng, zoomLevel, isMarker);
+    if (!readOnly) {
+      if (path === "stomp") {
+        if (location !== "" && lat !== 0 && lng !== 0 && zoomLevel !== -10) {
+          console.log("통과 됨 : ", location, lat, lng, zoomLevel);
+          sendLocation(location, lat, lng, zoomLevel, isMarker);
+        } else {
+          console.log("통과 안됨 : ", location, lat, lng, zoomLevel);
+        }
+      } else {
+        sendLocation(location, lat, lng, zoomLevel, isMarker);
+      }
     }
   }, [lat, lng, zoomLevel, isMarker]);
 
