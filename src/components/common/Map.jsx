@@ -255,6 +255,7 @@ const Map = ({
 
       setTimeout(() => {
         console.log("1");
+        console.log("이거안바뀌면 노답", zoom);
         map.setLevel(movedZoomLevel); // 지도 레벨 동기화
         console.log("2");
 
@@ -275,7 +276,7 @@ const Map = ({
           setMarkerFlag(true);
           // setZoom(true);
         }
-      }, 100);
+      }, 1000);
     }
   }, [movedLat, movedLng, movedZoomLevel, movedMarker, map]);
 
