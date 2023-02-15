@@ -95,10 +95,14 @@ const Map = ({
     // 지도 레벨 변경
     kakao.maps.event.addListener(map, "zoom_changed", function () {
       console.log("줌");
+      console.log("들어가기전 : ", zoom);
       if (zoom) {
+        console.log("들어갔다면 : ", zoom);
         setZoom(false);
         return;
       }
+
+      console.log("!!!!! : ", zoom);
 
       const center = map.getCenter();
 
