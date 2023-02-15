@@ -28,6 +28,6 @@ const MyBox = () => {
 const innerBox = css`
   width: calc(100% - 400px);
   height: 600px;
-  margin: 40px auto;
+  margin: 110px auto;
 `;
 export default MyBox;

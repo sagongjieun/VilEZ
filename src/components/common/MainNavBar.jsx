@@ -135,7 +135,7 @@ function MainNavBar() {
 }
 
 const navWrap = css`
-  position: sticky;
+  position: fixed;
   width: 100%;
   top: 0px;
   z-index: 100;

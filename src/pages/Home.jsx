@@ -79,7 +79,6 @@ function MainBody() {
       </div>
       <a id="movebottom"></a>
       <div css={blanks}>
-        <div>ㅎㅇ</div>
         <div
           css={[
             test(scrollPosition),
@@ -104,7 +103,6 @@ function MainBody() {
             <div>공유하기를 통해 물품을 빌려주고,</div>
             <div>공유하기를 통해 물품을 빌려보세요.</div>
           </div>
-          <div>하잉</div>
         </div>
       </div>
       <div css={[FirstWrap, scrollPosition > firstHeight ? visibleBox : hiddenBox]} ref={firstBox}>
@@ -166,7 +164,6 @@ const FirstWrap = css`
 const FirstBodyWrap = css`
   position: relative;
   display: flex;
-  display: none;
   flex-direction: column;
   justify-content: center;
   align-items: flex-end;
@@ -346,7 +343,7 @@ const test = (scroll) => {
     ::after {
       position: absolute;
       display: block;
-      content: "하잉";
+      content: "";
       background-color: #fff;
       opacity: ${(scroll / 5 - 900) / 100};
       width: 100%;
@@ -360,9 +357,6 @@ const test = (scroll) => {
     }
     > div:nth-of-type(3) {
       opacity: ${(scroll / 5 - 700) / 100};
-    }
-    > div:nth-of-type(4) {
-      color: black;
     }
   `;
 };

@@ -26,7 +26,7 @@ const Signup = () => {
   );
 };
 const container = css`
-  padding: 90px 200px;
+  padding: 160px 200px 90px;
   display: flex;
   flex-direction: column;
 `;
