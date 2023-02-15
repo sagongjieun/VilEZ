@@ -28,10 +28,7 @@ const Map = ({
   const [lng, setLng] = useState(0);
   const [zoomLevel, setZoomLevel] = useState(-10);
   const [isMarker, setIsMarker] = useState(false);
-  const [hasMarker, setHasMarker] = useState(false);
-
-  // const [markerLat, setMarkerLat] = useState("");
-  // const [markerLng, setMarkerLng] = useState("");
+  const [flag, setFlag] = useState(false);
 
   const areaLat = window.localStorage.getItem("areaLat");
   const areaLng = window.localStorage.getItem("areaLng");
@@ -84,6 +81,7 @@ const Map = ({
       setLng(center.getLng());
       setZoomLevel(map.getLevel());
       setIsMarker(false);
+      setFlag(true);
     });
   }
 
@@ -96,6 +94,7 @@ const Map = ({
       setLng(center.getLng());
       setZoomLevel(map.getLevel());
       setIsMarker(false);
+      setFlag(true);
     });
   }
 
@@ -139,9 +138,7 @@ const Map = ({
         setLng(latlng.getLng());
         setZoomLevel(map.getLevel());
         setIsMarker(true);
-        setHasMarker(true);
-        // setMarkerLat(latlng.getLat());
-        // setMarkerLng(latlng.getLng());
+        setFlag(true);
 
         map.panTo(latlng);
       }
@@ -196,14 +193,20 @@ const Map = ({
   useEffect(() => {
     if (!readOnly) {
       if (path === "stomp") {
-        if (location !== "" && lat !== 0 && lng !== 0 && zoomLevel !== -10) {
+        // if (location !== "" && lat !== 0 && lng !== 0 && zoomLevel !== -10) {
+        //   sendLocation(location, lat, lng, zoomLevel, isMarker);
+        // }
+        console.log("통과 전 : ", location, lat, lng, zoomLevel, isMarker);
+        if (flag) {
+          console.log("상대방에게 데이터 보냄 : ", location, lat, lng, zoomLevel, isMarker);
           sendLocation(location, lat, lng, zoomLevel, isMarker);
+          setFlag(false);
         }
       } else {
         sendLocation(location, lat, lng, zoomLevel, isMarker);
       }
     }
-  }, [lat, lng, zoomLevel, isMarker]);
+  }, [lat, lng, zoomLevel, isMarker, flag]);
 
   /** 게시글 수정 map */
   useEffect(() => {
@@ -235,6 +238,7 @@ const Map = ({
   useEffect(() => {
     if (path === "stomp" && movedLat && movedLng && movedZoomLevel && map) {
       const locPosition = new kakao.maps.LatLng(movedLat, movedLng);
+      console.log("상대방으로부터 데이터받음 : ", location, lat, lng, zoomLevel, isMarker);
 
       map.setLevel(movedZoomLevel); // 지도 레벨 동기화
 
@@ -242,7 +246,6 @@ const Map = ({
         marker.setPosition(locPosition);
         marker.setMap(map);
         map.panTo(locPosition);
-        setHasMarker(true);
         // setMarkerLat(locPosition.getLat());
         // setMarkerLng(locPosition.getLng());
 
@@ -252,17 +255,8 @@ const Map = ({
           }
         });
       } else {
-        // dragend, zoomchange 이벤트의 경우 이전 마커의 위치에 마커 유지
-        if (hasMarker) {
-          // const prevMarkerPosition = new kakao.maps.LatLng(markerLat, markerLng);
-          // marker.setPosition(prevMarkerPosition);
-          // marker.setMap(map);
-          map.panTo(locPosition);
-        }
-        // 이전에 마커가 없었다면
-        else {
-          map.panTo(locPosition);
-        }
+        // dragend, zoomchange 이벤트의 경우
+        map.panTo(locPosition);
       }
     }
   }, [movedLat, movedLng, movedZoomLevel, movedMarker, map]);
