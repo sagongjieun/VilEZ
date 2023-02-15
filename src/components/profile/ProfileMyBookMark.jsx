@@ -5,7 +5,6 @@ import { getUserBookMark } from "../../api/share";
 import ProfileCardView from "./ProfileCardView";
 
 const ProfileMyBookMark = (props) => {
-  // const id = localStorage.getItem("id");
   const userId = localStorage.getItem("id");
   const [myBookMarkBoard, setMyBookMarkBoard] = useState([]);
   useEffect(() => {

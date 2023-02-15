@@ -256,6 +256,7 @@ const inputBox = css`
 const disabled = css`
   background-color: #e7e7e7;
   cursor: pointer;
+  text-align: left;
 `;
 
 const duplicateCheck = css`
