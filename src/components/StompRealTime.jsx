@@ -241,6 +241,9 @@ const StompRealTime = ({
     });
   }
 
+  const areaLat = window.localStorage.getItem("areaLat");
+  const areaLng = window.localStorage.getItem("areaLng");
+
   useEffect(() => {
     if (chatRoomId) {
       getChatHistory(chatRoomId).then((res) => {
@@ -295,14 +298,17 @@ const StompRealTime = ({
         }
         // 마지막 장소가 없다면
         else {
-          // 서울시청 좌표
+          setMovedLat(1);
+          setMovedLng(1);
 
+          // 서울시청 좌표
           // setMovedLat(37.56682870560737);
           // setMovedLng(126.9786409384806);
           // setMovedZoomLevel(4);
 
-          setDisableMapLat(37.56682870560737);
-          setDisableMapLng(126.9786409384806);
+          // 현재 사용자 위치로 지도 블락하기
+          setDisableMapLat(areaLat);
+          setDisableMapLng(areaLng);
         }
       });
     }

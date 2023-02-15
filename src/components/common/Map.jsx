@@ -83,7 +83,6 @@ const Map = ({
     // 마커 찍기
     kakao.maps.event.addListener(map, "rightclick", function (mouseEvent) {
       const latlng = mouseEvent.latLng;
-      // let failToSelect = false;
 
       if (path === "regist" || path === "modify") {
         if (
@@ -105,8 +104,6 @@ const Map = ({
           map.panTo(latlng);
         } else {
           alert("현재 위치를 기반으로 가능한 범위내의 장소를 선택해야해요!");
-          // map.setCenter(new kakao.maps.LatLng(areaLat, areaLng)); // 본인 위치 중앙으로 렌더링
-          // failToSelect = true;
           return;
         }
       } else {
@@ -128,14 +125,6 @@ const Map = ({
 
         map.panTo(latlng);
       }
-
-      // if (!failToSelect) {
-      //   searchDetailAddrFromCoords(mouseEvent.latLng, function (result, status) {
-      //     if (status === kakao.maps.services.Status.OK) {
-      //       setLocation(result[0].address.address_name);
-      //     }
-      //   });
-      // }
     });
   }
 
@@ -171,6 +160,13 @@ const Map = ({
   useEffect(() => {
     initMap();
     marker = new kakao.maps.Marker();
+
+    if (movedLat === 1 || movedLng === 1) {
+      console.log("처음대화하는 거라면 여기 들어와서 마커가 찍혀야함");
+      const latlng = new kakao.maps.LatLng(areaLat, areaLng);
+      marker.setPosition(latlng);
+      marker.setMap(map);
+    }
 
     if (path === "regist") {
       makeRectangle();
@@ -228,6 +224,11 @@ const Map = ({
   /** 공유 지도 map 데이터 받기 */
   useEffect(() => {
     if (path === "stomp" && movedLat && movedLng && movedZoomLevel && map) {
+      if (movedLat === 1 || movedLng === 1) {
+        console.log("여기들어오면안됨");
+        return;
+      }
+
       const locPosition = new kakao.maps.LatLng(movedLat, movedLng);
 
       map.setLevel(movedZoomLevel); // 지도 레벨 동기화
