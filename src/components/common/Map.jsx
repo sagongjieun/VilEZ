@@ -71,7 +71,7 @@ const Map = ({
     kakao.maps.event.addListener(map, "zoom_changed", function () {
       const center = map.getCenter();
 
-      setLocation("zoomchanged");
+      // setLocation("zoomchanged");
       setLat(center.getLat());
       setLng(center.getLng());
       setZoomLevel(map.getLevel());
