@@ -39,10 +39,17 @@ const Map = ({
     container = document.getElementById("map");
     marker = new kakao.maps.Marker();
 
-    if (path === "regist" || path === "modify" || path === "detail") {
+    if (path === "regist" || path === "modify") {
       options = {
         center: new kakao.maps.LatLng(areaLat, areaLng),
         level: 7,
+      };
+
+      map = new kakao.maps.Map(container, options);
+    } else if (path === "detail") {
+      options = {
+        center: new kakao.maps.LatLng(areaLat, areaLng),
+        level: 2,
       };
 
       map = new kakao.maps.Map(container, options);
@@ -180,7 +187,6 @@ const Map = ({
 
   useEffect(() => {
     initMap();
-    // marker = new kakao.maps.Marker();
 
     if (path === "regist") {
       makeRectangle();
@@ -201,7 +207,6 @@ const Map = ({
           setFlag(false);
           return;
         }
-        console.log("상대방에게 데이터 보냄 : ", location, lat, lng, zoomLevel, isMarker);
         sendLocation(location, lat, lng, zoomLevel, isMarker);
       } else {
         sendLocation(location, lat, lng, zoomLevel, isMarker);
@@ -239,7 +244,6 @@ const Map = ({
   useEffect(() => {
     if (path === "stomp" && movedLat && movedLng && movedZoomLevel && map) {
       const locPosition = new kakao.maps.LatLng(movedLat, movedLng);
-      console.log("상대방으로부터 데이터받음 : ", location, lat, lng, zoomLevel, isMarker);
 
       map.setLevel(movedZoomLevel); // 지도 레벨 동기화
 
