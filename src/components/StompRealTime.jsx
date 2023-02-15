@@ -282,10 +282,10 @@ const StompRealTime = ({
         if (res) {
           res = res[0];
 
-          setMovedLat(res.lat);
-          setMovedLng(res.lng);
-          setMovedZoomLevel(res.zoomLevel);
-          setMovedMarker(res.isMarker);
+          // setMovedLat(res.lat);
+          // setMovedLng(res.lng);
+          // setMovedZoomLevel(res.zoomLevel);
+          // setMovedMarker(res.isMarker);
 
           setDisableMapLat(res.lat);
           setDisableMapLng(res.lng);
@@ -519,7 +519,13 @@ const StompRealTime = ({
         <div>
           {shareState == -1 || shareState == -2 || roomState == -1 ? (
             // 공유지도 막기
-            <Map readOnly={true} disableMapLat={disableMapLat} disableMapLng={disableMapLng} path="block" />
+            <Map
+              readOnly={true}
+              disableMapLat={disableMapLat}
+              disableMapLng={disableMapLng}
+              path="block"
+              chatRoomId={chatRoomId}
+            />
           ) : (
             <Map
               readOnly={false}
@@ -529,6 +535,7 @@ const StompRealTime = ({
               movedZoomLevel={movedZoomLevel}
               movedMarker={movedMarker}
               path="stomp"
+              chatRoomId={chatRoomId}
             />
           )}
         </div>

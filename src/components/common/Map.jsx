@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { getLatestMapLocation } from "../../api/appointment";
 
 const { kakao } = window;
 
@@ -20,6 +21,7 @@ const Map = ({
   path,
   hopeAreaLat,
   hopeAreaLng,
+  chatRoomId,
 }) => {
   const [location, setLocation] = useState("");
   const [lat, setLat] = useState(0);
@@ -37,20 +39,35 @@ const Map = ({
   function initMap() {
     // 지도를 표시할 공간과 초기 중심좌표, 레벨 세팅
     container = document.getElementById("map");
+    marker = new kakao.maps.Marker();
 
     if (path === "regist" || path === "modify") {
       options = {
         center: new kakao.maps.LatLng(areaLat, areaLng),
         level: 7,
       };
-    } else {
-      options = {
-        center: new kakao.maps.LatLng(areaLat, areaLng),
-        level: 4,
-      };
-    }
 
-    map = new kakao.maps.Map(container, options);
+      map = new kakao.maps.Map(container, options);
+    } else {
+      getLatestMapLocation(chatRoomId).then((res) => {
+        if (res) {
+          res = res[0];
+
+          options = {
+            center: new kakao.maps.LatLng(res.lat, res.lng),
+            level: res.zoomLevel,
+          };
+
+          map = new kakao.maps.Map(container, options);
+
+          if (res.isMarker) {
+            const latlng = new kakao.maps.LatLng(res.lat, res.lng);
+            marker.setMap(map);
+            marker.setPosition(latlng);
+          }
+        }
+      });
+    }
   }
 
   function eventDragEnd() {
@@ -158,7 +175,7 @@ const Map = ({
 
   useEffect(() => {
     initMap();
-    marker = new kakao.maps.Marker();
+    // marker = new kakao.maps.Marker();
 
     if (path === "regist") {
       makeRectangle();
