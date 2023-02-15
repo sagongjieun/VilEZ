@@ -76,6 +76,8 @@ authJsonAxios.interceptors.response.use(
     if (error.response.status === 401) {
       const response = await postRefreshToken(); // 액세스토큰 갱신
 
+      console.log("token ::::: ", response);
+
       // 갱신된 accessToken을 받으면
       if (response) {
         window.localStorage.setItem("accessToken", response.accessToken); // 새로운 토큰 localStorage 저장
@@ -121,6 +123,8 @@ authFormDataAxios.interceptors.response.use(
     // 액세스 토큰이 만료됐다면
     if (error.response.status === 401) {
       const response = await postRefreshToken(); // 액세스토큰 갱신
+
+      console.log("token ::::: ", response);
 
       // 갱신된 accessToken을 받으면
       if (response) {
