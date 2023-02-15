@@ -148,7 +148,6 @@ async function putShareArticle(formData) {
     const { data } = await authFormDataAxios.put(`/shareboard`, formData);
     // console.log(formData);
     if (data.flag === "success") {
-      alert("게시글이 수정되었어요 😀");
       return data.data;
     } else alert("공유 글 수정에 실패했어요 😥");
   } catch (error) {
