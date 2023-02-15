@@ -28,7 +28,7 @@ const Map = ({
   const [lng, setLng] = useState(0);
   const [zoomLevel, setZoomLevel] = useState(-10);
   const [isMarker, setIsMarker] = useState(false);
-  const [flag, setFlag] = useState(false);
+  const [zoom, setZoom] = useState(false);
 
   const areaLat = window.localStorage.getItem("areaLat");
   const areaLng = window.localStorage.getItem("areaLng");
@@ -81,20 +81,22 @@ const Map = ({
       setLng(center.getLng());
       setZoomLevel(map.getLevel());
       setIsMarker(false);
-      setFlag(true);
     });
   }
 
   function eventZoomChanged() {
     // 지도 레벨 변경
     kakao.maps.event.addListener(map, "zoom_changed", function () {
+      if (zoom) {
+        setZoom(false);
+        return;
+      }
       const center = map.getCenter();
 
       setLat(center.getLat());
       setLng(center.getLng());
       setZoomLevel(map.getLevel());
       setIsMarker(false);
-      setFlag(true);
     });
   }
 
@@ -138,7 +140,6 @@ const Map = ({
         setLng(latlng.getLng());
         setZoomLevel(map.getLevel());
         setIsMarker(true);
-        setFlag(true);
 
         map.panTo(latlng);
       }
@@ -193,20 +194,18 @@ const Map = ({
   useEffect(() => {
     if (!readOnly) {
       if (path === "stomp") {
-        // if (location !== "" && lat !== 0 && lng !== 0 && zoomLevel !== -10) {
-        //   sendLocation(location, lat, lng, zoomLevel, isMarker);
-        // }
-        console.log("통과 전 : ", location, lat, lng, zoomLevel, isMarker);
-        if (flag) {
-          console.log("상대방에게 데이터 보냄 : ", location, lat, lng, zoomLevel, isMarker);
+        if (location !== "" && lat !== 0 && lng !== 0 && zoomLevel !== -10) {
+          // console.log("상대방에게 데이터 보냄 : ", location, lat, lng, zoomLevel, isMarker);
           sendLocation(location, lat, lng, zoomLevel, isMarker);
-          setFlag(false);
         }
+        // console.log("통과 전 : ", location, lat, lng, zoomLevel, isMarker);
+
+        // sendLocation(location, lat, lng, zoomLevel, isMarker);
       } else {
         sendLocation(location, lat, lng, zoomLevel, isMarker);
       }
     }
-  }, [lat, lng, zoomLevel, isMarker, flag]);
+  }, [lat, lng, zoomLevel, isMarker]);
 
   /** 게시글 수정 map */
   useEffect(() => {
@@ -246,8 +245,6 @@ const Map = ({
         marker.setPosition(locPosition);
         marker.setMap(map);
         map.panTo(locPosition);
-        // setMarkerLat(locPosition.getLat());
-        // setMarkerLng(locPosition.getLng());
 
         searchDetailAddrFromCoords(locPosition, function (result, status) {
           if (status === kakao.maps.services.Status.OK) {
@@ -257,6 +254,7 @@ const Map = ({
       } else {
         // dragend, zoomchange 이벤트의 경우
         map.panTo(locPosition);
+        setZoom(true);
       }
     }
   }, [movedLat, movedLng, movedZoomLevel, movedMarker, map]);
