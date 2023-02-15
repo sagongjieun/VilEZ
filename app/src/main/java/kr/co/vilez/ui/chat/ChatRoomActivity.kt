@@ -223,6 +223,8 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                 var bundle = Bundle(2)
                 bundle.putInt("roomId", roomId)
                 bundle.putInt("otherUserId", otherUserId)
+                bundle.putInt("boardId", room.boardId)
+                bundle.putInt("type", room.type)
                 kakaoMapFragment = KakaoMapFragment()
                 kakaoMapFragment!!.arguments = bundle
                 supportFragmentManager.beginTransaction()
@@ -456,21 +458,25 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                         }
                     }
                 } else {
-                    var result = ApplicationClass.hChatApi.getPeriodDto(room.boardId,room.notShareUserId,room.shareUserId,room.type)
+                    var result = ApplicationClass.hChatApi.getAppointMent(room.boardId,room.notShareUserId,room.shareUserId,room.type)
                         .awaitResponse().body()
                     if(result?.flag == "success") {
-                        setPeriodDto = result.data.get(0)
-                        if(setPeriodDto == null) {
-                            showDialog("설정된 예약일자가 없습니다.")
+                        appointDto = result.data[0]
+                        if(appointDto != null) {
+                            showDialog("예약 일자 : ${appointDto?.appointmentStart} \n~ ${appointDto?.appointmentEnd}")
                         } else {
-                            if(appointDto != null) {
-                                showDialog("예약 일자 : ${appointDto?.appointmentStart} \n~ ${appointDto?.appointmentEnd}")
-                            } else {
-                                showDialog("예약 일자 : ${setPeriodDto?.startDay} \n~ ${setPeriodDto?.endDay}")
+                            var result = ApplicationClass.hChatApi.getPeriodDto(room.boardId,room.notShareUserId,room.shareUserId,room.type).awaitResponse().body()
+
+                            if(result?.flag == "success") {
+                                setPeriodDto = result.data[0]
+                                if(setPeriodDto == null) {
+                                    showDialog("설정된 예약일자가 없습니다.")
+                                } else {
+                                    showDialog("예약 일자 : ${setPeriodDto?.startDay} \n~ ${setPeriodDto?.endDay}")
+                                }
                             }
                         }
                     }
-
                 }
             }
 

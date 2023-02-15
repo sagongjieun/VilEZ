@@ -36,6 +36,8 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
     private var otherUserId  = 0
     private var topic: Disposable? = null
     private var roomId: Int = 0
+    private var boardId: Int = 0
+    private var type: Int = 0
     private lateinit var mapView :MapView
     private var binding: FragmentKakaoMapBinding? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +57,8 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
         context ?: return binding!!.root
         var bundle = arguments as Bundle
         roomId = bundle.getInt("roomId")
+        boardId = bundle.getInt("boardId")
+        type = bundle.getInt("type")
         otherUserId = bundle.getInt("otherUserId")
         mapView = MapView(context)
         binding!!.mapView.addView(mapView)
@@ -75,7 +79,7 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
             val result = ApplicationClass.hChatApi.loadLocationByRoomId(roomId).awaitResponse().body()
             if (result?.flag == "success") {
                 println(result.data)
-                var kakao = result.data[0];
+                var kakao = result.data[0]
                 var pos = MapPoint.mapPointWithGeoCoord(kakao.lat,kakao.lng)
                 mapView.setMapCenterPoint(pos,true)
                 mapView.setZoomLevel(kakao.zoomLevel,true)
@@ -92,6 +96,23 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
                     mapView.addPOIItem(marker)
                 }
                 zoom = true
+            } else {
+                if(type == 1) {
+                    var result = ApplicationClass.hAskApi.getBoardDetail(boardId).awaitResponse().body()
+                    if(result?.flag == "success") {
+                        var board = result.data[0]
+                        var pos = MapPoint.mapPointWithGeoCoord(board.hopeAreaLat.toDouble(),board.hopeAreaLng.toDouble())
+                        mapView.setMapCenterPoint(pos,true)
+                    }
+                } else if(type == 2){
+                    var result = ApplicationClass.hShareApi.getBoardDetail(boardId).awaitResponse().body()
+                    if(result?.flag == "success") {
+                        var board = result.data[0]
+                        var pos = MapPoint.mapPointWithGeoCoord(board.hopeAreaLat.toDouble(),board.hopeAreaLng.toDouble())
+                        mapView.setMapCenterPoint(pos,true)
+                    }
+                }
+
             }
         }
 
