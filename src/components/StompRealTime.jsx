@@ -277,14 +277,16 @@ const StompRealTime = ({
 
             setShowingMessage([sendMessage]);
             connectStomp();
-            client.send("/recvchat", {}, JSON.stringify(sendMessage));
 
             var payload = {
               userId: otherUserId,
             };
 
             setTimeout(() => {
-              client.send("/room_web", {}, JSON.stringify(payload));
+              client.send("/recvchat", {}, JSON.stringify(sendMessage));
+              setTimeout(() => {
+                client.send("/room_web", {}, JSON.stringify(payload));
+              }, 100);
             }, 100);
           }, 100);
         }
