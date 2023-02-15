@@ -95,7 +95,7 @@ const Map = ({
     // 지도 레벨 변경
     kakao.maps.event.addListener(map, "zoom_changed", function () {
       console.log("줌", zoom);
-      if (zoom) {
+      if (!zoom) {
         console.log("dddddd", zoom);
         zoom = false;
         return;
