@@ -161,6 +161,7 @@ const navStyle = css`
       color: #66dd9c;
       font-weight: Bold;
       font-size: 36px;
+      font-family: "Pretendard-Bold";
     }
   }
 `;
