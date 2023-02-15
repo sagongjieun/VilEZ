@@ -29,6 +29,7 @@ const Map = ({
   const [zoomLevel, setZoomLevel] = useState(-10);
   const [isMarker, setIsMarker] = useState(false);
   const [zoom, setZoom] = useState(false);
+  const [markerFlag, setMarkerFlag] = useState(false);
 
   const areaLat = window.localStorage.getItem("areaLat");
   const areaLng = window.localStorage.getItem("areaLng");
@@ -74,6 +75,11 @@ const Map = ({
   function eventDragEnd() {
     // 드래그 이동
     kakao.maps.event.addListener(map, "dragend", function () {
+      if (markerFlag) {
+        setMarkerFlag(false);
+        return;
+      }
+
       const center = map.getCenter();
 
       setLocation("dragend");
@@ -91,6 +97,7 @@ const Map = ({
         setZoom(false);
         return;
       }
+
       const center = map.getCenter();
 
       setLat(center.getLat());
@@ -141,6 +148,7 @@ const Map = ({
         setZoomLevel(map.getLevel());
         setIsMarker(true);
 
+        setMarkerFlag(true);
         map.panTo(latlng);
       }
     });
@@ -195,12 +203,9 @@ const Map = ({
     if (!readOnly) {
       if (path === "stomp") {
         if (location !== "" && lat !== 0 && lng !== 0 && zoomLevel !== -10) {
-          // console.log("상대방에게 데이터 보냄 : ", location, lat, lng, zoomLevel, isMarker);
+          console.log("상대방에게 데이터 보냄 : ", location, lat, lng, zoomLevel, isMarker);
           sendLocation(location, lat, lng, zoomLevel, isMarker);
         }
-        // console.log("통과 전 : ", location, lat, lng, zoomLevel, isMarker);
-
-        // sendLocation(location, lat, lng, zoomLevel, isMarker);
       } else {
         sendLocation(location, lat, lng, zoomLevel, isMarker);
       }
@@ -244,6 +249,7 @@ const Map = ({
       if (movedMarker) {
         marker.setPosition(locPosition);
         marker.setMap(map);
+        setMarkerFlag(true);
         map.panTo(locPosition);
 
         searchDetailAddrFromCoords(locPosition, function (result, status) {
@@ -254,6 +260,7 @@ const Map = ({
       } else {
         // dragend, zoomchange 이벤트의 경우
         map.panTo(locPosition);
+        setMarkerFlag(true);
         setZoom(true);
       }
     }
