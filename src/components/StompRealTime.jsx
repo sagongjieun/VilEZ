@@ -123,12 +123,15 @@ const StompRealTime = ({
         roomId: chatRoomId,
         userId: myUserId,
       };
+
       client.send("/room_enter", {}, JSON.stringify(payload));
 
-      payload = {
-        userId: myUserId,
-      };
-      client.send("/room_web", {}, JSON.stringify(payload));
+      setTimeout(() => {
+        payload = {
+          userId: myUserId,
+        };
+        client.send("/room_web", {}, JSON.stringify(payload));
+      }, 100);
 
       client.subscribe(`/sendchat/${chatRoomId}/${myUserId}`, (data) => {
         // 상대방이 채팅방을 나갔다면
