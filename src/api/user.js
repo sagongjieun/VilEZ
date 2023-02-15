@@ -107,7 +107,7 @@ async function postRefreshToken() {
     } else if (data.flag === "fail") {
       return false;
     } else {
-      return -1;
+      return 0;
     }
   } catch (error) {
     console.log(error);
