@@ -21,7 +21,7 @@ const Map = ({
   hopeAreaLat,
   hopeAreaLng,
 }) => {
-  const [location, setLocation] = useState("마우스 우클릭으로 장소를 선택해주시면 돼요");
+  const [location, setLocation] = useState("");
   const [lat, setLat] = useState(0);
   const [lng, setLng] = useState(0);
   const [zoomLevel, setZoomLevel] = useState(0);
@@ -80,7 +80,8 @@ const Map = ({
     // 마커 찍기
     kakao.maps.event.addListener(map, "rightclick", function (mouseEvent) {
       const latlng = mouseEvent.latLng;
-      let failToSelect = false;
+      // let failToSelect = false;
+
       if (path === "regist" || path === "modify") {
         if (
           latlng.getLat() > parseFloat(areaLat) - 0.03 &&
@@ -101,8 +102,8 @@ const Map = ({
           map.panTo(latlng);
         } else {
           alert("현재 위치를 기반으로 가능한 범위내의 장소를 선택해야해요!");
-          map.setCenter(new kakao.maps.LatLng(areaLat, areaLng)); // 본인 위치 중앙으로 렌더링
-          failToSelect = true;
+          // map.setCenter(new kakao.maps.LatLng(areaLat, areaLng)); // 본인 위치 중앙으로 렌더링
+          // failToSelect = true;
           return;
         }
       } else {
@@ -113,6 +114,7 @@ const Map = ({
         marker.setPosition(latlng);
         marker.setMap(map);
 
+        setLocation("marker");
         setLat(latlng.getLat());
         setLng(latlng.getLng());
         setZoomLevel(map.getLevel());
@@ -124,13 +126,13 @@ const Map = ({
         map.panTo(latlng);
       }
 
-      if (!failToSelect) {
-        searchDetailAddrFromCoords(mouseEvent.latLng, function (result, status) {
-          if (status === kakao.maps.services.Status.OK) {
-            setLocation(result[0].address.address_name);
-          }
-        });
-      }
+      // if (!failToSelect) {
+      //   searchDetailAddrFromCoords(mouseEvent.latLng, function (result, status) {
+      //     if (status === kakao.maps.services.Status.OK) {
+      //       setLocation(result[0].address.address_name);
+      //     }
+      //   });
+      // }
     });
   }
 
@@ -180,13 +182,9 @@ const Map = ({
 
   /** 지도 데이터 보내기 */
   useEffect(() => {
-    if (
-      !readOnly &&
-      location !== "마우스 우클릭으로 장소를 선택해주시면 돼요" &&
-      lat !== 0 &&
-      lng !== 0 &&
-      zoomLevel !== 0
-    ) {
+    console.log("통과 안됨 : ", location, lat, lng, zoomLevel);
+    if (!readOnly && location !== "" && lat !== 0 && lng !== 0 && zoomLevel !== 0) {
+      console.log("통과 됨 : ", location, lat, lng, zoomLevel);
       sendLocation(location, lat, lng, zoomLevel, isMarker);
     }
   }, [lat, lng, zoomLevel, isMarker]);
