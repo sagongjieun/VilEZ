@@ -102,6 +102,11 @@ public class UserServiceImpl implements UserService {
         http = new HttpVO();
 
         System.out.println("userDto = " + userDto);
+
+        if(String.valueOf(userDto.get("password")).equals("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")){
+            userDto.remove("password");
+        }
+
         userMapper.modifyUserInfo(userDto);
 
         http.setFlag("success");
