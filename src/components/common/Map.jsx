@@ -247,7 +247,10 @@ const Map = ({
       const locPosition = new kakao.maps.LatLng(movedLat, movedLng);
       console.log("상대방으로부터 데이터받음 : ", location, lat, lng, zoomLevel, isMarker);
 
+      setZoom(true);
+      console.log("1");
       map.setLevel(movedZoomLevel); // 지도 레벨 동기화
+      console.log("2");
 
       if (movedMarker) {
         marker.setPosition(locPosition);
@@ -264,7 +267,7 @@ const Map = ({
         // dragend, zoomchange 이벤트의 경우
         map.panTo(locPosition);
         setMarkerFlag(true);
-        setZoom(true);
+        // setZoom(true);
       }
     }
   }, [movedLat, movedLng, movedZoomLevel, movedMarker, map]);
