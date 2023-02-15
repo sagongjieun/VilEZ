@@ -196,10 +196,12 @@ const Map = ({
   useEffect(() => {
     if (!readOnly) {
       if (path === "stomp") {
-        if (location !== "" && lat !== 0 && lng !== 0 && zoomLevel !== -10) {
-          console.log("상대방에게 데이터 보냄 : ", location, lat, lng, zoomLevel, isMarker);
-          sendLocation(location, lat, lng, zoomLevel, isMarker);
-        }
+        console.log("상대방에게 데이터 보냄 : ", location, lat, lng, zoomLevel, isMarker);
+        sendLocation(location, lat, lng, zoomLevel, isMarker);
+        // if (location !== "" && lat !== 0 && lng !== 0 && zoomLevel !== -10) {
+        //   console.log("상대방에게 데이터 보냄 : ", location, lat, lng, zoomLevel, isMarker);
+        //   sendLocation(location, lat, lng, zoomLevel, isMarker);
+        // }
       } else {
         sendLocation(location, lat, lng, zoomLevel, isMarker);
       }
