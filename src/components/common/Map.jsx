@@ -71,7 +71,6 @@ const Map = ({
     kakao.maps.event.addListener(map, "zoom_changed", function () {
       const center = map.getCenter();
 
-      // setLocation("zoomchanged");
       setLat(center.getLat());
       setLng(center.getLng());
       setZoomLevel(map.getLevel());
@@ -161,13 +160,6 @@ const Map = ({
     initMap();
     marker = new kakao.maps.Marker();
 
-    if (movedLat === 1 || movedLng === 1) {
-      console.log("처음대화하는 거라면 여기 들어와서 마커가 찍혀야함");
-      const latlng = new kakao.maps.LatLng(areaLat, areaLng);
-      marker.setPosition(latlng);
-      marker.setMap(map);
-    }
-
     if (path === "regist") {
       makeRectangle();
     }
@@ -184,10 +176,7 @@ const Map = ({
     if (!readOnly) {
       if (path === "stomp") {
         if (location !== "" && lat !== 0 && lng !== 0 && zoomLevel !== -10) {
-          console.log("통과 됨 : ", location, lat, lng, zoomLevel);
           sendLocation(location, lat, lng, zoomLevel, isMarker);
-        } else {
-          console.log("통과 안됨 : ", location, lat, lng, zoomLevel);
         }
       } else {
         sendLocation(location, lat, lng, zoomLevel, isMarker);
@@ -224,11 +213,6 @@ const Map = ({
   /** 공유 지도 map 데이터 받기 */
   useEffect(() => {
     if (path === "stomp" && movedLat && movedLng && movedZoomLevel && map) {
-      if (movedLat === 1 || movedLng === 1) {
-        console.log("여기들어오면안됨");
-        return;
-      }
-
       const locPosition = new kakao.maps.LatLng(movedLat, movedLng);
 
       map.setLevel(movedZoomLevel); // 지도 레벨 동기화
