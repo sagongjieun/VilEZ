@@ -21,7 +21,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.model.RESTResult
-import kr.co.vilez.data.model.Token
 import kr.co.vilez.service.*
 import kr.co.vilez.ui.LoginActivity
 import okhttp3.*
@@ -158,6 +157,21 @@ class ApplicationClass: Application(), LifecycleObserver {
         hAppointmentApi = hRetrofit.create(AppointmentApi::class.java)
     }
 
+    private fun newRequestWithRefreshToken(accessToken: String?, request: Request): Request =
+        request.newBuilder()
+            .addHeader("refresh-token", prefs.getRefreshToken())
+            .build()
+
+
+    private fun refreshToken(): Boolean{
+        lateinit var result:RESTResult
+        CoroutineScope(Dispatchers.IO).launch {
+            result = hTokenApi.refreshToken().awaitResponse().body()!!
+        }
+        return result?.flag == "success"
+    }
+
+
     inner class AppInterceptor : Interceptor { // End of AppInterceptor inner class
         override fun intercept(chain: Interceptor.Chain): Response {
             var accessToken = prefs.getUserAccessToken()
@@ -166,7 +180,7 @@ class ApplicationClass: Application(), LifecycleObserver {
                 .addHeader("access-token", accessToken)
                 .build()
 
-            val response = chain.proceed(newRequestWithAccessToken(accessToken, request))
+            val response = chain.proceed(newRequestWithRefreshToken(accessToken, request))
 
             if (response.code == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 Log.d(TAG, "intercept: @@@@@@권한없음 토큰 갱신 필요")
@@ -179,7 +193,7 @@ class ApplicationClass: Application(), LifecycleObserver {
                     startActivity(intent)
                     return response
                 }
-                return chain.proceed(newRequestWithAccessToken(accessToken, request))
+                return chain.proceed(newRequestWithRefreshToken(accessToken, request))
             }
 //            else if (!networkMonitor.isConnected) {
 //                AlertDialog.Builder(this@ApplicationClass)
@@ -260,18 +274,6 @@ class ApplicationClass: Application(), LifecycleObserver {
 
     }
 
-    private fun newRequestWithAccessToken(accessToken: String?, request: Request): Request =
-        request.newBuilder()
-            .header("Authorization", "Bearer $accessToken")
-            .build()
-
-    private fun refreshToken(): Boolean{
-        lateinit var result:RESTResult
-        CoroutineScope(Dispatchers.IO).launch {
-            result = hTokenApi.refreshToken(Token(prefs.getRefreshToken())).awaitResponse().body()!!
-        }
-        return result?.flag == "success"
-    }
 
     private val nullOnEmptyConverterFactory = object : Converter.Factory() {
         fun converterFactory() = this
