@@ -352,7 +352,6 @@ class ShareWriteActivity : AppCompatActivity() {
 
     fun savePost(view: View) {
         Log.d(TAG, "savePost: 완료버튼 클릭)")
-        Toast.makeText(this@ShareWriteActivity, "완료 벝느 클릭", Toast.LENGTH_SHORT).show()
         view.isClickable = false
         view.isEnabled = false
         if (binding.etTitle.text.toString().isEmpty()) {
