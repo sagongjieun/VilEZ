@@ -72,6 +72,8 @@ const StompRealTime = ({
   const [cancelMessage, setCancelMessage] = useState({});
   const [otherUserProfileImage, setOtherUserProfileImage] = useState("");
   const [isOtherLeave, setIsOtherLeave] = useState(false);
+  const [isZoomChanged, setIsZoomChanged] = useState(false);
+  const [myZoomLevel, setMyZoomLevel] = useState(-10);
 
   function onKeyDownSendMessage(e) {
     if (e.keyCode === 13) {
@@ -168,6 +170,10 @@ const StompRealTime = ({
       client.subscribe(`/sendmap/${chatRoomId}/${myUserId}`, (data) => {
         data = JSON.parse(data.body);
 
+        if (myZoomLevel !== movedZoomLevel) {
+          setIsZoomChanged(true);
+        }
+
         // 다른 유저가 움직인 지도의 데이터들
         setMovedLat(data.lat);
         setMovedLng(data.lng);
@@ -204,6 +210,13 @@ const StompRealTime = ({
     }
 
     console.log(location, lat, lng, zoomLevel, isMarker);
+
+    setMyZoomLevel(zoomLevel);
+
+    if (isZoomChanged) {
+      setIsZoomChanged(false);
+      return;
+    }
 
     const sendMapData = {
       roomId: chatRoomId,

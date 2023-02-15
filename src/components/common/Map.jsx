@@ -29,7 +29,6 @@ const Map = ({
   const [zoomLevel, setZoomLevel] = useState(-10);
   const [isMarker, setIsMarker] = useState(false);
   const [markerFlag, setMarkerFlag] = useState(false);
-  let zoom = false;
 
   const areaLat = window.localStorage.getItem("areaLat");
   const areaLng = window.localStorage.getItem("areaLng");
@@ -94,19 +93,12 @@ const Map = ({
   function eventZoomChanged() {
     // 지도 레벨 변경
     kakao.maps.event.addListener(map, "zoom_changed", () => {
-      console.log("줌", zoom);
-      if (zoom) {
-        console.log("dddddd", zoom);
-        zoom = false;
-        return;
-      }
       const center = map.getCenter();
 
       setLat(center.getLat());
       setLng(center.getLng());
       setZoomLevel(map.getLevel());
       setIsMarker(false);
-      console.log("ssssss오면ㄴ도답", zoom);
     });
   }
 
@@ -248,9 +240,6 @@ const Map = ({
       const locPosition = new kakao.maps.LatLng(movedLat, movedLng);
       console.log("상대방으로부터 데이터받음 : ", location, lat, lng, zoomLevel, isMarker);
 
-      zoom = true;
-
-      console.log("zoom의 상태 ", zoom);
       map.setLevel(movedZoomLevel); // 지도 레벨 동기화
 
       if (movedMarker) {
