@@ -38,7 +38,7 @@ const Map = ({
     container = document.getElementById("map");
     marker = new kakao.maps.Marker();
 
-    if (path === "regist" || path === "modify") {
+    if (path === "regist" || path === "modify" || path === "detail") {
       options = {
         center: new kakao.maps.LatLng(areaLat, areaLng),
         level: 7,
@@ -47,7 +47,7 @@ const Map = ({
       map = new kakao.maps.Map(container, options);
     } else {
       options = {
-        center: new kakao.maps.LatLng(37.56682870560737, 126.9786409384806),
+        center: new kakao.maps.LatLng(areaLat, areaLng),
         level: 4,
       };
 
@@ -74,7 +74,6 @@ const Map = ({
   function eventDragEnd() {
     // 드래그 이동
     kakao.maps.event.addListener(map, "dragend", function () {
-      console.log("드래그");
       if (markerFlag) {
         setMarkerFlag(false);
         return;
@@ -105,7 +104,6 @@ const Map = ({
   function eventSetMarker() {
     // 마커 찍기
     kakao.maps.event.addListener(map, "rightclick", function (mouseEvent) {
-      console.log("마커");
       const latlng = mouseEvent.latLng;
 
       if (path === "regist" || path === "modify") {
