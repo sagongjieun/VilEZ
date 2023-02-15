@@ -59,7 +59,7 @@ const StompRealTime = ({
 
   const [chatMessage, setChatMessage] = useState(""); // 클라이언트가 입력하는 메시지
   const [showingMessage, setShowingMessage] = useState([]); // 서버로부터 받는 메시지
-  const [hopeLocation, setHopeLocation] = useState("마우스 우클릭으로 장소를 선택해주시면 돼요");
+  const [hopeLocation, setHopeLocation] = useState("우클릭으로 지도에 마커를 찍어 공유지도를 시작해보세요!");
   const [movedLat, setMovedLat] = useState("");
   const [movedLng, setMovedLng] = useState("");
   const [movedZoomLevel, setMovedZoomLevel] = useState(0);
@@ -298,9 +298,6 @@ const StompRealTime = ({
         }
         // 마지막 장소가 없다면
         else {
-          setMovedLat(1);
-          setMovedLng(1);
-
           // 서울시청 좌표
           // setMovedLat(37.56682870560737);
           // setMovedLng(126.9786409384806);
