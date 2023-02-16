@@ -15,16 +15,22 @@ const Profile = () => {
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [move, setMove] = useState("calc(50% - 55px)");
   const navigate = useNavigate();
+
   function checkSocialNickName() {
     const nickName = window.localStorage.getItem("nickName");
+
     if (nickName.slice(0, 1) === "#") {
       alert("닉네임 변경을 진행해주세요.");
-      navigate("/socialnickname", { state: { url: "/mybox" } });
+      navigate("/socialnickname", { state: { url: "/profile" } });
+    } else {
+      navigate("/profile/product");
     }
   }
+
   useEffect(() => {
     checkSocialNickName();
   }, []);
+
   return (
     <div css={ProfileWrapper}>
       <ProfileInformation

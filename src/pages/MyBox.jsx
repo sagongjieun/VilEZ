@@ -3,6 +3,7 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import MyBoxMain from "../components/mybox/MyBoxMain.jsx";
+import NotFound from "./NotFound";
 
 const MyBox = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const MyBox = () => {
     <div css={innerBox}>
       <Routes>
         <Route path="/" element={<MyBoxMain />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );

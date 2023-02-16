@@ -49,30 +49,6 @@ function App() {
         }
       });
     }
-
-    // if (accessToken !== "undefined" && accessToken !== "null" && accessToken) {
-    //   getCheckValidToken().then((res) => {
-    //     // 유효한 토큰이면 유저 정보를 recoil에 담기
-    //     if (res) {
-    //       setLoginUser((prev) => {
-    //         return {
-    //           ...prev,
-    //           id: res.id,
-    //           nickName: res.nickName,
-    //           manner: res.manner,
-    //           point: res.point,
-    //           profileImg: res.profileImg,
-    //           areaLng: res.areaLng,
-    //           areaLat: res.areaLat,
-    //         };
-    //       });
-
-    //       setIsLogin(true);
-    //     }
-    //   });
-    // } else {
-    //   window.localStorage.clear();
-    // }
   }, []);
 
   return (

@@ -8,6 +8,7 @@ import ProductChatting from "../components/product/ProductChatting";
 import ProductList from "../components/product/ProductList";
 import ProductPut from "../components/product/ProductPut";
 import { useNavigate } from "react-router-dom";
+import NotFound from "./NotFound";
 
 const Product = () => {
   const accessToken = window.localStorage.getItem("accessToken");
@@ -50,6 +51,7 @@ const Product = () => {
         {/* useEffect로, pathname에 share, ask포함되어있으면 요청글 */}
         <Route path="/edit/share/:boardId" element={<ProductPut />} />
         <Route path="/edit/ask/:boardId" element={<ProductPut />} />
+        <Route path="/*" element={<NotFound />} />
       </Routes>
     </div>
   );
