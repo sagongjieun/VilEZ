@@ -305,6 +305,7 @@ const filterWrap = css`
 const filterLeftWrap = css`
   font-size: 25px;
   display: flex;
+  z-index: 20;
 `;
 
 const filterRighWrap = css`
