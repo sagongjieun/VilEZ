@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
-// import Home from "./pages/Home";
 import Home from "./pages/Home";
 import ChatOpenIcon from "./pages/ChatOpenIcon";
 import MainNavBar from "./components/common/MainNavBar";
@@ -17,6 +16,7 @@ import SocialNickName from "./pages/SocialNickName";
 import { getCheckValidToken } from "./api/user";
 import { useSetRecoilState, useRecoilState } from "recoil";
 import { loginUserState, isLoginState } from "./recoil/atom";
+import NotFound from "./pages/NotFound";
 
 function App() {
   const setLoginUser = useSetRecoilState(loginUserState);
@@ -80,7 +80,6 @@ function App() {
       <ScrollToTop />
       <MainNavBar />
       {isLogin && <ChatOpenIcon />}
-      {/* {isModal ? <div>빌리지는 로그인 후에 이용하실 수 있어요</div> : null} */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -92,7 +91,7 @@ function App() {
         <Route path="/oauth/kakao/callback" element={<OAuthKakao />} />
         <Route path="/oauth/naver/callback" element={<OAuthNaver />} />
         <Route path="/socialnickname" element={<SocialNickName />} />
-        {/* <Route path="*" element={<NotFound />}></Route> */}
+        <Route path="*" element={<NotFound />}></Route>
       </Routes>
     </BrowserRouter>
   );
