@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
@@ -21,6 +21,7 @@ import NotFound from "./pages/NotFound";
 function App() {
   const setLoginUser = useSetRecoilState(loginUserState);
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
+  const [scrollRange, setScrollRange] = useState(false);
 
   // 로그인 유지
   useEffect(() => {
@@ -54,10 +55,10 @@ function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
-      <MainNavBar />
+      <MainNavBar scrollRange={scrollRange} />
       {isLogin && <ChatOpenIcon />}
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home setScrollRange={setScrollRange} />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/product/*" element={<Product />} />
