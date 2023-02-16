@@ -10,7 +10,7 @@ import { useRecoilValue, useRecoilState, useResetRecoilState } from "recoil";
 import { loginUserState, isLoginState } from "../../recoil/atom";
 import { postLogout } from "../../api/user";
 
-function MainNavBar() {
+function MainNavBar({ scrollRange }) {
   const navigate = useNavigate();
   const nickName = window.localStorage.getItem("nickName");
   const profileImg = window.localStorage.getItem("profileImg");
@@ -96,7 +96,7 @@ function MainNavBar() {
                     </div>
                   </div>
                 </div>
-                <span onClick={onClickLogout} css={logout}>
+                <span onClick={onClickLogout} css={scrollRange ? textWhite : logout}>
                   로그아웃
                 </span>
               </div>
@@ -124,7 +124,9 @@ function MainNavBar() {
                 <div css={midrightWrap}>
                   <FiSearch onClick={onClickMoveSearchPage} />
                 </div>
-                <span onClick={onClickMoveLogin}>마을 입장</span>
+                <span onClick={onClickMoveLogin} css={scrollRange ? textWhite : logout}>
+                  마을 입장
+                </span>
               </div>
             </div>
           </div>
@@ -316,6 +318,12 @@ const midrightWrap = css`
 
 const logout = css`
   line-height: 35px;
+  color: #000;
+`;
+
+const textWhite = css`
+  line-height: 35px;
+  color: #fff !important;
 `;
 
 export default MainNavBar;

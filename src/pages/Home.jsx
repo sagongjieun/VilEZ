@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 // import { Animated } from "react-animated-css";
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
+import { BsFillArrowDownCircleFill } from "react-icons/bs";
 import mainarrow from "../assets/images/mainarrow.png";
 // import secondbodyimg from "../assets/images/secondbodyimg.png";
 // import thirdbodyimg from "../assets/images/thirdbodyimg.png";
@@ -14,8 +15,9 @@ import homeBackground from "../assets/images/home_background.jpg";
 import mockUpImage from "../assets/images/mockup3.png";
 import backGradient from "../assets/images/back_gradient.png";
 import backScroll from "../assets/images/back_scroll.png";
+import appQrCode from "../assets/images/app_qr_code.png";
 
-function MainBody() {
+function MainBody({ setScrollRange }) {
   const mainBox = useRef();
   const firstBox = useRef();
   const secondBox = useRef();
@@ -25,6 +27,7 @@ function MainBody() {
   const [secondHeight, setSecondHeight] = useState(0);
   const [thirdHeight, setThirdHeight] = useState(0);
   const [forthHeight, setForthHeight] = useState(0);
+  const [isQrCodeOpen, setIsQrCodeOpen] = useState(false);
 
   function toNumber(styleText) {
     return Number(styleText.height.slice(0, styleText.height.length - 2));
@@ -49,9 +52,21 @@ function MainBody() {
     setScrollPosition(window.scrollY || document.documentElement.scrollTop);
   };
 
+  function onClickApp() {
+    setIsQrCodeOpen((prev) => !prev);
+  }
+
   useEffect(() => {
     window.addEventListener("scroll", updateScroll);
   }, []);
+
+  useEffect(() => {
+    if (scrollPosition > mainHeight + 20 && scrollPosition < mainHeight + 4000) {
+      setScrollRange(true);
+    } else {
+      setScrollRange(false);
+    }
+  }, [scrollPosition]);
 
   return (
     <div>
@@ -63,7 +78,22 @@ function MainBody() {
           <div>
             VilEZ <span>[빌리지]</span>
           </div>
-          <div></div>
+          <div>
+            <div css={isQrCodeOpen ? qrCode : appDownload} onClick={onClickApp}>
+              {isQrCodeOpen ? (
+                <img src={appQrCode} />
+              ) : (
+                <>
+                  앱 다운로드
+                  <BsFillArrowDownCircleFill />
+                </>
+              )}
+              <div>
+                <div>▶ QR코드를 촬영하면</div>
+                <div>앱 다운로드 링크로 연결됩니다.</div>
+              </div>
+            </div>
+          </div>
         </div>
         <div css={mockUp}>
           <img src={mockUpImage} alt="" />
@@ -100,7 +130,7 @@ function MainBody() {
           <div>
             <div>빌리지의 이웃들과 함께</div>
             <div>공유하기를 통해 물품을 빌려주고,</div>
-            <div>공유하기를 통해 물품을 빌려보세요.</div>
+            <div>요청하기를 통해 물품을 빌려보세요.</div>
           </div>
         </div>
         <a id="movebottom"></a>
@@ -195,7 +225,7 @@ const slogan = css`
   font-size: 50px;
   color: #000;
   padding-left: 120px;
-  & > div {
+  & > div:nth-of-type(-n + 3) {
     opacity: 0;
     font-family: "GmarketSansMedium";
     animation-name: ${appear};
@@ -224,9 +254,6 @@ const slogan = css`
       font-size: 24px;
       font-family: "GmarketSansMedium";
     }
-  }
-  & > div:nth-of-type(4) {
-    font-family: Pretendard-Regular;
   }
 `;
 
@@ -507,6 +534,85 @@ const relativeStyle = (scroll) => {
 
 const hiddenStyle = css`
   visibility: hidden;
+`;
+
+const appDownload = css`
+  position: relative;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.4);
+  font-family: "GmarketSansMedium";
+  font-size: 16px;
+  height: 45px;
+  width: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  > * {
+    margin-left: 10px;
+  }
+  :hover {
+    background-color: rgba(255, 255, 255, 0.6);
+    > * {
+      transform: translateY(4px);
+    }
+  }
+  > div {
+    position: absolute;
+    visibility: hidden;
+    display: block;
+    width: 300px;
+    left: 190px;
+    bottom: 10px;
+    font-family: "GmarketSansMedium";
+    > div {
+      font-size: 16px;
+      font-family: "GmarketSansMedium";
+    }
+    > div:nth-of-type(2) {
+      padding-left: 18px;
+    }
+  }
+`;
+
+const qrCode = css`
+  position: relative;
+  height: 180px;
+  transition: all 0.3s;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.4);
+  font-family: "GmarketSansMedium";
+  width: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  > img {
+    width: 90%;
+  }
+  > div {
+    width: 300px;
+    visibility: visible;
+    position: absolute;
+    opacity: 1;
+    left: 190px;
+    bottom: 10px;
+    display: block;
+    font-size: 16px;
+    font-family: "GmarketSansMedium";
+    > div {
+      font-size: 16px;
+      font-family: "GmarketSansMedium";
+    }
+    > div:nth-of-type(2) {
+      padding-left: 18px;
+    }
+  }
 `;
 
 export default MainBody;
