@@ -124,7 +124,7 @@ function MainNavBar({ scrollRange }) {
                 <div css={midrightWrap}>
                   <FiSearch onClick={onClickMoveSearchPage} />
                 </div>
-                <span onClick={onClickMoveLogin} css={scrollRange ? textWhite : null}>
+                <span onClick={onClickMoveLogin} css={scrollRange ? textWhite : logout}>
                   마을 입장
                 </span>
               </div>
@@ -322,6 +322,7 @@ const logout = css`
 `;
 
 const textWhite = css`
+  line-height: 35px;
   color: #fff !important;
 `;
 

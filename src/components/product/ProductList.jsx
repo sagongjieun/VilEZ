@@ -207,6 +207,11 @@ const ProductList = () => {
             {getArticle.map((article, idx) => (
               <div key={idx} onClick={() => navigate(`/product/detail/share/${article.shareListDto.id}`)}>
                 <div css={thumbnailWrapper}>
+                  {article.shareListDto?.state === 0 ? (
+                    <div css={badgeGreen}>공유가능</div>
+                  ) : (
+                    <div css={badgeGray}>공유중</div>
+                  )}
                   <img src={article.shareListDto?.list[0]?.path} />
                 </div>
                 <div css={infoWrapper}>
@@ -233,6 +238,11 @@ const ProductList = () => {
             {askArticles.map((article, idx) => (
               <div key={idx} onClick={() => navigate(`/product/detail/ask/${article.askDto.id}`)}>
                 <div css={thumbnailWrapper}>
+                  {article.askDto?.state === 0 ? (
+                    <div css={badgeGreen}>공유가능</div>
+                  ) : (
+                    <div css={badgeGray}>공유중</div>
+                  )}
                   <img src={article?.askDto?.list[0]?.path} />
                 </div>
                 <div css={infoWrapper}>
@@ -367,6 +377,7 @@ const relatedProductWrapper = css`
 `;
 
 const thumbnailWrapper = css`
+  position: relative;
   height: 170px;
   background: #d9d9d9;
   border-radius: 10px 10px 0 0;
@@ -377,6 +388,36 @@ const thumbnailWrapper = css`
     object-fit: cover;
     border-radius: 10px 10px 0 0;
   }
+`;
+
+const badgeGreen = css`
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 0 8px;
+  height: 20px;
+  line-height: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #66dd9c;
+  border-radius: 4px;
+  text-align: center;
+`;
+
+const badgeGray = css`
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 0 8px;
+  height: 20px;
+  line-height: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #8a8a8a;
+  background-color: #e8e8e8;
+  border-radius: 4px;
+  text-align: center;
 `;
 
 const infoWrapper = css`
