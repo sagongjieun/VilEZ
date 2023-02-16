@@ -29,7 +29,8 @@ const ProductList = () => {
   const urlId = pathname.includes("share") ? 2 : 1;
   const [list, setList] = useState("");
   const categoryToUse = category === "전체" ? "" : category;
-
+  // location 이라는 선언변수가 있었음
+  const location = { areaLat: localStorage.getItem("areaLat"), areaLng: localStorage.getItem("areaLng") };
   // 무한 스크롤 관련
   useEffect(() => {
     const handleScroll = () => {
