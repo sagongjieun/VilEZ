@@ -214,7 +214,7 @@ function EditProfile({ setIsEditProfileOpen }) {
       </div>
 
       {/* 비밀번호 파트 */}
-      {!oauth ? (
+      {oauth !== "kakao" || oauth !== "naver" ? (
         <div css={secondWrap}>
           <div css={subTitleWrap}>
             <strong>비밀번호</strong>
