@@ -52,7 +52,11 @@ const ProfileDdaySlide = ({ ddaySlideList }) => {
               <div>{appoint.appointmentDto.title}</div>
               <div>
                 {appoint.appointmentDto.status === "마감일 임박!" ? "반납까지" : "대여 시작까지"}
-                <span>
+                <span
+                  css={css`
+                    margin: 0 5px;
+                  `}
+                >
                   {appoint.appointmentDto.status === "마감일 임박!"
                     ? DDay(appoint.appointmentDto.appointmentEnd)
                     : DDay(appoint.appointmentDto.appointmentStart)}
