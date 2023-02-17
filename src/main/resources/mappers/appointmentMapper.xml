@@ -157,8 +157,7 @@
     <select id="getBoardState" parameterType="int" resultType="kr.co.vilez.appointment.model.vo.BoardStateVO">
         SELECT board_id as boardId
         FROM appointment
-        WHERE now() >= appointment_start and appointment_end >= now() and board_id = #{boardId} and type = #{type}
-        and state = 0;
+        WHERE now() >= appointment_start and appointment_end >= now() and board_id = #{boardId} and type = #{type};
     </select>
 
     <select id="getGiveListShare" parameterType="int" resultMap="mylist">
