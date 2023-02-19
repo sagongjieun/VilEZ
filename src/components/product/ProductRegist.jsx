@@ -157,6 +157,20 @@ const ProductRegist = () => {
       )
     );
 
+    console.log(
+      "regist test : ",
+      registType,
+      category,
+      content,
+      startDay,
+      endDay,
+      hopeAreaLat,
+      hopeAreaLng,
+      loginUserId,
+      location,
+      imageList
+    );
+
     // API 요청
     if (registType === "물품 공유 등록") {
       postShareArticle(formData)
