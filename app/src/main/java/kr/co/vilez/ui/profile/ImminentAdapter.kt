@@ -63,9 +63,7 @@ RecyclerView.Adapter<ImminentAdapter.ShareHolder>(){
                         Toast.makeText(binding.root.context, "이 약속의 채팅 정보를 불러올 수 없어서 게시글 상세보기로 이동합니다.", Toast.LENGTH_SHORT).show()
                         binding.root.context.startActivity(boardDetailIntent)
                     }
-
                 }
-
             }
         }
     }

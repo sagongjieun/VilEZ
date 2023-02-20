@@ -145,12 +145,33 @@
                                     android:textSize="16sp"
                                     android:textStyle="bold" />
 
-                                <TextView
+                                <LinearLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
                                     android:layout_marginTop="4dp"
-                                    android:gravity="center_vertical"
-                                    android:text="@{`매너점수:`+ writer.manner+` :-)`}" />
+                                    android:layout_gravity="center">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center_vertical"
+                                        android:text="매너지수" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center_vertical"
+                                        android:textStyle="bold"
+                                        android:text=""
+                                        app:getMannerLevel="@{writer.manner}" />
+
+
+                                    <ImageView
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        app:getMannerIcon="@{writer.manner}"/>
+                                </LinearLayout>
 
                             </LinearLayout>
 

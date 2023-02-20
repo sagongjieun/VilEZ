@@ -630,9 +630,6 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
         val datePicker =
             MaterialDatePicker.Builder.dateRangePicker()
                 .setTitleText("공유기간 선택")
-                .setSelection(androidx.core.util.Pair(
-                    startDay
-                    , endDay))
                 .setCalendarConstraints(constraintsBuilder.build())
                 .build()
 
@@ -688,21 +685,6 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                 } else {
                     Toast.makeText(this@ChatRoomActivity, "캘린더를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
                 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             }
         }
