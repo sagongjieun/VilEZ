@@ -5,13 +5,13 @@ import { getUserAsk } from "../../api/ask";
 import { getUserShare } from "../../api/share";
 import ProfileCardView from "./ProfileCardView";
 
-// const id = localStorage.getItem("id");
 const ProfileMyWriting = (props) => {
   const userId = window.localStorage.getItem("id");
   const [myBoard, setMyBoard] = useState([]);
   const [myShareBoard, setMyShareBoard] = useState([]);
   const [myAskBoard, setMyAskBoard] = useState([]);
   const [endAxios, setEndAxios] = useState(false);
+
   useEffect(() => {
     getUserShare(userId).then((response) => {
       if (response) {
@@ -31,6 +31,7 @@ const ProfileMyWriting = (props) => {
       });
     }
   }, [endAxios]);
+
   useEffect(() => {
     props.setWritingPages(1);
     if (props.myWritingType === 1) {
@@ -39,9 +40,11 @@ const ProfileMyWriting = (props) => {
       setMyBoard(myAskBoard);
     }
   }, [props.myWritingType]);
+
   useEffect(() => {
     props.setWritingDefaultPages(myBoard ? parseInt((myBoard?.length - 1) / 3) + 1 : 1);
   }, [myBoard]);
+
   return (
     <div css={cardWrapper(props.writingPages)}>
       {myBoard && myBoard.length > 0 ? (
