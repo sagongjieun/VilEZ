@@ -193,14 +193,6 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
     }
 
     override fun onMapViewSingleTapped(p0: MapView?, p1: MapPoint?) {
-
-    }
-
-    override fun onMapViewDoubleTapped(p0: MapView?, p1: MapPoint?) {
-
-    }
-
-    override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
         if(isMarkerOn == true) {
             if (p0 != null) {
                 p0.removePOIItem(marker)
@@ -230,6 +222,15 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
             p0.setMapCenterPoint(p1,true)
         }
         p0!!.addPOIItem(marker)
+
+    }
+
+    override fun onMapViewDoubleTapped(p0: MapView?, p1: MapPoint?) {
+
+    }
+
+    override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
+
 
     }
 
