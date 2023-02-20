@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             changeFragment(target)
         }
-        StompHelper.runStomp()
+        StompHelper.runStomp(this@MainActivity)
         var data = JSONObject()
         data.put("userId", ApplicationClass.prefs.getId())
 
