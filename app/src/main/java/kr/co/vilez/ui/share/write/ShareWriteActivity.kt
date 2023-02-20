@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +24,6 @@ import kotlinx.coroutines.launch
 import kr.co.vilez.R
 import kr.co.vilez.data.dto.WriteBoard
 import kr.co.vilez.databinding.ActivityShareWriteBinding
-import kr.co.vilez.service.RESTShareBoardDetail
 import kr.co.vilez.ui.ask.AskDetailActivity
 import kr.co.vilez.ui.dialog.ConfirmDialog
 import kr.co.vilez.ui.dialog.ConfirmDialogInterface
@@ -34,7 +34,6 @@ import kr.co.vilez.util.ChangeMultipartUtil
 import kr.co.vilez.util.Common.Companion.BOARD_TYPE_ASK
 import kr.co.vilez.util.Common.Companion.BOARD_TYPE_SHARE
 import kr.co.vilez.util.PermissionUtil
-import kr.co.vilez.util.setOnSingleClickListener
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -283,7 +282,7 @@ class ShareWriteActivity : AppCompatActivity() {
     }
 
     fun onDateClick(view: View) {
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.KOREA)
         calendar.time = Date()
         val startToday = calendar.timeInMillis
         calendar.add(Calendar.DATE, 1)
@@ -293,13 +292,14 @@ class ShareWriteActivity : AppCompatActivity() {
         val constraintsBuilder =
             CalendarConstraints.Builder()
                 .setStart(startToday)
+                .setValidator(DateValidatorPointForward.now())
 
         val datePicker =
             MaterialDatePicker.Builder.dateRangePicker()
                 .setTitleText("공유기간 선택")
-                .setSelection(androidx.core.util.Pair(
+                /*.setSelection(androidx.core.util.Pair(
                     startToday
-                    , endTomorrow))
+                    , endTomorrow))*/
                 .setCalendarConstraints(constraintsBuilder.build())
                 .build()
         datePicker.addOnPositiveButtonClickListener {
