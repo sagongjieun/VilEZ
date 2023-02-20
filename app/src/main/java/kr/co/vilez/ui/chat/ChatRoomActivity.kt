@@ -219,7 +219,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
         binding.btnMap.setOnClickListener {
 
             if(kakaoMapFragment == null) {
-                Toast.makeText(this@ChatRoomActivity, "만나고자 하는 위치를 꾹 눌러서 마커를 찍어보세요.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ChatRoomActivity, "만나고자 하는 위치를 클릭해서 마커를 찍어보세요.", Toast.LENGTH_SHORT).show()
                 var bundle = Bundle(2)
                 bundle.putInt("roomId", roomId)
                 bundle.putInt("otherUserId", otherUserId)
@@ -232,7 +232,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                     .commit()
             }
             if(now == 0) {
-                Toast.makeText(this@ChatRoomActivity, "만나고자 하는 위치를 꾹 눌러서 마커를 찍어보세요.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ChatRoomActivity, "만나고자 하는 위치를 클릭해서 마커를 찍어보세요.", Toast.LENGTH_SHORT).show()
                 binding.frameLayout.visibility = View.VISIBLE
                 binding.chatMenu.visibility = View.GONE
                 binding.chatPlus.background = resources.getDrawable(R.drawable.ic_chat_add)
