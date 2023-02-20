@@ -84,10 +84,13 @@ interface AppointmentApi {
     @GET("/vilez/appointments/my/appointlist/{userId}")
     fun getMyCalendar(@Path("userId")id:Int): Call<RESTCalendarResult>
 
+    // 이 공유글이 대여중, 예약중인지 반환한다.
+    @GET("/vilez/appointments//{boardId}/{type}")
+    fun getSharingState(@Path("boardId")boardId: Int, @Path("type")type: Int):Call<RESTBoardAppointmentsResult>
 
     // 이 공유글(2), 요청글(1)이 오늘 날짜 기준으로 대여중인지 반환한다. 대여중이면 boardId를 그대로 리턴, 대여 가능하면 null 리턴
     @GET("/vilez/appointments/check/{boardId}/{type}")
-    fun getIsSharing(@Path("boardId")boardId: Int, @Path("type")type:Int):Call<RESTBoardStateCheckResult>
+    fun getIsSharingToday(@Path("boardId")boardId: Int, @Path("type")type:Int):Call<RESTBoardStateCheckResult>
 
 
     // 이 게시글에 진행중인 공유, 예약 목록을 불러온다.
