@@ -337,9 +337,10 @@ class ShareDetailActivity : AppCompatActivity(){
                     override fun onYesButtonClick(id: String) {
                         // 대여중, 예약중인 경우 삭제 불가능하게 하기
                         CoroutineScope(Dispatchers.Main).launch {
-                            val stateResult = ApplicationClass.hAppointmentApi.getIsSharing(boardId!!, BOARD_TYPE_SHARE).awaitResponse().body()
+                            val stateResult = ApplicationClass.hAppointmentApi.getSharingState(boardId!!, BOARD_TYPE_SHARE).awaitResponse().body()
+                            Log.d(TAG, "onYesButtonClick: 상태 확인 : $stateResult")
                             if(stateResult?.flag == "success") {
-                                if (stateResult.data[0].boardId == boardId) { // 이미 있어서 삭제 불가!
+                                if(stateResult.data[0].isNotEmpty()) {// 이미 있어서 삭제 불가!
                                     Toast.makeText(this@ShareDetailActivity, "공유중인 게시글이어서 삭제가 불가합니다.", Toast.LENGTH_SHORT).show()
                                 } else { // 게시글 삭제 시작
                                     val result = ApplicationClass.hShareApi.deleteShareBoard(boardId!!).awaitResponse().body()
