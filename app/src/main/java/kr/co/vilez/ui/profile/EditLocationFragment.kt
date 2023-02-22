@@ -141,7 +141,7 @@ class EditLocation : Fragment(), MapReverseGeoCoder.ReverseGeoCodingResultListen
                     override fun onYesButtonClick(id: String) {
                         val intent = Intent(profileMenuActivity, MainActivity::class.java)
                         intent.putExtra("target", "홈")
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         startActivity(intent)
                     }

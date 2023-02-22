@@ -261,7 +261,7 @@ class AskDetailActivity : AppCompatActivity() {
                                 Toast.makeText(this@AskDetailActivity, "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
                                 val intent = Intent(this@AskDetailActivity, MainActivity::class.java)
                                 intent.putExtra("target", "공유 요청")
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                 var data = JSONObject()
                                 data.put("boardId",boardId!!)

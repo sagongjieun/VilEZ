@@ -132,7 +132,7 @@ class EditProfileFragment : Fragment() {
     private fun refreshActivity(data: String? = null) {
         val intent = Intent(profileMenuActivity, MainActivity::class.java)
         intent.putExtra("target", "나의 빌리지")
-        intent.addFlags(FLAG_ACTIVITY_CLEAR_TASK)
+        intent.addFlags(FLAG_ACTIVITY_CLEAR_TOP)
         intent.addFlags(FLAG_ACTIVITY_NO_ANIMATION)
         intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
@@ -238,7 +238,7 @@ class EditProfileFragment : Fragment() {
                     // 로그아웃 후 로그인 화면이동
                     ApplicationClass.prefs.removeAll() // Shared Preference 삭제
                     val intent = Intent(mContext, LoginActivity::class.java)
-                    intent.addFlags(FLAG_ACTIVITY_CLEAR_TASK)
+                    intent.addFlags(FLAG_ACTIVITY_CLEAR_TOP)
                     intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
                     intent.addFlags(FLAG_ACTIVITY_NO_ANIMATION)
                     startActivity(intent)
