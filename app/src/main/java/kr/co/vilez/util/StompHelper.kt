@@ -66,7 +66,7 @@ class StompHelper {
                         Log.d(TAG, "runStomp: ERRROR @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@Stomp 끊김!@@@@@@@@@@@@@@@@@@@@")
                         if(context != null) {
                             val intent = Intent(context!!, SplashActivity::class.java)
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             context!!.startActivity(intent)
                         }

@@ -226,11 +226,11 @@ class KakaoMapFragment : Fragment(), MapView.MapViewEventListener {
     }
 
     override fun onMapViewDoubleTapped(p0: MapView?, p1: MapPoint?) {
-
+        return
     }
 
     override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
-
+        return
 
     }
 

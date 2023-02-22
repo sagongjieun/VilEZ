@@ -252,7 +252,7 @@ class ProfileFragment : Fragment() {
                         // 로그아웃 후 로그인 화면이동
                         ApplicationClass.prefs.removeAll() // Shared Preference 삭제
                         val intent = Intent(mainActivity, LoginActivity::class.java)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         startActivity(intent)
                     } else {
@@ -261,7 +261,7 @@ class ProfileFragment : Fragment() {
                         Log.d(TAG, "onYesButtonClick: 네트워크 없어서 로그아웃 실패함. 그래도 일단 시켜주기.")
                         ApplicationClass.prefs.removeAll() // Shared Preference 삭제
                         val intent = Intent(mainActivity, LoginActivity::class.java)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         startActivity(intent)
                     }
