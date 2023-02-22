@@ -245,7 +245,7 @@ class FindPasswordFragment : Fragment() {
                     // 로그아웃 후 로그인 화면이동
                     ApplicationClass.prefs.removeAll() // Shared Preference 삭제
                     val intent = Intent(activity, LoginActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     startActivity(intent)

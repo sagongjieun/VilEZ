@@ -142,8 +142,7 @@ class ShareDetailActivity : AppCompatActivity(){
         
         CoroutineScope(Dispatchers.Main).launch {
             // 먼저 채팅방이 존재하는지 확인하기
-            val isExist = ApplicationClass.hChatApi.isExistChatroom(boardId!!,
-                Common.BOARD_TYPE_SHARE, ApplicationClass.prefs.getId()).awaitResponse().body()
+            val isExist = ApplicationClass.hChatApi.isExistChatroom(boardId!!, BOARD_TYPE_SHARE, ApplicationClass.prefs.getId()).awaitResponse().body()
             if(isExist?.flag == "success" ) { // 이미 채팅방이 존재함
                 Log.d(TAG, "onChatBtnClick: 채팅방 이미 존재")
                 Toast.makeText(this@ShareDetailActivity, "이미 채팅중인 게시글이어서\n기존 채팅방으로 이동합니다.", Toast.LENGTH_SHORT).show()
@@ -162,9 +161,7 @@ class ShareDetailActivity : AppCompatActivity(){
 
             } else if (isExist?.flag == "fail") { // 채팅방 없음 => 새로 만들기
                 Log.d(TAG, "onChatBtnClick: 새로운 채팅방 만들기")
-                val chatRoom = Chatroom(boardId!!, 0,  ApplicationClass.prefs.getId(), userId!!,
-                    Common.BOARD_TYPE_SHARE
-                )
+                val chatRoom = Chatroom(boardId!!, 0,  ApplicationClass.prefs.getId(), userId!!, BOARD_TYPE_SHARE)
                 val result = ApplicationClass.hChatApi.createChatroom(chatRoom).awaitResponse().body()
                 if(result?.flag == "success") {
                     val fragment = supportFragmentManager.findFragmentById(R.id.share_detail_map)
@@ -348,7 +345,7 @@ class ShareDetailActivity : AppCompatActivity(){
                                         Toast.makeText(this@ShareDetailActivity, "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
                                         val intent = Intent(this@ShareDetailActivity, MainActivity::class.java)
                                         intent.putExtra("target", "홈")
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                         var data = JSONObject()
                                         data.put("boardId",boardId!!)

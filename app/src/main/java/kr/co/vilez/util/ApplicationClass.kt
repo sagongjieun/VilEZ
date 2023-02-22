@@ -188,7 +188,7 @@ class ApplicationClass: Application(), LifecycleObserver {
                     // 로그아웃 하고 로그인 화면으로 이동
                     prefs.removeAll() // Shared Preference 삭제
                     val intent = Intent(this@ApplicationClass, LoginActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
                     return response

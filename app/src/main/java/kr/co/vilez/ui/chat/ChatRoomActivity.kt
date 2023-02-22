@@ -102,10 +102,10 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                     room.shareUserId,room.type
                 ).awaitResponse().body()
 
-                if(result?.flag == "success") {
+                if(result?.flag == "success") { // 이 방에서 예약 확정이 되어있는지 확인
                     appointDto = result.data.get(0)
-                    if(appointDto == null) {
-                        val result = ApplicationClass.hChatApi.getPeriodDto(
+                    if(appointDto == null) { // 아직 예약 확정 안됐는데, 공유 기간 설정만 됨
+                        val result = ApplicationClass.hChatApi.getPeriodDto( // 설정된 공유기간 가져옴
                             room.boardId, room.notShareUserId,
                             room.shareUserId,room.type
                         ).awaitResponse().body()
@@ -113,24 +113,31 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                             setPeriodDto = result.data.get(0)
                         }
                     }
-                }
 
-                if(room.type == 2) {
-                    var result = ApplicationClass.hShareApi.getBoardDetail(room.boardId).awaitResponse().body()
-                    if(result?.flag == "success") {
-                        boardStart = result.data.get(0).startDay
-                        boardEnd = result.data.get(0).endDay
+                    if(room.type == 2) {
+                        var result = ApplicationClass.hShareApi.getBoardDetail(room.boardId).awaitResponse().body()
+                        if(result?.flag == "success") {
+                            boardStart = result.data.get(0).startDay
+                            boardEnd = result.data.get(0).endDay
+                        }
+                    } else {
+                        var result = ApplicationClass.hAskApi.getBoardDetail(room.boardId).awaitResponse().body()
+                        if(result?.flag == "success") {
+                            boardStart = result.data.get(0).startDay
+                            boardEnd = result.data.get(0).endDay
+                        }
                     }
+                    initData()
+                    initView()
+                    initAcceptButton()
+                    initCancelButton()
                 } else {
-                    var result = ApplicationClass.hAskApi.getBoardDetail(room.boardId).awaitResponse().body()
-                    if(result?.flag == "success") {
-                        boardStart = result.data.get(0).startDay
-                        boardEnd = result.data.get(0).endDay
-                    }
+                    Toast.makeText(this@ChatRoomActivity, "채팅방 정보를 불러오지 못했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, "onCreate: getPeriodDto Fail")
                 }
-                initView()
-                initAcceptButton()
-                initCancelButton()
+            } else {
+                Toast.makeText(this@ChatRoomActivity, "채팅방 정보를 불러오지 못했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+                Log.d(TAG, "onCreate: getRoomData Failed")
             }
         }
 
@@ -168,7 +175,12 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
         if(topic != null)
             topic!!.dispose()
     }
-       lateinit var rv_chat : RecyclerView
+    lateinit var rv_chat : RecyclerView
+
+
+    private fun initData() {
+
+    }
 
     @SuppressLint("CheckResult")
     fun initView() {
@@ -236,7 +248,6 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                 binding.frameLayout.visibility = View.VISIBLE
                 binding.chatMenu.visibility = View.GONE
                 binding.chatPlus.background = resources.getDrawable(R.drawable.ic_chat_add)
-                // binding.chatPlus.text = "+"
                 now = 3
             } else if(now == 3){
                 binding.frameLayout.visibility = View.GONE
@@ -244,26 +255,6 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
             }
         }
 
-//        binding.chatPlus.setOnClickListener(View.OnClickListener {
-//            /*if(chat_plus.background == resources.getDrawable(R.drawable.ic_chat_close)) {
-//                binding.chatPlus.background = resources.getDrawable(R.drawable.ic_chat_add)
-//                chat_menu.visibility = View.GONE
-//                rv_chat.scrollToPosition(itemList.size - 1)
-//            } else {
-//                binding.chatPlus.background = resources.getDrawable(R.drawable.ic_chat_close)
-//                chat_menu.visibility = View.VISIBLE
-//                rv_chat.scrollToPosition(itemList.size - 1)
-//            }
-//            *//*if(chat_plus.text == "X") {
-//                chat_plus.text = "+"
-//                chat_menu.visibility = View.GONE
-//                rv_chat.scrollToPosition(itemList.size - 1)
-//            } else {
-//                chat_plus.text = "X"
-//                chat_menu.visibility = View.VISIBLE
-//                rv_chat.scrollToPosition(itemList.size - 1)
-//            }*/
-//        })
         rv_chat.adapter = roomAdapter
         rv_chat.layoutManager = LinearLayoutManager(this)
 
@@ -374,11 +365,14 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                 val data = JSONObject()
                 data.put("roomId", roomId)
                 data.put("userId", ApplicationClass.prefs.getId())
-                StompHelper.stompClient.send("/room_enter", data.toString()).subscribe()
+
+              StompHelper.stompClient.send("/room_enter", data.toString()).subscribe()
             }
         }
 
+        Log.d(TAG, "initView: @@@@@@@@@@@@@@@2init:$init")
         if (init == 1) {
+            Log.d(TAG, "initView: @@@@@@@@@@@@@@@@@@@@@@22init1")
             if(room.notShareUserId == ApplicationClass.prefs.getId()) {
                 otherUserId = room.shareUserId
             } else {
@@ -396,6 +390,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
         }
 
         if(room.state == 0) {
+            Log.d(TAG, "initView: @@@@@@@@@@@@@@@@@@@@@@START room.state == 0, init:$init")
             topic = StompHelper.stompClient.join("/sendchat/" + roomId + "/" + ApplicationClass.prefs.getId())
                 .subscribe { topicMessage ->
                     run {
@@ -420,6 +415,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
                                 chatSizeCheck = true
                                 window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
                             }
+                            Log.d(TAG, "initView: @@@@@@@@@@@@@@@@@@@@@@END room.state == 0, init:$init ")
                         }
                     }
                 }
@@ -688,47 +684,7 @@ class ChatRoomActivity : AppCompatActivity(), AppointConfirmDialogInterface,
 
             }
         }
-
         datePicker.show(supportFragmentManager, "Date")
-
-
-        /*val now = Calendar.getInstance()
-
-        val dpd: DatePickerDialog = DatePickerDialog.newInstance(
-            this@ChatRoomActivity,
-            now[Calendar.YEAR],
-            now[Calendar.MONTH],
-            now[Calendar.DAY_OF_MONTH]
-        )
-        dpd.minDate = Common.dateToCalendar(boardStart)
-        dpd.maxDate = Common.dateToCalendar(boardEnd)
-        dpd.accentColor = R.color.main_1
-        dpd.version = DatePickerDialog.Version.VERSION_2
-        dpd.setTitle("공유할 날짜를 선택해주세요.")
-        dpd.disabledDays
-        //dpd.setTitle("게시글에 작성한 희망 공유 날짜 범위 안에서 선택 가능해요.\n이미 다른 사람에게 대여중인 날짜는 선택할 수 없어요.")
-        dpd.show(supportFragmentManager, "Datepickerdialog");
-
-        CoroutineScope(Dispatchers.Main).launch {
-            val appointmentList = ApplicationClass.retrofitAppointmentService.getBoardAppointments(room.boardId, room.type).awaitResponse().body()
-            if(appointmentList?.flag=="success") {
-                for(element in appointmentList.data[0]) {
-                    Log.d(TAG, "onCalendarClick: 이미 예약된 날짜 :${element.appointmentStart} ~ ${element.appointmentEnd}")
-
-                    val startTime = Common.dateToMillis(element.appointmentStart)
-                    val endTime = Common.dateToMillis(element.appointmentEnd)
-                    // 이 날자 millisecond로 변환해서 constraints에 추가
-
-
-                }
-
-
-
-            } else {
-                Toast.makeText(this@ChatRoomActivity, "캘린더를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
-            }
-        }*/
-
     }
 
     // 반납 로직
