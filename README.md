@@ -19,17 +19,17 @@ VilEZ(빌리지)
 
 ## 프로젝트 소개
 
--   개요
-    삼성청년소프트웨어아카데미(SSAFY) 2학기 공통프로젝트(웹디자인)에서 만든 프로젝트
-    총 6명 ( 프론트엔드 3명, 백엔드 2명, 모바일 1명)
+### 개요
+- 삼성청년소프트웨어아카데미(SSAFY) 2학기 공통프로젝트(웹디자인)에서 만든 프로젝트
+- 총 6명 ( 프론트엔드 3명, 백엔드 2명, 모바일 1명)
     
--   주제
-    이웃주민과 소통이 단절된 현대사회에서 서로 필요한 물품을 공유하고, 요청하는 플랫폼을 만들어 지역사회를 따뜻하게 만들려고 함
+### 주제
+- 이웃주민과 소통이 단절된 현대사회에서 서로 필요한 물품을 공유하고, 요청하는 플랫폼을 만들어 지역사회를 따뜻하게 만들려고 함
 
 
 |JavaScript|React|recoil|emotion.js|axios|
 |---|---|---|---|---|
-|![javascript](https://user-images.githubusercontent.com/72495712/224549841-a910d8c0-1843-4680-8a0f-9ab1520998e8.png)|![react](https://user-images.githubusercontent.com/72495712/224549934-d0427153-3767-4c3d-bc47-3dd5cfae2d2d.png)|![recoil](https://user-images.githubusercontent.com/72495712/224549994-ca4d52a5-c455-4c6b-9062-acab0798c22a.png)|![emotion](https://user-images.githubusercontent.com/72495712/224550022-477cfb7a-c9a3-4666-b4b4-9f15e1775b59.png)|![axios](https://user-images.githubusercontent.com/72495712/224550044-9daafaeb-5859-4f5e-9098-81e6814f3e77.png)|
+|![javascript](./preview_image/javascript.png)|![react](./preview_image/react.png)|![recoil](./preview_image/recoil.png)|![emotion](./preview_image/emotion.png)|![axios](./preview_image/axios.png)|
 
 ### 메인 페이지
 -   서비스 소개
