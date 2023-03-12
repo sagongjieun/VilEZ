@@ -38,9 +38,7 @@ VilEZ(빌리지)
 ### 로그인 / 회원가입
 
 -   이메일 - 비밀번호를 사용한 회원가입과 OAuth 2.0을 활용한 소셜 로그인 
-|로그인|회원가입|
-|---|---|
-|![](./preview_image/로그인.gif)|![](./preview_image/회원가입.gif)|
+![](./preview_image/로그인.gif)![](./preview_image/회원가입.gif)
 
 ### 공유 물품 등록
 -   multipart/form-data로 물품 이미지 업로드
@@ -55,9 +53,7 @@ VilEZ(빌리지)
 ### 실시간 채팅 & 지도
 -   Websocket과 STOMP를 활용
 -   실시간으로 1:1 채팅과 kakao map 을 동시에 제어할 수 있음
-|피공유자|공유자|
-|---|---|
-|![](./preview_image/피공유자-예약.gif)|![](./preview_image/공유자-예약.gif)|
+![](./preview_image/피공유자-예약.gif)![](./preview_image/공유자-예약.gif)
 
 ### 공유 박스
 -   현재 진행중 / 진행 예정인 공유 약속 표시
